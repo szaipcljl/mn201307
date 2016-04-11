@@ -64,7 +64,7 @@
 
 #define DEVICE_DRIVER_RELEASE_VERSION   ("3.A.0.0")
 
-
+//#define CONFIG_ENABLE_PROXIMITY_DETECTION  //160411
 /*--------------------------------------------------------------------------*/
 /* COMPILE OPTION DEFINITION                                                */
 /*--------------------------------------------------------------------------*/
@@ -131,6 +131,7 @@
  * If this compile option is not defined, the function for virtual key handling will be disabled.
  * By default, this compile option is enabled.
  */
+#define VIRTUAL_KEYS	1
 #define CONFIG_TP_HAVE_KEY
 
 /*
@@ -268,6 +269,14 @@
  * By default, this compile option is disabled.
  */
 //#define CONFIG_ENABLE_PROXIMITY_DETECTION
+
+#if defined(CONFIG_GST_TP_PROXIMITY_SUPPORT) 
+#include <linux/spinlock.h>
+
+#define TP_PROXIMITY_SENSOR
+#define PROXIMITY_BUF_MAX_SIZE 0xF
+#endif
+
 
 /*
  * Note.
@@ -418,7 +427,7 @@
  * Note.
  * Please change the below touch screen resolution according to the touch panel that you are using.
  */
-#if 1 //huafeizhou151214 add
+#if 1 
 extern int TOUCH_SCREEN_X_MAX;
 extern int TOUCH_SCREEN_Y_MAX;
 #else

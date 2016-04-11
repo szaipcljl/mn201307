@@ -37,6 +37,10 @@
 // EXTERN VARIABLE DECLARATION
 /*=============================================================*/
 
+#ifdef TP_PROXIMITY_SENSOR 
+extern int PROXIMITY_SWITCH;
+#endif
+
 extern u32 SLAVE_I2C_ID_DBBUS;
 extern u32 SLAVE_I2C_ID_DWI2C;
 
@@ -1767,6 +1771,24 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 
 #endif //CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE
 #endif //CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
+
+#ifdef TP_PROXIMITY_SENSOR 
+	            printk("proximity_flag~~ = %d, pPacket[5]= %x \n",PROXIMITY_SWITCH, pPacket[5]);
+		    if (PROXIMITY_SWITCH == 1) {
+			if(0x80 == pPacket[5]){
+			   // ps_state = 0;
+			    input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
+			    input_sync(g_InputDevice);
+			    printk("**************pPacket[5]= %x  tp is near*****************\n", pPacket[5]);
+			}else if (0x40 == pPacket[5]){
+			   // ps_state = 1;
+			    input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
+			    input_sync(g_InputDevice);
+	                    printk("**************pPacket[5]= %x  tp is far******************\n", pPacket[5]);
+			}
+		    }
+#endif
+
             }
             else
             {   /* key up or touch up */

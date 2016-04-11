@@ -75,6 +75,14 @@ extern struct of_device_id touch_dt_match_table[];
 #endif //CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
 #endif //CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
 
+#ifdef TP_PROXIMITY_SENSOR 
+extern int PROXIMITY_SWITCH;
+extern int PROXIMITY_STATE;
+
+extern struct spinlock proximity_switch_lock;
+extern struct spinlock proximity_state_lock;
+#endif
+
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM) || defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
 #ifdef CONFIG_ENABLE_REGULATOR_POWER_ON
 extern struct regulator *g_ReguVdd;
@@ -1378,6 +1386,12 @@ s32 DrvPlatformLyrInputDeviceInitialize(struct i2c_client *pClient)
     set_bit(BTN_TOUCH, g_InputDevice->keybit);
     set_bit(INPUT_PROP_DIRECT, g_InputDevice->propbit);
 
+#ifdef TP_PROXIMITY_SENSOR 
+    input_set_abs_params(g_InputDevice, ABS_DISTANCE, 0, 1, 0, 0);
+
+    spin_lock_init(&proximity_switch_lock);
+    spin_lock_init(&proximity_state_lock);
+#endif
 #ifdef CONFIG_TP_HAVE_KEY
     // Method 1.
     { 

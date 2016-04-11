@@ -156,7 +156,7 @@
 
 #ifndef CONFIG_ENABLE_TOUCH_PIN_CONTROL
 // TODO : Please FAE colleague to confirm with customer device driver engineer about the value of RST and INT GPIO setting
-#if 1 //huafeizhou151214 add
+#if 1 
 extern MS_TS_MSG_IC_GPIO_RST;
 extern MS_TS_MSG_IC_GPIO_INT;
 #else

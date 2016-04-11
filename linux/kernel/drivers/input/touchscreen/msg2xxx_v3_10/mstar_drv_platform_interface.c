@@ -83,6 +83,15 @@ extern struct workqueue_struct *g_EsdCheckWorkqueue;
 
 extern u8 IS_FIRMWARE_DATA_LOG_ENABLED;
 
+#ifdef TP_PROXIMITY_SENSOR 
+extern int PROXIMITY_SWITCH;
+extern int Mstar_TP_face_mode_switch(int on);
+#endif
+
+#if VIRTUAL_KEYS 
+extern void virtual_keys_init(void);
+#endif
+
 
 /*=============================================================*/
 // GLOBAL VARIABLE DEFINITION
@@ -100,7 +109,7 @@ static u8 _gAMStartCmd[4] = {HOTKNOT_SEND, ADAPTIVEMOD_BEGIN, 0, 0};
 /*=============================================================*/
 // GLOBAL FUNCTION DEFINITION
 /*=============================================================*/
-
+static u8 is_tp_suspand=0;
 #ifdef CONFIG_ENABLE_NOTIFIER_FB
 int MsDrvInterfaceTouchDeviceFbNotifierCallback(struct notifier_block *pSelf, unsigned long nEvent, void *pData)
 {
@@ -296,6 +305,14 @@ void MsDrvInterfaceTouchDeviceSuspend(struct early_suspend *pSuspend)
         return;
     }
 
+#ifdef TP_PROXIMITY_SENSOR 
+    if (PROXIMITY_SWITCH)
+    {
+        printk("***%s(), msg2133a's proximity already open, so cann't suspend!\n", __func__);
+	 return;
+    }
+#endif
+
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
     if (g_EnableTpProximity == 1)
     {
@@ -355,6 +372,27 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
         DBG(&g_I2cClient->dev, "Not allow to power on/off touch ic while update firmware.\n");
         return;
     }
+
+#ifdef TP_PROXIMITY_SENSOR 
+    printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
+    if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) ) 
+    {
+        printk("***%s(), msg2133a's proximity already open, tp is not suspand,so donn't need resume!\n", __func__);
+	 return;
+    }
+#endif
+
+    is_tp_suspand=0;
+#ifdef TP_PROXIMITY_SENSOR 
+    printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
+    if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) )
+    {
+         printk("***msg2133a's proximity re-open!\n");
+	Mstar_TP_face_mode_switch(0);
+
+	Mstar_TP_face_mode_switch(1);
+    }
+#endif
 
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
     if (g_EnableTpProximity == 1)
@@ -468,6 +506,10 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
 #endif //CONFIG_ENABLE_REGULATOR_POWER_ON
 
     DrvPlatformLyrTouchDevicePowerOn();
+
+#if VIRTUAL_KEYS 
+    virtual_keys_init();
+#endif
 
     nRetVal = DrvMainTouchDeviceInitialize();
     if (nRetVal == -ENODEV)

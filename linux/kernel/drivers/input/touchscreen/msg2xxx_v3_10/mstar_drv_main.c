@@ -114,7 +114,7 @@ static u8 _gLogGestureInforType = 0;
 
 static u32 _gIsUpdateComplete = 0;
 
-static u8 *_gFwVersion = NULL; // customer firmware version
+/*static*/ u8 *_gFwVersion = NULL; // customer firmware version
 
 static u32 _gFeatureSupportStatus = 0;
 
