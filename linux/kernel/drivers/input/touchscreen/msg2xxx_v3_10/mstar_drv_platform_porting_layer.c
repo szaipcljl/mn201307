@@ -1604,6 +1604,22 @@ s32 DrvPlatformLyrInputDeviceInitialize(struct i2c_client *pClient)
 */
 
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+#if 1 
+    input_set_capability(g_InputDevice, EV_KEY, KEY_POWER);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F1);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F2);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F3);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F4);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F5);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F6);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F7);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F8);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F9);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F10);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F11);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_F12);
+    input_set_capability(g_InputDevice, EV_KEY, KEY_SCROLLLOCK);
+#else
     input_set_capability(g_InputDevice, EV_KEY, KEY_POWER);
     input_set_capability(g_InputDevice, EV_KEY, KEY_UP);
     input_set_capability(g_InputDevice, EV_KEY, KEY_DOWN);
@@ -1617,6 +1633,7 @@ s32 DrvPlatformLyrInputDeviceInitialize(struct i2c_client *pClient)
     input_set_capability(g_InputDevice, EV_KEY, KEY_C);
     input_set_capability(g_InputDevice, EV_KEY, KEY_E);
     input_set_capability(g_InputDevice, EV_KEY, KEY_S);
+#endif
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
 
     if (g_ChipType == CHIP_TYPE_MSG26XXM || g_ChipType == CHIP_TYPE_MSG28XX)
@@ -1805,14 +1822,15 @@ s32 DrvPlatformLyrTouchDeviceRegisterFingerTouchInterruptHandler(void)
 
         _gIrq = gpio_to_irq(MS_TS_MSG_IC_GPIO_INT);
 
+            DBG(&g_I2cClient->dev, "***  gpio_to_irq %d ***\n", _gIrq); 
         /* request an irq and register the isr */
-        nRetVal = request_threaded_irq(_gIrq/*MS_TS_MSG_IC_GPIO_INT*/, NULL, _DrvPlatformLyrFingerTouchInterruptHandler,
-                      IRQF_TRIGGER_RISING /* IRQF_TRIGGER_FALLING */| IRQF_ONESHOT/* | IRQF_NO_SUSPEND */,
-                      "msg2xxx", NULL); 
+//        nRetVal = request_threaded_irq(_gIrq/*MS_TS_MSG_IC_GPIO_INT*/, NULL, _DrvPlatformLyrFingerTouchInterruptHandler,
+//                      IRQF_TRIGGER_RISING /* IRQF_TRIGGER_FALLING */| IRQF_ONESHOT/* | IRQF_NO_SUSPEND */,
+//                    "msg2xxx", NULL); 
 
-//        nRetVal = request_irq(_gIrq/*MS_TS_MSG_IC_GPIO_INT*/, _DrvPlatformLyrFingerTouchInterruptHandler,
-//                      IRQF_TRIGGER_RISING /* IRQF_TRIGGER_FALLING *//* | IRQF_NO_SUSPEND */,
-//                      "msg2xxx", NULL); 
+        nRetVal = request_irq(_gIrq/*MS_TS_MSG_IC_GPIO_INT*/, _DrvPlatformLyrFingerTouchInterruptHandler,
+                      IRQF_TRIGGER_RISING /* IRQF_TRIGGER_FALLING */ | IRQF_NO_SUSPEND | IRQF_NO_SUSPEND ,
+                      "msg2xxx", NULL); 
 
         _gInterruptFlag = 1;
         

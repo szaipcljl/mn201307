@@ -33,6 +33,8 @@
 #include "mstar_drv_ic_fw_porting_layer.h"
 #include "mstar_drv_platform_porting_layer.h"
 #include "mstar_drv_utility_adaption.h"
+#include <linux/irq.h>  
+
 
 #ifdef CONFIG_ENABLE_HOTKNOT
 #include "mstar_drv_hotknot.h"
@@ -50,6 +52,55 @@ extern u8 g_GestureWakeupFlag;
 extern u8 g_GestureDebugFlag;
 extern u8 g_GestureDebugMode;
 #endif //CONFIG_ENABLE_GESTURE_DEBUG_MODE
+
+#if 1 
+static struct class  *tp_gesture_class;
+static struct device *tp_gesture_dev;
+static ssize_t gesture_enable_show(struct device *dev, struct device_attribute *attr, char *buf);
+static ssize_t gesture_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size);
+
+// Fixme;
+static DEVICE_ATTR(enable, 4775, gesture_enable_show, gesture_enable_store);
+
+u16 mstar_gesture_enable       =0x00; //0x3fff;// TP_GESTURE_OFF;
+u8 mstar_gesture_id       = 0x00;
+
+static ssize_t gesture_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	return (sprintf(buf, "mstar_gesture_enable = 0x%x! mstar_gesture_id=0x%x\n", mstar_gesture_enable,mstar_gesture_id));
+}
+
+static ssize_t gesture_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
+{
+	int ret       = 0;
+	size_t on_off = simple_strtoul(buf, NULL, 10);
+
+#if 1
+	mstar_gesture_enable=on_off;
+#else
+	switch (on_off)
+	{
+	case 0x00:
+		{
+			mstar_gesture_enable = TP_GESTURE_DISABLE;
+			break;
+		}
+
+	case 0x01:
+		{
+			mstar_gesture_enable = mstar_gesture_enable;
+			break;
+		}
+
+	default:
+		return -EINVAL;
+	}
+#endif
+	return size;
+}
+
+#endif
+
 
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
 
@@ -320,6 +371,9 @@ void MsDrvInterfaceTouchDeviceSuspend(struct early_suspend *pSuspend)
 #endif //CONFIG_ENABLE_PROXIMITY_DETECTION
 
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+	if(mstar_gesture_enable !=0) 
+	{
+		printk("***enable mstar gesture!!***\n");
 #ifdef CONFIG_ENABLE_HOTKNOT
     if (g_HotKnotState != HOTKNOT_BEFORE_TRANS_STATE && g_HotKnotState != HOTKNOT_TRANS_STATE && g_HotKnotState != HOTKNOT_AFTER_TRANS_STATE)
 #endif //CONFIG_ENABLE_HOTKNOT
@@ -327,7 +381,11 @@ void MsDrvInterfaceTouchDeviceSuspend(struct early_suspend *pSuspend)
         if (g_GestureWakeupMode[0] != 0x00000000 || g_GestureWakeupMode[1] != 0x00000000)
         {
             DrvIcFwLyrOpenGestureWakeup(&g_GestureWakeupMode[0]);
+				enable_irq_wake(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT));
+				irq_set_irq_type(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT), IRQF_TRIGGER_HIGH | IRQF_NO_SUSPEND);
+				enable_irq(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT));
             return;
+			}
         }
     }
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
@@ -404,6 +462,8 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
 #endif //CONFIG_ENABLE_PROXIMITY_DETECTION
 
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+	if(mstar_gesture_enable !=0) 
+	{
 #ifdef CONFIG_ENABLE_HOTKNOT
     if (g_HotKnotState != HOTKNOT_BEFORE_TRANS_STATE && g_HotKnotState != HOTKNOT_TRANS_STATE && g_HotKnotState != HOTKNOT_AFTER_TRANS_STATE)
 #endif //CONFIG_ENABLE_HOTKNOT
@@ -430,6 +490,9 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
         DrvPlatformLyrEnableFingerTouchReport();     
     }
 #endif //CONFIG_ENABLE_HOTKNOT
+		disable_irq_wake(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT));
+		irq_set_irq_type(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT),IRQF_TRIGGER_RISING);
+	}
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
     
 #ifdef CONFIG_ENABLE_HOTKNOT
@@ -479,9 +542,9 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
         DrvIcFwLyrRestoreFirmwareModeToLogDataMode(); // Mark this function call for avoiding device driver may spend longer time to resume from suspend state.
     } //IS_FIRMWARE_DATA_LOG_ENABLED
 
-#ifndef CONFIG_ENABLE_GESTURE_WAKEUP
+	//#ifndef CONFIG_ENABLE_GESTURE_WAKEUP  /*关闭手势，TP唤醒无法使用*/
     DrvPlatformLyrEnableFingerTouchReport(); 
-#endif //CONFIG_ENABLE_GESTURE_WAKEUP
+	//#endif //CONFIG_ENABLE_GESTURE_WAKEUP
 
 #ifdef CONFIG_ENABLE_ESD_PROTECTION
     g_IsEnableEsdCheck = 1;
@@ -517,6 +580,28 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
 
     DrvPlatformLyrInputDeviceInitialize(pClient); 
     
+#ifdef CONFIG_ENABLE_GESTURE_WAKEUP 
+	tp_gesture_class = class_create(THIS_MODULE, "ctp_class");
+	if (IS_ERR(tp_gesture_class))
+	{
+		pr_err("Failed to create class(gesture)!\n");
+		goto exit_fail_create_gesture_class;
+	}
+
+	tp_gesture_dev = device_create(tp_gesture_class, NULL, 0, NULL, "ctp_dev");
+	if (IS_ERR(tp_gesture_dev))
+	{
+		pr_err("Failed to create device(gesture)!\n");
+		goto exit_fail_create_gesture_device;
+	}
+
+	if (device_create_file(tp_gesture_dev, &dev_attr_enable) < 0)
+	{
+		pr_err("Failed to create file(gesture_store)!\n");
+		goto exit_fail_create_gesture_device_file;
+	}
+#endif 	
+
 #ifdef CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
 #ifdef CONFIG_ENABLE_DMA_IIC
     DmaAlloc(); // DmaAlloc() shall be called after DrvPlatformLyrInputDeviceInitialize()
@@ -540,6 +625,21 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
     DBG(&g_I2cClient->dev, "*** MStar touch driver registered ***\n");
     
     return nRetVal;
+#ifdef CONFIG_ENABLE_GESTURE_WAKEUP 
+exit_fail_create_gesture_device_file:
+	device_remove_file(tp_gesture_dev, &dev_attr_enable);
+
+exit_fail_create_gesture_device:
+	device_destroy(tp_gesture_class, tp_gesture_dev);
+	tp_gesture_dev = NULL;
+
+exit_fail_create_gesture_class:
+	class_destroy(tp_gesture_class);
+	tp_gesture_class = NULL;
+
+	return -1;	
+#endif 
+
 }
 
 /* remove function is triggered when the input device is removed from input sub-system */

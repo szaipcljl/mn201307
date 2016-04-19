@@ -94,6 +94,25 @@ extern u8 g_FwSupportSegment;
 #ifdef CONFIG_ENABLE_GESTURE_DEBUG_MODE
 extern struct kobject *g_GestureKObj;
 #endif //CONFIG_ENABLE_GESTURE_DEBUG_MODE
+extern u16 mstar_gesture_enable;
+extern u8 mstar_gesture_id;
+enum {
+	TP_GESTURE_OFF = 0x00,
+	TP_GESTURE_DOBULECLICK = 0x01,
+	TP_GESTURE_UP=0x02,
+	TP_GESTURE_C=0x04,
+	TP_GESTURE_O=0x08,
+	TP_GESTURE_E=0x10,
+	TP_GESTURE_V=0x20,
+	TP_GESTURE_M=0x40,
+	TP_GESTURE_W=0x80,
+	TP_GESTURE_S=0x100,
+	TP_GESTURE_Z=0x200,
+	TP_GESTURE_DOWN=0x400,
+	TP_GESTURE_LEFT=0x800,
+	TP_GESTURE_RIGHT=0x1000,
+	TP_GESTURE_v=0x2000,
+};
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
 
 #ifdef CONFIG_ENABLE_COUNT_REPORT_RATE
@@ -758,10 +777,13 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
         if (bIsCorrectFormat) 
         {
             DBG(&g_I2cClient->dev, "nWakeupMode = 0x%x\n", nWakeupMode);
+			mstar_gesture_id=nWakeupMode;
 
             switch (nWakeupMode)
             {
                 case 0x58:
+				if((mstar_gesture_enable & TP_GESTURE_DOBULECLICK)==TP_GESTURE_DOBULECLICK)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_DOUBLE_CLICK_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by DOUBLE_CLICK gesture wakeup.\n");
@@ -770,150 +792,185 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
                     input_sync(g_InputDevice);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x60:
-                    _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_UP_DIRECT_FLAG;
-                    
+				if((mstar_gesture_enable & TP_GESTURE_UP)==TP_GESTURE_UP)
+				{					
                     DBG(&g_I2cClient->dev, "Light up screen by UP_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_UP, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_SCROLLLOCK, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_UP, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_SCROLLLOCK, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x61:
+				if((mstar_gesture_enable & TP_GESTURE_DOWN)==TP_GESTURE_DOWN)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_DOWN_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by DOWN_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_DOWN, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F11, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_DOWN, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F11, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x62:
+				if((mstar_gesture_enable & TP_GESTURE_LEFT)==TP_GESTURE_LEFT)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_LEFT_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by LEFT_DIRECT gesture wakeup.\n");
 
 //                  input_report_key(g_InputDevice, KEY_LEFT, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F9, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_LEFT, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F9, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x63:
+				if((mstar_gesture_enable & TP_GESTURE_RIGHT)==TP_GESTURE_RIGHT)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RIGHT_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by RIGHT_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_RIGHT, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F10, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_RIGHT, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F10, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x64:
+				if((mstar_gesture_enable & TP_GESTURE_M)==TP_GESTURE_M)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_m_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by m_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_M, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F3, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_M, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F3, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x65:
+				if((mstar_gesture_enable & TP_GESTURE_W)==TP_GESTURE_W)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_W_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by W_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_W, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F2, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_W, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F2, 0);
                     input_sync(g_InputDevice);
+				}
                     break;		
                 case 0x66:
+				if((mstar_gesture_enable & TP_GESTURE_C)==TP_GESTURE_C)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_C_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by C_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_C, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F5, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_C, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F5, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x67:
+				if((mstar_gesture_enable & TP_GESTURE_E)==TP_GESTURE_E)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_e_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by e_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_E, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F4, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_E, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F4, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x68:
+				if((mstar_gesture_enable & TP_GESTURE_V)==TP_GESTURE_V)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_V_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by V_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_V, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F7, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_V, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F7, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x69:
+				if((mstar_gesture_enable & TP_GESTURE_O)==TP_GESTURE_O)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_O_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by O_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_O, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F1, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_O, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F1, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x6A:
+				if((mstar_gesture_enable & TP_GESTURE_S)==TP_GESTURE_S)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_S_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by S_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_S, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F6, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_S, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F6, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x6B:
+				if((mstar_gesture_enable & TP_GESTURE_Z)==TP_GESTURE_Z)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_Z_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by Z_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_Z, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+					input_report_key(g_InputDevice, KEY_F8, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_Z, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+					input_report_key(g_InputDevice, KEY_F8, 0);
                     input_sync(g_InputDevice);
+				}
                     break;
                 case 0x6C:
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RESERVE1_FLAG;
@@ -2374,10 +2431,13 @@ static s32 _DrvFwCtrlMutualParsePacket(u8 *pPacket, u16 nLength, MutualTouchInfo
         if (bIsCorrectFormat)
         {
             DBG(&g_I2cClient->dev, "nWakeupMode = 0x%x\n", nWakeupMode);
+			mstar_gesture_id=nWakeupMode;
 
             switch (nWakeupMode)
             {
                 case 0x58:
+				if((mstar_gesture_enable & TP_GESTURE_DOBULECLICK)==TP_GESTURE_DOBULECLICK)
+				{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_DOUBLE_CLICK_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by DOUBLE_CLICK gesture wakeup.\n");
@@ -2386,150 +2446,185 @@ static s32 _DrvFwCtrlMutualParsePacket(u8 *pPacket, u16 nLength, MutualTouchInfo
                     input_sync(g_InputDevice);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+		}
                     break;		
                 case 0x60:
-                    _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_UP_DIRECT_FLAG;
-                    
+					if((mstar_gesture_enable & TP_GESTURE_UP)==TP_GESTURE_UP)
+					{					
                     DBG(&g_I2cClient->dev, "Light up screen by UP_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_UP, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_SCROLLLOCK, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_UP, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_SCROLLLOCK, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x61:
+					if((mstar_gesture_enable & TP_GESTURE_DOWN)==TP_GESTURE_DOWN)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_DOWN_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by DOWN_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_DOWN, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F11, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_DOWN, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F11, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x62:
+					if((mstar_gesture_enable & TP_GESTURE_LEFT)==TP_GESTURE_LEFT)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_LEFT_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by LEFT_DIRECT gesture wakeup.\n");
 
 //                  input_report_key(g_InputDevice, KEY_LEFT, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F9, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_LEFT, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F9, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x63:
+					if((mstar_gesture_enable & TP_GESTURE_RIGHT)==TP_GESTURE_RIGHT)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RIGHT_DIRECT_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by RIGHT_DIRECT gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_RIGHT, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F10, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_RIGHT, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F10, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x64:
+					if((mstar_gesture_enable & TP_GESTURE_M)==TP_GESTURE_M)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_m_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by m_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_M, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F3, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_M, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F3, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x65:
+					if((mstar_gesture_enable & TP_GESTURE_W)==TP_GESTURE_W)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_W_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by W_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_W, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F2, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_W, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F2, 0);
                     input_sync(g_InputDevice);
+					}
                     break;		
                 case 0x66:
+					if((mstar_gesture_enable & TP_GESTURE_C)==TP_GESTURE_C)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_C_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by C_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_C, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F5, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_C, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F5, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x67:
+					if((mstar_gesture_enable & TP_GESTURE_E)==TP_GESTURE_E)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_e_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by e_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_E, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F4, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_E, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F4, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x68:
+					if((mstar_gesture_enable & TP_GESTURE_V)==TP_GESTURE_V)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_V_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by V_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_V, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F7, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_V, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F7, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x69:
+					if((mstar_gesture_enable & TP_GESTURE_O)==TP_GESTURE_O)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_O_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by O_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_O, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F1, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_O, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F1, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x6A:
+					if((mstar_gesture_enable & TP_GESTURE_S)==TP_GESTURE_S)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_S_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by S_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_S, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F6, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_S, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F6, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x6B:
+					if((mstar_gesture_enable & TP_GESTURE_Z)==TP_GESTURE_Z)
+					{
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_Z_CHARACTER_FLAG;
 
                     DBG(&g_I2cClient->dev, "Light up screen by Z_CHARACTER gesture wakeup.\n");
 
 //                    input_report_key(g_InputDevice, KEY_Z, 1);
-                    input_report_key(g_InputDevice, KEY_POWER, 1);
+						input_report_key(g_InputDevice, KEY_F8, 1);
                     input_sync(g_InputDevice);
 //                    input_report_key(g_InputDevice, KEY_Z, 0);
-                    input_report_key(g_InputDevice, KEY_POWER, 0);
+						input_report_key(g_InputDevice, KEY_F8, 0);
                     input_sync(g_InputDevice);
+					}
                     break;
                 case 0x6C:
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RESERVE1_FLAG;
