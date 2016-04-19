@@ -131,7 +131,6 @@
  * If this compile option is not defined, the function for virtual key handling will be disabled.
  * By default, this compile option is enabled.
  */
-#define VIRTUAL_KEYS	1
 #define CONFIG_TP_HAVE_KEY
 
 /*
@@ -139,7 +138,7 @@
  * Since specific MTK BB chip report virtual key touch by using coordinate instead of key code, the below compile option is used to enable the code handling for reporting key with coordinate.
  * By default, this compile option is disabled.
  */
-//#define CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE
+#define CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE //about: TP PROXIMITY and TP hardware information show
 
 /*
  * Note.
@@ -163,7 +162,9 @@
  * The below compile option is used to enable gesture wakeup.
  * By default, this compile option is disabled.
  */
-//#define CONFIG_ENABLE_GESTURE_WAKEUP
+#ifdef CONFIG_GST_TP_GESTURE_SUPPORT  
+#define CONFIG_ENABLE_GESTURE_WAKEUP
+#endif 
 
 // ------------------- #ifdef CONFIG_ENABLE_GESTURE_WAKEUP ------------------- //
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
@@ -249,7 +250,7 @@
  * Be careful, MSG22XX only support storing update firmware bin file in an one dimensional array format, it does not support two dimensional array format.
  * By default, this compile option is enabled.
  */
-#define CONFIG_UPDATE_FIRMWARE_BY_TWO_DIMENSIONAL_ARRAY 
+//#define CONFIG_UPDATE_FIRMWARE_BY_TWO_DIMENSIONAL_ARRAY 
 
 #endif //CONFIG_UPDATE_FIRMWARE_BY_SW_ID
 // ------------------- #endif CONFIG_UPDATE_FIRMWARE_BY_SW_ID ------------------- //
@@ -291,7 +292,7 @@
  * The below compile option is used to enable report rate calculation.
  * By default, this compile option is enabled.
  */
-#define CONFIG_ENABLE_COUNT_REPORT_RATE
+//#define CONFIG_ENABLE_COUNT_REPORT_RATE
 
 
 /*
@@ -597,7 +598,7 @@ extern u8 TOUCH_DRIVER_DEBUG_LOG_LEVEL;
 	                                               printk(fmt, ##arg);\
                                         } while (0)
 
-#define DBG(dev, fmt, arg...) DEBUG_LEVEL(1, dev, "MStar"fmt, ##arg) 
+#define DBG(dev, fmt, arg...) DEBUG_LEVEL(1, dev, fmt, ##arg) 
 /*
 #define DEBUG_LEVEL(level, dev, fmt, arg...) do {\
 	                                           if (level <= TOUCH_DRIVER_DEBUG_LOG_LEVEL)\

@@ -1,0 +1,13 @@
+/*480x854*/
+msg2xxx_ts@0x26{
+	compatible = "mstar,msg2xxx_ts";
+	reg = <0x26>;
+	gpios = <&d_gpio_gpio 71 0
+		&d_gpio_gpio 72 0>;
+	vdd_name = "vdd28";
+	virtualkeys = <256 1068 64 64
+		128 1068 64 64
+		192 1068 64 64>;
+	TP_MAX_X = <480>;
+	TP_MAX_Y = <854>;
+};

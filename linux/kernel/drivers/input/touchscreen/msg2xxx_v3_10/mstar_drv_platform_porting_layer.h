@@ -39,7 +39,7 @@
 //#include <mach/gpio.h>
 #include <soc/sprd/board.h>
 #include <soc/sprd/gpio.h>
-#include <soc/sprd/i2c-sprd.h>
+//#include <soc/sprd/i2c-sprd.h>
 
 #include <linux/of_gpio.h>
 

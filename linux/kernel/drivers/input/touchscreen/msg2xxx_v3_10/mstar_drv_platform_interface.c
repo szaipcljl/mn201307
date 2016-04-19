@@ -53,6 +53,13 @@ extern u8 g_GestureDebugMode;
 
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
 
+#ifdef TP_PROXIMITY_SENSOR 
+static u8 is_tp_suspand=0;
+extern int PROXIMITY_SWITCH;
+
+extern int Mstar_TP_face_mode_switch(int on);
+#endif //TP_PROXIMITY_SENSOR 
+
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
 extern u8 g_EnableTpProximity;
 #endif //CONFIG_ENABLE_PROXIMITY_DETECTION
@@ -83,15 +90,6 @@ extern struct workqueue_struct *g_EsdCheckWorkqueue;
 
 extern u8 IS_FIRMWARE_DATA_LOG_ENABLED;
 
-#ifdef TP_PROXIMITY_SENSOR 
-extern int PROXIMITY_SWITCH;
-extern int Mstar_TP_face_mode_switch(int on);
-#endif
-
-#if VIRTUAL_KEYS 
-extern void virtual_keys_init(void);
-#endif
-
 
 /*=============================================================*/
 // GLOBAL VARIABLE DEFINITION
@@ -109,7 +107,7 @@ static u8 _gAMStartCmd[4] = {HOTKNOT_SEND, ADAPTIVEMOD_BEGIN, 0, 0};
 /*=============================================================*/
 // GLOBAL FUNCTION DEFINITION
 /*=============================================================*/
-static u8 is_tp_suspand=0;
+
 #ifdef CONFIG_ENABLE_NOTIFIER_FB
 int MsDrvInterfaceTouchDeviceFbNotifierCallback(struct notifier_block *pSelf, unsigned long nEvent, void *pData)
 {
@@ -357,6 +355,9 @@ void MsDrvInterfaceTouchDeviceSuspend(struct early_suspend *pSuspend)
 #endif //CONFIG_ENABLE_REGULATOR_POWER_ON               
 #endif //CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
     }    
+#ifdef TP_PROXIMITY_SENSOR 
+	is_tp_suspand=1;
+#endif
 }
 
 #ifdef CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
@@ -382,8 +383,8 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
     }
 #endif
 
-    is_tp_suspand=0;
 #ifdef TP_PROXIMITY_SENSOR 
+	is_tp_suspand=0;
     printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
     if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) )
     {
@@ -506,10 +507,6 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
 #endif //CONFIG_ENABLE_REGULATOR_POWER_ON
 
     DrvPlatformLyrTouchDevicePowerOn();
-
-#if VIRTUAL_KEYS 
-    virtual_keys_init();
-#endif
 
     nRetVal = DrvMainTouchDeviceInitialize();
     if (nRetVal == -ENODEV)

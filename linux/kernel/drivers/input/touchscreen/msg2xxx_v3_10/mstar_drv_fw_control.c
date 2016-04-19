@@ -129,10 +129,8 @@ static u8 _gFwDataBuf[MSG28XX_FIRMWARE_WHOLE_SIZE*1024] = {0}; // for update fir
 #endif //CONFIG_ENABLE_CHIP_TYPE_MSG21XXA
 
 #ifdef CONFIG_ENABLE_CHIP_TYPE_MSG22XX
-/*#include "msg22xx_xxxx_update_bin.h" // for MSG22xx*/
-/*#include "msg22xx_yyyy_update_bin.h"*/
-/*#include "msg22xx_v1_1_update_bin.h"*/
-#include "msg22xx_v1_2_update_bin.h"
+#include "msg22xx_xxxx_update_bin.h" // for MSG22xx
+#include "msg22xx_yyyy_update_bin.h"
 #endif //CONFIG_ENABLE_CHIP_TYPE_MSG22XX
 
 #ifdef CONFIG_ENABLE_CHIP_TYPE_MSG26XXM
@@ -3393,6 +3391,24 @@ static s32 _DrvFwCtrlMutualParsePacket(u8 *pPacket, u16 nLength, MutualTouchInfo
         if (nButton != 0xFF)
         {
             DBG(&g_I2cClient->dev, "button = %x\n", nButton);
+#ifdef TP_PROXIMITY_SENSOR 
+				if (PROXIMITY_SWITCH == 1) 
+				{
+					printk("PROXIMITY_SWITCH = %d, pPacket[nLength-2]= %x \n",PROXIMITY_SWITCH, pPacket[nLength-2]);
+					if(0x80 == pPacket[nLength-2])
+					{
+						// ps_state = 0;
+						input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
+						input_sync(g_InputDevice);
+						printk("**************tp is near*****************\n");
+					}else if (0x40 == pPacket[nLength-2]){
+						// ps_state = 1;
+						input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
+						input_sync(g_InputDevice);
+						printk("**************tp is far******************\n");
+					}
+				}
+#endif
 
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM) || defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
@@ -6797,8 +6813,8 @@ void _DrvFwCtrlMsg22xxCheckFirmwareUpdateBySwId(void)
         }
         else if (eSwId == MSG22XX_SW_ID_YYYY)
         {
-            /*nUpdateBinMajor = msg22xx_yyyy_update_bin[0xBFF5]<<8 | msg22xx_yyyy_update_bin[0xBFF4];*/
-            /*nUpdateBinMinor = msg22xx_yyyy_update_bin[0xBFF7]<<8 | msg22xx_yyyy_update_bin[0xBFF6];*/
+				nUpdateBinMajor =msg22xx_yyyy_update_bin[0xBFF5]<<8 | msg22xx_yyyy_update_bin[0xBFF4];
+				nUpdateBinMinor =msg22xx_yyyy_update_bin[0xBFF7]<<8 | msg22xx_yyyy_update_bin[0xBFF6];
         }
         else //eSwId == MSG22XX_SW_ID_UNDEFINED
         {
@@ -6835,11 +6851,11 @@ void _DrvFwCtrlMsg22xxCheckFirmwareUpdateBySwId(void)
                 {
                     if (i < MSG22XX_FIRMWARE_MAIN_BLOCK_SIZE) // i < 48
                     {
-						/*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);*/
+							_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);
                     }
                     else // i == 48
                     {
-                        /*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);*/
+							_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);
                     }
                 }
             }
@@ -6898,11 +6914,11 @@ void _DrvFwCtrlMsg22xxCheckFirmwareUpdateBySwId(void)
             {
                 if (i < MSG22XX_FIRMWARE_MAIN_BLOCK_SIZE) // i < 48
                 {
-                    /*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);*/
+						_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);
                 }
                 else // i == 48
                 {
-                    /*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);*/
+						_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);
                 }
             }
         }
@@ -6955,11 +6971,11 @@ void _DrvFwCtrlMsg22xxCheckFirmwareUpdateBySwId(void)
             {
                 if (i < MSG22XX_FIRMWARE_MAIN_BLOCK_SIZE) // i < 48
                 {
-					/*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);*/
+						_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 1024);
                 }
                 else // i == 48
                 {
-                    /*_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);*/
+						_DrvFwCtrlStoreFirmwareData(&(msg22xx_yyyy_update_bin[i*1024]), 512);
                 }
             }
         }
@@ -11946,7 +11962,7 @@ void _DrvFwCtrlSelfHandleFingerTouch(void) // for MSG21xxA/MSG22xx
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
     if (g_GestureWakeupFlag == 1)
     {
-        u32 i = 0
+		u32 i = 0;
         
         while (i < 5)
         {

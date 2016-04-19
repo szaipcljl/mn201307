@@ -75,14 +75,6 @@ extern struct of_device_id touch_dt_match_table[];
 #endif //CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
 #endif //CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
 
-#ifdef TP_PROXIMITY_SENSOR 
-extern int PROXIMITY_SWITCH;
-extern int PROXIMITY_STATE;
-
-extern struct spinlock proximity_switch_lock;
-extern struct spinlock proximity_state_lock;
-#endif
-
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM) || defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
 #ifdef CONFIG_ENABLE_REGULATOR_POWER_ON
 extern struct regulator *g_ReguVdd;
@@ -565,6 +557,192 @@ static int _DrvPlatformLyrProximityInputDeviceUnInit(void)
 #endif //CONFIG_ENABLE_PROXIMITY_DETECTION
 
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM) || defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
+#if 1 
+extern u8 g_ChipType;
+extern u8 *_gFwVersion;
+extern void DrvIcFwLyrGetCustomerFirmwareVersion(u16 *pMajor, u16 *pMinor, u8 **ppVersion);
+
+static ssize_t tp_information_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+	char *p_chip_type=NULL;
+	u16 nMajor = 0, nMinor = 0;
+
+	DrvIcFwLyrGetCustomerFirmwareVersion(&nMajor, &nMinor, &_gFwVersion);	
+	if(g_ChipType==CHIP_TYPE_MSG21XX)
+	{
+		p_chip_type="MSG21XX";
+	}
+	else if(g_ChipType==CHIP_TYPE_MSG21XXA)
+	{
+		p_chip_type="MSG21XXA";
+	}
+	else if(g_ChipType==CHIP_TYPE_MSG26XXM)
+	{
+		p_chip_type="MSG26XXM";
+	}
+	else if(g_ChipType==CHIP_TYPE_MSG22XX)
+	{
+		p_chip_type="MSG22XX";
+	}
+	else if(g_ChipType==CHIP_TYPE_MSG28XX)
+	{
+		p_chip_type="MSG28XX";
+	}	
+	else
+	{
+		p_chip_type="NOT SUPPORT";
+	}
+        return sprintf(buf,"IC: %s\nFirmware version:%s\n",p_chip_type,_gFwVersion);
+}
+
+
+static struct kobj_attribute tp_information = {
+    .attr = {
+        .name = "tp_information",
+        .mode = S_IRUGO,
+    },
+    .show  = &tp_information_show,
+    .store = NULL,
+};
+#endif
+#ifdef TP_PROXIMITY_SENSOR 
+int PROXIMITY_SWITCH;
+int PROXIMITY_STATE;
+
+struct spinlock proximity_switch_lock;
+struct spinlock proximity_state_lock;
+extern u32 SLAVE_I2C_ID_DWI2C;
+
+static int TP_face_get_mode(void)
+{
+    DBG(&g_I2cClient->dev,">>>> PROXIMITY_SWITCH is %d <<<<\n", PROXIMITY_SWITCH);
+
+    return PROXIMITY_SWITCH;
+}
+
+static int TP_face_mode_state(void)
+{
+    DBG(&g_I2cClient->dev,">>>> PROXIMITY_STATE  is %d <<<<\n", PROXIMITY_STATE);
+
+    return PROXIMITY_STATE;
+}
+
+/*static*/ int Mstar_TP_face_mode_switch(int on)
+{
+	u8 szDbBusTxData[4] = {0};
+	s32 rc;
+
+	DBG(&g_I2cClient->dev,&g_I2cClient->dev, "*** %s() ***\n", __func__);
+
+	szDbBusTxData[0] = 0x52;
+	szDbBusTxData[1] = 0x00;
+
+	if (g_ChipType == CHIP_TYPE_MSG21XX)
+	{
+		szDbBusTxData[2] = 0x62; 
+	}
+	else if (g_ChipType == CHIP_TYPE_MSG21XXA || g_ChipType == CHIP_TYPE_MSG22XX)
+	{
+		szDbBusTxData[2] = 0x4a; 
+	}
+	else if (g_ChipType == CHIP_TYPE_MSG26XXM || g_ChipType == CHIP_TYPE_MSG28XX)
+	{
+		szDbBusTxData[2] = 0x47; 
+	}
+	else
+	{
+		DBG(&g_I2cClient->dev, "*** Un-recognized chip type = 0x%x ***\n", g_ChipType);
+		return -1;
+	}
+
+
+	DBG("***%s(), begin, on is 0x%.2X, PROXIMITY_SWITCH is 0x%.2X, PROXIMITY_STATE is %d <<<<\n", __func__, on, PROXIMITY_SWITCH, PROXIMITY_STATE);
+
+	spin_lock(&proximity_switch_lock);
+
+	if ((1 == on) && (0 == PROXIMITY_SWITCH))
+	{
+		PROXIMITY_SWITCH = 1;
+
+
+		szDbBusTxData[3] = 0xA0;
+
+
+		goto OUT;
+	}
+	else if ((0 == on) && (1 == PROXIMITY_SWITCH))
+	{
+		PROXIMITY_SWITCH = 0;
+		PROXIMITY_STATE  = 0;
+
+
+		szDbBusTxData[3] = 0xA1; // 0x01?
+
+		goto OUT;
+	}
+	else
+	{
+		spin_unlock(&proximity_switch_lock);
+
+		DBG(&g_I2cClient->dev,"***%s(), do nothing, on is %d, PROXIMITY_SWITCH is %d, PROXIMITY_STATE is %d <<<<\n", __func__, on, PROXIMITY_SWITCH, PROXIMITY_STATE);
+
+		return -EINVAL;
+	}
+
+OUT:
+	spin_unlock(&proximity_switch_lock);
+
+	DBG(&g_I2cClient->dev,"*** %s(), end, on is %d, PROXIMITY_SWITCH is %d, PROXIMITY_STATE is %d <<<<\n", __FUNCTION__, on, PROXIMITY_SWITCH, PROXIMITY_STATE);
+
+	//return ((this_client) ? (i2c_master_send(this_client, &data[0], 4)) : (-ENODEV));
+	return ((g_I2cClient) ? (IicWriteData(SLAVE_I2C_ID_DWI2C, &szDbBusTxData[0], 4)) : (-ENODEV));
+}
+
+static ssize_t tp_face_mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+    int proximity_switch, proximity_state;
+
+    proximity_switch = TP_face_get_mode();
+    proximity_state  = TP_face_mode_state();
+
+	return sprintf(buf,
+		__stringify(%d) ":" __stringify(%d) "\n", proximity_switch, proximity_state);
+}
+
+static ssize_t tp_face_mode_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
+{
+    size_t on_off = simple_strtoul(buf, NULL, 10);
+
+    switch (on_off)
+    {
+        case 0:
+        {
+            Mstar_TP_face_mode_switch(0); // Disable proximity;
+            break;
+        }
+        case 1:
+        {			
+            Mstar_TP_face_mode_switch(1); // Enable proximity;
+            break;
+        }
+
+        default:
+            return -EINVAL;
+    }
+
+	return count;
+}
+
+static struct kobj_attribute tp_face_mode_attr = {
+    .attr = {
+        .name = "facemode",     // Path: /sys/board_properties/facemode;
+        .mode = S_IRUGO | S_IWUGO,
+    },
+    .show  = &tp_face_mode_show, // For read the proximity state by upper level;
+    .store = &tp_face_mode_store, // For open/close the proximity_switch switch by upper level;
+};
+#endif //TP_PROXIMITY_SENSOR  
+
 
 #ifdef CONFIG_TP_HAVE_KEY
 #ifdef CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE
@@ -589,7 +767,11 @@ static struct kobj_attribute virtual_keys_attr = {
 };
 
 static struct attribute *properties_attrs[] = {
+    &tp_information.attr,	
     &virtual_keys_attr.attr,
+#ifdef TP_PROXIMITY_SENSOR 
+    &tp_face_mode_attr.attr,
+#endif        
     NULL
 };
 
@@ -889,11 +1071,11 @@ static void _DrvPlatformLyrFingerTouchDoWork(struct work_struct *pWork)
 {
     unsigned long nIrqFlag;
 
-    /*DBG(&g_I2cClient->dev, "*** %s() ***\n", __func__);*/
+    DBG(&g_I2cClient->dev, "*** %s() ***\n", __func__);
 
     DrvIcFwLyrHandleFingerTouch(NULL, 0);
 
-    //DBG(&g_I2cClient->dev, "*** %s() _gInterruptFlag = %d ***\n", __func__, _gInterruptFlag);  // add for debug
+    DBG(&g_I2cClient->dev, "*** %s() _gInterruptFlag = %d ***\n", __func__, _gInterruptFlag);  // add for debug
 
     spin_lock_irqsave(&_gIrqLock, nIrqFlag);
 
@@ -991,12 +1173,14 @@ void DrvPlatformLyrTouchDeviceRegulatorPowerOn(bool nFlag)
         }
         mdelay(20);
 
-        nRetVal = regulator_enable(g_ReguVcc_i2c);
+        /*
+		nRetVal = regulator_enable(g_ReguVcc_i2c);
         if (nRetVal)
         {
             DBG(&g_I2cClient->dev, "regulator_enable(g_ReguVcc_i2c) failed. nRetVal=%d\n", nRetVal); 
         }
         mdelay(20);
+		*/
     }
     else
     {
@@ -1007,12 +1191,14 @@ void DrvPlatformLyrTouchDeviceRegulatorPowerOn(bool nFlag)
         }
         mdelay(20);
 
-        nRetVal = regulator_disable(g_ReguVcc_i2c);
+        /*
+		nRetVal = regulator_disable(g_ReguVcc_i2c);
         if (nRetVal)
         {
             DBG(&g_I2cClient->dev, "regulator_disable(g_ReguVcc_i2c) failed. nRetVal=%d\n", nRetVal); 
         }
         mdelay(20);
+		*/
     }
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM)
 
@@ -1835,8 +2021,8 @@ void DrvPlatformLyrSetIicDataRate(struct i2c_client *pClient, u32 nIicDataRate)
 
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM)
     // TODO : Please FAE colleague to confirm with customer device driver engineer for how to set i2c data rate on SPRD platform
-    sprd_i2c_ctl_chg_clk(pClient->adapter->nr, nIicDataRate); 
-    mdelay(100);
+    //sprd_i2c_ctl_chg_clk(pClient->adapter->nr, nIicDataRate); 
+    //mdelay(100);
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
     // TODO : Please FAE colleague to confirm with customer device driver engineer for how to set i2c data rate on QCOM platform
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM)
