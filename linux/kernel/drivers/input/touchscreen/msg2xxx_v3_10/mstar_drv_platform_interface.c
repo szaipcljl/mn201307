@@ -441,18 +441,6 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
     }
 #endif
 
-#ifdef TP_PROXIMITY_SENSOR 
-	is_tp_suspand=0;
-    printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
-    if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) )
-    {
-         printk("***msg2133a's proximity re-open!\n");
-	Mstar_TP_face_mode_switch(0);
-
-	Mstar_TP_face_mode_switch(1);
-    }
-#endif
-
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
     if (g_EnableTpProximity == 1)
     {
@@ -550,6 +538,20 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
     g_IsEnableEsdCheck = 1;
     queue_delayed_work(g_EsdCheckWorkqueue, &g_EsdCheckWork, ESD_PROTECT_CHECK_PERIOD);
 #endif //CONFIG_ENABLE_ESD_PROTECTION
+
+#ifdef TP_PROXIMITY_SENSOR 
+	is_tp_suspand=0;
+
+    printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
+    if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) )
+    {
+         printk("***msg2133a's proximity re-open!\n");
+	Mstar_TP_face_mode_switch(0);
+
+	Mstar_TP_face_mode_switch(1);
+    }
+#endif
+
 }
 
 #endif //CONFIG_ENABLE_NOTIFIER_FB
