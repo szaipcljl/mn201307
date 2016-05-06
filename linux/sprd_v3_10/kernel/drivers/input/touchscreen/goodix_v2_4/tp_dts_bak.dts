@@ -1,0 +1,13 @@
+/*480*854*/
+goodix_ts@5d{
+	compatible = "goodix,goodix_ts";
+	reg = <0x5d>;
+	gpios = <&d_gpio_gpio 156 0
+		&d_gpio_gpio 144 0>;
+	vdd_name = "vdd18";
+	virtualkeys = <80 850 60 60
+		240 850 60 60
+		400 850 60 60>;
+	TP_MAX_X = <480>;
+	TP_MAX_Y = <854>;
+};
