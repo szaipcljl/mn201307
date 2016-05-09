@@ -10519,7 +10519,8 @@ void DrvFwCtrlGetCustomerFirmwareVersion(u16 *pMajor, u16 *pMinor, u8 **ppVersio
         u16 nRegData1, nRegData2;
 
         mutex_lock(&g_Mutex);
-
+		DrvPlatformLyrFingerTouchReleased(0,0,0);// add 0504
+		input_sync(g_InputDevice);
         DrvPlatformLyrTouchDeviceResetHw();
     
         DbBusEnterSerialDebugMode();
@@ -10614,10 +10615,12 @@ void DrvFwCtrlGetCustomerFirmwareVersion(u16 *pMajor, u16 *pMinor, u8 **ppVersio
         szDbBusTxData[0] = 0x03;
 
         mutex_lock(&g_Mutex);
-    
+		DrvPlatformLyrFingerTouchReleased(0,0,0);// add 0427
+		input_sync(g_InputDevice);
         DrvPlatformLyrTouchDeviceResetHw();
 
         IicWriteData(SLAVE_I2C_ID_DWI2C, &szDbBusTxData[0], 1);
+		mdelay(10);//i2c read error , add 0427
         IicReadData(SLAVE_I2C_ID_DWI2C, &szDbBusRxData[0], 4);
 
         mutex_unlock(&g_Mutex);
@@ -10653,7 +10656,8 @@ void DrvFwCtrlGetPlatformFirmwareVersion(u8 **ppVersion)
         u8 szDbBusRxData[12] = {0};
 
         mutex_lock(&g_Mutex);
-
+    	DrvPlatformLyrFingerTouchReleased(0,0,0);// add 0504
+		input_sync(g_InputDevice);
         DrvPlatformLyrTouchDeviceResetHw();
     
         DbBusEnterSerialDebugMode();
@@ -10815,7 +10819,8 @@ void DrvFwCtrlGetPlatformFirmwareVersion(u8 **ppVersion)
         szDbBusTxData[0] = 0x04;
 
         mutex_lock(&g_Mutex);
-    
+    	DrvPlatformLyrFingerTouchReleased(0,0,0);// add 0427
+		input_sync(g_InputDevice);
         DrvPlatformLyrTouchDeviceResetHw();
 
 #ifdef CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
@@ -10825,6 +10830,7 @@ void DrvFwCtrlGetPlatformFirmwareVersion(u8 **ppVersion)
 #endif //CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
 
         IicWriteData(SLAVE_I2C_ID_DWI2C, &szDbBusTxData[0], 1);
+		mdelay(10);// add 0427
         IicReadData(SLAVE_I2C_ID_DWI2C, &szDbBusRxData[0], 10);
 
         mutex_unlock(&g_Mutex);
