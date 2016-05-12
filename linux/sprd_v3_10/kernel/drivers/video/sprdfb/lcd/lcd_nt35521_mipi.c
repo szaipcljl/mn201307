@@ -634,11 +634,21 @@ static int32_t nt35521_check_esd(struct panel_spec *self)
 	}
 }
 
+
+static int32_t nt35521_after_suspend(struct panel_spec *self)
+{
+    // Do nothing;
+
+    return 0;
+
+}
+
 static struct panel_operations lcd_nt35521_mipi_operations = {
 	.panel_init = nt35521_mipi_init,
 	.panel_readid = nt35521_readid,
 	.panel_enter_sleep = nt35521_enter_sleep,
 	.panel_esd_check = nt35521_check_esd,	
+	.panel_after_suspend = nt35521_after_suspend,
 };
 
 static struct timing_rgb lcd_nt35521_mipi_timing = {
@@ -672,6 +682,7 @@ struct panel_spec lcd_nt35521_mipi_spec = {
 	.fps = 60,	
 	.type = LCD_MODE_DSI,
 	.direction = LCD_DIRECT_NORMAL,
+	.suspend_mode = SEND_SLEEP_CMD,
 	.is_clean_lcd = true,
 	.info = {
 		.mipi = &lcd_nt35521_mipi_info
