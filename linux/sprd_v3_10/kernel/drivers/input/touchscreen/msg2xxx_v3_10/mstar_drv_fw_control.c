@@ -148,7 +148,8 @@ static u8 _gFwDataBuf[MSG28XX_FIRMWARE_WHOLE_SIZE*1024] = {0}; // for update fir
 #endif //CONFIG_ENABLE_CHIP_TYPE_MSG21XXA
 
 #ifdef CONFIG_ENABLE_CHIP_TYPE_MSG22XX
-#include "msg22xx_xxxx_update_bin.h" // for MSG22xx
+//#include "msg22xx_xxxx_update_bin.h" // for MSG22xx
+#include "HC050M375_SL01_MSG2238A_V1.03_20160512.h"
 #include "msg22xx_yyyy_update_bin.h"
 #endif //CONFIG_ENABLE_CHIP_TYPE_MSG22XX
 
