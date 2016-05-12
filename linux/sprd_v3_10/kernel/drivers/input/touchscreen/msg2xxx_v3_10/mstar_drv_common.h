@@ -238,7 +238,7 @@
  * If this compile option is not defined, the SW ID mechanism for updating firmware will be disabled.
  * By default, this compile option is disabled.
  */
-//#define CONFIG_UPDATE_FIRMWARE_BY_SW_ID //maning 20160405
+#define CONFIG_UPDATE_FIRMWARE_BY_SW_ID 
 
 // ------------------- #ifdef CONFIG_UPDATE_FIRMWARE_BY_SW_ID ------------------- //
 #ifdef CONFIG_UPDATE_FIRMWARE_BY_SW_ID
