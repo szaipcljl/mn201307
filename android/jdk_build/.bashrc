@@ -101,6 +101,18 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+#  自动切换jdk 版本
+export JRE_HOME=$JAVA_HOME/jre
+export ANDROID_JAVA_HOME=$JAVA_HOME
+
+export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH
+export JAVA_PATH=$JAVA_HOME/bin:$JRE_HOME/bin
+export PATH=$JAVA_PATH:$PATH
+# JAVA_PATH必须放在PATH前面
+
+alias jdk1.7='export JAVA_HOME=/usr/local/bin/jdk1.7.0_65;source ~/.bashrc'
+alias jdk1.6='export JAVA_HOME=/usr/local/bin/jdk1.6.0_45;source ~/.bashrc'
+
 
 # new add for ctags and treminal
 	alias cindex='ctags -I __THROW -I __THROWNL -I __nonnull -R --c-kinds=+p --fields=+iaS --extra=+q'
