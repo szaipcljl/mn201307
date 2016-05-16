@@ -27,17 +27,27 @@
 #define SPRD_FLASH_OFF		0
 
 //#undef GPIO_CAM_FLASH_EN
-#define GPIO_AW3641_FLASH_TORCH_EN    123
-#define GPIO_AW3641_PWM_EN   142
+#define GPIO_AW3641_FLASH_TORCH_EN    123  //FLASH TORCH EN
+#define GPIO_AW3641_PWM_EN   142  //PWM EN
 
 #define AW3641_TORCH_MODE 0
 #define AW3641_FLASH_MODE 1
 #define AW3641_OFF_MODE 3
 
+#if 0
+#define IFLASH_CURRENT  500  // mA
+#define FLASH_ON_CURRENT 13 //300mA  60%
+#define HIGHLIGHT_CURRENT 9 //500mA  100%
+#else
+#define IFLASH_CURRENT  1000  // mA
+#define FLASH_ON_CURRENT 15 //400mA   40%
+#define HIGHLIGHT_CURRENT 9 //500mA   100%
+#endif
+
 static bool is_init = false;
 //extern int sprd_3rdparty_gpio_speaker_pa_onoff;
 //#define sprd_3rdparty_gpio_speaker_pa_onoff 44
-static void aw3641_flash_control(bool enable,u8 flash_mode, u8 waveform_num)
+static void aw3641_flash_control(bool enable,u8 flash_mode,u8 current_level)
 {
 	volatile u16 i,j;
 	int ret;
@@ -64,7 +74,7 @@ static void aw3641_flash_control(bool enable,u8 flash_mode, u8 waveform_num)
 			gpio_set_value(GPIO_AW3641_FLASH_TORCH_EN, 1);
 			/*0~8,OVP time is 220ms;9~16,OVP time is 1.3s*/
 			/*because of platform flash time out more than 0.6s,so we use 1.3s timeout*/
-			for(j=0; j < waveform_num; j++)
+			for(j=0; j < current_level; j++)
 			{
 				gpio_set_value(GPIO_AW3641_PWM_EN, 0);
 				if(j == 0) 
@@ -98,7 +108,7 @@ int sprd_torch_on(void)
 int sprd_flash_on(void)
 {
 	printk("sprd_flash_on \n");
-	aw3641_flash_control(SPRD_FLASH_ON,AW3641_FLASH_MODE, 4+8);
+	aw3641_flash_control(SPRD_FLASH_ON,AW3641_FLASH_MODE,FLASH_ON_CURRENT);// 300mA
 
 	return 0;
 }
@@ -106,7 +116,7 @@ int sprd_flash_on(void)
 int sprd_flash_high_light(void)
 {
 	printk("sprd_flash_high_light \n");
-	aw3641_flash_control(SPRD_FLASH_ON,AW3641_FLASH_MODE, 1+8);
+	aw3641_flash_control(SPRD_FLASH_ON,AW3641_FLASH_MODE,HIGHLIGHT_CURRENT);// 500mA
 
 	return 0;
 }

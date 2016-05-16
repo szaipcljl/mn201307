@@ -32,8 +32,45 @@ extern int sci_efuse_ib_trim_get(unsigned int *p_cal_data);
 unsigned int ib_trim_cal_data = 0;
 static int init_flag = 1;
 
+#define TORCH_ON_CURRENT  20
+#define FLASH_ON_CURRENT  50
+#define HIGHLIGH_CURRENT  200
+
+#define WHTLED_IB_NUMS 4
+#define PER_STEP_CURRENT (0.625)
+#define FIRST_STEP_CURRENT (5)
+#define MAX_CURRENT_PER_WHTLED (45)
+
+unsigned int calculate_steps_for_whtled(unsigned int cur_current)
+{
+	unsigned int cur_step=0;
+	unsigned int current_per_whtled;
+
+	if(cur_current<=WHTLED_IB_NUMS * FIRST_STEP_CURRENT)
+	{
+		cur_step=0;
+	}
+	else if(cur_current >=WHTLED_IB_NUMS * MAX_CURRENT_PER_WHTLED)
+	{
+		cur_step=0x3f;
+	}
+	else
+	{
+		current_per_whtled=cur_current*1000/WHTLED_IB_NUMS;
+		printk("***current_per_whtled=%d\n",current_per_whtled);
+		cur_step = (current_per_whtled - FIRST_STEP_CURRENT*1000)/625;
+	}
+	printk("***cur_step=0x%x\n",cur_step);
+
+	return cur_step;
+}
+
 int sprd_torch_on(void)
 {
+	unsigned int step=0;
+
+	step = calculate_steps_for_whtled(TORCH_ON_CURRENT);
+
 	if (init_flag && sci_efuse_ib_trim_get(&ib_trim_cal_data)) {
 	/*
 		1. set ib_trim_cal_data to WHTLED_CTRL的IB_TRIM（0x400388F0 [15:9]）
@@ -68,7 +105,7 @@ int sprd_torch_on(void)
 
 	printk("sprd_troch_on \n");
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xFFFF);
-	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC000);   //20mA
+	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC000|(step <<1));   //20mA
 	/*ENABLE WHTLED*/
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0x1);
 	return 0;
@@ -76,6 +113,10 @@ int sprd_torch_on(void)
 
 int sprd_flash_on(void)
 {
+	unsigned int step=0;
+
+	step = calculate_steps_for_whtled(FLASH_ON_CURRENT);
+
 	if (init_flag && sci_efuse_ib_trim_get(&ib_trim_cal_data)) {
 	/*
 		1. set ib_trim_cal_data to WHTLED_CTRL的IB_TRIM（0x400388F0 [15:9]）
@@ -110,7 +151,7 @@ int sprd_flash_on(void)
 
 	/*SET LOW LIGHT */
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xFFFF);
-	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC012);   //50mA
+	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC000|(step <<1));   //50mA
 
 	/*ENABLE WHTLED*/
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0x1);
@@ -119,10 +160,14 @@ int sprd_flash_on(void)
 
 int sprd_flash_high_light(void)
 {
+	unsigned int step=0;
+
+	step = calculate_steps_for_whtled(HIGHLIGH_CURRENT);
+
 	printk("parallel sprd_flash_high_light \n");
 	/*SET HIGH LIGHT*/
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xFFFF);
-	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC07e);   //210mA
+	sci_adi_set(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0xC000|(step <<1));
 	/*ENABLE WHTLED*/
 	sci_adi_clr(ANA_CTL_GLB_BASE + SPRD_WHTLED_CTRL_OFST, 0x1);
 	return 0;
