@@ -74,7 +74,7 @@
 #define SHOW_DBG    0
 
 #define ALS_DYN_INTT    0
-#define PS_DYN_K        0
+#define PS_DYN_K        0  //1: open dynamic 动态校验
 #define PS_DYN_K_STR   0
 #define HS_ENABLE       0
 #define PS_GES          0
@@ -415,6 +415,8 @@ static void epl_sensor_report_lux(int repott_lux)
     LOG_INFO("-------------------  ALS raw = %d, lux = %d\n\n",epl_sensor.als.data.channels[1],  repott_lux);
 #if SPREAD || MARVELL
     input_report_abs(epld->ps_input_dev, ABS_MISC, repott_lux);
+	//input_report_abs(epld->ps_input_dev, ABS_MISC, epl_sensor.ps.data.data);  //调试距离感应，用这一行替换上一行
+	//report proximity sensor data,可在显示光感值处观察距离感应的值
     input_sync(epld->ps_input_dev);
 #else
     input_report_abs(epld->als_input_dev, ABS_MISC, repott_lux);
@@ -694,8 +696,8 @@ static void epl_sensor_report_ps_status(void)
 
     LOG_INFO("------------------- epl_sensor.ps.data.data=%d, value=%d \n\n", epl_sensor.ps.data.data, epl_sensor.ps.compare_low >> 3);
 
-    input_report_abs(epld->ps_input_dev, ABS_DISTANCE, epl_sensor.ps.compare_low >> 3);
-    input_sync(epld->ps_input_dev);
+    input_report_abs(epld->ps_input_dev, ABS_DISTANCE, epl_sensor.ps.compare_low >> 3);  //注释掉这两行,不上报
+    input_sync(epld->ps_input_dev);  //调试时，避免达到门槛频繁退出再进入
 }
 
 int epl_sensor_read_ps(struct i2c_client *client)
