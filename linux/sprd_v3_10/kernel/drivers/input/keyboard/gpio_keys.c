@@ -31,6 +31,13 @@
 #include <linux/spinlock.h>
 
 //====================  debug  ====================
+ 
+#define ESD_PROTECT
+
+#ifdef ESD_PROTECT
+#define ESD_INTERVAL_MS 2
+#endif
+
 static int debug_level = 1;
 #define ENTER \
 do{ if(debug_level >= 1) printk(KERN_INFO "[SPRD_GPIO_KEYS_DBG] func: %s  line: %04d\n", __func__, __LINE__); }while(0)
@@ -52,6 +59,10 @@ struct gpio_button_data {
 	const struct gpio_keys_button *button;
 	struct input_dev *input;
 	struct timer_list timer;
+#ifdef ESD_PROTECT
+	struct timer_list timer_esd;
+    int esd_last_state;
+#endif
 	struct work_struct work;
 	unsigned int timer_debounce;	/* in msecs */
 	unsigned int irq;
@@ -364,6 +375,9 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 		PRINT_INFO("Key:%s ScanCode:%d value:%d\n", button->desc, button->code, !!state);
 
 		last_state = state;
+#ifdef ESD_PROTECT
+        bdata->esd_last_state = state;
+#endif
 	}
 	input_sync(input);
 }
@@ -378,6 +392,25 @@ static void gpio_keys_gpio_work_func(struct work_struct *work)
 	if (bdata->button->wakeup)
 		pm_relax(bdata->input->dev.parent);
 }
+
+#ifdef ESD_PROTECT
+static void gpio_keys_esd_timer(unsigned long _data)
+{
+	struct gpio_button_data *bdata = (struct gpio_button_data *)_data;
+	const struct gpio_keys_button *button = bdata->button;
+	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
+
+    if (bdata->esd_last_state == state) {
+        PRINT_INFO("Ignore ESD interrupt.\n");
+    } else {
+		if (bdata->timer_debounce)
+			mod_timer(&bdata->timer,
+				jiffies + msecs_to_jiffies(bdata->timer_debounce));
+		else
+			schedule_work(&bdata->work);
+    }
+}
+#endif
 
 static void gpio_keys_gpio_timer(unsigned long _data)
 {
@@ -402,11 +435,15 @@ static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
 	}
 	if (bdata->button->wakeup)
 		pm_stay_awake(bdata->input->dev.parent);
+#ifdef ESD_PROTECT
+	mod_timer(&bdata->timer_esd, jiffies + msecs_to_jiffies(ESD_INTERVAL_MS));
+#else
 	if (bdata->timer_debounce)
 		mod_timer(&bdata->timer,
 			jiffies + msecs_to_jiffies(bdata->timer_debounce));
 	else
 		schedule_work(&bdata->work);
+#endif
 
 	return IRQ_HANDLED;
 }
@@ -506,6 +543,10 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 		INIT_WORK(&bdata->work, gpio_keys_gpio_work_func);
 		setup_timer(&bdata->timer,
 			    gpio_keys_gpio_timer, (unsigned long)bdata);
+#ifdef ESD_PROTECT
+		setup_timer(&bdata->timer_esd,
+			    gpio_keys_esd_timer, (unsigned long)bdata);
+#endif
 
 		isr = gpio_keys_gpio_isr;
 		irqflags = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING;
