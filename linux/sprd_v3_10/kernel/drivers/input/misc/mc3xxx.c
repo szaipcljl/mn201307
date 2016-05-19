@@ -261,7 +261,7 @@ struct mc3xxx_data {
 #define MC3XXX_INPUT_NAME     "accelerometer"
 #define MC3XXX_I2C_ADDR       MC3XXX_ACC_I2C_ADDR
 
-static unsigned char mc3xxx_current_placement =MC3XXX_TOP_LEFT_UP ; // current soldered placement
+static unsigned char mc3xxx_current_placement =MC3XXX_TOP_LEFT_DOWN ; // current soldered placement
 
 #ifdef MCUBE_FUNC_DEBUG
     #define MC_PRINT(x...)        printk(x)
