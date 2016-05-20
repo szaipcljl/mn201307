@@ -32,10 +32,10 @@
 		chg-eoc-level = <3>;
 		cccv-default = <0>;
 		chg-end-cur = <80>;
-		otp-high-stop = <1600>;
-		otp-high-restart = <1550>;
-		otp-low-stop = <950>;
-		otp-low-restart = <1000>;
+		otp-high-stop = <1600>; /* NTC */
+		otp-high-restart = <1550>; /* NTC */
+		otp-low-stop = <950>; /* NTC */
+		otp-low-restart = <1000>; /* NTC */
 		chg-polling-time = <30>;
 		chg-polling-time-fast = <1>;
 		bat-polling-time = <15>;
