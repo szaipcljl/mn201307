@@ -43,17 +43,17 @@
 		cap-one-per-time = <30>;
 		cap-valid-range-poweron = <0>;
 		chg-full-condition = <0>;	/*0 vol and cur,1 status and cur(need add),2 ext ic*/
-		temp-support = <1>;
-		temp-adc-ch = <0>;
-		temp-adc-scale = <0>;
+		temp-support = <1>; /* NTC support */
+		temp-adc-ch = <0>; /* NTC */
+		temp-adc-scale = <0>; /* NTC */
 		temp-adc-sample-cnt = <15>;
 		temp-table-mode = <1>;
 		temp-comp-res = <30>;	/*30mohm,if temp-table-mode = <1>, use it*/
 		temp-tab-size = <19>;
-		temp-tab-val = <1084 1072 1055 1033 1008 977
-				938 897 850 798 742 686
-				628 571 513 459 410 362 318>;
-		temp-tab-temp = <750 800 850 900 950 1000	/* temperature + 1000,750 = 1000 + (-250)*/
+		temp-tab-val = <1736 1713 1684 1648 1603 1550 /* NTC vol */
+				1487 1415 1334 1247 1154 1058
+				961 891 773 686 606 532 466>;
+		temp-tab-temp = <750 800 850 900 950 1000	/*  NTC:temperature + 1000,750 = 1000 + (-250)*/
 				1050 1100 1150 1200 1250 1300
 				1350 1400 1450 1500 1550 1600 1650>;
 		jeita-tab-size = <6>;

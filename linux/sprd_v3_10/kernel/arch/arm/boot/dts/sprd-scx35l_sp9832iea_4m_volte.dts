@@ -1273,7 +1273,7 @@
 	gpios = <&a_eic_gpio 0 0        /* chg int */
 		&a_eic_gpio 4 0        /* cv state */
 		&a_eic_gpio 6 0		/* chg ovi */
-		&a_eic_gpio 9 0>;	/* battery detect */
+		&a_eic_gpio 9 0>;	/* NTC battery detect */
 	chg-end-vol-h = <4365>;
 	chg-end-vol-pure = <4340>;
 	chg-end-vol-l = <4330>;
