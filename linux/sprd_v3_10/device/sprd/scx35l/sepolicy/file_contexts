@@ -129,6 +129,7 @@
 /dev/spipe_lte4         u:object_r:audio_device:s0
 /dev/spipe_lte6         u:object_r:audio_device:s0
 /dev/epl2182_pls        u:object_r:sensors_device:s0
+/dev/em3071_pls        u:object_r:sensors_device:s0
 
 # for core dump
 /data/corefile(/.*)?    u:object_r:coredump_file:s0

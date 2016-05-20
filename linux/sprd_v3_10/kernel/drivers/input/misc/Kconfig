@@ -757,6 +757,16 @@ config INPUT_EPL259X_I2C
 
 	  To compile this driver as a module, choose M here.
 
+config INPUT_EM3071_I2C
+	tristate "em3071 proximity and light sensor device with I2C bus"
+	depends on I2C
+	default n
+	help
+	  Say Y here if you have a em3071 device on the board and use I2C
+	  communication, else say N.
+
+	  To compile this driver as a module, choose M here.
+
 config INPUT_STK3X1X_I2C
 	tristate "STK3X1X proximity and light sensor device with I2C bus"
 	depends on I2C

@@ -66,6 +66,7 @@ obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
 obj-$(CONFIG_INPUT_LTR558_I2C)		+= ltr_558als.o
 obj-$(CONFIG_INPUT_EPL2182_I2C)         += epl2182_pls_v2.o
 obj-$(CONFIG_INPUT_EPL259X_I2C)         += epl259x.o
+obj-$(CONFIG_INPUT_EM3071_I2C)         += em3071_pls.o
 obj-$(CONFIG_INPUT_STK3X1X_I2C)         += stk3x1x.o
 obj-$(CONFIG_INPUT_LIS3DH_I2C)          += lis3dh.o
 obj-$(CONFIG_INPUT_LIS3DH_I2C_INTERRUPT)+= lis3dh_interrupt.o
