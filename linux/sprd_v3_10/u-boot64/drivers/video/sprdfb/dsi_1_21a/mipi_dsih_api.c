@@ -1226,7 +1226,7 @@ uint16_t mipi_dsih_gen_rd_packet(dsih_ctrl_t * instance, uint8_t vc, uint8_t dat
                 }
                 return last_count + 1;
             }
-            else
+			else if(timeout >=DSIH_FIFO_ACTIVE_WAIT-1) //read id failed
             {
                 if (instance->log_error != 0)
                 {
@@ -1235,6 +1235,7 @@ uint16_t mipi_dsih_gen_rd_packet(dsih_ctrl_t * instance, uint8_t vc, uint8_t dat
                 return 0;
             }
         }
+		udelay(20);//read id failed
     }
     if (instance->log_error != 0)
     {

@@ -1242,6 +1242,7 @@ uint16_t mipi_dsih_gen_rd_packet(dsih_ctrl_t * instance, uint8_t vc, uint8_t dat
 #ifdef FB_CHECK_ESD_IN_VFP
                 udelay(5);
 #endif
+				udelay(20);//read id failed
 	}
 	if (instance->log_error != 0)
 	{
