@@ -404,6 +404,28 @@ int sprdchg_search_temp_tab(int val)
 }
 
 #define TEMP_BUFF_EN
+//for ntc debug
+int sprdchg_read_temp_vol(void)
+{
+	if (pbat_data->temp_support) {
+		int temp;
+		int val = sprdchg_read_temp_adc();
+		//voltage mode
+		if (pbat_data->temp_table_mode) {
+			val =
+				sprdchg_adc_to_vol(pbat_data->temp_adc_ch,
+						pbat_data->temp_adc_scale, val);
+			printk("sprdchg: sprdchg_read_temp voltage:%d,temp raw:%d\n", val,sprdchg_search_temp_tab(val));
+			val = sprdchg_temp_vol_comp(val);
+			printk("sprdchg: sprdchg_read_temp comp voltage:%d\n", val);
+
+			return val;
+		}
+	}
+	return 0;
+}
+//for ntc debug
+
 int sprdchg_read_temp(void)
 {
 	if (pbat_data->temp_support) {

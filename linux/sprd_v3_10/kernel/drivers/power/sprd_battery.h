@@ -161,6 +161,7 @@ struct sprdbat_auxadc_cal {
 #define sprdbat_read_temp sprdchg_read_temp
 #define sprdbat_adp_plug_nodify sprdfgu_adp_status_set
 #define sprdbat_read_temp_adc sprdchg_read_temp_adc
+#define sprdbat_read_temp_vol sprdchg_read_temp_vol  //for ntc debug
 
 int sprdbat_interpolate(int x, int n, struct sprdbat_table_data *tab);
 int  sprdchg_charger_is_adc(void);

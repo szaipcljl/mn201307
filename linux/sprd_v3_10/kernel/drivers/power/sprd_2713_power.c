@@ -401,12 +401,12 @@ static struct device_attribute sprd_caliberate[] = {
 #ifdef CHG_CUR_ADJUST
 	SPRDBAT_CALIBERATE_ATTR(chg_cool_state),
 #endif
-	//huafeizhou160421 add-s	
+	//ntc 节点 start	
 	SPRDBAT_CALIBERATE_ATTR(otp_high_stop),
 	SPRDBAT_CALIBERATE_ATTR(otp_high_restart),
 	SPRDBAT_CALIBERATE_ATTR(otp_low_stop),
 	SPRDBAT_CALIBERATE_ATTR(otp_low_restart),
-	//huafeizhou160421 add-e	
+	//ntc 节点 end	
 
 };
 
@@ -422,10 +422,10 @@ enum sprdbat_attribute {
 	SAVE_CAPACITY,
 	TEMP_ADC,
 	CHG_COOL_STATE,
-	OTP_HIGH_STOP,
+	OTP_HIGH_STOP,  //ntc
 	OTP_HIGH_RESTART,
 	OTP_LOW_STOP,
-	OTP_LOW_RESTART
+	OTP_LOW_RESTART //ntc
 };
 
 static ssize_t sprdbat_store_caliberate(struct device *dev,
@@ -512,7 +512,7 @@ static ssize_t sprdbat_store_caliberate(struct device *dev,
 		}
 		sprdbat_chgcurrent_adjust(set_value);
 		break;
-	//huafeizhou160421 add-s	
+	//ntc start
 	case OTP_HIGH_STOP:
 		if((set_value <=1650) && (set_value >=0))
 		{
@@ -545,7 +545,7 @@ static ssize_t sprdbat_store_caliberate(struct device *dev,
 			local_irq_restore(irq_flag);
 		}
 		break;
-	//huafeizhou160421 add-e	
+	//ntc end
 	default:
 		count = -EINVAL;
 		break;
@@ -602,7 +602,8 @@ static ssize_t sprdbat_show_caliberate(struct device *dev,
 		i += scnprintf(buf + i, PAGE_SIZE - i, "%d\n", adc_value);
 		break;
 	case TEMP_ADC:
-		adc_value = sprdbat_read_temp_adc();
+		//adc_value = sprdbat_read_temp_adc();
+		adc_value = sprdbat_read_temp_vol();//for ntc debug
 		if (adc_value < 0)
 			adc_value = 0;
 		i += scnprintf(buf + i, PAGE_SIZE - i, "%d\n", adc_value);
@@ -611,7 +612,7 @@ static ssize_t sprdbat_show_caliberate(struct device *dev,
 		adc_value = adjust_chg_flag;
 		i += scnprintf(buf + i, PAGE_SIZE - i, "%d,%d\n", adc_value,chg_cur);
 		break;
-	//huafeizhou160421 add-s	
+	//for ntc debug start
 	case OTP_HIGH_STOP:
 		i += scnprintf(buf + i, PAGE_SIZE - i, "%d\n", sprdbat_data->pdata->otp_high_stop+1000);
 		break;
@@ -624,7 +625,7 @@ static ssize_t sprdbat_show_caliberate(struct device *dev,
 	case OTP_LOW_RESTART:
 		i += scnprintf(buf + i, PAGE_SIZE - i, "%d\n", sprdbat_data->pdata->otp_low_restart+1000);
 		break;		
-	//huafeizhou160421 add-e	
+	//for ntc debug end	
 	default:
 		i = -EINVAL;
 		break;
