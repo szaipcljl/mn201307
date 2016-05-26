@@ -191,7 +191,7 @@ typedef enum {
  * Please modify the SW ID of the below enum value depends on the TP vendor that you are using.
  */
 typedef enum {
-    MSG22XX_SW_ID_XXXX = 0x0001,
+    MSG22XX_SW_ID_XXXX = 0x0001,//depends on the TP vendor
     MSG22XX_SW_ID_YYYY = 0x0002,  
     MSG22XX_SW_ID_UNDEFINED = 0xFFFF
 } Msg22xxSwId_e;

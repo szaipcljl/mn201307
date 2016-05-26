@@ -6904,7 +6904,7 @@ void _DrvFwCtrlMsg22xxCheckFirmwareUpdateBySwId(void)
     		
         if (eSwId == MSG22XX_SW_ID_XXXX)
         {
-            nUpdateBinMajor = msg22xx_xxxx_update_bin[0xBFF5]<<8 | msg22xx_xxxx_update_bin[0xBFF4];
+            nUpdateBinMajor = msg22xx_xxxx_update_bin[0xBFF5]/*sw_id*/<<8 | msg22xx_xxxx_update_bin[0xBFF4];
             nUpdateBinMinor = msg22xx_xxxx_update_bin[0xBFF7]<<8 | msg22xx_xxxx_update_bin[0xBFF6];
         }
         else if (eSwId == MSG22XX_SW_ID_YYYY)
