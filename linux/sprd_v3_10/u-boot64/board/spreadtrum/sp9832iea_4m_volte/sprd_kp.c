@@ -24,6 +24,7 @@ unsigned char board_key_scan(void)
 	int gpio_volumeup = -1;
 	int gpio_volumedown = -1;
 
+/*
     sprd_eic_request(EIC_KEY2_7S_RST_EXT_RSTN_ACTIVE);
     udelay(3000);
     gpio_volumeup = sprd_eic_get(EIC_KEY2_7S_RST_EXT_RSTN_ACTIVE);
@@ -33,8 +34,19 @@ unsigned char board_key_scan(void)
         key_code = KEY_VOLUMEUP;
         printf("[eic keys] volumeup pressed!\n");
     }
+*/
 
-    gpio_volumedown = sprd_gpio_get(NULL, 124);
+	gpio_volumeup = sprd_gpio_get(NULL, 124);
+	if(gpio_volumeup < 0)
+		printf("[gpio keys] volumeup : sprd_gpio_get return ERROR!\n");
+	if (0 == gpio_volumeup) {
+		key_code = KEY_VOLUMEUP;
+		printf("[gpio keys] volumeup pressed!\n");
+	}
+	if (KEY_RESERVED == key_code)
+		printf("[gpio keys] no key pressed!\n");
+
+    gpio_volumedown = sprd_gpio_get(NULL, 125);
     if(gpio_volumedown < 0)
         printf("[gpio keys] volumedown : sprd_gpio_get return ERROR!\n");
 	if (0 == gpio_volumedown) {
@@ -49,11 +61,11 @@ unsigned char board_key_scan(void)
 unsigned int check_key_boot(unsigned char key)
 {
 	if(KEY_VOLUMEUP == key)
-		return CMD_FACTORYTEST_MODE;
+		return CMD_RECOVERY_MODE;
 	else if(KEY_HOME == key)
 		return CMD_FASTBOOT_MODE;
 	else if(KEY_VOLUMEDOWN== key)
-		return CMD_RECOVERY_MODE;
+		return CMD_FACTORYTEST_MODE;
 	else
 		return 0;
 }
