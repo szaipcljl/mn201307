@@ -1,0 +1,16 @@
+obj-y += loader_common.o
+obj-y += loader_emmc.o
+obj-y += boot_mode.o
+obj-y += fs_common_rw.o
+obj-y += dev_tree.o
+obj-y += sprd_fdt_support.o
+obj-y += calibration_detect.o
+obj-y += fastboot.o
+obj-y += recv_mode.o
+obj-y += alarm_mode.o
+obj-y += autodloader_mode.o
+#obj-y += secure_verify.o
+obj-y += vbat_check.o
+obj-$(CONFIG_SPRD_SYSDUMP) += sysdump.o
+obj-y += sd_operate.o
+obj-y += sprd_cpcmdline.o
