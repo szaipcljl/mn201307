@@ -130,6 +130,7 @@ static unsigned char aucFW_PRAM_BOOT[] = {
 	{0x06,FTS_MAX_POINTS_2,AUTO_CLB_NONEED,100, 30, 0x79, 0x08, 10, 2000}, //,"FT6x06"
 	{0x36,FTS_MAX_POINTS_2,AUTO_CLB_NONEED,10, 10, 0x79, 0x18, 10, 2000}, //,"FT6x36"
 	{0x64,FTS_MAX_POINTS_2,AUTO_CLB_NONEED,10, 10, 0x79, 0x1c, 10, 2000}, //,"FT6336GU"
+	//{0x00,FTS_MAX_POINTS_2,AUTO_CLB_NONEED,10, 10, 0x79, 0x1c, 10, 2000}, //,"FT6336GU"  for upgrade failed
 	{0x55,FTS_MAX_POINTS_5,AUTO_CLB_NEED,50, 30, 0x79, 0x03, 10, 2000}, //,"FT5x06i"
 	{0x14,FTS_MAX_POINTS_5,AUTO_CLB_NONEED,30, 30, 0x79, 0x11, 10, 2000}, //,"FT5336"
 	{0x13,FTS_MAX_POINTS_5,AUTO_CLB_NONEED,30, 30, 0x79, 0x11, 10, 2000}, //,"FT3316"
@@ -3299,7 +3300,7 @@ int fts_ctpm_get_i_file_ver(void)
 	ui_sz = sizeof(CTPM_FW);
 	if (ui_sz > 2)
 	{
-	    if(fts_updateinfo_curr.CHIP_ID==0x36  || fts_updateinfo_curr.CHIP_ID==0x86  || fts_updateinfo_curr.CHIP_ID==0x64)
+	    if(fts_updateinfo_curr.CHIP_ID==0x36  || fts_updateinfo_curr.CHIP_ID==0x86  || fts_updateinfo_curr.CHIP_ID==0x64 /*|| fts_updateinfo_curr.CHIP_ID==0x00*/)
                 return CTPM_FW[0x10a];
 	    else if(fts_updateinfo_curr.CHIP_ID==0x58)
                 return CTPM_FW[0x1D0A];
@@ -3495,7 +3496,7 @@ int fts_ctpm_fw_upgrade_with_i_file(struct i2c_client *client)
 		if (i_ret != 0)
 			dev_err(&client->dev, "%s:upgrade failed. err.\n",__func__);
 	}
-	else if ((fts_updateinfo_curr.CHIP_ID==0x64))
+	else if ((fts_updateinfo_curr.CHIP_ID==0x64)/* || (fts_updateinfo_curr.CHIP_ID ==0x00)*/)
 	{
 		if (fw_len < 8 || fw_len > 48 * 1024) 
 		{
@@ -3656,7 +3657,7 @@ int fts_ctpm_auto_upgrade(struct i2c_client *client)
 
 	fts_read_reg(client, FTS_REG_FW_VER, &uc_tp_fm_ver);
 	uc_host_fm_ver = fts_ctpm_get_i_file_ver();
-	if (uc_tp_fm_ver == FTS_REG_FW_VER ||	uc_tp_fm_ver < uc_host_fm_ver ) 
+	if (uc_tp_fm_ver == FTS_REG_FW_VER ||	uc_tp_fm_ver < uc_host_fm_ver/* || uc_tp_fm_ver == 0x00*/) 
 	{
 		msleep(100);
 		dev_dbg(&client->dev, "[FTS] uc_tp_fm_ver = 0x%x, uc_host_fm_ver = 0x%x\n",uc_tp_fm_ver, uc_host_fm_ver);
