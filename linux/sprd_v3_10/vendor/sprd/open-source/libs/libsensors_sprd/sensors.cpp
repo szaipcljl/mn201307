@@ -171,6 +171,7 @@ sensors_poll_context_t::sensors_poll_context_t()
 #ifdef PLS_COMPATIBLE
 	PlsObjList[LTR558ALS] = new PlsLTR558();
 	PlsObjList[EPL2182] = new PlsEPL2182();
+	PlsObjList[EM3071] = new PlsEM3071();//开机时会调用,三个注释任意一个，会引起开机重启
 	for( int i=0; i<PlsChipNum; i++) {
 		memset(GetChipInfo,0,sizeof(GetChipInfo));
 		mSensors[pls] = PlsObjList[i];

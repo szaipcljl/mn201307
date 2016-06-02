@@ -133,8 +133,26 @@ static struct sensor_t sSensorListEPL2182[] = {
 	SENSOR_FLAG_ON_CHANGE_MODE,{}},
 };
 
+static struct sensor_t sSensorListEM3071[] = {
+	{"em3071 Light sensor",
+		"EM",
+		1, SENSORS_LIGHT_HANDLE,
+		SENSOR_TYPE_LIGHT, 1.0f,
+		100000.0f, 0.005f, 0, 0,0,
+		SENSOR_STRING_TYPE_LIGHT,"",0,
+		SENSOR_FLAG_ON_CHANGE_MODE,{}},
+	{"em3071 Proximity sensor",
+		"EM",
+		1, SENSORS_PROXIMITY_HANDLE,
+		SENSOR_TYPE_PROXIMITY, 1.0f,
+		1.0f, 0.005f, 0, 0,0,
+		SENSOR_STRING_TYPE_PROXIMITY,"",0,
+		SENSOR_FLAG_ON_CHANGE_MODE,{}},
+};
+
 PlsSensor::PlsSensor() :
        SensorBase("", ""),
+	//SensorBase(EM3071_DEVICE_NAME, "proximity"), //for debug
                mEnabled(0), mPendingMask(0), mInputReader(32), mHasPendingEvent(false)
 {
 	memset(mPendingEvents, 0, sizeof(mPendingEvents));
@@ -345,6 +363,12 @@ int PlsAL3006::populateSensorList(struct sensor_t *list)
 int PlsEPL2182::populateSensorList(struct sensor_t *list)
 {
 	memcpy(list, sSensorListEPL2182, sizeof(struct sensor_t) * numSensors);
+	return numSensors;
+}
+
+int PlsEM3071::populateSensorList(struct sensor_t *list)
+{
+	memcpy(list, sSensorListEM3071, sizeof(struct sensor_t) * numSensors);
 	return numSensors;
 }
 /*****************************************************************************/

@@ -37,13 +37,16 @@
 #define AL3006_DEVICE_NAME               		"/dev/al3006_pls"
 #define TMD2771_DEVICE_NAME                            "/dev/taos"
 #define ELAN_DEVICE_NAME               		"/dev/epl2182_pls"
+#define EM3071_DEVICE_NAME               		"/dev/em3071_pls"
 static char const *PlsChipInfoList[] = {
 	"LTR558ALS",
 	"EPL2182",
+	"em3071",//通过ioctl匹配case LTR_IOCTL_GET_CHIPINFO获得的chipinfo
 };
 enum {
 	LTR558ALS,
 	EPL2182,
+	EM3071,
 	PlsChipNum
 };
 //static char PlsChipNum = sizeof(PlsChipInfoList)/sizeof(PlsChipInfoList[1]);
@@ -109,6 +112,13 @@ class PlsEPL2182 : public PlsSensor {
 public:
     PlsEPL2182():SensorBase(ELAN_DEVICE_NAME, "proximity"){};
     virtual  ~PlsEPL2182(){};
+    virtual int populateSensorList(struct sensor_t *list);
+};
+
+class PlsEM3071 : public PlsSensor {
+public:
+    PlsEM3071():SensorBase(EM3071_DEVICE_NAME, "proximity"){};
+    virtual  ~PlsEM3071(){};
     virtual int populateSensorList(struct sensor_t *list);
 };
 

@@ -275,11 +275,28 @@ static int em3071_pls_release(struct inode *inode, struct file *file)
 	return em3071_pls_disable(EM3071_PLS_BOTH);
 }
 
+static int em3071_read_chip_info(struct i2c_client *client, char *buf)
+{
+	if(NULL == buf) {
+		return -1;
+	}
+	if(NULL == client) {
+		*buf = 0;
+		return -2;
+	}
+
+	sprintf(buf, "em3071");
+	printk("[em3071] em3071_read_chip_info %s\n",buf);
+	return 0;
+}
+
 static long em3071_pls_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 
     int value;
     int flag;
+	int err;
+	char strbuf[100];
     unsigned char *buf;
     void __user *argp = (void __user *)arg;
 
@@ -358,6 +375,14 @@ static long em3071_pls_ioctl(struct file *file, unsigned int cmd, unsigned long 
             if(copy_to_user(argp, &buf , 2))
                 return -EFAULT;
             break;
+
+		case LTR_IOCTL_GET_CHIPINFO: // _6_ 开机只会probe一个设备,也只会获得一个chipinfo信息
+			err = em3071_read_chip_info(this_client, strbuf);
+			if(err < 0)
+				return -EFAULT;
+			if(copy_to_user(argp, strbuf, strlen(strbuf)+1))
+				return -EFAULT;
+			break;
 
         default:
             pr_err("%s: invalid cmd %d\n", __func__, _IOC_NR(cmd));
