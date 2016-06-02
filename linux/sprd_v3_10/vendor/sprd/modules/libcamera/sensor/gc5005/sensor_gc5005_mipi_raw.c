@@ -520,7 +520,7 @@ SENSOR_INFO_T g_gc5005_mipi_raw_info = {
 	/* voltage of dvdd */
 	SENSOR_AVDD_1200MV,
 	/* skip frame num before preview */
-	4,
+	5,
 	/* skip frame num before capture */
 	1,
 	/* deci frame num during preview */
