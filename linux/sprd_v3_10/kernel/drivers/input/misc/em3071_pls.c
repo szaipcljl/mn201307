@@ -190,7 +190,7 @@ static int em3071_pls_enable(SENSOR_TYPE type)
 	PLS_DBG("%s: after type=%d  delay_work=%x\n",__func__, type,this_data->delay_work);
 
 	switch(type) {
-		case  EM3071_PLS_ALPS:   //³õÊ¼»¯ALS
+		case  EM3071_PLS_ALPS:   //åˆå§‹åŒ–ALS
 			cancel_delayed_work(&report_polling_work);
 			config |= EM3071_ENABLE_ALS;
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_ALS_THD1, 0x00);
@@ -199,7 +199,7 @@ static int em3071_pls_enable(SENSOR_TYPE type)
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_CONFIG, config);
 			queue_delayed_work(this_data->em_work_queue, &report_polling_work,msecs_to_jiffies(ALS_DELAY));
 			break;
-		case EM3071_PLS_PXY:    //³õÊ¼»¯PS
+		case EM3071_PLS_PXY:    //åˆå§‹åŒ–PS
 			config |= EM3071_ENABLE_PS;
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_LOW_THD, EM3071_PS_L_THD);
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_HIGHT_THD, EM3071_PS_H_THD);
@@ -208,7 +208,7 @@ static int em3071_pls_enable(SENSOR_TYPE type)
 			em3071_pls_report_init();
 
 			break;
-		case EM3071_PLS_BOTH:  //³õÊ¼»¯ALS+PS			
+		case EM3071_PLS_BOTH:  //åˆå§‹åŒ–ALS+PS			
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_INT_STATUS, 0x00);
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_LOW_THD, EM3071_PS_L_THD);
 			i2c_smbus_write_byte_data(this_client, EM3071_PLS_REG_HIGHT_THD, EM3071_PS_H_THD);
@@ -491,7 +491,7 @@ static void em3071_pls_work(struct work_struct *work)
 	unsigned char int_status, enable;
 	unsigned short als,ps,als_thre;
 	int err;
-	EM3071_data* data = container_of(work, EM3071_data, work);   // #define INIT_WORK(_work, _func, _data)£¬  //_data   
+	EM3071_data* data = container_of(work, EM3071_data, work);   // #define INIT_WORK(_work, _func, _data)ï¼Œ  //_data   
 
 	int pdata;
 
@@ -557,13 +557,13 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 
 	wake_lock_init(&pls_delayed_work_wake_lock, WAKE_LOCK_SUSPEND, "prox_delayed_work");
 
-      //ÅĞ¶¨I2C¹¦ÄÜ
+      //åˆ¤å®šI2CåŠŸèƒ½
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		printk("%s: functionality check failed\n", __func__);
 		err = -ENODEV;
 		goto exit_check_functionality_failed;
 	}
-     //ÉêÇëÄÚ´æ
+     //ç”³è¯·å†…å­˜
 	em3071_pls = kzalloc(sizeof(EM3071_data), GFP_KERNEL);
 	if (!em3071_pls)
 	{
@@ -582,7 +582,7 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 
 	i2c_set_clientdata(client, em3071_pls);
 	em3071_pls->client = client;
-	this_client = client; //È«¾Ö±äÁ¿
+	this_client = client; //å…¨å±€å˜é‡
 
 	this_data = em3071_als;
 	this_data_p = em3071_pls;
@@ -611,14 +611,14 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 		goto exit_device_init_failed;
 	}
 	printk("[em3071] : i2c_smbus_write_byte_data OK");
-	//register device //×Ö·ûÔÓÏî×¢²áÉè±¸
+	//register device //å­—ç¬¦æ‚é¡¹æ³¨å†Œè®¾å¤‡
 	err = misc_register(&em3071_pls_device);
 	if (err) {
 		printk("%s: em3071_pls_device register failed\n", __func__);
 		goto exit_device_register_failed;
 	}
-	// register input device for proximity //×¢²áÊäÈëÉè±¸
-	input_dev = input_allocate_device(); //ÉêÇëÄÚ´æ²¢³õÊ¼»¯
+	// register input device for proximity //æ³¨å†Œè¾“å…¥è®¾å¤‡
+	input_dev = input_allocate_device(); //ç”³è¯·å†…å­˜å¹¶åˆå§‹åŒ–
 	if (!input_dev)
 	{
 		printk("%s: input allocate device failed\n", __func__);
@@ -628,7 +628,7 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 
 	em3071_pls->input = input_dev;
 
-	input_dev->name = EM3071_PLS_INPUT_DEV; //ºÍHalÒªÏàÍ¬
+	input_dev->name = EM3071_PLS_INPUT_DEV; //å’ŒHalè¦ç›¸åŒ
 	input_dev->phys  = EM3071_PLS_INPUT_DEV;
 	input_dev->id.bustype = BUS_I2C;
 	input_dev->dev.parent = &client->dev;
@@ -638,10 +638,10 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 
 	__set_bit(EV_ABS, input_dev->evbit);
 	//for proximity
-	input_set_abs_params(input_dev, ABS_DISTANCE, 0, 1, 0, 0);//Éè¶¨PS·¶Î§
+	input_set_abs_params(input_dev, ABS_DISTANCE, 0, 1, 0, 0);//è®¾å®šPSèŒƒå›´
 	//for lightsensor
-	input_set_abs_params(input_dev, ABS_MISC, 0, 0xFFF, 0, 0);//Éè¶¨ALS·¶Î§
-	err = input_register_device(input_dev); //×¢²áÊäÈëÉè±¸µ½ÄÚºË
+	input_set_abs_params(input_dev, ABS_MISC, 0, 0xFFF, 0, 0);//è®¾å®šALSèŒƒå›´
+	err = input_register_device(input_dev); //æ³¨å†Œè¾“å…¥è®¾å¤‡åˆ°å†…æ ¸
 	if (err < 0)
 	{
 	    printk("%s: input device regist failed\n", __func__);
@@ -651,7 +651,7 @@ static int em3071_pls_probe(struct i2c_client *client, const struct i2c_device_i
 	//hjt INIT_WORK(&em3071_als->work, em3071_als_work);
 	em3071_als->em_work_queue= create_singlethread_workqueue(EM3071_ALS_DEVICE);	
 	//create work queue
-	INIT_WORK(&em3071_pls->work,em3071_pls_work);   //INT PS        // #define INIT_WORK(_work, _func, _data)£¬_data ÔÚem3071_pls_workÖĞ
+	INIT_WORK(&em3071_pls->work,em3071_pls_work);   //INT PS        // #define INIT_WORK(_work, _func, _data)ï¼Œ_data åœ¨em3071_pls_workä¸­
 	em3071_pls->em_work_queue= create_singlethread_workqueue(EM3071_PLS_DEVICE);	 
 
 	//register early suspend
