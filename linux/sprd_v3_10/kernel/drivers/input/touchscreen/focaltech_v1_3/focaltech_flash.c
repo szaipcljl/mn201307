@@ -115,6 +115,7 @@
 *******************************************************************************/
 static unsigned char CTPM_FW[] = {
 	//#include "FT_Upgrade_App.i"
+	#include "FT6336u_HC050F348-0x8_20160531_app.i"
 };
 
 static unsigned char aucFW_PRAM_BOOT[] = {

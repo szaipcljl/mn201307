@@ -286,7 +286,7 @@ enum {
 #define FTS_APK_DEBUG
 #define FTS_SYSFS_DEBUG
 #define FTS_CTL_IIC
-//#define FTS_AUTO_UPGRADE
+#define FTS_AUTO_UPGRADE
 //#define CONFIG_TOUCHPANEL_PROXIMITY_SENSOR
 
 extern struct fts_Upgrade_Info fts_updateinfo_curr;
