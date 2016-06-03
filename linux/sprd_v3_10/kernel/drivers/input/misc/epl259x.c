@@ -4275,6 +4275,12 @@ static int epl_sensor_suspend(struct i2c_client *client, pm_message_t mesg)
     struct epl_sensor_priv *epld = epl_sensor_obj;
     LOG_FUN();
 
+    if(!epld)
+    {
+        LOG_ERR("null pointer!!\n");
+        return -EINVAL;
+    }
+
     epld->als_suspend=1;
 #if HS_ENABLE
     epld->hs_suspend=1;
@@ -4306,6 +4312,12 @@ static int epl_sensor_resume(struct i2c_client *client)
 {
     struct epl_sensor_priv *epld = epl_sensor_obj;
     LOG_FUN();
+
+    if(!epld)
+    {
+        LOG_ERR("null pointer!!\n");
+        return -EINVAL;
+    }
 
     epld->als_suspend=0;
     epld->ps_suspend=0;
@@ -4346,6 +4358,12 @@ static void epl_sensor_early_suspend(struct early_suspend *h)
     struct epl_sensor_priv *epld = epl_sensor_obj;
     LOG_FUN();
 
+    if(!epld)
+    {
+        LOG_ERR("null pointer!!\n");
+        return;
+    }
+
     epld->als_suspend=1;
 #if HS_ENABLE
     epld->hs_suspend=1;
@@ -4372,6 +4390,12 @@ static void epl_sensor_late_resume(struct early_suspend *h)
 {
     struct epl_sensor_priv *epld = epl_sensor_obj;
     LOG_FUN();
+
+    if(!epld)
+    {
+        LOG_ERR("null pointer!!\n");
+        return;
+    }
 
     epld->als_suspend=0;
     epld->ps_suspend=0;
