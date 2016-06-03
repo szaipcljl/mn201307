@@ -110,6 +110,11 @@
 #define ANA_RTC_RST2			(ANA_CTL_GLB_BASE + 0x164)
 #define ANA_RTC_RST1			(ANA_CTL_GLB_BASE + 0x160)
 
+#ifdef CONFIG_RTC_START_YEAR
+#undef CONFIG_RTC_START_YEAR
+#define CONFIG_RTC_START_YEAR 2016
+#endif
+
 struct sprd_rtc{
 	struct rtc_device 	*rtc;
 	unsigned int 		irq_no;
