@@ -576,9 +576,9 @@ static int sci_keypad_probe(struct platform_device *pdev)
 
 	__raw_writel(KPD_INT_ALL, KPD_INT_CLR);
 	__raw_writel(CFG_ROW_POLARITY | CFG_COL_POLARITY, KPD_POLARITY);
-	__raw_writel(1, KPD_CLK_DIV_CNT);
+	__raw_writel(3, KPD_CLK_DIV_CNT);// 按键消抖 1 -> 3
 	__raw_writel(0xc, KPD_LONG_KEY_CNT);
-	__raw_writel(0x5, KPD_DEBOUNCE_CNT);
+	__raw_writel(0x20, KPD_DEBOUNCE_CNT); //按键消抖 0x5 -> 0x20
 
 	sci_kpd->irq = platform_get_irq(pdev, 0);
 	if (sci_kpd->irq < 0) {
@@ -728,9 +728,9 @@ static int sci_keypad_resume(struct platform_device *dev)
        __keypad_enable();
 	__raw_writel(KPD_INT_ALL, KPD_INT_CLR);
 	__raw_writel(CFG_ROW_POLARITY | CFG_COL_POLARITY, KPD_POLARITY);
-	__raw_writel(1, KPD_CLK_DIV_CNT);
+	__raw_writel(3, KPD_CLK_DIV_CNT);//按键消抖 1 -> 3
 	__raw_writel(0xc, KPD_LONG_KEY_CNT);
-	__raw_writel(0x5, KPD_DEBOUNCE_CNT);
+	__raw_writel(0x20, KPD_DEBOUNCE_CNT);//按键消抖 0x5 -> 0x20
 
 	value = KPD_INT_DOWNUP;
 	if (pdata->support_long_key)
