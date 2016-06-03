@@ -1,0 +1,18 @@
+/*720x1280*/
+himax-ts@48{
+	compatible = "himax,852xes";
+	reg = <0x48>;
+	interrupt-parent = <&d_gpio_gpio>;
+	interrupts = <144 0x2>;
+	himax,panel-coords = <0 720 0 1280>;
+	himax,display-coords = <0 720 0 1280>;
+	himax,irq-gpio = <&d_gpio_gpio 144 0x00>;
+	himax,rst-gpio = <&d_gpio_gpio 156 0x00>;
+	virtualkeys = <600 1350 60 45
+		360 1350 60 45
+		120 1350 60 45>;
+	TP_MAX_X = <720>;
+	TP_MAX_Y = <1280>;
+	report_type = <1>;
+};
+
