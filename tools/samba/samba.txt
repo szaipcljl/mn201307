@@ -1,0 +1,38 @@
+samba
+在Linux和UNIX系统上实现SMB协议，由服务器及客户端程序构成。
+SMB（Server Messages Block，信息服务块）是一种在局域网上共享文件和打印机的一种通信协议，
+它为局域网内的不同计算机之间提供文件及打印机等资源的共享服务。
+
+通过设置“NetBIOS over TCP/IP”使得Samba不但能与局域网络主机分享资源，还能与全世界的电脑分享资源。
+
+======================================================================
+在windows下自由访问linux下的共享目录
+
+(1)安装
+sudo apt-get install samba
+
+(2)创建共享目录
+打开Home Folder -> 点击地址栏home -> 右键点击"Properties"
+-> 弹出的对话框中选择"Share" ->  勾选"Share this folder" 和下面两个选项
+-> Share name 后加_H(与家目录同名不能创建) -> 点击Modify Share
+
+(3)增加一个smb服务器用户
+sudo smbpasswd -a linux
+
+(4)计算机-->映射网络驱动器
+输入“\\Linux系统的主机名\共享目录名”或“\\Linux系统的IP\共享目录名
+
+也可win+r
+输入\\Linux系统的IP\共享目录名
+
+======================================================================
+ubuntu 访问其他samba服务器
+
+1.直接使用smbclient命令
+smbclient //服务器地址/目录 -U 用户名％密码
+
+2.图形界面访问：
+
+(1)打开Home Folder，按CTRL＋L
+输入smb://xx.xx.xx.xx(IP地址)
+(2)输入用户名和密码
