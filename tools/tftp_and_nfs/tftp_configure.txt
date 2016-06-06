@@ -1,0 +1,34 @@
+tftp:
+文件的传输
+
+======================================================================
+(1)安装tftp客户端和服务器
+sudo apt-get install tftp-hpa tftpd-hpa
+
+(2)修改tftpd-hpa配置文件
+sudo vi /etc/default/tftpd-hpa
+修改如下:
+TFTP_DIRECTORY="/var/lib/tftpboot" --> TFTP_DIRECTORY="/tftpboot"
+TFTP_OPTIONS="--secure" --> TFTP_OPTIONS="-l -c -s"
+
+(3)创建/tftpboot
+sudo mkdir /tftpboot
+sudo chmod 777 /tftpboot
+
+(4)重启tftpd-hpa服务
+sudo /etc/init.d/tftpd-hpa restart
+
+======================================================================
+发送和获得文件
+
+当前目录的a.c到对方tftp_directory下
+tftp 192.168.2.115
+tftp> put a.c
+
+从对方tftp_directory目录拷贝到当前目录下
+tftp 192.168.2.115
+tftp> get b.c
+
+----------------------------------------------------------------------
+查看进程
+ps -ef | grep in.tftpd

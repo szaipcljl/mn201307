@@ -1,0 +1,41 @@
+nfs(网络文件系统):
+	远端共享目录挂载到本地后，可以像访问本地文件一样访问远端系统上共享目录中的文件
+
+======================================================================
+<一>安装nfs
+
+(1)install nfs
+sudo apt-get install nfs-kernel-server
+
+(2)configure /etc
+sudo vi /etc/exports
+
+添加下面一行: 
+/rootfs *(rw,sync,no_root_squash)
+
+(3)create shared folder /rootfs
+sudo mkdir /rootfs
+sudo chmod 777 /rootfs
+
+(4)restart nfs service
+sudo /etc/init.d/nfs-kernel-server restart
+
+======================================================================
+<二>挂载对方共享目录/rootfs到自己的/mnt下
+
+(1)需要先安装nfs
+(2)挂载
+sudo mount -t nfs 192.168.2.163:/rootfs /mnt
+
+挂载后可看到共享目录中文件
+显示挂载的目录
+showmount -d 192.168.2.143
+
+(3)创建软链接:
+sudo ln -sd ~/disk2/ /rootfs/
+软链接不能访问?
+
+----------------------------------------------------------------------
+卸载
+sudo umount /mnt
+
