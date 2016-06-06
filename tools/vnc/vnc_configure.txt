@@ -1,0 +1,45 @@
+1. Ubuntu服务端配置
+
+1) 安装vncserver服务
+	sudo apt-get install vnc4server
+
+2)开启vnc服务
+	访问root用户的桌面环境:
+	sudo vncserver
+
+	访问当前普通用户的环境:
+	vncserver
+
+	首次启动设置密码，用于客户端访问.
+
+	修改密码:
+	vncpasswd
+
+
+	启动vnc成功:
+	(a)会看到 New ‘****:1 (****)’ desktop is ****:1
+	(****代表主机名)
+	(b)会在主目录下产生一个.vnc目录
+
+3)修改xstartup文件以图形化访问
+	不修改xstartup文件，客户端访问界面，只有一个终端窗口
+	具体修改见xstartup
+
+4)开启vncserver服务
+	(默认1号桌面)杀死运行的桌面服务
+	vncserver -kill :1
+
+	重启该服务,	生成新的会话，客户端重新连接，出现图形界面：
+	vncserver :1
+
+	以1440x900的分辨率打开vnc
+	vncserver -geometry 1440x900 :1
+
+======================================================================
+2. windows下客户端访问工具
+
+VNC客户端访问工具：
+RealVNC、VNCViewer等，VNCViewer，轻量级，使用简单
+
+在window下打开vnc客户端(VNC Viewer):
+	输入 服务器IP+:1
