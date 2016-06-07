@@ -1,0 +1,20 @@
+SSH(Secure Shell) 安全外壳协议
+
+建立在应用层和传输层基础上的安全协议。
+是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。
+利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。
+
+======================================================================
+(1)安装SSH服务器端
+sudo apt-get install openssh-server
+
+(2)windows端
+
+使用PuTTY访问ubuntu:
+打开PuTTY -> 勾选SSH -> 填写Host Name (or IP address)
+-> 点击Open -> login as: 填写用户名 -> 输入登录密码
+
+Saved Sessions:
+输入会话名称 -> Save保存会话
+下次登录时:
+选择会话名称 -> Load载入会话 -> Open
