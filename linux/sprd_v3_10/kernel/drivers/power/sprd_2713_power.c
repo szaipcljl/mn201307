@@ -50,6 +50,7 @@
 #endif
 
 #define SPRDBAT_CV_TRIGGER_CURRENT		7/10
+#define SPRDBAT_CHG_CUR_SWICH_BY_BL_STATUS
 
 enum sprdbat_event {
 	SPRDBAT_ADP_PLUGIN_E,
@@ -82,6 +83,12 @@ static uint32_t sprdbat_cccv_cal_from_chip = 0;
 static uint32_t chg_phy_dis_flag;	//only be used on CONFIG_SPRD_NOFGUCURRENT_CHG
 
 extern struct sprdbat_auxadc_cal adc_cal;
+
+#ifdef SPRDBAT_CHG_CUR_SWICH_BY_BL_STATUS
+#define CUR_DIFF 300 //灭屏与亮屏充电电流的差值(灭屏-亮屏=CUR_DIFF)
+#define BACKLIGHT_SUSPEND 1
+extern int sprd_get_backlight_status(void);
+#endif
 
 static void sprdbat_change_module_state(uint32_t event);
 static int sprdbat_stop_charge(void);
@@ -1661,6 +1668,20 @@ static void sprdbat_charge_works(struct work_struct *work)
 		mutex_unlock(&sprdbat_data->lock);
 		return;
 	}
+
+#ifdef SPRDBAT_CHG_CUR_SWICH_BY_BL_STATUS
+	if(sprd_get_backlight_status() == BACKLIGHT_SUSPEND){ //suspend = 1;灭屏
+		printk("***backlight_suspend=1***\n");
+		if ((sprdbat_data->bat_info.adp_type == ADP_TYPE_CDP) ||(sprdbat_data->bat_info.adp_type == ADP_TYPE_DCP)) 
+			sprdchg_set_chg_cur(sprdbat_data->bat_info.chg_current_type);
+	}else{ //亮屏
+		printk("***backlight_suspend=0***\n");
+		if ((sprdbat_data->bat_info.adp_type == ADP_TYPE_CDP) ||(sprdbat_data->bat_info.adp_type == ADP_TYPE_DCP)) 
+			sprdchg_set_chg_cur(sprdbat_data->bat_info.chg_current_type - CUR_DIFF);
+	}
+	printk("***sprdbat_data->bat_info.chg_current_type=%d***\n",sprdbat_data->bat_info.chg_current_type);
+#endif
+
 #ifdef CONFIG_SPRD_NOFGUCURRENT_CHG
 	if ((sprdbat_data->bat_info.chg_stop_flags == SPRDBAT_CHG_END_NONE_BIT)
 	    && chg_phy_dis_flag && (!temp_trigger_cnt)) {

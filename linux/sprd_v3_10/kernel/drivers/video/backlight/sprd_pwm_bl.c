@@ -172,6 +172,14 @@ void set_gpio_ctrll_pin_state(int on)
 }
 
 #ifdef CONFIG_EARLYSUSPEND
+
+//get backlight status
+int sprd_get_backlight_status(void)
+{
+	printk("***sprd_pwm_bl.suspend=%d***\n",sprd_pwm_bl.suspend);
+	return sprd_pwm_bl.suspend;
+}
+
 static void sprd_backlight_earlysuspend(struct early_suspend *h)
 {
         if(-1 != sprd_pwm_bl.gpio_ctrl_pin)
