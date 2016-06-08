@@ -451,7 +451,9 @@ typedef struct {
 	/*for new param struct*/
 	struct isp_data_info isp_init_data[MAX_MODE_NUM];
 	struct isp_data_info isp_update_data[MAX_MODE_NUM];/*for isp_tool*/
-
+	uint32_t lsc_sof_cnt;
+	uint32_t lsc_sof_cnt_eb;
+	uint32_t update_lsc_eb;
 	uint32_t gamma_sof_cnt;
 	uint32_t gamma_sof_cnt_eb;
 	uint32_t update_gamma_eb;

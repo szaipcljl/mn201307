@@ -1144,10 +1144,18 @@ static isp_s32 isp_pm_get_param(isp_pm_handle_t handle, enum isp_pm_cmd cmd, voi
 				if ((PNULL != blk_cfg_ptr) && (PNULL != blk_header_ptr)) {
 					is_update = 0;
 					if (ISP_CHIP_ID_PIKE == isp_dev_get_chip_id(pm_cxt_ptr->isp_ctrl_cxt_handle->handle_device)) {
-						if (((ISP_ZERO != blk_header_ptr->is_update) && (ISP_BLK_RGB_GAMC != id))
-							|| ((ISP_ZERO != blk_header_ptr->is_update) && (ISP_BLK_RGB_GAMC == id) && pm_cxt_ptr->isp_ctrl_cxt_handle->update_gamma_eb)
-							|| (ISP_ZERO != flag))
+						/*if (((ISP_ZERO != blk_header_ptr->is_update) && (ISP_BLK_2D_LSC != id))
+							|| ((ISP_ZERO != blk_header_ptr->is_update) && (ISP_BLK_2D_LSC == id) && pm_cxt_ptr->isp_ctrl_cxt_handle->update_lsc_eb)
+							|| (ISP_ZERO != flag)) {
 							is_update = 1;
+						}*/
+						if (((ISP_ZERO != blk_header_ptr->is_update) && (ISP_BLK_2D_LSC != id) && (ISP_BLK_RGB_GAMC != id))
+							|| ((ISP_ZERO != blk_header_ptr->is_update)
+								&& (((ISP_BLK_2D_LSC == id) && pm_cxt_ptr->isp_ctrl_cxt_handle->update_lsc_eb)||((ISP_BLK_2D_LSC == id) && pm_cxt_ptr->isp_ctrl_cxt_handle->update_lsc_eb)))
+							|| (ISP_ZERO != flag)) {
+							ISP_LOGE("20160528");
+							is_update = 1;
+						}
 					} else {
 						if ((ISP_ZERO != blk_header_ptr->is_update) || (ISP_ZERO != flag)) {
 							is_update = 1;

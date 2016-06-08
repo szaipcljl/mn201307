@@ -2105,6 +2105,9 @@ static int32_t _ispCfg(isp_handle isp_handler)
 	struct isp_pm_param_data *param_data;
 	uint32_t i = 0;
 
+	handle->lsc_sof_cnt = 0;
+	handle->lsc_sof_cnt_eb = 0;
+	handle->update_lsc_eb = 0;
 	handle->gamma_sof_cnt = 0;
 	handle->gamma_sof_cnt_eb = 0;
 	handle->update_gamma_eb = 0;
@@ -2217,6 +2220,7 @@ static int32_t _ispStart(isp_handle isp_handler)
 
 	isp_u_fetch_start_isp(handle->handle_device, ISP_ONE);
 
+	handle->lsc_sof_cnt_eb = 1;
 	handle->gamma_sof_cnt_eb = 1;
 
 	return rtn;
@@ -2267,10 +2271,14 @@ static int32_t _ispSetTuneParam(isp_handle isp_handler)
         	}
 
 		if (param_data->id == ISP_BLK_2D_LSC) {
+			if (handle->update_lsc_eb) {
 			isp_u_2d_lsc_param_update(handle->handle_device);
+				handle->lsc_sof_cnt = 0;
+				handle->update_lsc_eb = 0;
+				ISP_LOGE("20160528");
 		}
-
-		if (ISP_BLK_RGB_GAMC == param_data->id) {
+		}
+		if (param_data->id == ISP_BLK_RGB_GAMC) {
 			handle->gamma_sof_cnt = 0;
 			handle->update_gamma_eb = 0;
 		}
@@ -4263,6 +4271,12 @@ static void *_isp_monitor_routine(void *client_data)
 		}
 
 		if (ISP_ZERO != (evt.irq_val1 & ISP_INT_EVT_DCAM_SOF)) {
+			if (handle->lsc_sof_cnt_eb) {
+				handle->lsc_sof_cnt++;
+				if (handle->lsc_sof_cnt >= 2) {
+					handle->update_lsc_eb = 1;
+				}
+			}
 			if (handle->gamma_sof_cnt_eb) {
 				handle->gamma_sof_cnt++;
 				if (handle->gamma_sof_cnt >= 2) {
