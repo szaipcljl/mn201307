@@ -40,3 +40,14 @@ smbclient //服务器地址/目录 -U 用户名％密码
 ----------------------------------------------------------------------
 访问过的其他samba服务器入口:
 ~/.gvfs/目录下会保存一个目录入口
+
+----------------------------------------------------------------------
+ubuntu挂载samba共享目录
+sudo apt-get install smbfs smbclient
+sudo mkdir /mnt/gst_sw/
+sudo mount -t cifs //192.168.1.164/gst_sw_H /mnt/gst_sw/ -o username=xx,password=xx
+#或sudo smbmount //192.168.1.164/gst_sw_H /mnt/gst_sw/ -o username=xx,password=xx,iocharset=utf8
+
+卸载:
+umount /mnt/gst_sw/
+
