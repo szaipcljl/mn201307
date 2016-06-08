@@ -373,7 +373,7 @@ struct panel_spec lcd_rm68172_mipi_spec = {
 		.mipi = &lcd_rm68172_mipi_info
 	},
 	.ops = &lcd_rm68172_mipi_operations,
-	.suspend_mode = SEND_SLEEP_CMD,
+	.suspend_mode = SEND_SLEEP_CMD, //唤醒闪白屏，可注释试一下
 };
 
 struct panel_cfg lcd_rm68172_mipi = {

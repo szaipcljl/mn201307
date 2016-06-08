@@ -33,6 +33,7 @@
 #include <linux/of_address.h>
 
 #include <linux/sprd_pwm_bl.h>
+#include <linux/delay.h>
 
 //#define SPRD_PWM_BL_DBG
 #ifdef SPRD_PWM_BL_DBG
@@ -183,6 +184,8 @@ static void sprd_backlight_earlysuspend(struct early_suspend *h)
 
 static void sprd_backlight_lateresume(struct early_suspend *h)
 {
+	msleep(100); //for flash when resume
+
         if(-1 != sprd_pwm_bl.gpio_ctrl_pin)
                 set_gpio_ctrll_pin_state(1);
 
