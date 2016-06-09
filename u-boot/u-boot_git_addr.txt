@@ -1,0 +1,2 @@
+u-boot git addr:
+git://git.denx.de/u-boot.git
