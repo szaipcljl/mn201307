@@ -1,3 +1,4 @@
+obj-y += front_flash_common.o
 ifeq ($(CONFIG_MACH_VIVALTO),y)
 obj-y += flash_vivalto.o
 else

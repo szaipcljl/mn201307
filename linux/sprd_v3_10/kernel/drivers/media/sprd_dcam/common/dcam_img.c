@@ -372,7 +372,11 @@ LOCAL int sprd_img_setflash(uint32_t flash_mode)
 		break;
 	case FLASH_TORCH:        /*for torch */
 		/*low light */
-		sprd_torch_on();
+		if (0 == flash_index) {
+			sprd_torch_on();
+		} else {
+			sprd_front_flash_on();
+		}
 		break;		
 	case FLASH_HIGH_LIGHT:
 		/*high light */
