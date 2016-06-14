@@ -1,0 +1,4 @@
+dos2unix
+# 递归去除当前目录下所有文件的"^M"字符,转换成unix格式
+sudo apt-get install dos2unix
+sudo find . -name "*" | xargs dos2unix
