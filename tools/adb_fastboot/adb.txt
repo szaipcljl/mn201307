@@ -1,0 +1,44 @@
+adb and fastboot
+
+===
+adb:
+
+【常用命令】：
+
+连接不上时,重启adb
+sudo adb kill-server
+sudo adb start-server
+
+sudo adb devices
+
+在开机时连接：
+sudo adb root
+sudo adb remount
+sudo adb push
+
+adb reboot
+或(调试camera效果push进去.so时)
+adb shell stop media
+adb shell start media
+
+打印log
+adb shell logcat | tee camera.txt   把camera的log信息保存在camera.txt中
+adb shell logcat | grep “关键字”    把包含关键字的log信息直接显示在屏幕
+
+sudo adb shell logcat -> ~/samba_mn/sensor_gc5004_log.txt
+
+=========
+fastboot:
+
+【常用命令】：
+
+手机连接上adb后
+sudo adb reboot bootloader               //进入到fastboot模式
+sudo fastboot devices                    //检查是否进入到fastboot 模式
+
+sudo fastboot flash boot boot.img        //烧写bootimage
+sudo fastboot flash 2ndbl u-boot.bin     //烧写uboot
+sudo fastboot flash uboot u-boot.bin     //烧写uboot
+
+sudo fastboot reboot                               //重新开机
+
