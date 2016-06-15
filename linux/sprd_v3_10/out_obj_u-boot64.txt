@@ -1,0 +1,629 @@
+out/target/product/sp9832iea_4m_volte/obj/u-boot64/
+├── arch
+│   └── arm
+│       ├── cpu
+│       │   ├── armv7
+│       │   │   ├── built-in.o
+│       │   │   ├── cache_v7.o
+│       │   │   ├── cache_v7.su
+│       │   │   ├── cpu.o
+│       │   │   ├── cpu.su
+│       │   │   ├── sc9630
+│       │   │   │   ├── asm-offsets.s
+│       │   │   │   ├── built-in.o
+│       │   │   │   ├── check_reboot.o
+│       │   │   │   ├── check_reboot.su
+│       │   │   │   ├── chip_phy_v3.o
+│       │   │   │   ├── chip_phy_v3.su
+│       │   │   │   ├── eic.o
+│       │   │   │   ├── eic.su
+│       │   │   │   ├── glb.o
+│       │   │   │   ├── glb.su
+│       │   │   │   ├── misc.o
+│       │   │   │   ├── misc.su
+│       │   │   │   ├── pk1.o
+│       │   │   │   ├── pk1.su
+│       │   │   │   ├── pmu.o
+│       │   │   │   ├── pmu.su
+│       │   │   │   ├── reset.o
+│       │   │   │   ├── reset.su
+│       │   │   │   ├── rsa.o
+│       │   │   │   ├── rsa.su
+│       │   │   │   ├── sec_boot.o
+│       │   │   │   ├── sec_boot.su
+│       │   │   │   ├── sha1_32.o
+│       │   │   │   ├── sha1_32.su
+│       │   │   │   ├── soc.o
+│       │   │   │   ├── soc.su
+│       │   │   │   ├── timer.o
+│       │   │   │   ├── timer.su
+│       │   │   │   ├── vibrator.o
+│       │   │   │   └── vibrator.su
+│       │   │   ├── start.o
+│       │   │   ├── syslib.o
+│       │   │   └── syslib.su
+│       │   └── built-in.o
+│       └── lib
+│           ├── board.o
+│           ├── board.su
+│           ├── bootm-fdt.o
+│           ├── bootm-fdt.su
+│           ├── bootm.o
+│           ├── bootm.su
+│           ├── built-in.o
+│           ├── cache-cp15.o
+│           ├── cache-cp15.su
+│           ├── cache.o
+│           ├── cache.su
+│           ├── crt0.o
+│           ├── eabi_compat.o
+│           ├── eabi_compat.su
+│           ├── interrupts.o
+│           ├── interrupts.su
+│           ├── relocate.o
+│           ├── reset.o
+│           ├── reset.su
+│           ├── sections.o
+│           └── sections.su
+├── board
+│   └── spreadtrum
+│       └── sp9832iea_4m_volte
+│           ├── built-in.o
+│           ├── ldo_sleep.o
+│           ├── ldo_sleep.su
+│           ├── modem_entry.o
+│           ├── modem_entry.su
+│           ├── pinmap-sp9630-h100.o
+│           ├── pinmap-sp9630-h100.su
+│           ├── sdio_cfg.o
+│           ├── sdio_cfg.su
+│           ├── sp9830iee_4m_h100.o
+│           ├── sp9830iee_4m_h100.su
+│           ├── sprd_bl.o
+│           ├── sprd_bl.su
+│           ├── sprd_kp.o
+│           └── sprd_kp.su
+├── common
+│   ├── built-in.o
+│   ├── cmd_bmp.o
+│   ├── cmd_bmp.su
+│   ├── cmd_bootm.o
+│   ├── cmd_bootm.su
+│   ├── cmd_boot.o
+│   ├── cmd_boot.su
+│   ├── cmd_cboot.o
+│   ├── cmd_cboot.su
+│   ├── cmd_disk.o
+│   ├── cmd_disk.su
+│   ├── cmd_download.o
+│   ├── cmd_download.su
+│   ├── cmd_ext4.o
+│   ├── cmd_ext4.su
+│   ├── cmd_fat.o
+│   ├── cmd_fat.su
+│   ├── cmd_fdt.o
+│   ├── cmd_fdt.su
+│   ├── cmd_help.o
+│   ├── cmd_help.su
+│   ├── cmd_load.o
+│   ├── cmd_load.su
+│   ├── cmd_mmc.o
+│   ├── cmd_mmc.su
+│   ├── cmd_mtdparts.o
+│   ├── cmd_mtdparts.su
+│   ├── cmd_nvedit.o
+│   ├── cmd_nvedit.su
+│   ├── cmd_pcmcia.o
+│   ├── cmd_pcmcia.su
+│   ├── cmd_role.o
+│   ├── cmd_role.su
+│   ├── cmd_ubi.o
+│   ├── cmd_ubi.su
+│   ├── cmd_version.o
+│   ├── cmd_version.su
+│   ├── command.o
+│   ├── command.su
+│   ├── console.o
+│   ├── console.su
+│   ├── dlmalloc.o
+│   ├── dlmalloc.su
+│   ├── dloader
+│   │   ├── built-in.o
+│   │   ├── dl_cmd_proc.o
+│   │   ├── dl_cmd_proc.su
+│   │   ├── dl_common.o
+│   │   ├── dl_common.su
+│   │   ├── dl_emmc_operate.o
+│   │   ├── dl_emmc_operate.su
+│   │   ├── root_inspect.o
+│   │   ├── root_inspect.su
+│   │   ├── simg2img.o
+│   │   ├── simg2img.su
+│   │   ├── sparse_crc32.o
+│   │   └── sparse_crc32.su
+│   ├── env_attr.o
+│   ├── env_attr.su
+│   ├── env_callback.o
+│   ├── env_callback.su
+│   ├── env_common.o
+│   ├── env_common.su
+│   ├── env_flags.o
+│   ├── env_flags.su
+│   ├── env_nowhere.o
+│   ├── env_nowhere.su
+│   ├── exports.o
+│   ├── exports.su
+│   ├── fdt_support.o
+│   ├── fdt_support.su
+│   ├── flash.o
+│   ├── flash.su
+│   ├── hash.o
+│   ├── hash.su
+│   ├── image-fdt.o
+│   ├── image-fdt.su
+│   ├── image.o
+│   ├── image.su
+│   ├── lcd.o
+│   ├── lcd.su
+│   ├── loader
+│   │   ├── alarm_mode.o
+│   │   ├── alarm_mode.su
+│   │   ├── autodloader_mode.o
+│   │   ├── autodloader_mode.su
+│   │   ├── boot_mode.o
+│   │   ├── boot_mode.su
+│   │   ├── built-in.o
+│   │   ├── calibration_detect.o
+│   │   ├── calibration_detect.su
+│   │   ├── dev_tree.o
+│   │   ├── dev_tree.su
+│   │   ├── fastboot.o
+│   │   ├── fastboot.su
+│   │   ├── fs_common_rw.o
+│   │   ├── fs_common_rw.su
+│   │   ├── loader_common.o
+│   │   ├── loader_common.su
+│   │   ├── loader_emmc.o
+│   │   ├── loader_emmc.su
+│   │   ├── recv_mode.o
+│   │   ├── recv_mode.su
+│   │   ├── sd_operate.o
+│   │   ├── sd_operate.su
+│   │   ├── sprd_cpcmdline.o
+│   │   ├── sprd_cpcmdline.su
+│   │   ├── sprd_fdt_support.o
+│   │   ├── sprd_fdt_support.su
+│   │   ├── sysdump.o
+│   │   ├── sysdump.su
+│   │   ├── vbat_check.o
+│   │   └── vbat_check.su
+│   ├── main.o
+│   ├── main.su
+│   ├── memsize.o
+│   ├── memsize.su
+│   ├── splash.o
+│   ├── splash.su
+│   ├── s_record.o
+│   ├── s_record.su
+│   ├── stdio.o
+│   ├── stdio.su
+│   ├── xyzModem.o
+│   └── xyzModem.su
+├── disk
+│   ├── built-in.o
+│   ├── part_dos.o
+│   ├── part_dos.su
+│   ├── part_efi.o
+│   ├── part_efi.su
+│   ├── part.o
+│   └── part.su
+├── doc
+│   └── DocBook
+├── drivers
+│   ├── block
+│   │   └── built-in.o
+│   ├── built-in.o
+│   ├── crypto
+│   │   └── built-in.o
+│   ├── dfu
+│   │   └── built-in.o
+│   ├── dma
+│   │   └── built-in.o
+│   ├── gpio
+│   │   ├── built-in.o
+│   │   ├── gpio.o
+│   │   ├── gpio_phy.o
+│   │   ├── gpio_phy.su
+│   │   └── gpio.su
+│   ├── hwmon
+│   │   └── built-in.o
+│   ├── i2c
+│   │   └── built-in.o
+│   ├── input
+│   │   ├── built-in.o
+│   │   ├── input.o
+│   │   └── input.su
+│   ├── misc
+│   │   ├── adc.o
+│   │   ├── adc.su
+│   │   ├── adi.o
+│   │   ├── adi.su
+│   │   ├── ana_efuse.o
+│   │   ├── ana_efuse.su
+│   │   ├── built-in.o
+│   │   ├── efuse.o
+│   │   ├── efuse.su
+│   │   ├── otp_helper.o
+│   │   └── otp_helper.su
+│   ├── mmc
+│   │   ├── built-in.o
+│   │   ├── mv_sdhci.o
+│   │   ├── mv_sdhci.su
+│   │   ├── sdhci.o
+│   │   ├── sdhci.su
+│   │   ├── sprd_mmc.o
+│   │   ├── sprd_mmc.su
+│   │   ├── sprd_rpmb.o
+│   │   └── sprd_rpmb.su
+│   ├── mtd
+│   │   ├── built-in.o
+│   │   ├── mtdcore.o
+│   │   ├── mtdcore.su
+│   │   ├── mtdpart.o
+│   │   ├── mtdpart.su
+│   │   ├── onenand
+│   │   │   └── built-in.o
+│   │   ├── spi
+│   │   │   └── built-in.o
+│   │   └── ubi
+│   │       ├── build.o
+│   │       ├── build.su
+│   │       ├── built-in.o
+│   │       ├── crc32.o
+│   │       ├── crc32.su
+│   │       ├── debug.o
+│   │       ├── debug.su
+│   │       ├── eba.o
+│   │       ├── eba.su
+│   │       ├── io.o
+│   │       ├── io.su
+│   │       ├── kapi.o
+│   │       ├── kapi.su
+│   │       ├── misc.o
+│   │       ├── misc.su
+│   │       ├── scan.o
+│   │       ├── scan.su
+│   │       ├── upd.o
+│   │       ├── upd.su
+│   │       ├── vmt.o
+│   │       ├── vmt.su
+│   │       ├── vtbl.o
+│   │       ├── vtbl.su
+│   │       ├── wl.o
+│   │       └── wl.su
+│   ├── net
+│   │   ├── built-in.o
+│   │   └── phy
+│   │       └── built-in.o
+│   ├── pci
+│   │   └── built-in.o
+│   ├── pcmcia
+│   │   ├── built-in.o
+│   │   ├── rpx_pcmcia.o
+│   │   ├── rpx_pcmcia.su
+│   │   ├── tqm8xx_pcmcia.o
+│   │   └── tqm8xx_pcmcia.su
+│   ├── power
+│   │   ├── battery
+│   │   │   ├── built-in.o
+│   │   │   ├── sprd_battery.o
+│   │   │   └── sprd_battery.su
+│   │   ├── built-in.o
+│   │   ├── dcdc_cal_sc2723.o
+│   │   ├── dcdc_cal_sc2723.su
+│   │   ├── fuel_gauge
+│   │   │   └── built-in.o
+│   │   ├── ldo.o
+│   │   ├── ldo.su
+│   │   ├── mfd
+│   │   │   └── built-in.o
+│   │   └── pmic
+│   │       └── built-in.o
+│   ├── rtc
+│   │   ├── built-in.o
+│   │   ├── date.o
+│   │   ├── date.su
+│   │   ├── sprd-rtc.o
+│   │   └── sprd-rtc.su
+│   ├── serial
+│   │   ├── built-in.o
+│   │   ├── serial.o
+│   │   ├── serial_sprd.o
+│   │   ├── serial_sprd.su
+│   │   └── serial.su
+│   ├── sound
+│   │   └── built-in.o
+│   ├── spi
+│   │   ├── built-in.o
+│   │   ├── spi.o
+│   │   └── spi.su
+│   ├── tpm
+│   │   └── built-in.o
+│   ├── twserial
+│   │   └── built-in.o
+│   ├── usb
+│   │   ├── eth
+│   │   │   └── built-in.o
+│   │   ├── gadget
+│   │   │   ├── built-in.o
+│   │   │   ├── config.o
+│   │   │   ├── config.su
+│   │   │   ├── epautoconf.o
+│   │   │   ├── epautoconf.su
+│   │   │   ├── f_fastboot.o
+│   │   │   ├── f_fastboot.su
+│   │   │   ├── serial.o
+│   │   │   ├── serial.su
+│   │   │   ├── usb_driver_1
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── dl_crc.o
+│   │   │   │   ├── dl_crc.su
+│   │   │   │   ├── drv_usb.o
+│   │   │   │   ├── drv_usb.su
+│   │   │   │   ├── fdl_channel.o
+│   │   │   │   ├── fdl_channel.su
+│   │   │   │   ├── fdl_stdio.o
+│   │   │   │   ├── fdl_stdio.su
+│   │   │   │   ├── packet.o
+│   │   │   │   ├── packet.su
+│   │   │   │   ├── usb_boot.o
+│   │   │   │   ├── usb_boot.su
+│   │   │   │   ├── virtual_com.o
+│   │   │   │   └── virtual_com.su
+│   │   │   ├── usb_driver_2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── dwc_common_linux.o
+│   │   │   │   ├── dwc_common_linux.su
+│   │   │   │   ├── dwc_otg_cil_intr.o
+│   │   │   │   ├── dwc_otg_cil_intr.su
+│   │   │   │   ├── dwc_otg_cil.o
+│   │   │   │   ├── dwc_otg_cil.su
+│   │   │   │   ├── dwc_otg_driver.o
+│   │   │   │   ├── dwc_otg_driver.su
+│   │   │   │   ├── dwc_otg_pcd_intr.o
+│   │   │   │   ├── dwc_otg_pcd_intr.su
+│   │   │   │   ├── dwc_otg_pcd_linux.o
+│   │   │   │   ├── dwc_otg_pcd_linux.su
+│   │   │   │   ├── dwc_otg_pcd.o
+│   │   │   │   └── dwc_otg_pcd.su
+│   │   │   ├── usbstring.o
+│   │   │   └── usbstring.su
+│   │   ├── host
+│   │   │   └── built-in.o
+│   │   ├── musb
+│   │   │   └── built-in.o
+│   │   ├── musb-new
+│   │   │   └── built-in.o
+│   │   ├── phy
+│   │   │   └── built-in.o
+│   │   └── ulpi
+│   │       └── built-in.o
+│   ├── video
+│   │   ├── built-in.o
+│   │   └── sprdfb
+│   │       ├── built-in.o
+│   │       ├── dsi_1_10a
+│   │       │   └── built-in.o
+│   │       ├── dsi_1_21a
+│   │       │   ├── built-in.o
+│   │       │   ├── mipi_dsih_api.o
+│   │       │   ├── mipi_dsih_api.su
+│   │       │   ├── mipi_dsih_dphy.o
+│   │       │   ├── mipi_dsih_dphy.su
+│   │       │   ├── mipi_dsih_hal.o
+│   │       │   └── mipi_dsih_hal.su
+│   │       ├── lcd
+│   │       │   ├── built-in.o
+│   │       │   ├── lcd_nt35521_mipi.o
+│   │       │   ├── lcd_nt35521_mipi.su
+│   │       │   ├── lcd_rm68200g_mipi.o
+│   │       │   ├── lcd_rm68200g_mipi.su
+│   │       │   ├── lcd_ssd2075_mipi.o
+│   │       │   └── lcd_ssd2075_mipi.su
+│   │       ├── sprdfb_chip_9630.o
+│   │       ├── sprdfb_chip_9630.su
+│   │       ├── sprdfb_chip_common.o
+│   │       ├── sprdfb_chip_common.su
+│   │       ├── sprdfb_dispc.o
+│   │       ├── sprdfb_dispc.su
+│   │       ├── sprdfb_dsi.o
+│   │       ├── sprdfb_dsi.su
+│   │       ├── sprdfb_main.o
+│   │       ├── sprdfb_main.su
+│   │       ├── sprdfb_mipi.o
+│   │       ├── sprdfb_mipi.su
+│   │       ├── sprdfb_panel.o
+│   │       ├── sprdfb_panel.su
+│   │       ├── sprdfb_rgb.o
+│   │       └── sprdfb_rgb.su
+│   └── watchdog
+│       ├── built-in.o
+│       ├── sprd_wdt.o
+│       └── sprd_wdt.su
+├── examples
+│   └── standalone
+│       ├── hello_world
+│       ├── hello_world.bin
+│       ├── hello_world.o
+│       ├── hello_world.srec
+│       ├── hello_world.su
+│       ├── libstubs.o
+│       ├── stubs.o
+│       └── stubs.su
+├── fdl2.bin
+├── fs
+│   ├── built-in.o
+│   ├── exfat
+│   │   ├── built-in.o
+│   │   ├── exfat_check.o
+│   │   ├── exfat_check.su
+│   │   ├── exfat_format.o
+│   │   ├── exfat_format.su
+│   │   ├── exfat_write.o
+│   │   └── exfat_write.su
+│   ├── ext4
+│   │   ├── built-in.o
+│   │   ├── crc16.o
+│   │   ├── crc16.su
+│   │   ├── dev.o
+│   │   ├── dev.su
+│   │   ├── ext4_common.o
+│   │   ├── ext4_common.su
+│   │   ├── ext4fs.o
+│   │   ├── ext4fs.su
+│   │   ├── ext4_journal.o
+│   │   ├── ext4_journal.su
+│   │   ├── ext4_write.o
+│   │   └── ext4_write.su
+│   ├── fat
+│   │   ├── built-in.o
+│   │   ├── fat_check.o
+│   │   ├── fat_check.su
+│   │   ├── fat_format.o
+│   │   ├── fat_format.su
+│   │   ├── fat_write.o
+│   │   ├── fat_write.su
+│   │   ├── file.o
+│   │   └── file.su
+│   ├── fs.o
+│   └── fs.su
+├── include
+│   ├── asm
+│   │   ├── arch -> /home/maning/disk2/c903_sl01/SC9832A_adr5.1_W16.3.4/main/u-boot64/arch/arm/include/asm/arch-sc9630
+│   │   └── proc -> /home/maning/disk2/c903_sl01/SC9832A_adr5.1_W16.3.4/main/u-boot64/arch/arm/include/asm/proc-armv
+│   ├── autoconf.mk
+│   ├── autoconf.mk.dep
+│   ├── config.h
+│   ├── config.mk
+│   ├── generated
+│   │   ├── asm-offsets.h
+│   │   ├── cc_options.mk
+│   │   ├── generic-asm-offsets.h
+│   │   ├── timestamp_autogenerated.h
+│   │   └── version_autogenerated.h
+│   ├── spl-autoconf.mk
+│   └── tpl-autoconf.mk
+├── lib
+│   ├── asm-offsets.s
+│   ├── asm-offsets.su
+│   ├── built-in.o
+│   ├── crc16.o
+│   ├── crc16.su
+│   ├── crc32.o
+│   ├── crc32.su
+│   ├── crc7.o
+│   ├── crc7.su
+│   ├── crc8.o
+│   ├── crc8.su
+│   ├── ctype.o
+│   ├── ctype.su
+│   ├── display_options.o
+│   ├── display_options.su
+│   ├── div64.o
+│   ├── div64.su
+│   ├── errno.o
+│   ├── errno.su
+│   ├── gunzip.o
+│   ├── gunzip.su
+│   ├── hang.o
+│   ├── hang.su
+│   ├── hashtable.o
+│   ├── hashtable.su
+│   ├── initcall.o
+│   ├── initcall.su
+│   ├── ldiv.o
+│   ├── ldiv.su
+│   ├── libfdt
+│   │   ├── built-in.o
+│   │   ├── fdt_empty_tree.o
+│   │   ├── fdt_empty_tree.su
+│   │   ├── fdt.o
+│   │   ├── fdt_ro.o
+│   │   ├── fdt_ro.su
+│   │   ├── fdt_rw.o
+│   │   ├── fdt_rw.su
+│   │   ├── fdt_strerror.o
+│   │   ├── fdt_strerror.su
+│   │   ├── fdt.su
+│   │   ├── fdt_sw.o
+│   │   ├── fdt_sw.su
+│   │   ├── fdt_wip.o
+│   │   └── fdt_wip.su
+│   ├── linux_string.o
+│   ├── linux_string.su
+│   ├── lmb.o
+│   ├── lmb.su
+│   ├── net_utils.o
+│   ├── net_utils.su
+│   ├── qsort.o
+│   ├── qsort.su
+│   ├── rbtree.o
+│   ├── rbtree.su
+│   ├── string.o
+│   ├── string.su
+│   ├── strmhz.o
+│   ├── strmhz.su
+│   ├── time.o
+│   ├── time.su
+│   ├── vsprintf.o
+│   ├── vsprintf.su
+│   └── zlib
+│       ├── built-in.o
+│       ├── zlib.o
+│       └── zlib.su
+├── net
+│   └── built-in.o
+├── System.map
+├── test
+│   └── built-in.o
+├── tools
+│   ├── aisimage.o
+│   ├── crc32.o
+│   ├── default_image.o
+│   ├── dumpimage
+│   ├── dumpimage.o
+│   ├── fdt.o
+│   ├── fdt_ro.o
+│   ├── fdt_rw.o
+│   ├── fdt_strerror.o
+│   ├── fdt_wip.o
+│   ├── fit_image.o
+│   ├── image-fit.o
+│   ├── image-host.o
+│   ├── image.o
+│   ├── image-sig.o
+│   ├── imagetool.o
+│   ├── imximage.o
+│   ├── kernel-doc
+│   │   └── docproc
+│   ├── kwbimage.o
+│   ├── md5.o
+│   ├── mkenvimage
+│   ├── mkenvimage.o
+│   ├── mkimage
+│   ├── mkimage.o
+│   ├── mxsimage.o
+│   ├── omapimage.o
+│   ├── os_support.o
+│   ├── pblimage.o
+│   ├── proftool
+│   ├── proftool.o
+│   ├── sha1.o
+│   └── ublimage.o
+├── u-boot
+├── u-boot.bin
+├── u-boot.lds
+├── u-boot.map
+└── u-boot.srec
+
+79 directories, 547 files

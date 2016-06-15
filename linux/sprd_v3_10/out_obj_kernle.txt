@@ -1,0 +1,5741 @@
+out/target/product/sp9832iea_4m_volte/obj/KERNEL/
+├── arch
+│   └── arm
+│       ├── boot
+│       │   ├── compressed
+│       │   │   ├── ashldi3.o
+│       │   │   ├── ashldi3.S
+│       │   │   ├── decompress.o
+│       │   │   ├── head.o
+│       │   │   ├── hyp-stub.o
+│       │   │   ├── hyp-stub.S
+│       │   │   ├── lib1funcs.o
+│       │   │   ├── lib1funcs.S
+│       │   │   ├── misc.o
+│       │   │   ├── piggy.gzip
+│       │   │   ├── piggy.gzip.o
+│       │   │   ├── string.o
+│       │   │   ├── vmlinux
+│       │   │   └── vmlinux.lds
+│       │   ├── dts
+│       │   │   └── sprd-scx35l_sp9832iea_4m_volte.dtb
+│       │   ├── Image
+│       │   └── zImage
+│       ├── common
+│       │   ├── built-in.o
+│       │   ├── firmware.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── crypto
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── include
+│       │   └── generated
+│       │       ├── asm
+│       │       │   ├── auxvec.h
+│       │       │   ├── bitsperlong.h
+│       │       │   ├── cputime.h
+│       │       │   ├── current.h
+│       │       │   ├── emergency-restart.h
+│       │       │   ├── errno.h
+│       │       │   ├── exec.h
+│       │       │   ├── ioctl.h
+│       │       │   ├── ipcbuf.h
+│       │       │   ├── irq_regs.h
+│       │       │   ├── kdebug.h
+│       │       │   ├── local64.h
+│       │       │   ├── local.h
+│       │       │   ├── msgbuf.h
+│       │       │   ├── param.h
+│       │       │   ├── parport.h
+│       │       │   ├── poll.h
+│       │       │   ├── resource.h
+│       │       │   ├── sections.h
+│       │       │   ├── segment.h
+│       │       │   ├── sembuf.h
+│       │       │   ├── serial.h
+│       │       │   ├── shmbuf.h
+│       │       │   ├── siginfo.h
+│       │       │   ├── sizes.h
+│       │       │   ├── socket.h
+│       │       │   ├── sockios.h
+│       │       │   ├── termbits.h
+│       │       │   ├── termios.h
+│       │       │   ├── timex.h
+│       │       │   ├── trace_clock.h
+│       │       │   ├── types.h
+│       │       │   └── unaligned.h
+│       │       └── uapi
+│       │           └── asm
+│       ├── kernel
+│       │   ├── armksyms.o
+│       │   ├── asm-offsets.s
+│       │   ├── atags_parse.o
+│       │   ├── built-in.o
+│       │   ├── cpuidle.o
+│       │   ├── devtree.o
+│       │   ├── elf.o
+│       │   ├── entry-armv.o
+│       │   ├── entry-common.o
+│       │   ├── ftrace.o
+│       │   ├── head.o
+│       │   ├── hw_breakpoint.o
+│       │   ├── hyp-stub.o
+│       │   ├── insn.o
+│       │   ├── io.o
+│       │   ├── irq.o
+│       │   ├── module.o
+│       │   ├── modules.builtin
+│       │   ├── modules.order
+│       │   ├── opcodes.o
+│       │   ├── perf_event_cpu.o
+│       │   ├── perf_event.o
+│       │   ├── process.o
+│       │   ├── ptrace.o
+│       │   ├── return_address.o
+│       │   ├── sched_clock.o
+│       │   ├── setup.o
+│       │   ├── signal.o
+│       │   ├── sigreturn_codes.o
+│       │   ├── sleep.o
+│       │   ├── smp.o
+│       │   ├── smp_tlb.o
+│       │   ├── stacktrace.o
+│       │   ├── suspend.o
+│       │   ├── sys_arm.o
+│       │   ├── time.o
+│       │   ├── topology.o
+│       │   ├── traps.o
+│       │   ├── unwind.o
+│       │   └── vmlinux.lds
+│       ├── lib
+│       │   ├── ashldi3.o
+│       │   ├── ashrdi3.o
+│       │   ├── backtrace.o
+│       │   ├── built-in.o
+│       │   ├── call_with_stack.o
+│       │   ├── changebit.o
+│       │   ├── clearbit.o
+│       │   ├── clear_user.o
+│       │   ├── copy_from_user.o
+│       │   ├── copy_page.o
+│       │   ├── copy_to_user.o
+│       │   ├── csumipv6.o
+│       │   ├── csumpartialcopy.o
+│       │   ├── csumpartialcopyuser.o
+│       │   ├── csumpartial.o
+│       │   ├── delay-loop.o
+│       │   ├── delay.o
+│       │   ├── div64.o
+│       │   ├── findbit.o
+│       │   ├── getuser.o
+│       │   ├── io-readsb.o
+│       │   ├── io-readsl.o
+│       │   ├── io-readsw-armv4.o
+│       │   ├── io-writesb.o
+│       │   ├── io-writesl.o
+│       │   ├── io-writesw-armv4.o
+│       │   ├── lib1funcs.o
+│       │   ├── lib.a
+│       │   ├── lshrdi3.o
+│       │   ├── memchr.o
+│       │   ├── memcpy.o
+│       │   ├── memmove.o
+│       │   ├── memset.o
+│       │   ├── memzero.o
+│       │   ├── modules.builtin
+│       │   ├── modules.order
+│       │   ├── muldi3.o
+│       │   ├── putuser.o
+│       │   ├── setbit.o
+│       │   ├── strchr.o
+│       │   ├── strrchr.o
+│       │   ├── testchangebit.o
+│       │   ├── testclearbit.o
+│       │   ├── testsetbit.o
+│       │   └── ucmpdi2.o
+│       ├── mach-sc
+│       │   ├── board-sp9832iea_4m_volte.o
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── mm
+│       │   ├── abort-ev7.o
+│       │   ├── alignment.o
+│       │   ├── built-in.o
+│       │   ├── cache-v7.o
+│       │   ├── context.o
+│       │   ├── copypage-v6.o
+│       │   ├── dma-mapping.o
+│       │   ├── extable.o
+│       │   ├── fault-armv.o
+│       │   ├── fault.o
+│       │   ├── flush.o
+│       │   ├── highmem.o
+│       │   ├── idmap.o
+│       │   ├── init.o
+│       │   ├── iomap.o
+│       │   ├── ioremap.o
+│       │   ├── mmap.o
+│       │   ├── mmu.o
+│       │   ├── modules.builtin
+│       │   ├── modules.order
+│       │   ├── pabort-v7.o
+│       │   ├── pgd.o
+│       │   ├── proc-syms.o
+│       │   ├── proc-v7.o
+│       │   └── tlb-v7.o
+│       ├── net
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── oprofile
+│       │   ├── built-in.o
+│       │   ├── common.o
+│       │   ├── modules.builtin
+│       │   ├── modules.order
+│       │   └── oprofile.o
+│       ├── tools
+│       └── vfp
+│           ├── built-in.o
+│           ├── entry.o
+│           ├── modules.builtin
+│           ├── modules.order
+│           ├── vfpdouble.o
+│           ├── vfphw.o
+│           ├── vfpmodule.o
+│           ├── vfp.o
+│           └── vfpsingle.o
+├── block
+│   ├── blk-core.o
+│   ├── blk-exec.o
+│   ├── blk-flush.o
+│   ├── blk-ioc.o
+│   ├── blk-iopoll.o
+│   ├── blk-lib.o
+│   ├── blk-map.o
+│   ├── blk-merge.o
+│   ├── blk-settings.o
+│   ├── blk-softirq.o
+│   ├── blk-sysfs.o
+│   ├── blk-tag.o
+│   ├── blk-timeout.o
+│   ├── built-in.o
+│   ├── cfq-iosched.o
+│   ├── elevator.o
+│   ├── genhd.o
+│   ├── ioctl.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── noop-iosched.o
+│   ├── partition-generic.o
+│   ├── partitions
+│   │   ├── built-in.o
+│   │   ├── check.o
+│   │   ├── efi.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── msdos.o
+│   └── scsi_ioctl.o
+├── crypto
+│   ├── ablkcipher.o
+│   ├── aead.o
+│   ├── aes_generic.o
+│   ├── ahash.o
+│   ├── algapi.o
+│   ├── algboss.o
+│   ├── ansi_cprng.o
+│   ├── api.o
+│   ├── arc4.o
+│   ├── authencesn.o
+│   ├── authenc.o
+│   ├── blkcipher.o
+│   ├── built-in.o
+│   ├── cbc.o
+│   ├── chainiv.o
+│   ├── cipher.o
+│   ├── compress.o
+│   ├── crc32c.o
+│   ├── crypto_algapi.o
+│   ├── crypto_blkcipher.o
+│   ├── crypto_hash.o
+│   ├── cryptomgr.o
+│   ├── crypto.o
+│   ├── crypto_wq.o
+│   ├── deflate.o
+│   ├── des_generic.o
+│   ├── ecb.o
+│   ├── eseqiv.o
+│   ├── hmac.o
+│   ├── krng.o
+│   ├── md5.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── pcompress.o
+│   ├── proc.o
+│   ├── rng.o
+│   ├── scatterwalk.o
+│   ├── sha1_generic.o
+│   ├── sha256_generic.o
+│   ├── shash.o
+│   ├── testmgr.o
+│   ├── twofish_common.o
+│   └── twofish_generic.o
+├── drivers
+│   ├── amba
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── autotst
+│   │   ├── autotstdrv.o
+│   │   ├── autotst.ko
+│   │   ├── autotst.mod.c
+│   │   ├── autotst.mod.o
+│   │   ├── autotst.o
+│   │   ├── built-in.o
+│   │   ├── dispc.o
+│   │   ├── dsi.o
+│   │   ├── lcd_dummy.o
+│   │   ├── mipi_dsih_api.o
+│   │   ├── mipi_dsih_dphy.o
+│   │   ├── mipi_dsih_hal.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── auxdisplay
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── base
+│   │   ├── attribute_container.o
+│   │   ├── built-in.o
+│   │   ├── bus.o
+│   │   ├── class.o
+│   │   ├── core.o
+│   │   ├── cpu.o
+│   │   ├── dd.o
+│   │   ├── devres.o
+│   │   ├── dma-buf.o
+│   │   ├── dma-coherent.o
+│   │   ├── dma-mapping.o
+│   │   ├── driver.o
+│   │   ├── firmware_class.o
+│   │   ├── firmware.o
+│   │   ├── init.o
+│   │   ├── map.o
+│   │   ├── module.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── platform.o
+│   │   ├── power
+│   │   │   ├── built-in.o
+│   │   │   ├── clock_ops.o
+│   │   │   ├── common.o
+│   │   │   ├── generic_ops.o
+│   │   │   ├── main.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── qos.o
+│   │   │   ├── runtime.o
+│   │   │   ├── sysfs.o
+│   │   │   └── wakeup.o
+│   │   ├── regmap
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── regcache-flat.o
+│   │   │   ├── regcache-lzo.o
+│   │   │   ├── regcache.o
+│   │   │   ├── regcache-rbtree.o
+│   │   │   ├── regmap-debugfs.o
+│   │   │   ├── regmap-i2c.o
+│   │   │   ├── regmap.o
+│   │   │   └── regmap-spi.o
+│   │   ├── syscore.o
+│   │   ├── topology.o
+│   │   └── transport_class.o
+│   ├── block
+│   │   ├── built-in.o
+│   │   ├── loop.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── bluetooth
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sprd_lpm.o
+│   ├── built-in.o
+│   ├── bus
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── cdrom
+│   │   ├── built-in.o
+│   │   ├── cdrom.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── char
+│   │   ├── built-in.o
+│   │   ├── mem.o
+│   │   ├── misc.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── random.o
+│   ├── clk
+│   │   ├── built-in.o
+│   │   ├── clk-composite.o
+│   │   ├── clkdev.o
+│   │   ├── clk-devres.o
+│   │   ├── clk-divider.o
+│   │   ├── clk-fixed-factor.o
+│   │   ├── clk-fixed-rate.o
+│   │   ├── clk-gate.o
+│   │   ├── clk-mux.o
+│   │   ├── clk.o
+│   │   ├── clk-sc.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── clocksource
+│   │   ├── built-in.o
+│   │   ├── clksrc-of.o
+│   │   ├── mmio.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── cpufreq
+│   │   ├── built-in.o
+│   │   ├── cpufreq_interactive.o
+│   │   ├── cpufreq.o
+│   │   ├── cpufreq_performance.o
+│   │   ├── cpufreq_powersave.o
+│   │   ├── cpufreq_stats.o
+│   │   ├── cpufreq_userspace.o
+│   │   ├── freq_table.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── cpuhotplug
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sprd_hotplug.o
+│   ├── cpuidle
+│   │   ├── built-in.o
+│   │   ├── cpuidle.o
+│   │   ├── driver.o
+│   │   ├── governor.o
+│   │   ├── governors
+│   │   │   ├── built-in.o
+│   │   │   ├── ladder.o
+│   │   │   ├── menu.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sysfs.o
+│   ├── crypto
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── firewire
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── firmware
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── gator
+│   │   ├── built-in.o
+│   │   ├── gator_events_armv6.o
+│   │   ├── gator_events_armv7.o
+│   │   ├── gator_events_block.o
+│   │   ├── gator_events_irq.o
+│   │   ├── gator_events_l2c-310.o
+│   │   ├── gator_events_meminfo.o
+│   │   ├── gator_events_mmapped.o
+│   │   ├── gator_events_net.o
+│   │   ├── gator_events_perf_pmu.o
+│   │   ├── gator_events_sched.o
+│   │   ├── gator_events_scorpion.o
+│   │   ├── gator.ko
+│   │   ├── gator_main.o
+│   │   ├── gator.mod.c
+│   │   ├── gator.mod.o
+│   │   ├── gator.o
+│   │   └── modules.order
+│   ├── gpio
+│   │   ├── built-in.o
+│   │   ├── devres.o
+│   │   ├── gpio-eic.o
+│   │   ├── gpiolib.o
+│   │   ├── gpiolib-of.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── gpu
+│   │   ├── built-in.o
+│   │   ├── drm
+│   │   │   ├── built-in.o
+│   │   │   ├── i2c
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── sprd_iommu
+│   │   │   ├── built-in.o
+│   │   │   ├── gsp
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   └── sprd_iommu_gsp.o
+│   │   │   ├── mm
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   └── sprd_iommu_mm.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sprd_iommu_common.o
+│   │   │   ├── sprd_iommu_drv.o
+│   │   │   ├── sprd_iommu_sysfs.o
+│   │   │   └── v2
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       ├── modules.order
+│   │   │       ├── sprd_iommu_dcam.o
+│   │   │       ├── sprd_iommu_dispc.o
+│   │   │       ├── sprd_iommu_gsp0.o
+│   │   │       ├── sprd_iommu_gsp1.o
+│   │   │       ├── sprd_iommu_vpp.o
+│   │   │       └── sprd_iommu_vsp.o
+│   │   └── vga
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── hid
+│   │   ├── built-in.o
+│   │   ├── hid-apple.o
+│   │   ├── hid-core.o
+│   │   ├── hid-debug.o
+│   │   ├── hid-generic.o
+│   │   ├── hid-input.o
+│   │   ├── hid-magicmouse.o
+│   │   ├── hid.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── uhid.o
+│   │   └── usbhid
+│   │       ├── built-in.o
+│   │       ├── hid-core.o
+│   │       ├── hid-quirks.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       └── usbhid.o
+│   ├── hsi
+│   │   ├── built-in.o
+│   │   ├── clients
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── hwspinlock
+│   │   ├── built-in.o
+│   │   ├── hwspinlock_core.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sprd_hwspinlock.o
+│   ├── i2c
+│   │   ├── algos
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── busses
+│   │   │   ├── built-in.o
+│   │   │   ├── i2c-sprd.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── i2c-boardinfo.o
+│   │   ├── i2c-core.o
+│   │   ├── i2c-dev.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── muxes
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── idle
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── iio
+│   │   ├── accel
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── adc
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── amplifiers
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── common
+│   │   │   ├── built-in.o
+│   │   │   ├── hid-sensors
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── st_sensors
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── dac
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── frequency
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── gyro
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── imu
+│   │   │   ├── built-in.o
+│   │   │   ├── inv_mpu
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── industrialio-buffer.o
+│   │   ├── industrialio-core.o
+│   │   ├── industrialio-event.o
+│   │   ├── industrialio.o
+│   │   ├── industrialio-trigger.o
+│   │   ├── inkern.o
+│   │   ├── inv_test
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── kfifo_buf.o
+│   │   ├── light
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── magnetometer
+│   │   │   ├── built-in.o
+│   │   │   ├── inv_compass
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── input
+│   │   ├── built-in.o
+│   │   ├── evdev.o
+│   │   ├── ff-core.o
+│   │   ├── input-compat.o
+│   │   ├── input-core.o
+│   │   ├── input-mt.o
+│   │   ├── input.o
+│   │   ├── keyboard
+│   │   │   ├── built-in.o
+│   │   │   ├── gpio_keys.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_eic_keys.o
+│   │   ├── matrix-keymap.o
+│   │   ├── misc
+│   │   │   ├── built-in.o
+│   │   │   ├── em3071_pls.o
+│   │   │   ├── epl259x.o
+│   │   │   ├── gpio_axis.o
+│   │   │   ├── gpio_event.o
+│   │   │   ├── gpio_input.o
+│   │   │   ├── gpio_matrix.o
+│   │   │   ├── gpio_output.o
+│   │   │   ├── headset_sprd_sc2723.o
+│   │   │   ├── mc3xxx.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── uinput.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── touchscreen
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       └── msg2xxx_v3_10
+│   │           ├── built-in.o
+│   │           ├── modules.builtin
+│   │           ├── modules.order
+│   │           ├── msg2xxx_ts.o
+│   │           ├── mstar_drv_common.o
+│   │           ├── mstar_drv_fw_control.o
+│   │           ├── mstar_drv_ic_fw_porting_layer.o
+│   │           ├── mstar_drv_jni_interface.o
+│   │           ├── mstar_drv_main.o
+│   │           ├── mstar_drv_mp_test.o
+│   │           ├── mstar_drv_platform_interface.o
+│   │           ├── mstar_drv_platform_porting_layer.o
+│   │           ├── mstar_drv_sprd.o
+│   │           └── mstar_drv_utility_adaption.o
+│   ├── iq
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sprd_iq.o
+│   ├── irqchip
+│   │   ├── built-in.o
+│   │   ├── irqchip.o
+│   │   ├── irq-gic-common.o
+│   │   ├── irq-gic.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── leds
+│   │   ├── built-in.o
+│   │   ├── led-class.o
+│   │   ├── led-core.o
+│   │   ├── leds-sprd-kpled-2723.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── lguest
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── macintosh
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── md
+│   │   ├── built-in.o
+│   │   ├── dm-builtin.o
+│   │   ├── dm-crypt.o
+│   │   ├── dm-ioctl.o
+│   │   ├── dm-io.o
+│   │   ├── dm-kcopyd.o
+│   │   ├── dm-linear.o
+│   │   ├── dm-mod.o
+│   │   ├── dm.o
+│   │   ├── dm-stripe.o
+│   │   ├── dm-sysfs.o
+│   │   ├── dm-table.o
+│   │   ├── dm-target.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── media
+│   │   ├── built-in.o
+│   │   ├── common
+│   │   │   ├── b2c2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── saa7146
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   └── siano
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── firewire
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── i2c
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── soc_camera
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── mmc
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── siano
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── parport
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── pci
+│   │   │   ├── b2c2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── built-in.o
+│   │   │   ├── ddbridge
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── dm1105
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── mantis
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── ngene
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── pluto2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── pt1
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── saa7146
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   └── ttpci
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── platform
+│   │   │   ├── built-in.o
+│   │   │   ├── davinci
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── radio
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── rc
+│   │   │   ├── built-in.o
+│   │   │   ├── keymaps
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── sprd_dcam
+│   │   │   ├── built-in.o
+│   │   │   ├── common
+│   │   │   │   ├── dcam_img.o
+│   │   │   │   ├── flash_test.o
+│   │   │   │   ├── gen_scale_coef.o
+│   │   │   │   ├── parse_hwinfo.o
+│   │   │   │   └── sin_cos.o
+│   │   │   ├── flash
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── flash_aw3641.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sprd_dcam.o
+│   │   │   └── tshark2
+│   │   │       └── dcam_drv.o
+│   │   ├── sprd_gsp
+│   │   │   ├── built-in.o
+│   │   │   ├── gsp_config_if.o
+│   │   │   ├── gsp_drv.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── scaler_coef_cal.o
+│   │   │   └── sprd_gsp.o
+│   │   ├── sprd_isp
+│   │   │   ├── built-in.o
+│   │   │   ├── isp2.0
+│   │   │   │   └── tshark2
+│   │   │   │       └── src
+│   │   │   │           ├── isp_cfg_param.o
+│   │   │   │           ├── isp_k_1d_lsc.o
+│   │   │   │           ├── isp_k_2d_lsc.o
+│   │   │   │           ├── isp_k_aca.o
+│   │   │   │           ├── isp_k_anti_flicker.o
+│   │   │   │           ├── isp_k_arbiter.o
+│   │   │   │           ├── isp_k_awb.o
+│   │   │   │           ├── isp_k_bdn.o
+│   │   │   │           ├── isp_k_binning4awb.o
+│   │   │   │           ├── isp_k_blc.o
+│   │   │   │           ├── isp_k_bpc.o
+│   │   │   │           ├── isp_k_brightness.o
+│   │   │   │           ├── isp_k_buf_queue.o
+│   │   │   │           ├── isp_k_capability.o
+│   │   │   │           ├── isp_k_cce.o
+│   │   │   │           ├── isp_k_cdn.o
+│   │   │   │           ├── isp_k_cfa.o
+│   │   │   │           ├── isp_k_cmc10.o
+│   │   │   │           ├── isp_k_cmc8.o
+│   │   │   │           ├── isp_k_common.o
+│   │   │   │           ├── isp_k_contrast.o
+│   │   │   │           ├── isp_k_csa.o
+│   │   │   │           ├── isp_k_csc.o
+│   │   │   │           ├── isp_k_css.o
+│   │   │   │           ├── isp_k_ct.o
+│   │   │   │           ├── isp_k_dispatch.o
+│   │   │   │           ├── isp_k_edge.o
+│   │   │   │           ├── isp_k_emboss.o
+│   │   │   │           ├── isp_k_fetch.o
+│   │   │   │           ├── isp_k_gamma.o
+│   │   │   │           ├── isp_k_grgb.o
+│   │   │   │           ├── isp_k_hist2.o
+│   │   │   │           ├── isp_k_hist.o
+│   │   │   │           ├── isp_k_hsv.o
+│   │   │   │           ├── isp_k_hua.o
+│   │   │   │           ├── isp_k_iircnr.o
+│   │   │   │           ├── isp_k_isr.o
+│   │   │   │           ├── isp_k_nlc.o
+│   │   │   │           ├── isp_k_nlm.o
+│   │   │   │           ├── isp_k_pgg.o
+│   │   │   │           ├── isp_k_post_cdn.o
+│   │   │   │           ├── isp_k_pre_cdn.o
+│   │   │   │           ├── isp_k_pre_cdn_rgb.o
+│   │   │   │           ├── isp_k_prefilter.o
+│   │   │   │           ├── isp_k_pstrz.o
+│   │   │   │           ├── isp_k_pwd.o
+│   │   │   │           ├── isp_k_raw_aem.o
+│   │   │   │           ├── isp_k_raw_afm.o
+│   │   │   │           ├── isp_k_raw_sizer.o
+│   │   │   │           ├── isp_k_rgb_gain2.o
+│   │   │   │           ├── isp_k_rgb_gain.o
+│   │   │   │           ├── isp_k_store.o
+│   │   │   │           ├── isp_k_y_delay.o
+│   │   │   │           ├── isp_k_y_gamma.o
+│   │   │   │           ├── isp_k_yiq_aem.o
+│   │   │   │           └── isp_k_yiq_afm.o
+│   │   │   ├── isp_drv.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_isp.o
+│   │   ├── sprd_rotation
+│   │   │   ├── built-in.o
+│   │   │   ├── img_rot.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── rot_drv.o
+│   │   │   └── sprd_rotation.o
+│   │   ├── sprd_scale
+│   │   │   ├── built-in.o
+│   │   │   ├── common
+│   │   │   │   ├── gen_scale_coef.o
+│   │   │   │   ├── img_scale.o
+│   │   │   │   └── sin_cos.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── scale_drv.o
+│   │   │   └── sprd_scale.o
+│   │   ├── sprd_sensor
+│   │   │   ├── built-in.o
+│   │   │   ├── csi2
+│   │   │   │   ├── csi_access.o
+│   │   │   │   ├── csi_api.o
+│   │   │   │   ├── csi_driver.o
+│   │   │   │   ├── csi_log.o
+│   │   │   │   └── csi_system.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── otp
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   ├── sensor_identify.o
+│   │   │   │   └── sensor_otp.o
+│   │   │   ├── power
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   └── sensor_power.o
+│   │   │   ├── sensor_drv_k.o
+│   │   │   └── sprd_sensor.o
+│   │   ├── tuners
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── usb
+│   │   │   ├── b2c2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── built-in.o
+│   │   │   ├── dvb-usb
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── dvb-usb-v2
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── s2255
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── siano
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── stkwebcam
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── ttusb-budget
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── ttusb-dec
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   └── zr364xx
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   └── v4l2-core
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       ├── v4l2-common.o
+│   │       ├── v4l2-ctrls.o
+│   │       ├── v4l2-device.o
+│   │       ├── v4l2-dev.o
+│   │       ├── v4l2-event.o
+│   │       ├── v4l2-fh.o
+│   │       ├── v4l2-ioctl.o
+│   │       ├── v4l2-of.o
+│   │       ├── v4l2-subdev.o
+│   │       ├── videobuf-core.o
+│   │       ├── videobuf-vmalloc.o
+│   │       └── videodev.o
+│   ├── mfd
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── misc
+│   │   ├── benchmark
+│   │   │   ├── benchmark-proc.o
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── bootperf
+│   │   │   ├── bootperf.o
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── carma
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── cb710
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── eeprom
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── lis3lv02d
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── mdbg
+│   │   │   ├── built-in.o
+│   │   │   ├── mdbgdrv.o
+│   │   │   ├── mdbg.o
+│   │   │   ├── mdbg_ring.o
+│   │   │   ├── mdbg_sdio.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── scx35_scenario_dmc.o
+│   │   ├── sdiodev
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sdiodevhal.o
+│   │   │   └── sdio_dev.o
+│   │   ├── sprd_2351
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── sprd_coda7l
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── vpu.o
+│   │   ├── sprd_cproc
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_cproc.o
+│   │   ├── sprd_dwnload
+│   │   │   ├── built-in.o
+│   │   │   ├── gnss_dbg.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sprd_download.o
+│   │   │   └── sprd_power_ctl.o
+│   │   ├── sprd_jpg
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_jpg.o
+│   │   ├── sprd_otp
+│   │   │   ├── ana_efuse.o
+│   │   │   ├── built-in.o
+│   │   │   ├── core.o
+│   │   │   ├── efuse.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── otp-bitmap.o
+│   │   │   └── otp-helper.o
+│   │   ├── sprd_vpp
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_deint
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       ├── modules.order
+│   │   │       └── vpp_deint_drv.o
+│   │   ├── sprd_vsp
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sprd_vsp_sc8830.o
+│   │   ├── ti-st
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── uid_stat.o
+│   ├── mmc
+│   │   ├── built-in.o
+│   │   ├── card
+│   │   │   ├── block-sprd.o
+│   │   │   ├── built-in.o
+│   │   │   ├── mmc_block.o
+│   │   │   ├── mmc_test.ko
+│   │   │   ├── mmc_test.mod.c
+│   │   │   ├── mmc_test.mod.o
+│   │   │   ├── mmc_test.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── queue-sprd.o
+│   │   │   └── sdio_card.o
+│   │   ├── core
+│   │   │   ├── built-in.o
+│   │   │   ├── bus.o
+│   │   │   ├── core-sprd.o
+│   │   │   ├── debugfs.o
+│   │   │   ├── host.o
+│   │   │   ├── mmc_core.o
+│   │   │   ├── mmc.o
+│   │   │   ├── mmc_ops.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── quirks.o
+│   │   │   ├── sdio_bus.o
+│   │   │   ├── sdio_cis.o
+│   │   │   ├── sdio_io.o
+│   │   │   ├── sdio_irq.o
+│   │   │   ├── sdio.o
+│   │   │   ├── sdio_ops.o
+│   │   │   ├── sd.o
+│   │   │   ├── sd_ops.o
+│   │   │   └── slot-gpio.o
+│   │   ├── host
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sdhost_debugfs.o
+│   │   │   └── sdhost.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── net
+│   │   ├── built-in.o
+│   │   ├── ethernet
+│   │   │   ├── 8390
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── broadcom
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── built-in.o
+│   │   │   ├── cadence
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── cirrus
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── faraday
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── i825xx
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── intel
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── marvell
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── micrel
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── microchip
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── natsemi
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── seeq
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── smsc
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   ├── smc91x.o
+│   │   │   │   └── smsc911x.o
+│   │   │   ├── stmicro
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   └── wiznet
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── loopback.o
+│   │   ├── mii.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── phy
+│   │   │   ├── built-in.o
+│   │   │   ├── libphy.o
+│   │   │   ├── mdio_bus.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── phy_device.o
+│   │   │   └── phy.o
+│   │   ├── ppp
+│   │   │   ├── bsd_comp.o
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── ppp_async.o
+│   │   │   ├── ppp_deflate.o
+│   │   │   ├── ppp_generic.o
+│   │   │   ├── ppp_mppe.o
+│   │   │   ├── pppoe.o
+│   │   │   ├── pppolac.o
+│   │   │   ├── pppopns.o
+│   │   │   ├── pppox.o
+│   │   │   └── pptp.o
+│   │   ├── slip
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── slhc.o
+│   │   ├── Space.o
+│   │   ├── tun.o
+│   │   └── wireless
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       └── sc2331
+│   │           └── sc2331_mem_alloc
+│   │               ├── built-in.o
+│   │               ├── modules.builtin
+│   │               ├── modules.order
+│   │               └── sprdwl_mem_alloc.o
+│   ├── nfc
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── of
+│   │   ├── address.o
+│   │   ├── base.o
+│   │   ├── built-in.o
+│   │   ├── device.o
+│   │   ├── fdt.o
+│   │   ├── irq.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── of_i2c.o
+│   │   ├── of_mdio.o
+│   │   ├── of_net.o
+│   │   └── platform.o
+│   ├── oprofile
+│   │   ├── buffer_sync.o
+│   │   ├── cpu_buffer.o
+│   │   ├── event_buffer.o
+│   │   ├── oprofile_files.o
+│   │   ├── oprofilefs.o
+│   │   ├── oprofile_perf.o
+│   │   ├── oprofile_stats.o
+│   │   ├── oprof.o
+│   │   └── timer_int.o
+│   ├── pinctrl
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── platform
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── sprd
+│   │       ├── adc.o
+│   │       ├── adie_irq.o
+│   │       ├── adi.o
+│   │       ├── arch_init.o
+│   │       ├── arch_misc.o
+│   │       ├── boot_mode.o
+│   │       ├── built-in.o
+│   │       ├── clock-sc8830_dt.o
+│   │       ├── common.o
+│   │       ├── cpufreq-scx35.o
+│   │       ├── cpuidle-scx35.o
+│   │       ├── dma_r4p0.o
+│   │       ├── dmc_freq_28nm.o
+│   │       ├── glb.o
+│   │       ├── headsmp.o
+│   │       ├── hotplug.o
+│   │       ├── io-sc8830.o
+│   │       ├── irq.o
+│   │       ├── mailbox.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       ├── pin_switch.o
+│   │       ├── platsmp.o
+│   │       ├── pm_debug_scx35.o
+│   │       ├── pm.o
+│   │       ├── pm-scx35.o
+│   │       ├── reserve.o
+│   │       ├── sprd_debug.o
+│   │       ├── sprd_vibrator_2723.o
+│   │       ├── standby-scx35.o
+│   │       ├── sysdump.o
+│   │       ├── sys_reset.o
+│   │       └── timer_sc8830.o
+│   ├── power
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── power_supply_core.o
+│   │   ├── power_supply.o
+│   │   ├── power_supply_sysfs.o
+│   │   ├── sprd_2713_battery.o
+│   │   ├── sprd_2713_charge.o
+│   │   ├── sprd_2713_fgu.o
+│   │   ├── sprd_2713_power.o
+│   │   └── sprd_charge_ext.o
+│   ├── pwm
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── regulator
+│   │   ├── built-in.o
+│   │   ├── core.o
+│   │   ├── dummy.o
+│   │   ├── fixed-helper.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── of_regulator.o
+│   │   └── sc2723-regulator_dt.o
+│   ├── rtc
+│   │   ├── built-in.o
+│   │   ├── class.o
+│   │   ├── hctosys.o
+│   │   ├── interface.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── rtc-core.o
+│   │   ├── rtc-dev.o
+│   │   ├── rtc-lib.o
+│   │   ├── rtc-proc.o
+│   │   ├── rtc-sprd.o
+│   │   ├── rtc-sysfs.o
+│   │   └── systohc.o
+│   ├── scsi
+│   │   ├── arm
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── constants.o
+│   │   ├── device_handler
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── scsi_dh.o
+│   │   ├── hosts.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── raid_class.o
+│   │   ├── scsicam.o
+│   │   ├── scsi_devinfo.o
+│   │   ├── scsi_error.o
+│   │   ├── scsi_ioctl.o
+│   │   ├── scsi_lib_dma.o
+│   │   ├── scsi_lib.o
+│   │   ├── scsi_mod.o
+│   │   ├── scsi.o
+│   │   ├── scsi_pm.o
+│   │   ├── scsi_proc.o
+│   │   ├── scsi_scan.o
+│   │   ├── scsi_sysctl.o
+│   │   ├── scsi_sysfs.o
+│   │   ├── scsi_tgt_if.o
+│   │   ├── scsi_tgt_lib.o
+│   │   ├── scsi_tgt.o
+│   │   ├── scsi_trace.o
+│   │   ├── sd_mod.o
+│   │   ├── sd.o
+│   │   ├── sg.o
+│   │   ├── sr_ioctl.o
+│   │   ├── sr_mod.o
+│   │   ├── sr.o
+│   │   └── sr_vendor.o
+│   ├── sipc
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── sblock.o
+│   │   ├── sbuf.o
+│   │   ├── seblock.o
+│   │   ├── seth.o
+│   │   ├── sipc_debugfs.o
+│   │   ├── sipc.o
+│   │   ├── sipx.o
+│   │   ├── smem.o
+│   │   ├── smsg.o
+│   │   ├── spipe.o
+│   │   └── stty.o
+│   ├── spi
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── spi.o
+│   │   └── sprd_spi_r4p0.o
+│   ├── staging
+│   │   ├── android
+│   │   │   ├── alarm-dev.o
+│   │   │   ├── ashmem.o
+│   │   │   ├── binder.o
+│   │   │   ├── built-in.o
+│   │   │   ├── ion
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── ion_carveout_heap.o
+│   │   │   │   ├── ion_chunk_heap.o
+│   │   │   │   ├── ion_cma_heap.o
+│   │   │   │   ├── ion_heap.o
+│   │   │   │   ├── ion.o
+│   │   │   │   ├── ion_page_pool.o
+│   │   │   │   ├── ion_system_heap.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   └── sprd
+│   │   │   │       ├── built-in.o
+│   │   │   │       ├── modules.builtin
+│   │   │   │       ├── modules.order
+│   │   │   │       ├── sprd_fence.o
+│   │   │   │       ├── sprd_ion_cma_heap.o
+│   │   │   │       └── sprd_ion.o
+│   │   │   ├── logger.o
+│   │   │   ├── lowmemorykiller.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── sync.o
+│   │   │   ├── timed_gpio.o
+│   │   │   └── timed_output.o
+│   │   ├── built-in.o
+│   │   ├── iio
+│   │   │   ├── accel
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── adc
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── addac
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── built-in.o
+│   │   │   ├── cdc
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── frequency
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── gyro
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── impedance-analyzer
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── light
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── magnetometer
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── meter
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── resolver
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   └── modules.order
+│   │   │   └── trigger
+│   │   │       ├── built-in.o
+│   │   │       ├── modules.builtin
+│   │   │       └── modules.order
+│   │   ├── media
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── staging.o
+│   │   ├── zram
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── zram_drv.o
+│   │   │   ├── zram.o
+│   │   │   └── zram_sysfs.o
+│   │   └── zsmalloc
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       ├── modules.order
+│   │       ├── zsmalloc-main.o
+│   │       └── zsmalloc.o
+│   ├── switch
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── switch_class.o
+│   │   └── switch_gpio.o
+│   ├── thermal
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── of-thermal.o
+│   │   ├── sprd_cpu_cooling.o
+│   │   ├── sprd_ddie_thm.o
+│   │   ├── sprd_thm.o
+│   │   ├── step_wise.o
+│   │   ├── thermal_core.o
+│   │   └── thermal_sys.o
+│   ├── tty
+│   │   ├── built-in.o
+│   │   ├── ipwireless
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── n_tty.o
+│   │   ├── pty.o
+│   │   ├── serial
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── serial_core.o
+│   │   │   └── serial_sprd_dt.o
+│   │   ├── sprdrq.o
+│   │   ├── sysrq.o
+│   │   ├── tty_audit.o
+│   │   ├── tty_buffer.o
+│   │   ├── tty_ioctl.o
+│   │   ├── tty_io.o
+│   │   ├── tty_ldisc.o
+│   │   ├── tty_ldsem.o
+│   │   ├── tty_mutex.o
+│   │   ├── tty_port.o
+│   │   └── vt
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── usb
+│   │   ├── built-in.o
+│   │   ├── core
+│   │   │   ├── buffer.o
+│   │   │   ├── built-in.o
+│   │   │   ├── config.o
+│   │   │   ├── devices.o
+│   │   │   ├── devio.o
+│   │   │   ├── driver.o
+│   │   │   ├── endpoint.o
+│   │   │   ├── file.o
+│   │   │   ├── generic.o
+│   │   │   ├── hcd.o
+│   │   │   ├── hub.o
+│   │   │   ├── message.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── notify.o
+│   │   │   ├── port.o
+│   │   │   ├── quirks.o
+│   │   │   ├── sysfs.o
+│   │   │   ├── urb.o
+│   │   │   ├── usbcore.o
+│   │   │   └── usb.o
+│   │   ├── gadget
+│   │   │   ├── android.o
+│   │   │   ├── built-in.o
+│   │   │   ├── composite.o
+│   │   │   ├── configfs.o
+│   │   │   ├── config.o
+│   │   │   ├── dwc_otg
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── dwc_common_linux.o
+│   │   │   │   ├── dwc_otg_adp.o
+│   │   │   │   ├── dwc_otg_attr.o
+│   │   │   │   ├── dwc_otg_cil_intr.o
+│   │   │   │   ├── dwc_otg_cil.o
+│   │   │   │   ├── dwc_otg_driver.o
+│   │   │   │   ├── dwc_otg.o
+│   │   │   │   ├── dwc_otg_pcd_intr.o
+│   │   │   │   ├── dwc_otg_pcd_linux.o
+│   │   │   │   ├── dwc_otg_pcd.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   └── usb_hw.o
+│   │   │   ├── epautoconf.o
+│   │   │   ├── f_acm.o
+│   │   │   ├── functions.o
+│   │   │   ├── g_android.o
+│   │   │   ├── libcomposite.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── udc-core.o
+│   │   │   ├── usb_f_acm.o
+│   │   │   ├── usbstring.o
+│   │   │   └── u_serial.o
+│   │   ├── misc
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── storage
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── usb-common.o
+│   └── video
+│       ├── backlight
+│       │   ├── backlight.o
+│       │   ├── built-in.o
+│       │   ├── lcd.o
+│       │   ├── modules.builtin
+│       │   ├── modules.order
+│       │   └── sprd_pwm_bl.o
+│       ├── built-in.o
+│       ├── cfbcopyarea.o
+│       ├── cfbfillrect.o
+│       ├── cfbimgblt.o
+│       ├── fbcmap.o
+│       ├── fbcvt.o
+│       ├── fbmem.o
+│       ├── fbmon.o
+│       ├── fb_notify.o
+│       ├── fb.o
+│       ├── fbsysfs.o
+│       ├── modedb.o
+│       ├── modules.builtin
+│       ├── modules.order
+│       ├── omap2
+│       │   ├── built-in.o
+│       │   ├── displays
+│       │   │   ├── built-in.o
+│       │   │   ├── modules.builtin
+│       │   │   └── modules.order
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       └── sprdfb
+│           ├── built-in.o
+│           ├── dsi_1_21a
+│           │   ├── built-in.o
+│           │   ├── mipi_dsih_api.o
+│           │   ├── mipi_dsih_dphy.o
+│           │   ├── mipi_dsih_hal.o
+│           │   ├── modules.builtin
+│           │   └── modules.order
+│           ├── lcd
+│           │   ├── built-in.o
+│           │   ├── lcd_dummy.o
+│           │   ├── lcd_nt35521_mipi.o
+│           │   ├── lcd_rm68200g_mipi.o
+│           │   ├── lcd_ssd2075_mipi.o
+│           │   ├── modules.builtin
+│           │   └── modules.order
+│           ├── modules.builtin
+│           ├── modules.order
+│           ├── spi
+│           │   ├── built-in.o
+│           │   ├── modules.builtin
+│           │   ├── modules.order
+│           │   └── spi_simple_drv.o
+│           ├── sprdfb_attr.o
+│           ├── sprdfb_chip_9630.o
+│           ├── sprdfb_chip_common.o
+│           ├── sprdfb_dispc.o
+│           ├── sprdfb_dsi.o
+│           ├── sprdfb_i2c.o
+│           ├── sprdfb_main.o
+│           ├── sprdfb_mcu.o
+│           ├── sprdfb_mipi.o
+│           ├── sprdfb_panel.o
+│           ├── sprdfb_rgb.o
+│           └── sprdfb_spi.o
+├── firmware
+│   ├── built-in.o
+│   ├── modules.builtin
+│   └── modules.order
+├── fs
+│   ├── aio.o
+│   ├── anon_inodes.o
+│   ├── attr.o
+│   ├── bad_inode.o
+│   ├── binfmt_elf.o
+│   ├── binfmt_script.o
+│   ├── bio.o
+│   ├── block_dev.o
+│   ├── buffer.o
+│   ├── built-in.o
+│   ├── char_dev.o
+│   ├── configfs
+│   │   ├── built-in.o
+│   │   ├── configfs.o
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── inode.o
+│   │   ├── item.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── mount.o
+│   │   └── symlink.o
+│   ├── coredump.o
+│   ├── dcache.o
+│   ├── dcookies.o
+│   ├── debugfs
+│   │   ├── built-in.o
+│   │   ├── debugfs.o
+│   │   ├── file.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── devpts
+│   │   ├── built-in.o
+│   │   ├── devpts.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── direct-io.o
+│   ├── drop_caches.o
+│   ├── eventfd.o
+│   ├── eventpoll.o
+│   ├── exec.o
+│   ├── exofs
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── ext2
+│   │   ├── balloc.o
+│   │   ├── built-in.o
+│   │   ├── dir.o
+│   │   ├── ext2.o
+│   │   ├── file.o
+│   │   ├── ialloc.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── namei.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── ext3
+│   │   ├── balloc.o
+│   │   ├── bitmap.o
+│   │   ├── built-in.o
+│   │   ├── dir.o
+│   │   ├── ext3_jbd.o
+│   │   ├── ext3.o
+│   │   ├── file.o
+│   │   ├── fsync.o
+│   │   ├── hash.o
+│   │   ├── ialloc.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── namei.o
+│   │   ├── resize.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── ext4
+│   │   ├── balloc.o
+│   │   ├── bitmap.o
+│   │   ├── block_validity.o
+│   │   ├── built-in.o
+│   │   ├── dir.o
+│   │   ├── ext4_jbd2.o
+│   │   ├── ext4.o
+│   │   ├── extents.o
+│   │   ├── extents_status.o
+│   │   ├── file.o
+│   │   ├── fsync.o
+│   │   ├── hash.o
+│   │   ├── ialloc.o
+│   │   ├── indirect.o
+│   │   ├── inline.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── mballoc.o
+│   │   ├── migrate.o
+│   │   ├── mmp.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── move_extent.o
+│   │   ├── namei.o
+│   │   ├── page-io.o
+│   │   ├── resize.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_security.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── fat
+│   │   ├── built-in.o
+│   │   ├── cache.o
+│   │   ├── dir.o
+│   │   ├── fatent.o
+│   │   ├── fat.o
+│   │   ├── file.o
+│   │   ├── inode.o
+│   │   ├── misc.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── namei_vfat.o
+│   │   ├── nfs.o
+│   │   └── vfat.o
+│   ├── fcntl.o
+│   ├── file.o
+│   ├── filesystems.o
+│   ├── file_table.o
+│   ├── fs_struct.o
+│   ├── fs-writeback.o
+│   ├── fuse
+│   │   ├── built-in.o
+│   │   ├── control.o
+│   │   ├── dev.o
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── fuse.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── inode.o
+│   ├── ioctl.o
+│   ├── ioprio.o
+│   ├── jbd
+│   │   ├── built-in.o
+│   │   ├── checkpoint.o
+│   │   ├── commit.o
+│   │   ├── jbd.o
+│   │   ├── journal.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── recovery.o
+│   │   ├── revoke.o
+│   │   └── transaction.o
+│   ├── jbd2
+│   │   ├── built-in.o
+│   │   ├── checkpoint.o
+│   │   ├── commit.o
+│   │   ├── jbd2.o
+│   │   ├── journal.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── recovery.o
+│   │   ├── revoke.o
+│   │   └── transaction.o
+│   ├── libfs.o
+│   ├── locks.o
+│   ├── mbcache.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── mpage.o
+│   ├── namei.o
+│   ├── namespace.o
+│   ├── nls
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── nls_ascii.o
+│   │   ├── nls_base.o
+│   │   ├── nls_cp437.o
+│   │   └── nls_iso8859-1.o
+│   ├── notify
+│   │   ├── built-in.o
+│   │   ├── dnotify
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── fanotify
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── fdinfo.o
+│   │   ├── fsnotify.o
+│   │   ├── group.o
+│   │   ├── inode_mark.o
+│   │   ├── inotify
+│   │   │   ├── built-in.o
+│   │   │   ├── inotify_fsnotify.o
+│   │   │   ├── inotify_user.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── mark.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── notification.o
+│   │   └── vfsmount_mark.o
+│   ├── open.o
+│   ├── pipe.o
+│   ├── pnode.o
+│   ├── proc
+│   │   ├── array.o
+│   │   ├── base.o
+│   │   ├── built-in.o
+│   │   ├── cmdline.o
+│   │   ├── consoles.o
+│   │   ├── cpuinfo.o
+│   │   ├── devices.o
+│   │   ├── fd.o
+│   │   ├── generic.o
+│   │   ├── inode.o
+│   │   ├── interrupts.o
+│   │   ├── kmsg.o
+│   │   ├── loadavg.o
+│   │   ├── meminfo.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── namespaces.o
+│   │   ├── page.o
+│   │   ├── proc_net.o
+│   │   ├── proc.o
+│   │   ├── proc_sysctl.o
+│   │   ├── proc_tty.o
+│   │   ├── root.o
+│   │   ├── self.o
+│   │   ├── softirqs.o
+│   │   ├── sprd_debug
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── proc_cpu_usage.o
+│   │   │   ├── proc_sprd_debug_frame.o
+│   │   │   ├── proc_sprd_debug.o
+│   │   │   ├── sprd_debug.o
+│   │   │   └── sprd_uboot_log_dump.o
+│   │   ├── stat.o
+│   │   ├── task_mmu.o
+│   │   ├── uptime.o
+│   │   └── version.o
+│   ├── proc_namespace.o
+│   ├── pstore
+│   │   ├── built-in.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── platform.o
+│   │   ├── pstore.o
+│   │   ├── ram_core.o
+│   │   ├── ram.o
+│   │   └── ramoops.o
+│   ├── quota
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── ramfs
+│   │   ├── built-in.o
+│   │   ├── file-mmu.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── ramfs.o
+│   ├── readdir.o
+│   ├── read_write.o
+│   ├── select.o
+│   ├── seq_file.o
+│   ├── signalfd.o
+│   ├── splice.o
+│   ├── stack.o
+│   ├── statfs.o
+│   ├── stat.o
+│   ├── super.o
+│   ├── sync.o
+│   ├── sysfs
+│   │   ├── bin.o
+│   │   ├── built-in.o
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── group.o
+│   │   ├── inode.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── mount.o
+│   │   └── symlink.o
+│   ├── timerfd.o
+│   ├── utimes.o
+│   └── xattr.o
+├── include
+│   ├── config
+│   │   ├── adie
+│   │   │   └── sc2723.h
+│   │   ├── aeabi.h
+│   │   ├── aio.h
+│   │   ├── alignment
+│   │   │   └── trap.h
+│   │   ├── android
+│   │   │   ├── binder
+│   │   │   │   ├── ipc
+│   │   │   │   │   └── 32bit.h
+│   │   │   │   └── ipc.h
+│   │   │   ├── intf
+│   │   │   │   └── alarm
+│   │   │   │       └── dev.h
+│   │   │   ├── logger.h
+│   │   │   ├── low
+│   │   │   │   └── memory
+│   │   │   │       ├── killer
+│   │   │   │       │   └── autodetect
+│   │   │   │       │       └── oom
+│   │   │   │       │           └── adj
+│   │   │   │       │               └── values.h
+│   │   │   │       └── killer.h
+│   │   │   ├── paranoid
+│   │   │   │   └── network.h
+│   │   │   └── timed
+│   │   │       ├── gpio.h
+│   │   │       └── output.h
+│   │   ├── android.h
+│   │   ├── anon
+│   │   │   └── inodes.h
+│   │   ├── arch
+│   │   │   ├── binfmt
+│   │   │   │   └── elf
+│   │   │   │       └── randomize
+│   │   │   │           └── pie.h
+│   │   │   ├── has
+│   │   │   │   ├── atomic64
+│   │   │   │   │   └── dec
+│   │   │   │   │       └── if
+│   │   │   │   │           └── positive.h
+│   │   │   │   ├── cpufreq.h
+│   │   │   │   └── tick
+│   │   │   │       └── broadcast.h
+│   │   │   ├── have
+│   │   │   │   └── custom
+│   │   │   │       └── gpio
+│   │   │   │           └── h.h
+│   │   │   ├── nr
+│   │   │   │   └── gpio.h
+│   │   │   ├── require
+│   │   │   │   └── gpiolib.h
+│   │   │   ├── sc.h
+│   │   │   ├── scx35.h
+│   │   │   ├── scx35l.h
+│   │   │   ├── supports
+│   │   │   │   └── atomic
+│   │   │   │       └── rmw.h
+│   │   │   ├── suspend
+│   │   │   │   └── possible.h
+│   │   │   └── want
+│   │   │       └── ipc
+│   │   │           └── parse
+│   │   │               └── version.h
+│   │   ├── arm
+│   │   │   ├── cpu
+│   │   │   │   ├── suspend.h
+│   │   │   │   └── topology.h
+│   │   │   ├── dma
+│   │   │   │   └── mem
+│   │   │   │       └── bufferable.h
+│   │   │   ├── flush
+│   │   │   │   └── console
+│   │   │   │       └── on
+│   │   │   │           └── restart.h
+│   │   │   ├── gic.h
+│   │   │   ├── has
+│   │   │   │   └── sg
+│   │   │   │       └── chain.h
+│   │   │   ├── l1
+│   │   │   │   └── cache
+│   │   │   │       ├── shift
+│   │   │   │       │   └── 6.h
+│   │   │   │       └── shift.h
+│   │   │   ├── nr
+│   │   │   │   └── banks.h
+│   │   │   ├── thumb.h
+│   │   │   ├── unwind.h
+│   │   │   └── virt
+│   │   │       └── ext.h
+│   │   ├── arm.h
+│   │   ├── ashmem.h
+│   │   ├── atags.h
+│   │   ├── audit
+│   │   │   ├── generic.h
+│   │   │   ├── tree.h
+│   │   │   └── watch.h
+│   │   ├── audit.h
+│   │   ├── auditsyscall.h
+│   │   ├── auto.conf
+│   │   ├── auto.conf.cmd
+│   │   ├── backlight
+│   │   │   ├── class
+│   │   │   │   └── device.h
+│   │   │   ├── lcd
+│   │   │   │   └── support.h
+│   │   │   └── sprd
+│   │   │       └── pwm.h
+│   │   ├── base
+│   │   │   ├── full.h
+│   │   │   └── small.h
+│   │   ├── bcma
+│   │   │   └── possible.h
+│   │   ├── benchmark.h
+│   │   ├── binary
+│   │   │   └── printf.h
+│   │   ├── binfmt
+│   │   │   ├── elf.h
+│   │   │   └── script.h
+│   │   ├── bitreverse.h
+│   │   ├── blk
+│   │   │   ├── dev
+│   │   │   │   ├── dm
+│   │   │   │   │   └── builtin.h
+│   │   │   │   ├── dm.h
+│   │   │   │   ├── initrd.h
+│   │   │   │   ├── io
+│   │   │   │   │   └── trace.h
+│   │   │   │   ├── loop
+│   │   │   │   │   └── min
+│   │   │   │   │       └── count.h
+│   │   │   │   ├── loop.h
+│   │   │   │   ├── sd.h
+│   │   │   │   ├── sr
+│   │   │   │   │   └── vendor.h
+│   │   │   │   └── sr.h
+│   │   │   └── dev.h
+│   │   ├── block.h
+│   │   ├── boot
+│   │   │   └── perf.h
+│   │   ├── bootparam
+│   │   │   ├── hardlockup
+│   │   │   │   └── panic
+│   │   │   │       └── value.h
+│   │   │   └── softlockup
+│   │   │       └── panic
+│   │   │           └── value.h
+│   │   ├── bounce.h
+│   │   ├── bql.h
+│   │   ├── branch
+│   │   │   └── profile
+│   │   │       └── none.h
+│   │   ├── bt
+│   │   │   ├── bnep
+│   │   │   │   ├── mc
+│   │   │   │   │   └── filter.h
+│   │   │   │   └── proto
+│   │   │   │       └── filter.h
+│   │   │   ├── bnep.h
+│   │   │   ├── hidp.h
+│   │   │   ├── rfcomm
+│   │   │   │   └── tty.h
+│   │   │   └── rfcomm.h
+│   │   ├── bt.h
+│   │   ├── bug.h
+│   │   ├── buildtime
+│   │   │   └── extable
+│   │   │       └── sort.h
+│   │   ├── camera
+│   │   │   ├── 5m.h
+│   │   │   ├── flash
+│   │   │   │   └── aw3641.h
+│   │   │   └── non
+│   │   │       └── zsl.h
+│   │   ├── cc
+│   │   │   └── optimize
+│   │   │       └── for
+│   │   │           └── size.h
+│   │   ├── cfg80211
+│   │   │   ├── allow
+│   │   │   │   └── reconnect.h
+│   │   │   └── default
+│   │   │       └── ps.h
+│   │   ├── cfg80211.h
+│   │   ├── cgroup
+│   │   │   ├── cpuacct.h
+│   │   │   ├── debug.h
+│   │   │   ├── freezer.h
+│   │   │   └── sched.h
+│   │   ├── cgroups.h
+│   │   ├── chr
+│   │   │   └── dev
+│   │   │       └── sg.h
+│   │   ├── clkdev
+│   │   │   └── lookup.h
+│   │   ├── clksrc
+│   │   │   ├── mmio.h
+│   │   │   └── of.h
+│   │   ├── clone
+│   │   │   └── backwards.h
+│   │   ├── cmdline
+│   │   │   └── from
+│   │   │       └── bootloader.h
+│   │   ├── cmdline.h
+│   │   ├── common
+│   │   │   ├── clk
+│   │   │   │   └── debug.h
+│   │   │   └── clk.h
+│   │   ├── compaction.h
+│   │   ├── compat
+│   │   │   └── brk.h
+│   │   ├── configfs
+│   │   │   └── fs.h
+│   │   ├── context
+│   │   │   └── switch
+│   │   │       └── tracer.h
+│   │   ├── coredump.h
+│   │   ├── cpu
+│   │   │   ├── 32v6k.h
+│   │   │   ├── 32v7.h
+│   │   │   ├── abrt
+│   │   │   │   └── ev7.h
+│   │   │   ├── cache
+│   │   │   │   ├── v7.h
+│   │   │   │   └── vipt.h
+│   │   │   ├── copy
+│   │   │   │   └── v6.h
+│   │   │   ├── cp15
+│   │   │   │   └── mmu.h
+│   │   │   ├── cp15.h
+│   │   │   ├── freq
+│   │   │   │   ├── default
+│   │   │   │   │   └── gov
+│   │   │   │   │       └── interactive.h
+│   │   │   │   ├── gov
+│   │   │   │   │   ├── interactive.h
+│   │   │   │   │   ├── performance.h
+│   │   │   │   │   ├── powersave.h
+│   │   │   │   │   └── userspace.h
+│   │   │   │   ├── stat.h
+│   │   │   │   └── table.h
+│   │   │   ├── freq.h
+│   │   │   ├── has
+│   │   │   │   └── asid.h
+│   │   │   ├── idle
+│   │   │   │   └── gov
+│   │   │   │       ├── ladder.h
+│   │   │   │       └── menu.h
+│   │   │   ├── idle.h
+│   │   │   ├── pabrt
+│   │   │   │   └── v7.h
+│   │   │   ├── pm.h
+│   │   │   ├── rmap.h
+│   │   │   ├── tlb
+│   │   │   │   └── v7.h
+│   │   │   └── v7.h
+│   │   ├── crc
+│   │   │   └── ccitt.h
+│   │   ├── crc16.h
+│   │   ├── crc32
+│   │   │   └── sliceby8.h
+│   │   ├── crc32.h
+│   │   ├── cross
+│   │   │   ├── compile.h
+│   │   │   └── memory
+│   │   │       └── attach.h
+│   │   ├── crypto
+│   │   │   ├── aead2.h
+│   │   │   ├── aead.h
+│   │   │   ├── aes.h
+│   │   │   ├── algapi2.h
+│   │   │   ├── algapi.h
+│   │   │   ├── ansi
+│   │   │   │   └── cprng.h
+│   │   │   ├── arc4.h
+│   │   │   ├── authenc.h
+│   │   │   ├── blkcipher2.h
+│   │   │   ├── blkcipher.h
+│   │   │   ├── cbc.h
+│   │   │   ├── crc32c.h
+│   │   │   ├── deflate.h
+│   │   │   ├── des.h
+│   │   │   ├── ecb.h
+│   │   │   ├── hash2.h
+│   │   │   ├── hash.h
+│   │   │   ├── hmac.h
+│   │   │   ├── hw.h
+│   │   │   ├── manager
+│   │   │   │   └── disable
+│   │   │   │       └── tests.h
+│   │   │   ├── manager2.h
+│   │   │   ├── manager.h
+│   │   │   ├── md5.h
+│   │   │   ├── pcomp2.h
+│   │   │   ├── rng2.h
+│   │   │   ├── rng.h
+│   │   │   ├── sha1.h
+│   │   │   ├── sha256.h
+│   │   │   ├── twofish
+│   │   │   │   └── common.h
+│   │   │   ├── twofish.h
+│   │   │   └── workqueue.h
+│   │   ├── crypto.h
+│   │   ├── dcache
+│   │   │   └── word
+│   │   │       └── access.h
+│   │   ├── debug
+│   │   │   ├── bugverbose.h
+│   │   │   ├── fs.h
+│   │   │   ├── info.h
+│   │   │   ├── kernel.h
+│   │   │   └── ll
+│   │   │       └── include.h
+│   │   ├── decompress
+│   │   │   └── gzip.h
+│   │   ├── default
+│   │   │   ├── cfq.h
+│   │   │   ├── hostname.h
+│   │   │   ├── iosched.h
+│   │   │   ├── message
+│   │   │   │   └── loglevel.h
+│   │   │   ├── mmap
+│   │   │   │   └── min
+│   │   │   │       └── addr.h
+│   │   │   ├── security
+│   │   │   │   └── selinux.h
+│   │   │   ├── security.h
+│   │   │   └── tcp
+│   │   │       └── cong.h
+│   │   ├── defconfig
+│   │   │   └── list.h
+│   │   ├── devkmem.h
+│   │   ├── devmem.h
+│   │   ├── dm
+│   │   │   └── crypt.h
+│   │   ├── dma
+│   │   │   └── shared
+│   │   │       └── buffer.h
+│   │   ├── dql.h
+│   │   ├── dtc.h
+│   │   ├── dynamic
+│   │   │   ├── debug.h
+│   │   │   └── ftrace.h
+│   │   ├── e
+│   │   │   └── show
+│   │   │       └── mem.h
+│   │   ├── earlysuspend.h
+│   │   ├── efi
+│   │   │   └── partition.h
+│   │   ├── eirq
+│   │   │   └── num.h
+│   │   ├── elf
+│   │   │   └── core.h
+│   │   ├── embedded.h
+│   │   ├── enable
+│   │   │   ├── must
+│   │   │   │   └── check.h
+│   │   │   └── warn
+│   │   │       └── deprecated.h
+│   │   ├── epoll.h
+│   │   ├── ethernet.h
+│   │   ├── event
+│   │   │   └── tracing.h
+│   │   ├── eventfd.h
+│   │   ├── expert.h
+│   │   ├── ext2
+│   │   │   ├── fs
+│   │   │   │   └── xattr.h
+│   │   │   └── fs.h
+│   │   ├── ext3
+│   │   │   ├── fs
+│   │   │   │   └── xattr.h
+│   │   │   └── fs.h
+│   │   ├── ext4
+│   │   │   ├── fs
+│   │   │   │   └── security.h
+│   │   │   └── fs.h
+│   │   ├── extra
+│   │   │   └── firmware.h
+│   │   ├── fair
+│   │   │   └── group
+│   │   │       └── sched.h
+│   │   ├── fat
+│   │   │   ├── default
+│   │   │   │   ├── codepage.h
+│   │   │   │   └── iocharset.h
+│   │   │   └── fs.h
+│   │   ├── fb
+│   │   │   ├── cfb
+│   │   │   │   ├── copyarea.h
+│   │   │   │   ├── fillrect.h
+│   │   │   │   └── imageblit.h
+│   │   │   ├── dynamic
+│   │   │   │   └── freq
+│   │   │   │       └── scaling.h
+│   │   │   ├── earlysuspend.h
+│   │   │   ├── esd
+│   │   │   │   └── support.h
+│   │   │   ├── lcd
+│   │   │   │   ├── dummy.h
+│   │   │   │   ├── nt35521
+│   │   │   │   │   └── mipi.h
+│   │   │   │   ├── overlay
+│   │   │   │   │   └── support.h
+│   │   │   │   ├── reserve
+│   │   │   │   │   └── mem.h
+│   │   │   │   ├── rm68200g
+│   │   │   │   │   └── mipi.h
+│   │   │   │   └── ssd2075
+│   │   │   │       └── mipi.h
+│   │   │   ├── scx35l.h
+│   │   │   ├── triple
+│   │   │   │   └── framebuffer.h
+│   │   │   └── vsync
+│   │   │       └── support.h
+│   │   ├── fb.h
+│   │   ├── fib
+│   │   │   └── rules.h
+│   │   ├── file
+│   │   │   └── locking.h
+│   │   ├── firmware
+│   │   │   └── in
+│   │   │       └── kernel.h
+│   │   ├── flat
+│   │   │   └── node
+│   │   │       └── mem
+│   │   │           └── map.h
+│   │   ├── flatmem.h
+│   │   ├── force
+│   │   │   └── max
+│   │   │       └── zoneorder.h
+│   │   ├── frame
+│   │   │   ├── pointer.h
+│   │   │   └── warn.h
+│   │   ├── freezer.h
+│   │   ├── fs
+│   │   │   └── mbcache.h
+│   │   ├── fsnotify.h
+│   │   ├── ftrace
+│   │   │   ├── mcount
+│   │   │   │   └── record.h
+│   │   │   └── syscalls.h
+│   │   ├── ftrace.h
+│   │   ├── function
+│   │   │   ├── graph
+│   │   │   │   └── tracer.h
+│   │   │   └── tracer.h
+│   │   ├── fuse
+│   │   │   └── fs.h
+│   │   ├── futex.h
+│   │   ├── fw
+│   │   │   ├── loader
+│   │   │   │   └── user
+│   │   │   │       └── helper.h
+│   │   │   └── loader.h
+│   │   ├── gator.h
+│   │   ├── generic
+│   │   │   ├── allocator.h
+│   │   │   ├── bug.h
+│   │   │   ├── calibrate
+│   │   │   │   └── delay.h
+│   │   │   ├── clockevents
+│   │   │   │   ├── broadcast.h
+│   │   │   │   └── build.h
+│   │   │   ├── clockevents.h
+│   │   │   ├── hardirqs.h
+│   │   │   ├── hweight.h
+│   │   │   ├── idle
+│   │   │   │   └── poll
+│   │   │   │       └── setup.h
+│   │   │   ├── io.h
+│   │   │   ├── irq
+│   │   │   │   ├── probe.h
+│   │   │   │   └── show.h
+│   │   │   ├── pci
+│   │   │   │   └── iomap.h
+│   │   │   ├── smp
+│   │   │   │   └── idle
+│   │   │   │       └── thread.h
+│   │   │   ├── strncpy
+│   │   │   │   └── from
+│   │   │   │       └── user.h
+│   │   │   ├── strnlen
+│   │   │   │   └── user.h
+│   │   │   └── tracer.h
+│   │   ├── gnss
+│   │   │   └── dbg.h
+│   │   ├── gpio
+│   │   │   ├── devres.h
+│   │   │   └── sysfs.h
+│   │   ├── gpiolib.h
+│   │   ├── gsp
+│   │   │   └── three
+│   │   │       └── overlay.h
+│   │   ├── gst
+│   │   │   └── tp
+│   │   │       └── gesture
+│   │   │           └── support.h
+│   │   ├── hardirqs
+│   │   │   └── sw
+│   │   │       └── resend.h
+│   │   ├── hardlockup
+│   │   │   ├── detector
+│   │   │   │   └── other
+│   │   │   │       └── cpu.h
+│   │   │   └── detector.h
+│   │   ├── has
+│   │   │   ├── dma.h
+│   │   │   ├── earlysuspend.h
+│   │   │   ├── iomem.h
+│   │   │   ├── ioport.h
+│   │   │   └── wakelock.h
+│   │   ├── have
+│   │   │   ├── arch
+│   │   │   │   ├── auditsyscall.h
+│   │   │   │   ├── jump
+│   │   │   │   │   └── label.h
+│   │   │   │   ├── kgdb.h
+│   │   │   │   ├── pfn
+│   │   │   │   │   └── valid.h
+│   │   │   │   ├── seccomp
+│   │   │   │   │   └── filter.h
+│   │   │   │   └── tracehook.h
+│   │   │   ├── bpf
+│   │   │   │   └── jit.h
+│   │   │   ├── c
+│   │   │   │   └── recordmcount.h
+│   │   │   ├── clk
+│   │   │   │   └── prepare.h
+│   │   │   ├── clk.h
+│   │   │   ├── context
+│   │   │   │   └── tracking.h
+│   │   │   ├── debug
+│   │   │   │   └── kmemleak.h
+│   │   │   ├── dma
+│   │   │   │   ├── api
+│   │   │   │   │   └── debug.h
+│   │   │   │   ├── attrs.h
+│   │   │   │   └── contiguous.h
+│   │   │   ├── dynamic
+│   │   │   │   └── ftrace.h
+│   │   │   ├── ftrace
+│   │   │   │   └── mcount
+│   │   │   │       └── record.h
+│   │   │   ├── function
+│   │   │   │   ├── graph
+│   │   │   │   │   └── tracer.h
+│   │   │   │   └── tracer.h
+│   │   │   ├── futex
+│   │   │   │   └── cmpxchg.h
+│   │   │   ├── generic
+│   │   │   │   ├── dma
+│   │   │   │   │   └── coherent.h
+│   │   │   │   └── hardirqs.h
+│   │   │   ├── hw
+│   │   │   │   └── breakpoint.h
+│   │   │   ├── irq
+│   │   │   │   └── time
+│   │   │   │       └── accounting.h
+│   │   │   ├── kernel
+│   │   │   │   ├── gzip.h
+│   │   │   │   ├── lzma.h
+│   │   │   │   ├── lzo.h
+│   │   │   │   └── xz.h
+│   │   │   ├── kprobes.h
+│   │   │   ├── kretprobes.h
+│   │   │   ├── memblock.h
+│   │   │   ├── mod
+│   │   │   │   └── arch
+│   │   │   │       └── specific.h
+│   │   │   ├── net
+│   │   │   │   └── dsa.h
+│   │   │   ├── oprofile.h
+│   │   │   ├── perf
+│   │   │   │   └── events.h
+│   │   │   ├── proc
+│   │   │   │   └── cpu.h
+│   │   │   ├── regs
+│   │   │   │   └── and
+│   │   │   │       └── stack
+│   │   │   │           └── access
+│   │   │   │               └── api.h
+│   │   │   ├── smp.h
+│   │   │   ├── syscall
+│   │   │   │   └── tracepoints.h
+│   │   │   └── uid16.h
+│   │   ├── hid
+│   │   │   ├── apple.h
+│   │   │   ├── generic.h
+│   │   │   └── magicmouse.h
+│   │   ├── hid.h
+│   │   ├── high
+│   │   │   └── res
+│   │   │       └── timers.h
+│   │   ├── highmem.h
+│   │   ├── hotplug
+│   │   │   └── cpu.h
+│   │   ├── hotplug.h
+│   │   ├── hw
+│   │   │   └── perf
+│   │   │       └── events.h
+│   │   ├── hwspinlock
+│   │   │   └── sci.h
+│   │   ├── hwspinlock.h
+│   │   ├── hz.h
+│   │   ├── i2c
+│   │   │   ├── boardinfo.h
+│   │   │   ├── chardev.h
+│   │   │   ├── compat.h
+│   │   │   ├── helper
+│   │   │   │   └── auto.h
+│   │   │   ├── sprd
+│   │   │   │   └── r6p0
+│   │   │   │       └── duty.h
+│   │   │   └── sprd.h
+│   │   ├── i2c.h
+│   │   ├── iio
+│   │   │   ├── buffer.h
+│   │   │   ├── consumers
+│   │   │   │   └── per
+│   │   │   │       └── trigger.h
+│   │   │   ├── kfifo
+│   │   │   │   └── buf.h
+│   │   │   └── trigger.h
+│   │   ├── iio.h
+│   │   ├── inet
+│   │   │   ├── diag.h
+│   │   │   ├── esp.h
+│   │   │   ├── tcp
+│   │   │   │   └── diag.h
+│   │   │   ├── tunnel.h
+│   │   │   └── xfrm
+│   │   │       └── mode
+│   │   │           ├── beet.h
+│   │   │           ├── transport.h
+│   │   │           └── tunnel.h
+│   │   ├── inet6
+│   │   │   ├── ah.h
+│   │   │   ├── esp.h
+│   │   │   ├── ipcomp.h
+│   │   │   ├── tunnel.h
+│   │   │   └── xfrm
+│   │   │       ├── mode
+│   │   │       │   ├── beet.h
+│   │   │       │   ├── transport.h
+│   │   │       │   └── tunnel.h
+│   │   │       └── tunnel.h
+│   │   ├── inet.h
+│   │   ├── init
+│   │   │   └── env
+│   │   │       └── arg
+│   │   │           └── limit.h
+│   │   ├── initramfs
+│   │   │   └── source.h
+│   │   ├── inotify
+│   │   │   └── user.h
+│   │   ├── input
+│   │   │   ├── em3071
+│   │   │   │   └── i2c.h
+│   │   │   ├── epl259x
+│   │   │   │   └── i2c.h
+│   │   │   ├── evdev.h
+│   │   │   ├── gpio.h
+│   │   │   ├── headset
+│   │   │   │   └── sprd
+│   │   │   │       └── sc2723.h
+│   │   │   ├── keyboard.h
+│   │   │   ├── matrixkmap.h
+│   │   │   ├── mc3xxx
+│   │   │   │   └── i2c.h
+│   │   │   ├── misc.h
+│   │   │   ├── touchscreen.h
+│   │   │   └── uinput.h
+│   │   ├── input.h
+│   │   ├── ion
+│   │   │   └── sprd.h
+│   │   ├── ion.h
+│   │   ├── iosched
+│   │   │   ├── cfq.h
+│   │   │   └── noop.h
+│   │   ├── ip
+│   │   │   ├── advanced
+│   │   │   │   └── router.h
+│   │   │   ├── multiple
+│   │   │   │   └── tables.h
+│   │   │   └── nf
+│   │   │       ├── arp
+│   │   │       │   └── mangle.h
+│   │   │       ├── arpfilter.h
+│   │   │       ├── arptables.h
+│   │   │       ├── filter.h
+│   │   │       ├── iptables.h
+│   │   │       ├── mangle.h
+│   │   │       ├── match
+│   │   │       │   ├── ah.h
+│   │   │       │   ├── ecn.h
+│   │   │       │   └── ttl.h
+│   │   │       ├── raw.h
+│   │   │       └── target
+│   │   │           ├── masquerade.h
+│   │   │           ├── netmap.h
+│   │   │           ├── redirect.h
+│   │   │           ├── reject
+│   │   │           │   └── skerr.h
+│   │   │           └── reject.h
+│   │   ├── ip6
+│   │   │   └── nf
+│   │   │       ├── filter.h
+│   │   │       ├── iptables.h
+│   │   │       ├── mangle.h
+│   │   │       ├── raw.h
+│   │   │       └── target
+│   │   │           ├── reject
+│   │   │           │   └── skerr.h
+│   │   │           └── reject.h
+│   │   ├── ipv6
+│   │   │   ├── mip6.h
+│   │   │   ├── multiple
+│   │   │   │   └── tables.h
+│   │   │   ├── ndisc
+│   │   │   │   └── nodetype.h
+│   │   │   ├── optimistic
+│   │   │   │   └── dad.h
+│   │   │   ├── privacy.h
+│   │   │   ├── route
+│   │   │   │   └── info.h
+│   │   │   ├── router
+│   │   │   │   └── pref.h
+│   │   │   ├── sit.h
+│   │   │   ├── subtrees.h
+│   │   │   └── tunnel.h
+│   │   ├── ipv6.h
+│   │   ├── irq
+│   │   │   ├── domain.h
+│   │   │   └── work.h
+│   │   ├── irqchip.h
+│   │   ├── irqsoff
+│   │   │   └── tracer.h
+│   │   ├── jbd2.h
+│   │   ├── jbd.h
+│   │   ├── kallsyms
+│   │   │   └── all.h
+│   │   ├── kallsyms.h
+│   │   ├── kernel
+│   │   │   └── gzip.h
+│   │   ├── kernel.release
+│   │   ├── keyboard
+│   │   │   ├── gpio.h
+│   │   │   └── sprd
+│   │   │       └── eic.h
+│   │   ├── keys.h
+│   │   ├── ktime
+│   │   │   └── scalar.h
+│   │   ├── kuser
+│   │   │   └── helpers.h
+│   │   ├── l2tp.h
+│   │   ├── lbdaf.h
+│   │   ├── lcd
+│   │   │   └── class
+│   │   │       └── device.h
+│   │   ├── leds
+│   │   │   └── class.h
+│   │   ├── libcrc32c.h
+│   │   ├── libfdt.h
+│   │   ├── local
+│   │   │   └── timers.h
+│   │   ├── localversion
+│   │   │   └── auto.h
+│   │   ├── localversion.h
+│   │   ├── lockdep
+│   │   │   └── support.h
+│   │   ├── lockup
+│   │   │   └── detector.h
+│   │   ├── log
+│   │   │   └── buf
+│   │   │       └── shift.h
+│   │   ├── lsm
+│   │   │   └── mmap
+│   │   │       └── min
+│   │   │           └── addr.h
+│   │   ├── lzo
+│   │   │   ├── compress.h
+│   │   │   ├── decompress.h
+│   │   │   └── soft
+│   │   │       └── algo.h
+│   │   ├── mach
+│   │   │   ├── sp9830i.h
+│   │   │   └── sp9832iea
+│   │   │       └── 4m
+│   │   │           └── volte.h
+│   │   ├── magic
+│   │   │   └── sysrq.h
+│   │   ├── mdbg
+│   │   │   ├── ring.h
+│   │   │   └── sdio.h
+│   │   ├── mdbg.h
+│   │   ├── md.h
+│   │   ├── media
+│   │   │   ├── camera
+│   │   │   │   └── support.h
+│   │   │   ├── subdrv
+│   │   │   │   └── autoselect.h
+│   │   │   └── support.h
+│   │   ├── memcg
+│   │   │   ├── swap
+│   │   │   │   └── enabled.h
+│   │   │   └── swap.h
+│   │   ├── memcg.h
+│   │   ├── migration.h
+│   │   ├── mii.h
+│   │   ├── misc
+│   │   │   └── filesystems.h
+│   │   ├── mm
+│   │   │   └── owner.h
+│   │   ├── mmc
+│   │   │   ├── block
+│   │   │   │   ├── bounce.h
+│   │   │   │   ├── deferred
+│   │   │   │   │   └── resume.h
+│   │   │   │   └── minors.h
+│   │   │   ├── block.h
+│   │   │   ├── sdhost.h
+│   │   │   ├── test.h
+│   │   │   └── unsafe
+│   │   │       └── resume.h
+│   │   ├── mmc.h
+│   │   ├── mmu.h
+│   │   ├── module
+│   │   │   └── unload.h
+│   │   ├── modules
+│   │   │   └── use
+│   │   │       └── elf
+│   │   │           └── rel.h
+│   │   ├── modules.h
+│   │   ├── modversions.h
+│   │   ├── msdos
+│   │   │   └── partition.h
+│   │   ├── multi
+│   │   │   └── irq
+│   │   │       └── handler.h
+│   │   ├── mutex
+│   │   │   └── spin
+│   │   │       └── on
+│   │   │           └── owner.h
+│   │   ├── need
+│   │   │   ├── dma
+│   │   │   │   └── map
+│   │   │   │       └── state.h
+│   │   │   └── mach
+│   │   │       ├── gpio
+│   │   │       │   └── h.h
+│   │   │       └── io
+│   │   │           └── h.h
+│   │   ├── neon.h
+│   │   ├── net
+│   │   │   ├── activity
+│   │   │   │   └── stats.h
+│   │   │   ├── cadence.h
+│   │   │   ├── cls
+│   │   │   │   ├── act.h
+│   │   │   │   └── u32.h
+│   │   │   ├── cls.h
+│   │   │   ├── core.h
+│   │   │   ├── ematch
+│   │   │   │   ├── stack.h
+│   │   │   │   └── u32.h
+│   │   │   ├── ematch.h
+│   │   │   ├── ip
+│   │   │   │   └── tunnel.h
+│   │   │   ├── ipgre
+│   │   │   │   └── demux.h
+│   │   │   ├── key.h
+│   │   │   ├── sch
+│   │   │   │   ├── fifo.h
+│   │   │   │   └── htb.h
+│   │   │   ├── sched.h
+│   │   │   └── vendor
+│   │   │       ├── 8390.h
+│   │   │       ├── broadcom.h
+│   │   │       ├── cirrus.h
+│   │   │       ├── faraday.h
+│   │   │       ├── i825xx.h
+│   │   │       ├── intel.h
+│   │   │       ├── marvell.h
+│   │   │       ├── micrel.h
+│   │   │       ├── microchip.h
+│   │   │       ├── natsemi.h
+│   │   │       ├── seeq.h
+│   │   │       ├── smsc.h
+│   │   │       ├── stmicro.h
+│   │   │       └── wiznet.h
+│   │   ├── netdevices.h
+│   │   ├── netfilter
+│   │   │   ├── advanced.h
+│   │   │   ├── netlink
+│   │   │   │   ├── log.h
+│   │   │   │   └── queue.h
+│   │   │   ├── netlink.h
+│   │   │   ├── tproxy.h
+│   │   │   ├── xt
+│   │   │   │   ├── connmark.h
+│   │   │   │   ├── mark.h
+│   │   │   │   ├── match
+│   │   │   │   │   ├── comment.h
+│   │   │   │   │   ├── connlimit.h
+│   │   │   │   │   ├── connmark.h
+│   │   │   │   │   ├── conntrack.h
+│   │   │   │   │   ├── ecn.h
+│   │   │   │   │   ├── hashlimit.h
+│   │   │   │   │   ├── helper.h
+│   │   │   │   │   ├── hl.h
+│   │   │   │   │   ├── iprange.h
+│   │   │   │   │   ├── length.h
+│   │   │   │   │   ├── limit.h
+│   │   │   │   │   ├── mac.h
+│   │   │   │   │   ├── mark.h
+│   │   │   │   │   ├── pkttype.h
+│   │   │   │   │   ├── policy.h
+│   │   │   │   │   ├── qtaguid.h
+│   │   │   │   │   ├── quota2
+│   │   │   │   │   │   └── log.h
+│   │   │   │   │   ├── quota2.h
+│   │   │   │   │   ├── quota.h
+│   │   │   │   │   ├── socket.h
+│   │   │   │   │   ├── state.h
+│   │   │   │   │   ├── statistic.h
+│   │   │   │   │   ├── string.h
+│   │   │   │   │   ├── time.h
+│   │   │   │   │   └── u32.h
+│   │   │   │   └── target
+│   │   │   │       ├── classify.h
+│   │   │   │       ├── connmark.h
+│   │   │   │       ├── idletimer.h
+│   │   │   │       ├── mark.h
+│   │   │   │       ├── netmap.h
+│   │   │   │       ├── nflog.h
+│   │   │   │       ├── nfqueue.h
+│   │   │   │       ├── redirect.h
+│   │   │   │       ├── tproxy.h
+│   │   │   │       └── trace.h
+│   │   │   └── xtables.h
+│   │   ├── netfilter.h
+│   │   ├── net.h
+│   │   ├── network
+│   │   │   └── secmark.h
+│   │   ├── new
+│   │   │   └── leds.h
+│   │   ├── nf
+│   │   │   ├── conntrack
+│   │   │   │   ├── amanda.h
+│   │   │   │   ├── broadcast.h
+│   │   │   │   ├── events.h
+│   │   │   │   ├── ftp.h
+│   │   │   │   ├── h323.h
+│   │   │   │   ├── ipv4.h
+│   │   │   │   ├── ipv6.h
+│   │   │   │   ├── irc.h
+│   │   │   │   ├── mark.h
+│   │   │   │   ├── netbios
+│   │   │   │   │   └── ns.h
+│   │   │   │   ├── pptp.h
+│   │   │   │   ├── proc
+│   │   │   │   │   └── compat.h
+│   │   │   │   ├── procfs.h
+│   │   │   │   ├── sane.h
+│   │   │   │   ├── sip.h
+│   │   │   │   └── tftp.h
+│   │   │   ├── conntrack.h
+│   │   │   ├── ct
+│   │   │   │   ├── netlink.h
+│   │   │   │   └── proto
+│   │   │   │       ├── dccp.h
+│   │   │   │       ├── gre.h
+│   │   │   │       ├── sctp.h
+│   │   │   │       └── udplite.h
+│   │   │   ├── defrag
+│   │   │   │   ├── ipv4.h
+│   │   │   │   └── ipv6.h
+│   │   │   ├── nat
+│   │   │   │   ├── amanda.h
+│   │   │   │   ├── ftp.h
+│   │   │   │   ├── h323.h
+│   │   │   │   ├── ipv4.h
+│   │   │   │   ├── irc.h
+│   │   │   │   ├── needed.h
+│   │   │   │   ├── pptp.h
+│   │   │   │   ├── proto
+│   │   │   │   │   ├── dccp.h
+│   │   │   │   │   ├── gre.h
+│   │   │   │   │   ├── sctp.h
+│   │   │   │   │   └── udplite.h
+│   │   │   │   ├── sip.h
+│   │   │   │   └── tftp.h
+│   │   │   └── nat.h
+│   │   ├── nlattr.h
+│   │   ├── nls
+│   │   │   ├── ascii.h
+│   │   │   ├── codepage
+│   │   │   │   └── 437.h
+│   │   │   ├── default.h
+│   │   │   └── iso8859
+│   │   │       └── 1.h
+│   │   ├── nls.h
+│   │   ├── no
+│   │   │   ├── hz
+│   │   │   │   ├── common.h
+│   │   │   │   └── idle.h
+│   │   │   └── hz.h
+│   │   ├── nop
+│   │   │   └── tracer.h
+│   │   ├── nr
+│   │   │   └── cpus.h
+│   │   ├── of
+│   │   │   ├── address.h
+│   │   │   ├── device.h
+│   │   │   ├── early
+│   │   │   │   └── flattree.h
+│   │   │   ├── flattree.h
+│   │   │   ├── gpio.h
+│   │   │   ├── i2c.h
+│   │   │   ├── irq.h
+│   │   │   ├── mdio.h
+│   │   │   └── net.h
+│   │   ├── of.h
+│   │   ├── old
+│   │   │   ├── mcount.h
+│   │   │   ├── sigaction.h
+│   │   │   └── sigsuspend3.h
+│   │   ├── oom
+│   │   │   └── notifier.h
+│   │   ├── oprofile.h
+│   │   ├── otp
+│   │   │   ├── sprd
+│   │   │   │   ├── adie
+│   │   │   │   │   └── efuse.h
+│   │   │   │   └── efuse.h
+│   │   │   └── sprd.h
+│   │   ├── packet.h
+│   │   ├── page
+│   │   │   └── offset.h
+│   │   ├── pageflags
+│   │   │   └── extended.h
+│   │   ├── panic
+│   │   │   ├── on
+│   │   │   │   └── oops
+│   │   │   │       └── value.h
+│   │   │   └── timeout.h
+│   │   ├── partition
+│   │   │   └── advanced.h
+│   │   ├── perf
+│   │   │   ├── events.h
+│   │   │   └── use
+│   │   │       └── vmalloc.h
+│   │   ├── phylib.h
+│   │   ├── phys
+│   │   │   └── offset.h
+│   │   ├── pin
+│   │   │   └── power
+│   │   │       └── domain
+│   │   │           └── switch.h
+│   │   ├── pm
+│   │   │   ├── clk.h
+│   │   │   ├── runtime.h
+│   │   │   ├── sleep
+│   │   │   │   └── smp.h
+│   │   │   └── sleep.h
+│   │   ├── pm.h
+│   │   ├── power
+│   │   │   └── supply.h
+│   │   ├── ppp
+│   │   │   ├── async.h
+│   │   │   ├── bsdcomp.h
+│   │   │   ├── deflate.h
+│   │   │   ├── filter.h
+│   │   │   ├── mppe.h
+│   │   │   └── multilink.h
+│   │   ├── ppp.h
+│   │   ├── pppoe.h
+│   │   ├── pppol2tp.h
+│   │   ├── pppolac.h
+│   │   ├── pppopns.h
+│   │   ├── pptp.h
+│   │   ├── preempt
+│   │   │   ├── count.h
+│   │   │   ├── rcu.h
+│   │   │   └── tracer.h
+│   │   ├── preempt.h
+│   │   ├── prevent
+│   │   │   └── firmware
+│   │   │       └── build.h
+│   │   ├── printk
+│   │   │   └── time.h
+│   │   ├── printk.h
+│   │   ├── proc
+│   │   │   ├── fs.h
+│   │   │   ├── page
+│   │   │   │   └── monitor.h
+│   │   │   └── sysctl.h
+│   │   ├── product
+│   │   │   └── sp9832iea
+│   │   │       └── 4m
+│   │   │           └── volte.h
+│   │   ├── profiling.h
+│   │   ├── pstore
+│   │   │   ├── console.h
+│   │   │   └── ram.h
+│   │   ├── pstore.h
+│   │   ├── raid
+│   │   │   └── attrs.h
+│   │   ├── rcu
+│   │   │   ├── cpu
+│   │   │   │   └── stall
+│   │   │   │       ├── timeout.h
+│   │   │   │       └── verbose.h
+│   │   │   ├── fanout
+│   │   │   │   └── leaf.h
+│   │   │   ├── fanout.h
+│   │   │   └── stall
+│   │   │       └── common.h
+│   │   ├── rd
+│   │   │   └── gzip.h
+│   │   ├── reed
+│   │   │   ├── solomon
+│   │   │   │   ├── dec8.h
+│   │   │   │   └── enc8.h
+│   │   │   └── solomon.h
+│   │   ├── regmap
+│   │   │   ├── i2c.h
+│   │   │   └── spi.h
+│   │   ├── regmap.h
+│   │   ├── regulator
+│   │   │   ├── sc2723.h
+│   │   │   └── sprd
+│   │   │       └── map
+│   │   │           └── v1.h
+│   │   ├── regulator.h
+│   │   ├── relay.h
+│   │   ├── resource
+│   │   │   └── counters.h
+│   │   ├── rfkill
+│   │   │   └── pm.h
+│   │   ├── rfkill.h
+│   │   ├── rfs
+│   │   │   └── accel.h
+│   │   ├── ring
+│   │   │   ├── buffer
+│   │   │   │   └── allow
+│   │   │   │       └── swap.h
+│   │   │   └── buffer.h
+│   │   ├── rps.h
+│   │   ├── rt
+│   │   │   ├── group
+│   │   │   │   └── sched.h
+│   │   │   └── mutexes.h
+│   │   ├── rtc
+│   │   │   ├── class.h
+│   │   │   ├── drv
+│   │   │   │   └── sprd.h
+│   │   │   ├── hctosys
+│   │   │   │   └── device.h
+│   │   │   ├── hctosys.h
+│   │   │   ├── intf
+│   │   │   │   ├── dev.h
+│   │   │   │   ├── proc.h
+│   │   │   │   └── sysfs.h
+│   │   │   ├── lib.h
+│   │   │   ├── start
+│   │   │   │   └── year.h
+│   │   │   └── systohc.h
+│   │   ├── rwsem
+│   │   │   └── generic
+│   │   │       └── spinlock.h
+│   │   ├── sc
+│   │   │   └── internal
+│   │   │       ├── adc.h
+│   │   │       ├── adi.h
+│   │   │       └── watchdog.h
+│   │   ├── sc2331
+│   │   │   └── mem
+│   │   │       └── alloc.h
+│   │   ├── sched
+│   │   │   ├── debug.h
+│   │   │   ├── hrtick.h
+│   │   │   ├── mc.h
+│   │   │   └── tracer.h
+│   │   ├── scsi
+│   │   │   ├── dh.h
+│   │   │   ├── dma.h
+│   │   │   ├── lowlevel.h
+│   │   │   ├── mod.h
+│   │   │   ├── multi
+│   │   │   │   └── lun.h
+│   │   │   ├── proc
+│   │   │   │   └── fs.h
+│   │   │   ├── scan
+│   │   │   │   └── async.h
+│   │   │   └── tgt.h
+│   │   ├── scsi.h
+│   │   ├── scx35l
+│   │   │   └── scenario
+│   │   │       └── dfs.h
+│   │   ├── sdio
+│   │   │   └── card.h
+│   │   ├── sdiodev.h
+│   │   ├── sec
+│   │   │   └── debug
+│   │   │       └── lmk
+│   │   │           └── meminfo.h
+│   │   ├── seccomp
+│   │   │   └── filter.h
+│   │   ├── seccomp.h
+│   │   ├── security
+│   │   │   ├── network.h
+│   │   │   ├── selinux
+│   │   │   │   ├── avc
+│   │   │   │   │   └── stats.h
+│   │   │   │   ├── checkreqprot
+│   │   │   │   │   └── value.h
+│   │   │   │   └── develop.h
+│   │   │   └── selinux.h
+│   │   ├── security.h
+│   │   ├── sensor
+│   │   │   └── output
+│   │   │       └── raw.h
+│   │   ├── serial
+│   │   │   ├── core
+│   │   │   │   └── console.h
+│   │   │   ├── core.h
+│   │   │   └── sprd
+│   │   │       ├── uart
+│   │   │       │   ├── console.h
+│   │   │       │   └── nr.h
+│   │   │       └── uart.h
+│   │   ├── seth
+│   │   │   ├── opt.h
+│   │   │   └── rawip.h
+│   │   ├── shmem.h
+│   │   ├── signalfd.h
+│   │   ├── sipc
+│   │   │   ├── lte.h
+│   │   │   ├── pmic.h
+│   │   │   ├── seth.h
+│   │   │   ├── spipe.h
+│   │   │   └── stty.h
+│   │   ├── sipc.h
+│   │   ├── slabinfo.h
+│   │   ├── slhc.h
+│   │   ├── slub
+│   │   │   └── debug.h
+│   │   ├── slub.h
+│   │   ├── smc91x.h
+│   │   ├── smp.h
+│   │   ├── smsc911x.h
+│   │   ├── snd
+│   │   │   ├── arm.h
+│   │   │   ├── compress
+│   │   │   │   └── offload.h
+│   │   │   ├── drivers.h
+│   │   │   ├── jack.h
+│   │   │   ├── pcm.h
+│   │   │   ├── soc
+│   │   │   │   ├── i2c
+│   │   │   │   │   └── and
+│   │   │   │   │       └── spi.h
+│   │   │   │   ├── null
+│   │   │   │   │   └── codec.h
+│   │   │   │   ├── pm
+│   │   │   │   │   └── down
+│   │   │   │   │       └── time.h
+│   │   │   │   ├── sprd
+│   │   │   │   │   ├── audio
+│   │   │   │   │   │   ├── debug.h
+│   │   │   │   │   │   ├── dma.h
+│   │   │   │   │   │   └── use
+│   │   │   │   │   │       └── inter
+│   │   │   │   │   │           └── hp
+│   │   │   │   │   │               └── pa
+│   │   │   │   │   │                   └── v4.h
+│   │   │   │   │   ├── codec
+│   │   │   │   │   │   ├── no
+│   │   │   │   │   │   │   └── hp
+│   │   │   │   │   │   │       └── pop.h
+│   │   │   │   │   │   └── v4.h
+│   │   │   │   │   ├── hp
+│   │   │   │   │   │   └── pop
+│   │   │   │   │   │       └── delay
+│   │   │   │   │   │           └── time.h
+│   │   │   │   │   ├── i2s
+│   │   │   │   │   │   └── v0
+│   │   │   │   │   │       └── null
+│   │   │   │   │   │           └── codec.h
+│   │   │   │   │   ├── i2s.h
+│   │   │   │   │   ├── vaudio.h
+│   │   │   │   │   └── vbc
+│   │   │   │   │       ├── lr
+│   │   │   │   │       │   └── invert.h
+│   │   │   │   │       ├── r2p0
+│   │   │   │   │       │   └── sprd
+│   │   │   │   │       │       └── codec
+│   │   │   │   │       │           └── v4.h
+│   │   │   │   │       ├── r2p0.h
+│   │   │   │   │       └── src
+│   │   │   │   │           └── open.h
+│   │   │   │   ├── sprd.h
+│   │   │   │   └── vbc
+│   │   │   │       └── src
+│   │   │   │           └── sample
+│   │   │   │               └── rate.h
+│   │   │   ├── soc.h
+│   │   │   ├── spi.h
+│   │   │   ├── sprd
+│   │   │   │   └── saudio.h
+│   │   │   ├── support
+│   │   │   │   └── old
+│   │   │   │       └── api.h
+│   │   │   ├── timer.h
+│   │   │   ├── usb.h
+│   │   │   └── verbose
+│   │   │       └── procfs.h
+│   │   ├── snd.h
+│   │   ├── sound.h
+│   │   ├── spi
+│   │   │   ├── master.h
+│   │   │   └── scx35.h
+│   │   ├── spi.h
+│   │   ├── split
+│   │   │   └── ptlock
+│   │   │       └── cpus.h
+│   │   ├── sprd
+│   │   │   ├── 2331.h
+│   │   │   ├── 2713
+│   │   │   │   └── power.h
+│   │   │   ├── coda7l.h
+│   │   │   ├── cproc.h
+│   │   │   ├── cpu
+│   │   │   │   ├── cooling.h
+│   │   │   │   └── dynamic
+│   │   │   │       └── hotplug.h
+│   │   │   ├── debug
+│   │   │   │   ├── cpu
+│   │   │   │   │   └── rate.h
+│   │   │   │   ├── frame.h
+│   │   │   │   └── sched
+│   │   │   │       └── log.h
+│   │   │   ├── debug.h
+│   │   │   ├── download
+│   │   │   │   ├── img.h
+│   │   │   │   └── power
+│   │   │   │       └── ctl.h
+│   │   │   ├── fb
+│   │   │   │   └── size.h
+│   │   │   ├── iommu.h
+│   │   │   ├── ion
+│   │   │   │   ├── mm
+│   │   │   │   │   └── size.h
+│   │   │   │   └── overlay
+│   │   │   │       └── size.h
+│   │   │   ├── iq.h
+│   │   │   ├── jpg.h
+│   │   │   ├── kpled
+│   │   │   │   └── 2723.h
+│   │   │   ├── mailbox.h
+│   │   │   ├── simctrl.h
+│   │   │   ├── sysdump.h
+│   │   │   ├── uboot
+│   │   │   │   └── log
+│   │   │   │       └── dump.h
+│   │   │   ├── usb
+│   │   │   │   └── device
+│   │   │   │       └── only.h
+│   │   │   ├── vibrator
+│   │   │   │   └── 2723.h
+│   │   │   ├── vpp.h
+│   │   │   └── vsp.h
+│   │   ├── ssb
+│   │   │   └── possible.h
+│   │   ├── stacktrace
+│   │   │   └── support.h
+│   │   ├── stacktrace.h
+│   │   ├── staging.h
+│   │   ├── standalone.h
+│   │   ├── stop
+│   │   │   └── machine.h
+│   │   ├── suspend
+│   │   │   ├── freezer.h
+│   │   │   └── time.h
+│   │   ├── suspend.h
+│   │   ├── swap.h
+│   │   ├── switch
+│   │   │   └── gpio.h
+│   │   ├── switch.h
+│   │   ├── sync.h
+│   │   ├── sys
+│   │   │   └── supports
+│   │   │       └── apm
+│   │   │           └── emulation.h
+│   │   ├── sysctl
+│   │   │   └── syscall.h
+│   │   ├── sysctl.h
+│   │   ├── sysfs.h
+│   │   ├── sysvipc
+│   │   │   └── sysctl.h
+│   │   ├── sysvipc.h
+│   │   ├── tcp
+│   │   │   └── cong
+│   │   │       └── cubic.h
+│   │   ├── textsearch
+│   │   │   ├── bm.h
+│   │   │   ├── fsm.h
+│   │   │   └── kmp.h
+│   │   ├── textsearch.h
+│   │   ├── thermal
+│   │   │   ├── ddie.h
+│   │   │   ├── default
+│   │   │   │   └── gov
+│   │   │   │       └── step
+│   │   │   │           └── wise.h
+│   │   │   ├── gov
+│   │   │   │   └── step
+│   │   │   │       └── wise.h
+│   │   │   └── of.h
+│   │   ├── thermal.h
+│   │   ├── tick
+│   │   │   ├── cpu
+│   │   │   │   └── accounting.h
+│   │   │   └── oneshot.h
+│   │   ├── timerfd.h
+│   │   ├── tmpfs.h
+│   │   ├── touchscreen
+│   │   │   └── msg2xxx
+│   │   │       └── v3
+│   │   │           └── 10.h
+│   │   ├── trace
+│   │   │   ├── clock.h
+│   │   │   ├── irqflags
+│   │   │   │   └── support.h
+│   │   │   └── irqflags.h
+│   │   ├── tracepoints.h
+│   │   ├── tracer
+│   │   │   ├── max
+│   │   │   │   └── trace.h
+│   │   │   ├── snapshot
+│   │   │   │   └── per
+│   │   │   │       └── cpu
+│   │   │   │           └── swap.h
+│   │   │   └── snapshot.h
+│   │   ├── tracing
+│   │   │   └── support.h
+│   │   ├── tracing.h
+│   │   ├── tree
+│   │   │   └── preempt
+│   │   │       └── rcu.h
+│   │   ├── tristate.conf
+│   │   ├── tty.h
+│   │   ├── tun.h
+│   │   ├── uevent
+│   │   │   └── helper
+│   │   │       └── path.h
+│   │   ├── uhid.h
+│   │   ├── uid
+│   │   │   └── stat.h
+│   │   ├── uid16.h
+│   │   ├── uidgid
+│   │   │   └── converted.h
+│   │   ├── uncompress
+│   │   │   └── include.h
+│   │   ├── uninline
+│   │   │   └── spin
+│   │   │       └── unlock.h
+│   │   ├── unix98
+│   │   │   └── ptys.h
+│   │   ├── unix.h
+│   │   ├── usb
+│   │   │   ├── arch
+│   │   │   │   └── has
+│   │   │   │       └── hcd.h
+│   │   │   ├── common.h
+│   │   │   ├── core
+│   │   │   │   └── ip
+│   │   │   │       └── 293a.h
+│   │   │   ├── default
+│   │   │   │   └── persist.h
+│   │   │   ├── f
+│   │   │   │   └── acm.h
+│   │   │   ├── g
+│   │   │   │   └── android.h
+│   │   │   ├── gadget
+│   │   │   │   ├── sprd
+│   │   │   │   │   └── dwc.h
+│   │   │   │   ├── storage
+│   │   │   │   │   └── num
+│   │   │   │   │       └── buffers.h
+│   │   │   │   └── vbus
+│   │   │   │       └── draw.h
+│   │   │   ├── gadget.h
+│   │   │   ├── hid.h
+│   │   │   ├── libcomposite.h
+│   │   │   ├── otg
+│   │   │   │   └── wakelock.h
+│   │   │   ├── sprd
+│   │   │   │   └── dwc.h
+│   │   │   ├── support.h
+│   │   │   └── u
+│   │   │       └── serial.h
+│   │   ├── usb.h
+│   │   ├── use
+│   │   │   ├── generic
+│   │   │   │   └── smp
+│   │   │   │       └── helpers.h
+│   │   │   └── of.h
+│   │   ├── user
+│   │   │   └── wakelock.h
+│   │   ├── v4l
+│   │   │   └── platform
+│   │   │       └── drivers.h
+│   │   ├── vectors
+│   │   │   └── base.h
+│   │   ├── vfat
+│   │   │   └── fs.h
+│   │   ├── vfp.h
+│   │   ├── vfpv3.h
+│   │   ├── video
+│   │   │   ├── dcam
+│   │   │   │   └── sprd.h
+│   │   │   ├── dev.h
+│   │   │   ├── gsp
+│   │   │   │   └── sprd.h
+│   │   │   └── v4l2.h
+│   │   ├── videobuf
+│   │   │   ├── gen.h
+│   │   │   └── vmalloc.h
+│   │   ├── vm
+│   │   │   └── event
+│   │   │       └── counters.h
+│   │   ├── vmsplit
+│   │   │   └── 3g.h
+│   │   ├── wakelock
+│   │   │   └── stat.h
+│   │   ├── wakelock.h
+│   │   ├── wcn
+│   │   │   └── extension.h
+│   │   ├── wireless.h
+│   │   ├── wlan.h
+│   │   ├── xfrm
+│   │   │   ├── algo.h
+│   │   │   ├── ipcomp.h
+│   │   │   └── user.h
+│   │   ├── xfrm.h
+│   │   ├── xps.h
+│   │   ├── zboot
+│   │   │   └── rom
+│   │   │       ├── bss.h
+│   │   │       └── text.h
+│   │   ├── zero
+│   │   │   └── copy
+│   │   │       └── sipx.h
+│   │   ├── zlib
+│   │   │   ├── deflate.h
+│   │   │   └── inflate.h
+│   │   ├── zone
+│   │   │   └── dma
+│   │   │       └── flag.h
+│   │   ├── zram
+│   │   │   └── debug.h
+│   │   ├── zram.h
+│   │   └── zsmalloc.h
+│   ├── generated
+│   │   ├── asm-offsets.h
+│   │   ├── autoconf.h
+│   │   ├── bounds.h
+│   │   ├── compile.h
+│   │   ├── mach-types.h
+│   │   ├── uapi
+│   │   │   └── linux
+│   │   │       └── version.h
+│   │   └── utsrelease.h
+│   └── linux
+├── init
+│   ├── built-in.o
+│   ├── calibrate.o
+│   ├── do_mounts_initrd.o
+│   ├── do_mounts.o
+│   ├── initramfs.o
+│   ├── init_task.o
+│   ├── main.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── mounts.o
+│   └── version.o
+├── ipc
+│   ├── built-in.o
+│   ├── ipcns_notifier.o
+│   ├── ipc_sysctl.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── msg.o
+│   ├── msgutil.o
+│   ├── sem.o
+│   ├── shm.o
+│   ├── syscall.o
+│   └── util.o
+├── kernel
+│   ├── async.o
+│   ├── auditfilter.o
+│   ├── audit.o
+│   ├── auditsc.o
+│   ├── audit_tree.o
+│   ├── audit_watch.o
+│   ├── bounds.s
+│   ├── built-in.o
+│   ├── capability.o
+│   ├── cgroup_freezer.o
+│   ├── cgroup.o
+│   ├── cpu
+│   │   ├── built-in.o
+│   │   ├── idle.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── cpu.o
+│   ├── cpu_pm.o
+│   ├── cred.o
+│   ├── elfcore.o
+│   ├── events
+│   │   ├── built-in.o
+│   │   ├── callchain.o
+│   │   ├── core.o
+│   │   ├── hw_breakpoint.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── ring_buffer.o
+│   ├── exec_domain.o
+│   ├── exit.o
+│   ├── extable.o
+│   ├── fork.o
+│   ├── freezer.o
+│   ├── futex.o
+│   ├── groups.o
+│   ├── hrtimer.o
+│   ├── hz.bc
+│   ├── irq
+│   │   ├── autoprobe.o
+│   │   ├── built-in.o
+│   │   ├── chip.o
+│   │   ├── devres.o
+│   │   ├── dummychip.o
+│   │   ├── handle.o
+│   │   ├── irqdesc.o
+│   │   ├── irqdomain.o
+│   │   ├── manage.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── pm.o
+│   │   ├── proc.o
+│   │   ├── resend.o
+│   │   └── spurious.o
+│   ├── irq_work.o
+│   ├── itimer.o
+│   ├── kallsyms.o
+│   ├── kmod.o
+│   ├── ksysfs.o
+│   ├── kthread.o
+│   ├── lglock.o
+│   ├── module.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── mutex.o
+│   ├── notifier.o
+│   ├── nsproxy.o
+│   ├── panic.o
+│   ├── params.o
+│   ├── pid.o
+│   ├── posix-cpu-timers.o
+│   ├── posix-timers.o
+│   ├── power
+│   │   ├── built-in.o
+│   │   ├── earlysuspend.o
+│   │   ├── fbearlysuspend.o
+│   │   ├── main.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── poweroff.o
+│   │   ├── process.o
+│   │   ├── qos.o
+│   │   ├── suspend.o
+│   │   ├── suspend_time.o
+│   │   ├── userwakelock.o
+│   │   ├── wakelock.o
+│   │   └── wakeup_reason.o
+│   ├── printk.o
+│   ├── profile.o
+│   ├── ptrace.o
+│   ├── range.o
+│   ├── rcupdate.o
+│   ├── rcutree.o
+│   ├── relay.o
+│   ├── res_counter.o
+│   ├── resource.o
+│   ├── rtmutex.o
+│   ├── rwsem.o
+│   ├── sched
+│   │   ├── built-in.o
+│   │   ├── clock.o
+│   │   ├── core.o
+│   │   ├── cpuacct.o
+│   │   ├── cpupri.o
+│   │   ├── cputime.o
+│   │   ├── debug.o
+│   │   ├── fair.o
+│   │   ├── idle_task.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── rt.o
+│   │   └── stop_task.o
+│   ├── seccomp.o
+│   ├── semaphore.o
+│   ├── signal.o
+│   ├── smpboot.o
+│   ├── smp.o
+│   ├── softirq.o
+│   ├── spinlock.o
+│   ├── srcu.o
+│   ├── stacktrace.o
+│   ├── stop_machine.o
+│   ├── sysctl_binary.o
+│   ├── sysctl.o
+│   ├── sys_ni.o
+│   ├── sys.o
+│   ├── task_work.o
+│   ├── time
+│   │   ├── alarmtimer.o
+│   │   ├── built-in.o
+│   │   ├── clockevents.o
+│   │   ├── clocksource.o
+│   │   ├── jiffies.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── ntp.o
+│   │   ├── posix-clock.o
+│   │   ├── tick-broadcast-hrtimer.o
+│   │   ├── tick-broadcast.o
+│   │   ├── tick-common.o
+│   │   ├── tick-oneshot.o
+│   │   ├── tick-sched.o
+│   │   ├── timeconv.o
+│   │   ├── timekeeping.o
+│   │   └── timer_list.o
+│   ├── timeconst.h
+│   ├── time.o
+│   ├── timer.o
+│   ├── trace
+│   │   ├── blktrace.o
+│   │   ├── built-in.o
+│   │   ├── ftrace.o
+│   │   ├── libftrace.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── power-traces.o
+│   │   ├── ring_buffer.o
+│   │   ├── rpm-traces.o
+│   │   ├── trace_clock.o
+│   │   ├── trace_event_perf.o
+│   │   ├── trace_events_filter.o
+│   │   ├── trace_events.o
+│   │   ├── trace_export.o
+│   │   ├── trace_functions_graph.o
+│   │   ├── trace_functions.o
+│   │   ├── trace_irqsoff.o
+│   │   ├── trace_nop.o
+│   │   ├── trace.o
+│   │   ├── trace_output.o
+│   │   ├── trace_printk.o
+│   │   ├── trace_sched_switch.o
+│   │   ├── trace_sched_wakeup.o
+│   │   ├── trace_stat.o
+│   │   └── trace_syscalls.o
+│   ├── tracepoint.o
+│   ├── uid16.o
+│   ├── user.o
+│   ├── utsname_sysctl.o
+│   ├── wait.o
+│   ├── watchdog.o
+│   └── workqueue.o
+├── lib
+│   ├── argv_split.o
+│   ├── audit.o
+│   ├── bcd.o
+│   ├── bitmap.o
+│   ├── bitrev.o
+│   ├── bsearch.o
+│   ├── bug.o
+│   ├── built-in.o
+│   ├── bust_spinlocks.o
+│   ├── cmdline.o
+│   ├── cpumask.o
+│   ├── cpu_rmap.o
+│   ├── crc16.o
+│   ├── crc32.o
+│   ├── crc32table.h
+│   ├── crc-ccitt.o
+│   ├── ctype.o
+│   ├── debug_locks.o
+│   ├── dec_and_lock.o
+│   ├── decompress_inflate.o
+│   ├── decompress.o
+│   ├── devres.o
+│   ├── div64.o
+│   ├── dump_stack.o
+│   ├── dynamic_debug.o
+│   ├── dynamic_queue_limits.o
+│   ├── earlycpio.o
+│   ├── e_show_mem.o
+│   ├── extable.o
+│   ├── fdt_empty_tree.o
+│   ├── fdt.o
+│   ├── fdt_ro.o
+│   ├── fdt_rw.o
+│   ├── fdt_strerror.o
+│   ├── fdt_sw.o
+│   ├── fdt_wip.o
+│   ├── find_last_bit.o
+│   ├── find_next_bit.o
+│   ├── flex_array.o
+│   ├── flex_proportions.o
+│   ├── gcd.o
+│   ├── genalloc.o
+│   ├── gen_crc32table
+│   ├── halfmd4.o
+│   ├── hexdump.o
+│   ├── hweight.o
+│   ├── idr.o
+│   ├── int_sqrt.o
+│   ├── iomap_copy.o
+│   ├── ioremap.o
+│   ├── iovec.o
+│   ├── irq_regs.o
+│   ├── is_single_threaded.o
+│   ├── kasprintf.o
+│   ├── kfifo.o
+│   ├── klist.o
+│   ├── kobject.o
+│   ├── kobject_uevent.o
+│   ├── kstrtox.o
+│   ├── lcm.o
+│   ├── lib.a
+│   ├── libcrc32c.o
+│   ├── list_sort.o
+│   ├── llist.o
+│   ├── lzo
+│   │   ├── built-in.o
+│   │   ├── lzo1x_compress.o
+│   │   ├── lzo1x_decompress_safe.o
+│   │   ├── lzo_compress.o
+│   │   ├── lzo_decompress.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── md5.o
+│   ├── memweight.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── nlattr.o
+│   ├── parser.o
+│   ├── pci_iomap.o
+│   ├── percpu_counter.o
+│   ├── plist.o
+│   ├── prio_heap.o
+│   ├── proportions.o
+│   ├── radix-tree.o
+│   ├── random32.o
+│   ├── ratelimit.o
+│   ├── rbtree.o
+│   ├── reciprocal_div.o
+│   ├── reed_solomon
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── reed_solomon.o
+│   ├── rwsem-spinlock.o
+│   ├── scatterlist.o
+│   ├── sha1.o
+│   ├── show_mem.o
+│   ├── sort.o
+│   ├── string_helpers.o
+│   ├── string.o
+│   ├── strncpy_from_user.o
+│   ├── strnlen_user.o
+│   ├── syscall.o
+│   ├── textsearch.o
+│   ├── timerqueue.o
+│   ├── ts_bm.o
+│   ├── ts_fsm.o
+│   ├── ts_kmp.o
+│   ├── uuid.o
+│   ├── vsprintf.o
+│   ├── zlib_deflate
+│   │   ├── built-in.o
+│   │   ├── deflate.o
+│   │   ├── deflate_syms.o
+│   │   ├── deftree.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── zlib_deflate.o
+│   └── zlib_inflate
+│       ├── built-in.o
+│       ├── inffast.o
+│       ├── inflate.o
+│       ├── inflate_syms.o
+│       ├── inftrees.o
+│       ├── infutil.o
+│       ├── modules.builtin
+│       ├── modules.order
+│       └── zlib_inflate.o
+├── Makefile
+├── mm
+│   ├── backing-dev.o
+│   ├── balloon_compaction.o
+│   ├── bootmem.o
+│   ├── bounce.o
+│   ├── built-in.o
+│   ├── compaction.o
+│   ├── dmapool.o
+│   ├── fadvise.o
+│   ├── filemap.o
+│   ├── fremap.o
+│   ├── highmem.o
+│   ├── init-mm.o
+│   ├── interval_tree.o
+│   ├── maccess.o
+│   ├── madvise.o
+│   ├── memblock.o
+│   ├── memcontrol.o
+│   ├── memory.o
+│   ├── mempool.o
+│   ├── migrate.o
+│   ├── mincore.o
+│   ├── mlock.o
+│   ├── mmap.o
+│   ├── mm_init.o
+│   ├── mmu_context.o
+│   ├── mmzone.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── mprotect.o
+│   ├── mremap.o
+│   ├── msync.o
+│   ├── oom_kill.o
+│   ├── page_alloc.o
+│   ├── page_cgroup.o
+│   ├── page_io.o
+│   ├── pagewalk.o
+│   ├── page-writeback.o
+│   ├── percpu.o
+│   ├── pgtable-generic.o
+│   ├── process_vm_access.o
+│   ├── readahead.o
+│   ├── rmap.o
+│   ├── shmem.o
+│   ├── slab_common.o
+│   ├── slub.o
+│   ├── swapfile.o
+│   ├── swap.o
+│   ├── swap_state.o
+│   ├── truncate.o
+│   ├── util.o
+│   ├── vmalloc.o
+│   ├── vmpressure.o
+│   ├── vmscan.o
+│   └── vmstat.o
+├── modules.builtin
+├── modules.order
+├── Module.symvers
+├── net
+│   ├── 802
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── activity_stats.o
+│   ├── bluetooth
+│   │   ├── a2mp.o
+│   │   ├── af_bluetooth.o
+│   │   ├── amp.o
+│   │   ├── bluetooth.o
+│   │   ├── bnep
+│   │   │   ├── bnep.o
+│   │   │   ├── built-in.o
+│   │   │   ├── core.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── netdev.o
+│   │   │   └── sock.o
+│   │   ├── built-in.o
+│   │   ├── hci_conn.o
+│   │   ├── hci_core.o
+│   │   ├── hci_event.o
+│   │   ├── hci_sock.o
+│   │   ├── hci_sysfs.o
+│   │   ├── hidp
+│   │   │   ├── built-in.o
+│   │   │   ├── core.o
+│   │   │   ├── hidp.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   └── sock.o
+│   │   ├── l2cap_core.o
+│   │   ├── l2cap_sock.o
+│   │   ├── lib.o
+│   │   ├── mgmt.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── rfcomm
+│   │   │   ├── built-in.o
+│   │   │   ├── core.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── rfcomm.o
+│   │   │   ├── sock.o
+│   │   │   └── tty.o
+│   │   ├── sco.o
+│   │   └── smp.o
+│   ├── built-in.o
+│   ├── core
+│   │   ├── built-in.o
+│   │   ├── datagram.o
+│   │   ├── dev_addr_lists.o
+│   │   ├── dev_ioctl.o
+│   │   ├── dev.o
+│   │   ├── dst.o
+│   │   ├── ethtool.o
+│   │   ├── fib_rules.o
+│   │   ├── filter.o
+│   │   ├── flow_dissector.o
+│   │   ├── flow.o
+│   │   ├── gen_estimator.o
+│   │   ├── gen_stats.o
+│   │   ├── iovec.o
+│   │   ├── link_watch.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── neighbour.o
+│   │   ├── netevent.o
+│   │   ├── net_namespace.o
+│   │   ├── net-procfs.o
+│   │   ├── net-sysfs.o
+│   │   ├── net-traces.o
+│   │   ├── request_sock.o
+│   │   ├── rtnetlink.o
+│   │   ├── scm.o
+│   │   ├── secure_seq.o
+│   │   ├── skbuff.o
+│   │   ├── sock_diag.o
+│   │   ├── sock.o
+│   │   ├── stream.o
+│   │   ├── sysctl_net_core.o
+│   │   └── utils.o
+│   ├── ethernet
+│   │   ├── built-in.o
+│   │   ├── eth.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── ipv4
+│   │   ├── af_inet.o
+│   │   ├── arp.o
+│   │   ├── built-in.o
+│   │   ├── datagram.o
+│   │   ├── devinet.o
+│   │   ├── esp4.o
+│   │   ├── fib_frontend.o
+│   │   ├── fib_rules.o
+│   │   ├── fib_semantics.o
+│   │   ├── fib_trie.o
+│   │   ├── gre.o
+│   │   ├── icmp.o
+│   │   ├── igmp.o
+│   │   ├── inet_connection_sock.o
+│   │   ├── inet_diag.o
+│   │   ├── inet_fragment.o
+│   │   ├── inet_hashtables.o
+│   │   ├── inetpeer.o
+│   │   ├── inet_timewait_sock.o
+│   │   ├── ip_forward.o
+│   │   ├── ip_fragment.o
+│   │   ├── ip_input.o
+│   │   ├── ip_options.o
+│   │   ├── ip_output.o
+│   │   ├── ip_sockglue.o
+│   │   ├── ip_tunnel.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── netfilter
+│   │   │   ├── arptable_filter.o
+│   │   │   ├── arp_tables.o
+│   │   │   ├── arpt_mangle.o
+│   │   │   ├── built-in.o
+│   │   │   ├── iptable_filter.o
+│   │   │   ├── iptable_mangle.o
+│   │   │   ├── iptable_nat.o
+│   │   │   ├── iptable_raw.o
+│   │   │   ├── ip_tables.o
+│   │   │   ├── ipt_ah.o
+│   │   │   ├── ipt_MASQUERADE.o
+│   │   │   ├── ipt_REJECT.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── nf_conntrack_ipv4.o
+│   │   │   ├── nf_conntrack_l3proto_ipv4_compat.o
+│   │   │   ├── nf_conntrack_l3proto_ipv4.o
+│   │   │   ├── nf_conntrack_proto_icmp.o
+│   │   │   ├── nf_defrag_ipv4.o
+│   │   │   ├── nf_nat_h323.o
+│   │   │   ├── nf_nat_ipv4.o
+│   │   │   ├── nf_nat_l3proto_ipv4.o
+│   │   │   ├── nf_nat_pptp.o
+│   │   │   ├── nf_nat_proto_gre.o
+│   │   │   └── nf_nat_proto_icmp.o
+│   │   ├── netfilter.o
+│   │   ├── ping.o
+│   │   ├── proc.o
+│   │   ├── protocol.o
+│   │   ├── raw.o
+│   │   ├── route.o
+│   │   ├── sysctl_net_ipv4.o
+│   │   ├── sysfs_net_ipv4.o
+│   │   ├── tcp_cong.o
+│   │   ├── tcp_cubic.o
+│   │   ├── tcp_diag.o
+│   │   ├── tcp_fastopen.o
+│   │   ├── tcp_input.o
+│   │   ├── tcp_ipv4.o
+│   │   ├── tcp_metrics.o
+│   │   ├── tcp_minisocks.o
+│   │   ├── tcp.o
+│   │   ├── tcp_output.o
+│   │   ├── tcp_timer.o
+│   │   ├── tunnel4.o
+│   │   ├── udplite.o
+│   │   ├── udp.o
+│   │   ├── xfrm4_input.o
+│   │   ├── xfrm4_mode_beet.o
+│   │   ├── xfrm4_mode_transport.o
+│   │   ├── xfrm4_mode_tunnel.o
+│   │   ├── xfrm4_output.o
+│   │   ├── xfrm4_policy.o
+│   │   └── xfrm4_state.o
+│   ├── ipv6
+│   │   ├── addrconf_core.o
+│   │   ├── addrconf.o
+│   │   ├── addrlabel.o
+│   │   ├── af_inet6.o
+│   │   ├── ah6.o
+│   │   ├── anycast.o
+│   │   ├── built-in.o
+│   │   ├── datagram.o
+│   │   ├── esp6.o
+│   │   ├── exthdrs_core.o
+│   │   ├── exthdrs.o
+│   │   ├── exthdrs_offload.o
+│   │   ├── fib6_rules.o
+│   │   ├── icmp.o
+│   │   ├── inet6_connection_sock.o
+│   │   ├── inet6_hashtables.o
+│   │   ├── ip6_checksum.o
+│   │   ├── ip6_fib.o
+│   │   ├── ip6_flowlabel.o
+│   │   ├── ip6_icmp.o
+│   │   ├── ip6_input.o
+│   │   ├── ip6_offload.o
+│   │   ├── ip6_output.o
+│   │   ├── ip6_tunnel.o
+│   │   ├── ipcomp6.o
+│   │   ├── ipv6.o
+│   │   ├── ipv6_sockglue.o
+│   │   ├── mcast.o
+│   │   ├── mip6.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── ndisc.o
+│   │   ├── netfilter
+│   │   │   ├── built-in.o
+│   │   │   ├── ip6table_filter.o
+│   │   │   ├── ip6table_mangle.o
+│   │   │   ├── ip6table_raw.o
+│   │   │   ├── ip6_tables.o
+│   │   │   ├── ip6t_REJECT.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── nf_conntrack_ipv6.o
+│   │   │   ├── nf_conntrack_l3proto_ipv6.o
+│   │   │   ├── nf_conntrack_proto_icmpv6.o
+│   │   │   ├── nf_conntrack_reasm.o
+│   │   │   ├── nf_defrag_ipv6_hooks.o
+│   │   │   └── nf_defrag_ipv6.o
+│   │   ├── netfilter.o
+│   │   ├── output_core.o
+│   │   ├── ping.o
+│   │   ├── proc.o
+│   │   ├── protocol.o
+│   │   ├── raw.o
+│   │   ├── reassembly.o
+│   │   ├── route.o
+│   │   ├── sit.o
+│   │   ├── sysctl_net_ipv6.o
+│   │   ├── tcp_ipv6.o
+│   │   ├── tcpv6_offload.o
+│   │   ├── tunnel6.o
+│   │   ├── udplite.o
+│   │   ├── udp.o
+│   │   ├── udp_offload.o
+│   │   ├── xfrm6_input.o
+│   │   ├── xfrm6_mode_beet.o
+│   │   ├── xfrm6_mode_transport.o
+│   │   ├── xfrm6_mode_tunnel.o
+│   │   ├── xfrm6_output.o
+│   │   ├── xfrm6_policy.o
+│   │   ├── xfrm6_state.o
+│   │   └── xfrm6_tunnel.o
+│   ├── key
+│   │   ├── af_key.o
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── l2tp
+│   │   ├── built-in.o
+│   │   ├── l2tp_core.o
+│   │   ├── l2tp_ppp.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── netfilter
+│   │   ├── built-in.o
+│   │   ├── core.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── netfilter.o
+│   │   ├── nf_conntrack_acct.o
+│   │   ├── nf_conntrack_amanda.o
+│   │   ├── nf_conntrack_broadcast.o
+│   │   ├── nf_conntrack_core.o
+│   │   ├── nf_conntrack_ecache.o
+│   │   ├── nf_conntrack_expect.o
+│   │   ├── nf_conntrack_extend.o
+│   │   ├── nf_conntrack_ftp.o
+│   │   ├── nf_conntrack_h323_asn1.o
+│   │   ├── nf_conntrack_h323_main.o
+│   │   ├── nf_conntrack_h323.o
+│   │   ├── nf_conntrack_helper.o
+│   │   ├── nf_conntrack_irc.o
+│   │   ├── nf_conntrack_l3proto_generic.o
+│   │   ├── nf_conntrack_netbios_ns.o
+│   │   ├── nf_conntrack_netlink.o
+│   │   ├── nf_conntrack.o
+│   │   ├── nf_conntrack_pptp.o
+│   │   ├── nf_conntrack_proto_dccp.o
+│   │   ├── nf_conntrack_proto_generic.o
+│   │   ├── nf_conntrack_proto_gre.o
+│   │   ├── nf_conntrack_proto.o
+│   │   ├── nf_conntrack_proto_sctp.o
+│   │   ├── nf_conntrack_proto_tcp.o
+│   │   ├── nf_conntrack_proto_udplite.o
+│   │   ├── nf_conntrack_proto_udp.o
+│   │   ├── nf_conntrack_sane.o
+│   │   ├── nf_conntrack_sip.o
+│   │   ├── nf_conntrack_standalone.o
+│   │   ├── nf_conntrack_tftp.o
+│   │   ├── nf_log.o
+│   │   ├── nf_nat_amanda.o
+│   │   ├── nf_nat_core.o
+│   │   ├── nf_nat_ftp.o
+│   │   ├── nf_nat_helper.o
+│   │   ├── nf_nat_irc.o
+│   │   ├── nf_nat.o
+│   │   ├── nf_nat_proto_common.o
+│   │   ├── nf_nat_proto_dccp.o
+│   │   ├── nf_nat_proto_sctp.o
+│   │   ├── nf_nat_proto_tcp.o
+│   │   ├── nf_nat_proto_udplite.o
+│   │   ├── nf_nat_proto_udp.o
+│   │   ├── nf_nat_proto_unknown.o
+│   │   ├── nf_nat_sip.o
+│   │   ├── nf_nat_tftp.o
+│   │   ├── nfnetlink_log.o
+│   │   ├── nfnetlink.o
+│   │   ├── nfnetlink_queue_core.o
+│   │   ├── nfnetlink_queue.o
+│   │   ├── nf_queue.o
+│   │   ├── nf_sockopt.o
+│   │   ├── nf_tproxy_core.o
+│   │   ├── x_tables.o
+│   │   ├── xt_CLASSIFY.o
+│   │   ├── xt_comment.o
+│   │   ├── xt_connlimit.o
+│   │   ├── xt_connmark.o
+│   │   ├── xt_conntrack.o
+│   │   ├── xt_ecn.o
+│   │   ├── xt_hashlimit.o
+│   │   ├── xt_helper.o
+│   │   ├── xt_hl.o
+│   │   ├── xt_IDLETIMER.o
+│   │   ├── xt_iprange.o
+│   │   ├── xt_length.o
+│   │   ├── xt_limit.o
+│   │   ├── xt_mac.o
+│   │   ├── xt_mark.o
+│   │   ├── xt_nat.o
+│   │   ├── xt_NETMAP.o
+│   │   ├── xt_NFLOG.o
+│   │   ├── xt_NFQUEUE.o
+│   │   ├── xt_pkttype.o
+│   │   ├── xt_policy.o
+│   │   ├── xt_qtaguid.o
+│   │   ├── xt_qtaguid_print.o
+│   │   ├── xt_quota2.o
+│   │   ├── xt_quota.o
+│   │   ├── xt_REDIRECT.o
+│   │   ├── xt_socket.o
+│   │   ├── xt_state.o
+│   │   ├── xt_statistic.o
+│   │   ├── xt_string.o
+│   │   ├── xt_tcpudp.o
+│   │   ├── xt_time.o
+│   │   ├── xt_TPROXY.o
+│   │   ├── xt_TRACE.o
+│   │   └── xt_u32.o
+│   ├── netlink
+│   │   ├── af_netlink.o
+│   │   ├── built-in.o
+│   │   ├── genetlink.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── packet
+│   │   ├── af_packet.o
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── rfkill
+│   │   ├── built-in.o
+│   │   ├── core.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── rfkill.o
+│   ├── sched
+│   │   ├── act_api.o
+│   │   ├── built-in.o
+│   │   ├── cls_api.o
+│   │   ├── cls_u32.o
+│   │   ├── ematch.o
+│   │   ├── em_u32.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── sch_api.o
+│   │   ├── sch_blackhole.o
+│   │   ├── sch_fifo.o
+│   │   ├── sch_generic.o
+│   │   ├── sch_htb.o
+│   │   └── sch_mq.o
+│   ├── socket.o
+│   ├── sysctl_net.o
+│   ├── unix
+│   │   ├── af_unix.o
+│   │   ├── built-in.o
+│   │   ├── garbage.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── sysctl_net_unix.o
+│   │   └── unix.o
+│   ├── wireless
+│   │   ├── ap.o
+│   │   ├── built-in.o
+│   │   ├── cfg80211.o
+│   │   ├── chan.o
+│   │   ├── core.o
+│   │   ├── ethtool.o
+│   │   ├── ibss.o
+│   │   ├── mesh.o
+│   │   ├── mlme.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── nl80211.o
+│   │   ├── radiotap.o
+│   │   ├── reg.o
+│   │   ├── scan.o
+│   │   ├── sme.o
+│   │   ├── sysfs.o
+│   │   ├── trace.o
+│   │   └── util.o
+│   └── xfrm
+│       ├── built-in.o
+│       ├── modules.builtin
+│       ├── modules.order
+│       ├── xfrm_algo.o
+│       ├── xfrm_hash.o
+│       ├── xfrm_input.o
+│       ├── xfrm_ipcomp.o
+│       ├── xfrm_output.o
+│       ├── xfrm_policy.o
+│       ├── xfrm_replay.o
+│       ├── xfrm_state.o
+│       ├── xfrm_sysctl.o
+│       └── xfrm_user.o
+├── scripts
+│   ├── basic
+│   │   ├── fixdep
+│   │   └── modules.order
+│   ├── dtc
+│   │   ├── checks.o
+│   │   ├── data.o
+│   │   ├── dtc
+│   │   ├── dtc-lexer.lex.c
+│   │   ├── dtc-lexer.lex.o
+│   │   ├── dtc.o
+│   │   ├── dtc-parser.tab.c
+│   │   ├── dtc-parser.tab.h
+│   │   ├── dtc-parser.tab.o
+│   │   ├── flattree.o
+│   │   ├── fstree.o
+│   │   ├── livetree.o
+│   │   ├── modules.order
+│   │   ├── srcpos.o
+│   │   ├── treesource.o
+│   │   └── util.o
+│   ├── genksyms
+│   │   ├── genksyms
+│   │   ├── genksyms.o
+│   │   ├── keywords.hash.c
+│   │   ├── lex.lex.c
+│   │   ├── lex.lex.o
+│   │   ├── modules.order
+│   │   ├── parse.tab.c
+│   │   ├── parse.tab.h
+│   │   └── parse.tab.o
+│   ├── kallsyms
+│   ├── kconfig
+│   │   ├── conf
+│   │   ├── conf.o
+│   │   ├── zconf.hash.c
+│   │   ├── zconf.lex.c
+│   │   ├── zconf.tab.c
+│   │   └── zconf.tab.o
+│   ├── mod
+│   │   ├── devicetable-offsets.h
+│   │   ├── devicetable-offsets.s
+│   │   ├── elfconfig.h
+│   │   ├── empty.o
+│   │   ├── file2alias.o
+│   │   ├── mk_elfconfig
+│   │   ├── modpost
+│   │   ├── modpost.o
+│   │   ├── modules.order
+│   │   └── sumversion.o
+│   ├── modules.order
+│   ├── recordmcount
+│   ├── selinux
+│   │   ├── genheaders
+│   │   │   ├── genheaders
+│   │   │   └── modules.order
+│   │   ├── mdp
+│   │   │   ├── mdp
+│   │   │   └── modules.order
+│   │   └── modules.order
+│   ├── sortextable
+│   └── unifdef
+├── security
+│   ├── built-in.o
+│   ├── capability.o
+│   ├── commoncap.o
+│   ├── keys
+│   │   ├── built-in.o
+│   │   ├── gc.o
+│   │   ├── keyctl.o
+│   │   ├── key.o
+│   │   ├── keyring.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── permission.o
+│   │   ├── process_keys.o
+│   │   ├── proc.o
+│   │   ├── request_key_auth.o
+│   │   ├── request_key.o
+│   │   ├── sysctl.o
+│   │   └── user_defined.o
+│   ├── lsm_audit.o
+│   ├── min_addr.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── security.o
+│   └── selinux
+│       ├── avc.o
+│       ├── av_permissions.h
+│       ├── built-in.o
+│       ├── exports.o
+│       ├── flask.h
+│       ├── hooks.o
+│       ├── modules.builtin
+│       ├── modules.order
+│       ├── netif.o
+│       ├── netlink.o
+│       ├── netnode.o
+│       ├── netport.o
+│       ├── nlmsgtab.o
+│       ├── selinuxfs.o
+│       ├── selinux.o
+│       └── ss
+│           ├── avtab.o
+│           ├── conditional.o
+│           ├── ebitmap.o
+│           ├── hashtab.o
+│           ├── mls.o
+│           ├── policydb.o
+│           ├── services.o
+│           ├── sidtab.o
+│           ├── status.o
+│           └── symtab.o
+├── sound
+│   ├── arm
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── atmel
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── built-in.o
+│   ├── core
+│   │   ├── built-in.o
+│   │   ├── compress_offload.o
+│   │   ├── control.o
+│   │   ├── device.o
+│   │   ├── info.o
+│   │   ├── init.o
+│   │   ├── jack.o
+│   │   ├── memalloc.o
+│   │   ├── memory.o
+│   │   ├── misc.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── pcm_lib.o
+│   │   ├── pcm_memory.o
+│   │   ├── pcm_misc.o
+│   │   ├── pcm_native.o
+│   │   ├── pcm.o
+│   │   ├── pcm_timer.o
+│   │   ├── snd-compress.o
+│   │   ├── snd.o
+│   │   ├── snd-page-alloc.o
+│   │   ├── snd-pcm.o
+│   │   ├── snd-timer.o
+│   │   ├── sound.o
+│   │   └── timer.o
+│   ├── drivers
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── mpu401
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── opl3
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── opl4
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── pcsp
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── saudio.o
+│   │   └── vx
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── firewire
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── i2c
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   └── other
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── isa
+│   │   ├── ad1816a
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── ad1848
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── cs423x
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── es1688
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── galaxy
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── gus
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── msnd
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── opti9xx
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── sb
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── wavefront
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── wss
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── last.o
+│   ├── mips
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── modules.builtin
+│   ├── modules.order
+│   ├── parisc
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── pci
+│   │   ├── ac97
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── ali5451
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── asihpi
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── au88x0
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── aw2
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── ca0106
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── cs46xx
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── cs5535audio
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── ctxfi
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── echoaudio
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── emu10k1
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── hda
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── ice1712
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── korg1212
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── lola
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── lx6464es
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── mixart
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── nm256
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── oxygen
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── pcxhr
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── riptide
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── rme9652
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── trident
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── vx222
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── ymfpci
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── pcmcia
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── pdaudiocf
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── vx
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── ppc
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── sh
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── soc
+│   │   ├── atmel
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── au1x
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── blackfin
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── built-in.o
+│   │   ├── cirrus
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── codecs
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── davinci
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── dwc
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── fsl
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── generic
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── jz4740
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── kirkwood
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── mid-x86
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── modules.builtin
+│   │   ├── modules.order
+│   │   ├── mxs
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── nuc900
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── omap
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── pxa
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── s6000
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── samsung
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── sh
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── snd-soc-core.o
+│   │   ├── soc-cache.o
+│   │   ├── soc-compress.o
+│   │   ├── soc-core.o
+│   │   ├── soc-dapm.o
+│   │   ├── soc-io.o
+│   │   ├── soc-jack.o
+│   │   ├── soc-pcm.o
+│   │   ├── soc-utils.o
+│   │   ├── sprd
+│   │   │   ├── built-in.o
+│   │   │   ├── codec
+│   │   │   │   ├── null-codec
+│   │   │   │   │   ├── built-in.o
+│   │   │   │   │   ├── modules.builtin
+│   │   │   │   │   ├── modules.order
+│   │   │   │   │   ├── null-codec.o
+│   │   │   │   │   └── snd-soc-sprd-null-codec.o
+│   │   │   │   └── sprd
+│   │   │   │       └── v4
+│   │   │   │           ├── built-in.o
+│   │   │   │           ├── modules.builtin
+│   │   │   │           ├── modules.order
+│   │   │   │           ├── snd-soc-sprd-sprd-codec-v4.o
+│   │   │   │           ├── sprd-audio-power.o
+│   │   │   │           └── sprd-codec.o
+│   │   │   ├── dai
+│   │   │   │   ├── built-in.o
+│   │   │   │   ├── i2s
+│   │   │   │   │   ├── built-in.o
+│   │   │   │   │   ├── i2s.o
+│   │   │   │   │   ├── modules.builtin
+│   │   │   │   │   ├── modules.order
+│   │   │   │   │   └── snd-soc-sprd-i2s.o
+│   │   │   │   ├── modules.builtin
+│   │   │   │   ├── modules.order
+│   │   │   │   ├── snd-soc-sprd-audio-dma.o
+│   │   │   │   ├── sprd-pcm.o
+│   │   │   │   ├── vaudio
+│   │   │   │   │   ├── built-in.o
+│   │   │   │   │   ├── modules.builtin
+│   │   │   │   │   ├── modules.order
+│   │   │   │   │   ├── snd-soc-sprd-vaudio.o
+│   │   │   │   │   └── vaudio.o
+│   │   │   │   └── vbc
+│   │   │   │       └── r2p0
+│   │   │   │           ├── built-in.o
+│   │   │   │           ├── modules.builtin
+│   │   │   │           ├── modules.order
+│   │   │   │           ├── snd-soc-sprd-vbc-r2p0.o
+│   │   │   │           └── vbc.o
+│   │   │   ├── i2s-r0p0-null-codec.o
+│   │   │   ├── modules.builtin
+│   │   │   ├── modules.order
+│   │   │   ├── snd-soc-i2s.o
+│   │   │   ├── sprd-asoc-card.o
+│   │   │   └── sprd-asoc-common.o
+│   │   ├── tegra
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   ├── txx9
+│   │   │   ├── built-in.o
+│   │   │   ├── modules.builtin
+│   │   │   └── modules.order
+│   │   └── ux500
+│   │       ├── built-in.o
+│   │       ├── modules.builtin
+│   │       └── modules.order
+│   ├── sound_core.o
+│   ├── soundcore.o
+│   ├── sparc
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── spi
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── synth
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   └── usb
+│       ├── 6fire
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── built-in.o
+│       ├── caiaq
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── misc
+│       │   ├── built-in.o
+│       │   ├── modules.builtin
+│       │   └── modules.order
+│       ├── modules.builtin
+│       ├── modules.order
+│       └── usx2y
+│           ├── built-in.o
+│           ├── modules.builtin
+│           └── modules.order
+├── source -> /home/maning/disk2/c903_sl01/SC9832A_adr5.1_W16.3.4/main/kernel
+├── System.map
+├── usr
+│   ├── built-in.o
+│   ├── gen_init_cpio
+│   ├── include
+│   │   ├── asm
+│   │   │   ├── auxvec.h
+│   │   │   ├── bitsperlong.h
+│   │   │   ├── byteorder.h
+│   │   │   ├── errno.h
+│   │   │   ├── fcntl.h
+│   │   │   ├── hwcap.h
+│   │   │   ├── ioctl.h
+│   │   │   ├── ioctls.h
+│   │   │   ├── ipcbuf.h
+│   │   │   ├── kvm.h
+│   │   │   ├── kvm_para.h
+│   │   │   ├── mman.h
+│   │   │   ├── msgbuf.h
+│   │   │   ├── param.h
+│   │   │   ├── poll.h
+│   │   │   ├── posix_types.h
+│   │   │   ├── ptrace.h
+│   │   │   ├── resource.h
+│   │   │   ├── sembuf.h
+│   │   │   ├── setup.h
+│   │   │   ├── shmbuf.h
+│   │   │   ├── sigcontext.h
+│   │   │   ├── siginfo.h
+│   │   │   ├── signal.h
+│   │   │   ├── socket.h
+│   │   │   ├── sockios.h
+│   │   │   ├── statfs.h
+│   │   │   ├── stat.h
+│   │   │   ├── swab.h
+│   │   │   ├── termbits.h
+│   │   │   ├── termios.h
+│   │   │   ├── types.h
+│   │   │   └── unistd.h
+│   │   ├── asm-generic
+│   │   │   ├── auxvec.h
+│   │   │   ├── bitsperlong.h
+│   │   │   ├── errno-base.h
+│   │   │   ├── errno.h
+│   │   │   ├── fcntl.h
+│   │   │   ├── int-l64.h
+│   │   │   ├── int-ll64.h
+│   │   │   ├── ioctl.h
+│   │   │   ├── ioctls.h
+│   │   │   ├── ipcbuf.h
+│   │   │   ├── kvm_para.h
+│   │   │   ├── mman-common.h
+│   │   │   ├── mman.h
+│   │   │   ├── msgbuf.h
+│   │   │   ├── param.h
+│   │   │   ├── poll.h
+│   │   │   ├── posix_types.h
+│   │   │   ├── resource.h
+│   │   │   ├── sembuf.h
+│   │   │   ├── setup.h
+│   │   │   ├── shmbuf.h
+│   │   │   ├── shmparam.h
+│   │   │   ├── siginfo.h
+│   │   │   ├── signal-defs.h
+│   │   │   ├── signal.h
+│   │   │   ├── socket.h
+│   │   │   ├── sockios.h
+│   │   │   ├── statfs.h
+│   │   │   ├── stat.h
+│   │   │   ├── swab.h
+│   │   │   ├── termbits.h
+│   │   │   ├── termios.h
+│   │   │   ├── types.h
+│   │   │   ├── ucontext.h
+│   │   │   └── unistd.h
+│   │   ├── drm
+│   │   │   ├── drm_fourcc.h
+│   │   │   ├── drm.h
+│   │   │   ├── drm_mode.h
+│   │   │   ├── drm_sarea.h
+│   │   │   ├── exynos_drm.h
+│   │   │   ├── i810_drm.h
+│   │   │   ├── i915_drm.h
+│   │   │   ├── mga_drm.h
+│   │   │   ├── nouveau_drm.h
+│   │   │   ├── qxl_drm.h
+│   │   │   ├── r128_drm.h
+│   │   │   ├── radeon_drm.h
+│   │   │   ├── savage_drm.h
+│   │   │   ├── sis_drm.h
+│   │   │   ├── tegra_drm.h
+│   │   │   ├── via_drm.h
+│   │   │   └── vmwgfx_drm.h
+│   │   ├── linux
+│   │   │   ├── acct.h
+│   │   │   ├── adb.h
+│   │   │   ├── adfs_fs.h
+│   │   │   ├── affs_hardblocks.h
+│   │   │   ├── agpgart.h
+│   │   │   ├── aio_abi.h
+│   │   │   ├── apm_bios.h
+│   │   │   ├── arcfb.h
+│   │   │   ├── atalk.h
+│   │   │   ├── atmapi.h
+│   │   │   ├── atmarp.h
+│   │   │   ├── atmbr2684.h
+│   │   │   ├── atmclip.h
+│   │   │   ├── atmdev.h
+│   │   │   ├── atm_eni.h
+│   │   │   ├── atm.h
+│   │   │   ├── atm_he.h
+│   │   │   ├── atm_idt77105.h
+│   │   │   ├── atmioc.h
+│   │   │   ├── atmlec.h
+│   │   │   ├── atmmpc.h
+│   │   │   ├── atm_nicstar.h
+│   │   │   ├── atmppp.h
+│   │   │   ├── atmsap.h
+│   │   │   ├── atmsvc.h
+│   │   │   ├── atm_tcp.h
+│   │   │   ├── atm_zatm.h
+│   │   │   ├── audit.h
+│   │   │   ├── auto_fs4.h
+│   │   │   ├── auto_fs.h
+│   │   │   ├── auxvec.h
+│   │   │   ├── ax25.h
+│   │   │   ├── b1lli.h
+│   │   │   ├── baycom.h
+│   │   │   ├── bfs_fs.h
+│   │   │   ├── binfmts.h
+│   │   │   ├── blkpg.h
+│   │   │   ├── blktrace_api.h
+│   │   │   ├── bpqether.h
+│   │   │   ├── bsg.h
+│   │   │   ├── btrfs.h
+│   │   │   ├── byteorder
+│   │   │   │   ├── big_endian.h
+│   │   │   │   └── little_endian.h
+│   │   │   ├── caif
+│   │   │   │   ├── caif_socket.h
+│   │   │   │   └── if_caif.h
+│   │   │   ├── can
+│   │   │   │   ├── bcm.h
+│   │   │   │   ├── error.h
+│   │   │   │   ├── gw.h
+│   │   │   │   ├── netlink.h
+│   │   │   │   └── raw.h
+│   │   │   ├── can.h
+│   │   │   ├── capability.h
+│   │   │   ├── capi.h
+│   │   │   ├── cciss_defs.h
+│   │   │   ├── cciss_ioctl.h
+│   │   │   ├── cdrom.h
+│   │   │   ├── cgroupstats.h
+│   │   │   ├── chio.h
+│   │   │   ├── cm4000_cs.h
+│   │   │   ├── cn_proc.h
+│   │   │   ├── coda.h
+│   │   │   ├── coda_psdev.h
+│   │   │   ├── coff.h
+│   │   │   ├── connector.h
+│   │   │   ├── const.h
+│   │   │   ├── cramfs_fs.h
+│   │   │   ├── cuda.h
+│   │   │   ├── cyclades.h
+│   │   │   ├── cycx_cfm.h
+│   │   │   ├── dcbnl.h
+│   │   │   ├── dccp.h
+│   │   │   ├── dlmconstants.h
+│   │   │   ├── dlm_device.h
+│   │   │   ├── dlm.h
+│   │   │   ├── dlm_netlink.h
+│   │   │   ├── dlm_plock.h
+│   │   │   ├── dm-ioctl.h
+│   │   │   ├── dm-log-userspace.h
+│   │   │   ├── dn.h
+│   │   │   ├── dqblk_xfs.h
+│   │   │   ├── dvb
+│   │   │   │   ├── audio.h
+│   │   │   │   ├── ca.h
+│   │   │   │   ├── dmx.h
+│   │   │   │   ├── frontend.h
+│   │   │   │   ├── net.h
+│   │   │   │   ├── osd.h
+│   │   │   │   ├── version.h
+│   │   │   │   └── video.h
+│   │   │   ├── edd.h
+│   │   │   ├── efs_fs_sb.h
+│   │   │   ├── elfcore.h
+│   │   │   ├── elf-em.h
+│   │   │   ├── elf-fdpic.h
+│   │   │   ├── elf.h
+│   │   │   ├── errno.h
+│   │   │   ├── errqueue.h
+│   │   │   ├── ethtool.h
+│   │   │   ├── eventpoll.h
+│   │   │   ├── fadvise.h
+│   │   │   ├── falloc.h
+│   │   │   ├── fanotify.h
+│   │   │   ├── fb.h
+│   │   │   ├── fcntl.h
+│   │   │   ├── fd.h
+│   │   │   ├── fdreg.h
+│   │   │   ├── fib_rules.h
+│   │   │   ├── fiemap.h
+│   │   │   ├── filter.h
+│   │   │   ├── firewire-cdev.h
+│   │   │   ├── firewire-constants.h
+│   │   │   ├── flat.h
+│   │   │   ├── fs.h
+│   │   │   ├── fsl_hypervisor.h
+│   │   │   ├── fuse.h
+│   │   │   ├── futex.h
+│   │   │   ├── gameport.h
+│   │   │   ├── genetlink.h
+│   │   │   ├── gen_stats.h
+│   │   │   ├── gfs2_ondisk.h
+│   │   │   ├── gigaset_dev.h
+│   │   │   ├── hdlc
+│   │   │   │   └── ioctl.h
+│   │   │   ├── hdlcdrv.h
+│   │   │   ├── hdlc.h
+│   │   │   ├── hdreg.h
+│   │   │   ├── hiddev.h
+│   │   │   ├── hid.h
+│   │   │   ├── hidraw.h
+│   │   │   ├── hpet.h
+│   │   │   ├── hsi
+│   │   │   │   └── hsi_char.h
+│   │   │   ├── hw_breakpoint.h
+│   │   │   ├── hysdn_if.h
+│   │   │   ├── i2c-dev.h
+│   │   │   ├── i2c.h
+│   │   │   ├── i2o-dev.h
+│   │   │   ├── i8k.h
+│   │   │   ├── icmp.h
+│   │   │   ├── icmpv6.h
+│   │   │   ├── if_addr.h
+│   │   │   ├── if_addrlabel.h
+│   │   │   ├── if_alg.h
+│   │   │   ├── if_arcnet.h
+│   │   │   ├── if_arp.h
+│   │   │   ├── if_bonding.h
+│   │   │   ├── if_bridge.h
+│   │   │   ├── if_cablemodem.h
+│   │   │   ├── if_eql.h
+│   │   │   ├── if_ether.h
+│   │   │   ├── if_fc.h
+│   │   │   ├── if_fddi.h
+│   │   │   ├── if_frad.h
+│   │   │   ├── if.h
+│   │   │   ├── if_hippi.h
+│   │   │   ├── if_infiniband.h
+│   │   │   ├── if_link.h
+│   │   │   ├── if_ltalk.h
+│   │   │   ├── if_packet.h
+│   │   │   ├── if_phonet.h
+│   │   │   ├── if_plip.h
+│   │   │   ├── if_ppp.h
+│   │   │   ├── if_pppol2tp.h
+│   │   │   ├── if_pppolac.h
+│   │   │   ├── if_pppopns.h
+│   │   │   ├── if_pppox.h
+│   │   │   ├── if_slip.h
+│   │   │   ├── if_team.h
+│   │   │   ├── if_tun.h
+│   │   │   ├── if_tunnel.h
+│   │   │   ├── if_vlan.h
+│   │   │   ├── if_x25.h
+│   │   │   ├── igmp.h
+│   │   │   ├── in6.h
+│   │   │   ├── inet_diag.h
+│   │   │   ├── in.h
+│   │   │   ├── inotify.h
+│   │   │   ├── input.h
+│   │   │   ├── in_route.h
+│   │   │   ├── ioctl.h
+│   │   │   ├── ion.h
+│   │   │   ├── ip6_tunnel.h
+│   │   │   ├── ipc.h
+│   │   │   ├── ip.h
+│   │   │   ├── ipmi.h
+│   │   │   ├── ipmi_msgdefs.h
+│   │   │   ├── ipsec.h
+│   │   │   ├── ipv6.h
+│   │   │   ├── ipv6_route.h
+│   │   │   ├── ip_vs.h
+│   │   │   ├── ipx.h
+│   │   │   ├── irda.h
+│   │   │   ├── irqnr.h
+│   │   │   ├── isdn
+│   │   │   │   └── capicmd.h
+│   │   │   ├── isdn_divertif.h
+│   │   │   ├── isdn.h
+│   │   │   ├── isdnif.h
+│   │   │   ├── isdn_ppp.h
+│   │   │   ├── iso_fs.h
+│   │   │   ├── ivtvfb.h
+│   │   │   ├── ivtv.h
+│   │   │   ├── ixjuser.h
+│   │   │   ├── jffs2.h
+│   │   │   ├── joystick.h
+│   │   │   ├── kdev_t.h
+│   │   │   ├── kd.h
+│   │   │   ├── kernelcapi.h
+│   │   │   ├── kernel.h
+│   │   │   ├── kernel-page-flags.h
+│   │   │   ├── kexec.h
+│   │   │   ├── keyboard.h
+│   │   │   ├── keyctl.h
+│   │   │   ├── kvm.h
+│   │   │   ├── kvm_para.h
+│   │   │   ├── l2tp.h
+│   │   │   ├── limits.h
+│   │   │   ├── llc.h
+│   │   │   ├── loop.h
+│   │   │   ├── lp.h
+│   │   │   ├── magic.h
+│   │   │   ├── major.h
+│   │   │   ├── map_to_7segment.h
+│   │   │   ├── matroxfb.h
+│   │   │   ├── mdio.h
+│   │   │   ├── media.h
+│   │   │   ├── mei.h
+│   │   │   ├── mempolicy.h
+│   │   │   ├── meye.h
+│   │   │   ├── mii.h
+│   │   │   ├── minix_fs.h
+│   │   │   ├── mman.h
+│   │   │   ├── mmc
+│   │   │   │   └── ioctl.h
+│   │   │   ├── mmtimer.h
+│   │   │   ├── mqueue.h
+│   │   │   ├── mroute6.h
+│   │   │   ├── mroute.h
+│   │   │   ├── msdos_fs.h
+│   │   │   ├── msg.h
+│   │   │   ├── mtio.h
+│   │   │   ├── nbd.h
+│   │   │   ├── ncp_fs.h
+│   │   │   ├── ncp.h
+│   │   │   ├── ncp_mount.h
+│   │   │   ├── ncp_no.h
+│   │   │   ├── neighbour.h
+│   │   │   ├── netconf.h
+│   │   │   ├── netdevice.h
+│   │   │   ├── net_dropmon.h
+│   │   │   ├── netfilter
+│   │   │   │   ├── ipset
+│   │   │   │   │   ├── ip_set_bitmap.h
+│   │   │   │   │   ├── ip_set.h
+│   │   │   │   │   ├── ip_set_hash.h
+│   │   │   │   │   └── ip_set_list.h
+│   │   │   │   ├── nf_conntrack_common.h
+│   │   │   │   ├── nf_conntrack_ftp.h
+│   │   │   │   ├── nf_conntrack_sctp.h
+│   │   │   │   ├── nf_conntrack_tcp.h
+│   │   │   │   ├── nf_conntrack_tuple_common.h
+│   │   │   │   ├── nf_nat.h
+│   │   │   │   ├── nfnetlink_acct.h
+│   │   │   │   ├── nfnetlink_compat.h
+│   │   │   │   ├── nfnetlink_conntrack.h
+│   │   │   │   ├── nfnetlink_cthelper.h
+│   │   │   │   ├── nfnetlink_cttimeout.h
+│   │   │   │   ├── nfnetlink.h
+│   │   │   │   ├── nfnetlink_log.h
+│   │   │   │   ├── nfnetlink_queue.h
+│   │   │   │   ├── x_tables.h
+│   │   │   │   ├── xt_addrtype.h
+│   │   │   │   ├── xt_AUDIT.h
+│   │   │   │   ├── xt_bpf.h
+│   │   │   │   ├── xt_CHECKSUM.h
+│   │   │   │   ├── xt_CLASSIFY.h
+│   │   │   │   ├── xt_cluster.h
+│   │   │   │   ├── xt_comment.h
+│   │   │   │   ├── xt_connbytes.h
+│   │   │   │   ├── xt_connlabel.h
+│   │   │   │   ├── xt_connlimit.h
+│   │   │   │   ├── xt_connmark.h
+│   │   │   │   ├── xt_CONNMARK.h
+│   │   │   │   ├── xt_CONNSECMARK.h
+│   │   │   │   ├── xt_conntrack.h
+│   │   │   │   ├── xt_cpu.h
+│   │   │   │   ├── xt_CT.h
+│   │   │   │   ├── xt_dccp.h
+│   │   │   │   ├── xt_devgroup.h
+│   │   │   │   ├── xt_dscp.h
+│   │   │   │   ├── xt_DSCP.h
+│   │   │   │   ├── xt_ecn.h
+│   │   │   │   ├── xt_esp.h
+│   │   │   │   ├── xt_hashlimit.h
+│   │   │   │   ├── xt_helper.h
+│   │   │   │   ├── xt_IDLETIMER.h
+│   │   │   │   ├── xt_iprange.h
+│   │   │   │   ├── xt_ipvs.h
+│   │   │   │   ├── xt_LED.h
+│   │   │   │   ├── xt_length.h
+│   │   │   │   ├── xt_limit.h
+│   │   │   │   ├── xt_LOG.h
+│   │   │   │   ├── xt_mac.h
+│   │   │   │   ├── xt_mark.h
+│   │   │   │   ├── xt_MARK.h
+│   │   │   │   ├── xt_multiport.h
+│   │   │   │   ├── xt_nfacct.h
+│   │   │   │   ├── xt_NFLOG.h
+│   │   │   │   ├── xt_NFQUEUE.h
+│   │   │   │   ├── xt_osf.h
+│   │   │   │   ├── xt_owner.h
+│   │   │   │   ├── xt_physdev.h
+│   │   │   │   ├── xt_pkttype.h
+│   │   │   │   ├── xt_policy.h
+│   │   │   │   ├── xt_quota.h
+│   │   │   │   ├── xt_rateest.h
+│   │   │   │   ├── xt_RATEEST.h
+│   │   │   │   ├── xt_realm.h
+│   │   │   │   ├── xt_recent.h
+│   │   │   │   ├── xt_sctp.h
+│   │   │   │   ├── xt_SECMARK.h
+│   │   │   │   ├── xt_set.h
+│   │   │   │   ├── xt_socket.h
+│   │   │   │   ├── xt_state.h
+│   │   │   │   ├── xt_statistic.h
+│   │   │   │   ├── xt_string.h
+│   │   │   │   ├── xt_tcpmss.h
+│   │   │   │   ├── xt_TCPMSS.h
+│   │   │   │   ├── xt_TCPOPTSTRIP.h
+│   │   │   │   ├── xt_tcpudp.h
+│   │   │   │   ├── xt_TEE.h
+│   │   │   │   ├── xt_time.h
+│   │   │   │   ├── xt_TPROXY.h
+│   │   │   │   └── xt_u32.h
+│   │   │   ├── netfilter_arp
+│   │   │   │   ├── arp_tables.h
+│   │   │   │   └── arpt_mangle.h
+│   │   │   ├── netfilter_arp.h
+│   │   │   ├── netfilter_bridge
+│   │   │   │   ├── ebt_802_3.h
+│   │   │   │   ├── ebtables.h
+│   │   │   │   ├── ebt_among.h
+│   │   │   │   ├── ebt_arp.h
+│   │   │   │   ├── ebt_arpreply.h
+│   │   │   │   ├── ebt_ip6.h
+│   │   │   │   ├── ebt_ip.h
+│   │   │   │   ├── ebt_limit.h
+│   │   │   │   ├── ebt_log.h
+│   │   │   │   ├── ebt_mark_m.h
+│   │   │   │   ├── ebt_mark_t.h
+│   │   │   │   ├── ebt_nat.h
+│   │   │   │   ├── ebt_nflog.h
+│   │   │   │   ├── ebt_pkttype.h
+│   │   │   │   ├── ebt_redirect.h
+│   │   │   │   ├── ebt_stp.h
+│   │   │   │   ├── ebt_ulog.h
+│   │   │   │   └── ebt_vlan.h
+│   │   │   ├── netfilter_bridge.h
+│   │   │   ├── netfilter_decnet.h
+│   │   │   ├── netfilter.h
+│   │   │   ├── netfilter_ipv4
+│   │   │   │   ├── ip_tables.h
+│   │   │   │   ├── ipt_ah.h
+│   │   │   │   ├── ipt_CLUSTERIP.h
+│   │   │   │   ├── ipt_ecn.h
+│   │   │   │   ├── ipt_ECN.h
+│   │   │   │   ├── ipt_LOG.h
+│   │   │   │   ├── ipt_REJECT.h
+│   │   │   │   ├── ipt_ttl.h
+│   │   │   │   ├── ipt_TTL.h
+│   │   │   │   └── ipt_ULOG.h
+│   │   │   ├── netfilter_ipv4.h
+│   │   │   ├── netfilter_ipv6
+│   │   │   │   ├── ip6_tables.h
+│   │   │   │   ├── ip6t_ah.h
+│   │   │   │   ├── ip6t_frag.h
+│   │   │   │   ├── ip6t_hl.h
+│   │   │   │   ├── ip6t_HL.h
+│   │   │   │   ├── ip6t_ipv6header.h
+│   │   │   │   ├── ip6t_LOG.h
+│   │   │   │   ├── ip6t_mh.h
+│   │   │   │   ├── ip6t_NPT.h
+│   │   │   │   ├── ip6t_opts.h
+│   │   │   │   ├── ip6t_REJECT.h
+│   │   │   │   └── ip6t_rt.h
+│   │   │   ├── netfilter_ipv6.h
+│   │   │   ├── net.h
+│   │   │   ├── netlink_diag.h
+│   │   │   ├── netlink.h
+│   │   │   ├── netrom.h
+│   │   │   ├── net_tstamp.h
+│   │   │   ├── nfc.h
+│   │   │   ├── nfs2.h
+│   │   │   ├── nfs3.h
+│   │   │   ├── nfs4.h
+│   │   │   ├── nfs4_mount.h
+│   │   │   ├── nfsacl.h
+│   │   │   ├── nfsd
+│   │   │   │   ├── cld.h
+│   │   │   │   ├── debug.h
+│   │   │   │   ├── export.h
+│   │   │   │   ├── nfsfh.h
+│   │   │   │   └── stats.h
+│   │   │   ├── nfs_fs.h
+│   │   │   ├── nfs.h
+│   │   │   ├── nfs_idmap.h
+│   │   │   ├── nfs_mount.h
+│   │   │   ├── nl80211.h
+│   │   │   ├── n_r3964.h
+│   │   │   ├── nubus.h
+│   │   │   ├── nvram.h
+│   │   │   ├── omap3isp.h
+│   │   │   ├── omapfb.h
+│   │   │   ├── oom.h
+│   │   │   ├── openvswitch.h
+│   │   │   ├── packet_diag.h
+│   │   │   ├── param.h
+│   │   │   ├── parport.h
+│   │   │   ├── patchkey.h
+│   │   │   ├── pci.h
+│   │   │   ├── pci_regs.h
+│   │   │   ├── perf_event.h
+│   │   │   ├── personality.h
+│   │   │   ├── pfkeyv2.h
+│   │   │   ├── pg.h
+│   │   │   ├── phantom.h
+│   │   │   ├── phonet.h
+│   │   │   ├── pktcdvd.h
+│   │   │   ├── pkt_cls.h
+│   │   │   ├── pkt_sched.h
+│   │   │   ├── pmu.h
+│   │   │   ├── poll.h
+│   │   │   ├── posix_types.h
+│   │   │   ├── ppdev.h
+│   │   │   ├── ppp-comp.h
+│   │   │   ├── ppp_defs.h
+│   │   │   ├── ppp-ioctl.h
+│   │   │   ├── pps.h
+│   │   │   ├── prctl.h
+│   │   │   ├── psci.h
+│   │   │   ├── ptp_clock.h
+│   │   │   ├── ptrace.h
+│   │   │   ├── qnx4_fs.h
+│   │   │   ├── qnxtypes.h
+│   │   │   ├── quota.h
+│   │   │   ├── radeonfb.h
+│   │   │   ├── raid
+│   │   │   │   ├── md_p.h
+│   │   │   │   └── md_u.h
+│   │   │   ├── random.h
+│   │   │   ├── raw.h
+│   │   │   ├── rds.h
+│   │   │   ├── reboot.h
+│   │   │   ├── reiserfs_fs.h
+│   │   │   ├── reiserfs_xattr.h
+│   │   │   ├── resource.h
+│   │   │   ├── rfkill.h
+│   │   │   ├── romfs_fs.h
+│   │   │   ├── rose.h
+│   │   │   ├── route.h
+│   │   │   ├── rtc.h
+│   │   │   ├── rtnetlink.h
+│   │   │   ├── scc.h
+│   │   │   ├── sched.h
+│   │   │   ├── screen_info.h
+│   │   │   ├── sctp.h
+│   │   │   ├── sdla.h
+│   │   │   ├── seccomp.h
+│   │   │   ├── securebits.h
+│   │   │   ├── selinux_netlink.h
+│   │   │   ├── sem.h
+│   │   │   ├── serial_core.h
+│   │   │   ├── serial.h
+│   │   │   ├── serial_reg.h
+│   │   │   ├── serio.h
+│   │   │   ├── shm.h
+│   │   │   ├── signalfd.h
+│   │   │   ├── signal.h
+│   │   │   ├── snmp.h
+│   │   │   ├── sock_diag.h
+│   │   │   ├── socket.h
+│   │   │   ├── sockios.h
+│   │   │   ├── som.h
+│   │   │   ├── sonet.h
+│   │   │   ├── sonypi.h
+│   │   │   ├── soundcard.h
+│   │   │   ├── sound.h
+│   │   │   ├── spi
+│   │   │   │   └── spidev.h
+│   │   │   ├── stat.h
+│   │   │   ├── stddef.h
+│   │   │   ├── string.h
+│   │   │   ├── sunrpc
+│   │   │   │   └── debug.h
+│   │   │   ├── suspend_ioctls.h
+│   │   │   ├── swab.h
+│   │   │   ├── synclink.h
+│   │   │   ├── sysctl.h
+│   │   │   ├── sysinfo.h
+│   │   │   ├── taskstats.h
+│   │   │   ├── tc_act
+│   │   │   │   ├── tc_csum.h
+│   │   │   │   ├── tc_gact.h
+│   │   │   │   ├── tc_ipt.h
+│   │   │   │   ├── tc_mirred.h
+│   │   │   │   ├── tc_nat.h
+│   │   │   │   ├── tc_pedit.h
+│   │   │   │   └── tc_skbedit.h
+│   │   │   ├── tc_ematch
+│   │   │   │   ├── tc_em_cmp.h
+│   │   │   │   ├── tc_em_meta.h
+│   │   │   │   ├── tc_em_nbyte.h
+│   │   │   │   └── tc_em_text.h
+│   │   │   ├── tcp.h
+│   │   │   ├── tcp_metrics.h
+│   │   │   ├── telephony.h
+│   │   │   ├── termios.h
+│   │   │   ├── time.h
+│   │   │   ├── times.h
+│   │   │   ├── timex.h
+│   │   │   ├── tiocl.h
+│   │   │   ├── tipc_config.h
+│   │   │   ├── tipc.h
+│   │   │   ├── toshiba.h
+│   │   │   ├── tty_flags.h
+│   │   │   ├── tty.h
+│   │   │   ├── types.h
+│   │   │   ├── udf_fs_i.h
+│   │   │   ├── udp.h
+│   │   │   ├── uhid.h
+│   │   │   ├── uinput.h
+│   │   │   ├── uio.h
+│   │   │   ├── ultrasound.h
+│   │   │   ├── un.h
+│   │   │   ├── unistd.h
+│   │   │   ├── unix_diag.h
+│   │   │   ├── usb
+│   │   │   │   ├── audio.h
+│   │   │   │   ├── cdc.h
+│   │   │   │   ├── cdc-wdm.h
+│   │   │   │   ├── ch11.h
+│   │   │   │   ├── ch9.h
+│   │   │   │   ├── functionfs.h
+│   │   │   │   ├── gadgetfs.h
+│   │   │   │   ├── g_printer.h
+│   │   │   │   ├── midi.h
+│   │   │   │   ├── tmc.h
+│   │   │   │   └── video.h
+│   │   │   ├── usbdevice_fs.h
+│   │   │   ├── utime.h
+│   │   │   ├── utsname.h
+│   │   │   ├── uuid.h
+│   │   │   ├── uvcvideo.h
+│   │   │   ├── v4l2-common.h
+│   │   │   ├── v4l2-controls.h
+│   │   │   ├── v4l2-dv-timings.h
+│   │   │   ├── v4l2-mediabus.h
+│   │   │   ├── v4l2-subdev.h
+│   │   │   ├── version.h
+│   │   │   ├── veth.h
+│   │   │   ├── vfio.h
+│   │   │   ├── vhost.h
+│   │   │   ├── videodev2.h
+│   │   │   ├── virtio_9p.h
+│   │   │   ├── virtio_balloon.h
+│   │   │   ├── virtio_blk.h
+│   │   │   ├── virtio_config.h
+│   │   │   ├── virtio_console.h
+│   │   │   ├── virtio_ids.h
+│   │   │   ├── virtio_net.h
+│   │   │   ├── virtio_pci.h
+│   │   │   ├── virtio_ring.h
+│   │   │   ├── virtio_rng.h
+│   │   │   ├── vt.h
+│   │   │   ├── wait.h
+│   │   │   ├── wanrouter.h
+│   │   │   ├── watchdog.h
+│   │   │   ├── wimax
+│   │   │   │   └── i2400m.h
+│   │   │   ├── wimax.h
+│   │   │   ├── wireless.h
+│   │   │   ├── x25.h
+│   │   │   ├── xattr.h
+│   │   │   └── xfrm.h
+│   │   ├── mtd
+│   │   │   ├── inftl-user.h
+│   │   │   ├── mtd-abi.h
+│   │   │   ├── mtd-user.h
+│   │   │   ├── nftl-user.h
+│   │   │   └── ubi-user.h
+│   │   ├── rdma
+│   │   │   ├── ib_user_cm.h
+│   │   │   ├── ib_user_mad.h
+│   │   │   ├── ib_user_sa.h
+│   │   │   ├── ib_user_verbs.h
+│   │   │   ├── rdma_netlink.h
+│   │   │   └── rdma_user_cm.h
+│   │   ├── scsi
+│   │   │   ├── fc
+│   │   │   │   ├── fc_els.h
+│   │   │   │   ├── fc_fs.h
+│   │   │   │   ├── fc_gs.h
+│   │   │   │   └── fc_ns.h
+│   │   │   ├── scsi_bsg_fc.h
+│   │   │   ├── scsi_netlink_fc.h
+│   │   │   └── scsi_netlink.h
+│   │   ├── sound
+│   │   │   ├── asequencer.h
+│   │   │   ├── asound_fm.h
+│   │   │   ├── asound.h
+│   │   │   ├── compress_offload.h
+│   │   │   ├── compress_params.h
+│   │   │   ├── emu10k1.h
+│   │   │   ├── hdsp.h
+│   │   │   ├── hdspm.h
+│   │   │   ├── sb16_csp.h
+│   │   │   └── sfnt_info.h
+│   │   ├── uapi
+│   │   ├── video
+│   │   │   ├── edid.h
+│   │   │   ├── gspn_user_cfg.h
+│   │   │   ├── gsp_types_shark.h
+│   │   │   ├── ion_sprd.h
+│   │   │   ├── sisfb.h
+│   │   │   ├── sprd_fb.h
+│   │   │   ├── sprd_jpg.h
+│   │   │   ├── sprd_vsp.h
+│   │   │   └── uvesafb.h
+│   │   └── xen
+│   │       ├── evtchn.h
+│   │       └── privcmd.h
+│   ├── initramfs_data.cpio
+│   ├── initramfs_data.o
+│   ├── modules.builtin
+│   └── modules.order
+├── vmlinux
+└── vmlinux.o
+
+1089 directories, 4649 files
