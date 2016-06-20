@@ -873,7 +873,7 @@ static struct platform_driver sprdfb_driver = {
 	.resume = sprdfb_resume,
 #endif
 	.remove = sprdfb_remove,
-	.shutdown = sprdfb_shutdown,
+	.shutdown = sprdfb_shutdown,//关机闪白屏可注释验证是否解决
 	.driver = {
 		.name = "sprd_fb",
 		.owner = THIS_MODULE,
