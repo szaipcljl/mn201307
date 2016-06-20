@@ -44,6 +44,8 @@ int gtp_int_gpio;
 u8 config[GTP_CONFIG_MAX_LENGTH + GTP_ADDR_LENGTH]
                 = {GTP_REG_CONFIG_DATA >> 8, GTP_REG_CONFIG_DATA & 0xff};
 
+s32 gtp_i2c_read_no_rst(struct i2c_client *client, u8 *buf, s32 len);
+
 #if GTP_HAVE_TOUCH_KEY
     static const u16 touch_key_array[] = GTP_KEY_TAB;
     #define GTP_MAX_KEY_NUM  (sizeof(touch_key_array)/sizeof(touch_key_array[0]))
@@ -606,6 +608,7 @@ s32 gtp_i2c_read(struct i2c_client *client, u8 *buf, s32 len)
     return ret;
 }
 
+#if (GTP_ESD_PROTECT == 0)
 /*******************************************************
 Function:
     Read data from the i2c slave device.
@@ -647,6 +650,8 @@ s32 gtp_i2c_read_no_rst(struct i2c_client *client, u8 *buf, s32 len)
 
     return ret;
 }
+#endif
+
 /*******************************************************
 Function:
     Write data to the i2c slave device.
