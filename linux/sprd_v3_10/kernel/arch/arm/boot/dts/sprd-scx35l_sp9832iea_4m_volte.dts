@@ -1290,8 +1290,8 @@
 	soft-vbat-uvlo = <3100>;
 	rint = <200>;
 	cnom = <2100>;
-	rsense-real = <200>;
-	rsense-spec = <200>;
+	/*rsense-real = <200>;*/
+	/*rsense-spec = <200>;*/
 	relax-current = <50>;
 	fgu-cal-ajust = <0>;
 	ocv-tab-size = <21>;

@@ -66,7 +66,7 @@
 		soft-vbat-uvlo = <3100>;
 		rint = <250>;/*内阻*/
 		cnom = <2000>;/*电池容量*/
-		rsense-real = <215>;
+		rsense-real = <254>;
 		rsense-spec = <200>;
 		relax-current = <50>;
 		fgu-cal-ajust = <0>;
