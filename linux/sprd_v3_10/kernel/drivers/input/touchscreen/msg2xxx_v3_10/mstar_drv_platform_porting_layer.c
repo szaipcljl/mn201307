@@ -1247,7 +1247,7 @@ void DrvPlatformLyrTouchDevicePowerOn(void)
     gpio_set_value(MS_TS_MSG_IC_GPIO_RST, 0);
     udelay(100); 
     gpio_set_value(MS_TS_MSG_IC_GPIO_RST, 1);
-    mdelay(25); 
+    msleep(25); 
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM)
 #ifdef CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
     tpd_gpio_output(MS_TS_MSG_IC_GPIO_RST, 1);
@@ -1326,7 +1326,7 @@ void DrvPlatformLyrTouchDeviceResetHw(void)
     gpio_set_value(MS_TS_MSG_IC_GPIO_RST, 0);
     udelay(100); 
     gpio_set_value(MS_TS_MSG_IC_GPIO_RST, 1);
-    mdelay(25); 
+    msleep(25); 
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM)
 #ifdef CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
     tpd_gpio_output(MS_TS_MSG_IC_GPIO_RST, 1);
