@@ -35,6 +35,7 @@
 /dev/adf-interface[0-9]*\.[0-9]*	u:object_r:graphics_device:s0
 /dev/adf-overlay-engine[0-9]*\.[0-9]*	u:object_r:graphics_device:s0
 /dev/alarm		u:object_r:alarm_device:s0
+/dev/remote_ctrl_dev		u:object_r:remote_ctrl_dev_device:s0
 /dev/android_adb.*	u:object_r:adb_device:s0
 /dev/ashmem		u:object_r:ashmem_device:s0
 /dev/audio.*		u:object_r:audio_device:s0

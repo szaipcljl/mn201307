@@ -338,6 +338,8 @@ allow system_server usb_device:dir r_dir_perms;
 
 # Allow system to talk to sensors
 allow system_server sensors_device:chr_file rw_file_perms;
+# Allow system to talk to remote_ir
+allow system_server remote_ctrl_dev_device:chr_file { read write ioctl open}; 
 
 # Read from HW RNG (needed by EntropyMixer).
 allow system_server hw_random_device:chr_file r_file_perms;

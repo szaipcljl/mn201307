@@ -22,6 +22,7 @@ common_time.clock                        u:object_r:mediaserver_service:s0
 common_time.config                       u:object_r:mediaserver_service:s0
 connectivity                              u:object_r:system_server_service:s0
 consumer_ir                               u:object_r:system_server_service:s0
+remoteir                               	u:object_r:system_server_service:s0
 content                                   u:object_r:system_server_service:s0
 country_detector                          u:object_r:system_server_service:s0
 cpuinfo                                   u:object_r:system_server_service:s0

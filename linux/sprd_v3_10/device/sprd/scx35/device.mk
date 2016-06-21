@@ -63,7 +63,7 @@ PRODUCT_PACKAGES += \
 	lights.sc8830 \
 	hwcomposer.sc8830 \
 	sprd_gsp.sc8830 \
-	remoteir.default
+	 remoteir.default
 #	sensors.sc8830
 
 # misc modules
