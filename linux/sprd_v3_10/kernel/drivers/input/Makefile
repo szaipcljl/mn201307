@@ -29,4 +29,5 @@ obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
 obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
 obj-$(CONFIG_INPUT_KEYCOMBO)	+= keycombo.o
 obj-$(CONFIG_INPUT_GOODIX_FP_SPI) += gf318/
+obj-$(CONFIG_IRDA_MC96FR116R)		+= IRDA/
 obj-$(CONFIG_HALL_AH1883)		+= hall/

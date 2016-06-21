@@ -95,6 +95,7 @@ struct sprd_i2c {
 	void __iomem *membase;
 	struct clk *clk;
 	int irq;
+	int addr;//for IRDA
 	struct sprd_platform_i2c *pdata;
 };
 
@@ -125,6 +126,15 @@ sprd_i2c_poll_ctl_status(struct sprd_i2c *pi2c, unsigned long bit)
 	}
 	while (!(__raw_readl(pi2c->membase + I2C_CTL) & bit)
 	       && (--loop_cntr > 0));
+
+	// add start. for IRDA I2C ERROR
+	if((pi2c->adap.nr == 2)&& (bit == I2C_CTL_INT))
+	{
+		//printk("[remote] %s adapter nr:%d,addr:0x%x\n", __func__, pi2c->adap.nr,pi2c->addr);
+		if(pi2c->addr<<1 == 0xA0)
+			udelay(50);
+	}
+	// add end. for IRDA I2C ERROR
 
 	if (loop_cntr > 0)
 		return 1;
@@ -354,6 +364,7 @@ sprd_i2c_master_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 	int im = 0;
 	int ret = 0;
 	struct sprd_i2c *pi2c = i2c_adap->algo_data;
+	pi2c->addr = msgs->addr;// add for IRDA
 	clk_enable(pi2c->clk);
 
 	dev_dbg(&i2c_adap->dev, "%s() msg num=%d\n", __func__, num);
