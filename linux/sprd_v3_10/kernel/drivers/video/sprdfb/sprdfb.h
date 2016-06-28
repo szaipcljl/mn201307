@@ -26,7 +26,7 @@
 #endif
 
 #if ((!defined(CONFIG_FB_SCX35)) && (!defined(CONFIG_FB_SCX15)))
-#define FB_CHECK_ESD_IN_VFP
+#define FB_CHECK_ESD_IN_VFP //目前esd check方式不会停图，关闭宏后，停图然后慢慢变花屏
 #endif
 //#define FB_CHECK_ESD_BY_TE_SUPPORT
 #define BIT_PER_PIXEL_SURPPORT
