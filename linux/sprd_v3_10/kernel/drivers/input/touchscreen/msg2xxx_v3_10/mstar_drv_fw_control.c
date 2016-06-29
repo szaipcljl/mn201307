@@ -36,6 +36,12 @@
 /*=============================================================*/
 // EXTERN VARIABLE DECLARATION
 /*=============================================================*/
+#ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+#if 1  //add for wakeup from deep sleep
+#include <linux/wakelock.h>
+extern  struct wake_lock ctp_gesture_wake_lock; 
+#endif
+#endif
 
 #ifdef TP_PROXIMITY_SENSOR 
 extern int PROXIMITY_SWITCH;
@@ -793,7 +799,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
                     input_sync(g_InputDevice);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x60:
 				if((mstar_gesture_enable & TP_GESTURE_UP)==TP_GESTURE_UP)
@@ -808,7 +817,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_SCROLLLOCK, 0);
 					input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x61:
 				if((mstar_gesture_enable & TP_GESTURE_DOWN)==TP_GESTURE_DOWN)
@@ -825,7 +837,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F11, 0);
                    input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x62:
 				if((mstar_gesture_enable & TP_GESTURE_LEFT)==TP_GESTURE_LEFT)
@@ -842,7 +857,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F9, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x63:
 				if((mstar_gesture_enable & TP_GESTURE_RIGHT)==TP_GESTURE_RIGHT)
@@ -859,7 +877,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F10, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x64:
 				if((mstar_gesture_enable & TP_GESTURE_M)==TP_GESTURE_M)
@@ -876,7 +897,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F3, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x65:
 				if((mstar_gesture_enable & TP_GESTURE_W)==TP_GESTURE_W)
@@ -893,7 +917,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F2, 0);
                    input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;		
                 case 0x66:
 				if((mstar_gesture_enable & TP_GESTURE_C)==TP_GESTURE_C)
@@ -910,7 +937,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F5, 0);
 				   input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;
                 case 0x67:
 				if((mstar_gesture_enable & TP_GESTURE_E)==TP_GESTURE_E)
@@ -927,7 +957,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F4, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;
                 case 0x68:
 				if((mstar_gesture_enable & TP_GESTURE_V)==TP_GESTURE_V)
@@ -944,6 +977,9 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F7, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
 				}
                     break;
                 case 0x69:
@@ -961,7 +997,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F1, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;
                 case 0x6A:
 				if((mstar_gesture_enable & TP_GESTURE_S)==TP_GESTURE_S)
@@ -978,8 +1017,11 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F6, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
-                    break;
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
+		break;
                 case 0x6B:
 				if((mstar_gesture_enable & TP_GESTURE_Z)==TP_GESTURE_Z)
 				{
@@ -995,7 +1037,10 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 					input_report_key(g_InputDevice, KEY_F8, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
-				}
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
+		}
                     break;
                 case 0x6C:
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RESERVE1_FLAG;
@@ -1008,6 +1053,9 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 //                    input_report_key(g_InputDevice, RESERVER1, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
                     break;
                 case 0x6D:
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RESERVE2_FLAG;
@@ -1020,6 +1068,9 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 //                    input_report_key(g_InputDevice, RESERVER2, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
                     break;
                 case 0x6E:
                     _gGestureWakeupValue[0] = GESTURE_WAKEUP_MODE_RESERVE3_FLAG;
@@ -1032,6 +1083,9 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 //                    input_report_key(g_InputDevice, RESERVER3, 0);
                     input_report_key(g_InputDevice, KEY_POWER, 0);
                     input_sync(g_InputDevice);
+#if 1  //add for wakeup from deep sleep
+					wake_lock_timeout(&ctp_gesture_wake_lock, msecs_to_jiffies(2000));
+#endif
                     break;
 #ifdef CONFIG_SUPPORT_64_TYPES_GESTURE_WAKEUP_MODE
                 case 0x6F:

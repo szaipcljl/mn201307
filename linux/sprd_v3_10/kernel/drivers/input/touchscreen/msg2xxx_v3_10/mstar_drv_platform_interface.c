@@ -45,8 +45,13 @@
 /*=============================================================*/
 
 #ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+#include <linux/wakelock.h>
 extern u32 g_GestureWakeupMode[2];
 extern u8 g_GestureWakeupFlag;
+
+#if 1  //add for wakeup from deep sleep
+struct wake_lock ctp_gesture_wake_lock;
+#endif
 
 #ifdef CONFIG_ENABLE_GESTURE_DEBUG_MODE
 extern u8 g_GestureDebugFlag;
@@ -374,6 +379,10 @@ void MsDrvInterfaceTouchDeviceSuspend(struct early_suspend *pSuspend)
 	if(mstar_gesture_enable !=0) 
 	{
 		printk("***enable mstar gesture!!***\n");
+#if 0  //add for wakeup from deep sleep
+		wake_lock(&ctp_gesture_wake_lock);
+		printk("[wyc-ctp] __wake_lock \n");
+#endif
 #ifdef CONFIG_ENABLE_HOTKNOT
     if (g_HotKnotState != HOTKNOT_BEFORE_TRANS_STATE && g_HotKnotState != HOTKNOT_TRANS_STATE && g_HotKnotState != HOTKNOT_AFTER_TRANS_STATE)
 #endif //CONFIG_ENABLE_HOTKNOT
@@ -436,8 +445,21 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
     printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
     if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) ) 
     {
+	#ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+	if(mstar_gesture_enable !=0)
+	{
+
+	}
+	else
+	{
+
         printk("***%s(), msg2133a's proximity already open, tp is not suspand,so donn't need resume!\n", __func__);
 	 return;
+	}
+	#else
+        printk("***%s(), msg2133a's proximity already open, tp is not suspand,so donn't need resume!\n", __func__);
+	 return;
+	#endif
     }
 #endif
 
@@ -480,6 +502,10 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
 #endif //CONFIG_ENABLE_HOTKNOT
 		disable_irq_wake(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT));
 		irq_set_irq_type(gpio_to_irq(MS_TS_MSG_IC_GPIO_INT),IRQF_TRIGGER_RISING);
+#if 0  //add for wakeup from deep sleep
+		wake_unlock(&ctp_gesture_wake_lock);
+		printk("[wyc-ctp]***wake_unlock \n");
+#endif
 	}
 #endif //CONFIG_ENABLE_GESTURE_WAKEUP
     
@@ -624,6 +650,11 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
     queue_delayed_work(g_EsdCheckWorkqueue, &g_EsdCheckWork, ESD_PROTECT_CHECK_PERIOD);
 #endif //CONFIG_ENABLE_ESD_PROTECTION
 
+#ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+#if 1  //add for wakeup from deep sleep
+	wake_lock_init(&ctp_gesture_wake_lock, WAKE_LOCK_SUSPEND, "ctp_ges_work");
+#endif   
+#endif
     DBG(&g_I2cClient->dev, "*** MStar touch driver registered ***\n");
     
     return nRetVal;
