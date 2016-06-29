@@ -2,6 +2,7 @@
 #include "sprd_cpcmdline.h"
 #include "loader_common.h"
 #include <asm/arch/check_reboot.h>
+#include <chipram_env.h>
 
 
 #define MAX_CALIBRATION_LEN   50
@@ -663,6 +664,10 @@ u32 Vlx_GetFixedNvitemAddr(u16 identifier, u32 search_start, u32 search_end)
 int read_adc_calibration_data(char *buffer,int size)
 {
 #if 1
+	chipram_env_t* cr_env = get_chipram_env();
+	boot_mode_t boot_role = cr_env->mode;
+	if (boot_role == BOOTLOADER_MODE_DOWNLOAD)
+		return 0;
 	if(do_fs_file_read("prodnv", "/adc.bin", (char *)nv_buffer,sizeof(nv_buffer)))
 	    	return 0;
 

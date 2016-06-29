@@ -18,5 +18,8 @@ typedef struct chipram_env {
 	u32 reserved;
 }chipram_env_t;
 
+chipram_env_t* get_chipram_env(void);
+
+
 #endif
 

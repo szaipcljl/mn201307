@@ -1996,6 +1996,10 @@ int ext4fs_iterate_dir(struct ext2fs_node *dir, char *name,
 			}
 			free(fdiro);
 		}
+		if (0 == dirent.direntlen) {
+			printf("WARNING!!inode(%d) direntlen==0\n", dirent.inode);
+			return 0;
+		}
 		fpos += __le16_to_cpu(dirent.direntlen);
 	}
 	return 0;
