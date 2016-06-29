@@ -2561,10 +2561,12 @@ static s8 gtp_request_io_port(struct goodix_ts_data *ts)
         GTP_ERROR("Failed to request GPIO:%d, ERRNO:%d",(s32)gtp_rst_gpio,ret);
         ret = -ENODEV;
     }
+	else 
+    {/*if gpio request failed,it cann't call reset*/
+		GTP_GPIO_AS_INPUT(gtp_rst_gpio);
 
-    GTP_GPIO_AS_INPUT(gtp_rst_gpio);
-
-    gtp_reset_guitar(ts->client, 20);
+		gtp_reset_guitar(ts->client, 20);
+	}
     
     if(ret < 0)
     {
