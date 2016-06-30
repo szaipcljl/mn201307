@@ -45,6 +45,7 @@ extern  struct wake_lock ctp_gesture_wake_lock;
 
 #ifdef TP_PROXIMITY_SENSOR 
 extern int PROXIMITY_SWITCH;
+extern int PROXIMITY_STATE;
 #endif
 
 extern u32 SLAVE_I2C_ID_DBBUS;
@@ -1911,11 +1912,13 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 		    if (PROXIMITY_SWITCH == 1) {
 			if(0x80 == pPacket[5]){
 			   // ps_state = 0;
+				PROXIMITY_STATE=0;
 			    input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
 			    input_sync(g_InputDevice);
 			    printk("**************pPacket[5]= %x  tp is near*****************\n", pPacket[5]);
 			}else if (0x40 == pPacket[5]){
 			   // ps_state = 1;
+				PROXIMITY_STATE=1;
 			    input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
 			    input_sync(g_InputDevice);
 	                    printk("**************pPacket[5]= %x  tp is far******************\n", pPacket[5]);
@@ -3572,11 +3575,13 @@ static s32 _DrvFwCtrlMutualParsePacket(u8 *pPacket, u16 nLength, MutualTouchInfo
 					if(0x80 == pPacket[nLength-2])
 					{
 						// ps_state = 0;
+				PROXIMITY_STATE=0;
 						input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
 						input_sync(g_InputDevice);
 						printk("**************tp is near*****************\n");
 					}else if (0x40 == pPacket[nLength-2]){
 						// ps_state = 1;
+				PROXIMITY_STATE=1;
 						input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
 						input_sync(g_InputDevice);
 						printk("**************tp is far******************\n");
