@@ -412,14 +412,14 @@ static void epl_sensor_report_lux(int repott_lux)
 {
     struct epl_sensor_priv *epld = epl_sensor_obj;
 
-    LOG_INFO("-------------------  ALS raw = %d, lux = %d\n\n",epl_sensor.als.data.channels[1],  repott_lux);
+    LOG_INFO("-------------------  ALS raw = %d, lux = %d\n\n",epl_sensor.als.data.channels[1],  repott_lux/10);
 #if SPREAD || MARVELL
-    input_report_abs(epld->ps_input_dev, ABS_MISC, repott_lux);
+    input_report_abs(epld->ps_input_dev, ABS_MISC, repott_lux/10);
 	//input_report_abs(epld->ps_input_dev, ABS_MISC, epl_sensor.ps.data.data);  //调试距离感应，用这一行替换上一行
 	//report proximity sensor data,可在显示光感值处观察距离感应的值
     input_sync(epld->ps_input_dev);
 #else
-    input_report_abs(epld->als_input_dev, ABS_MISC, repott_lux);
+    input_report_abs(epld->als_input_dev, ABS_MISC, repott_lux/10);
     input_sync(epld->als_input_dev);
 #endif
 }
