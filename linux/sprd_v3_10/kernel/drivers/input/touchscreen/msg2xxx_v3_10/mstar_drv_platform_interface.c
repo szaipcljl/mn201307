@@ -445,21 +445,21 @@ void MsDrvInterfaceTouchDeviceResume(struct early_suspend *pSuspend)
     printk("***%s(PROXIMITY_SWITCH=%d,is_tp_suspand=%d)***\n",__func__,PROXIMITY_SWITCH,is_tp_suspand);
     if ((PROXIMITY_SWITCH) && (is_tp_suspand==0) ) 
     {
-	#ifdef CONFIG_ENABLE_GESTURE_WAKEUP
-	if(mstar_gesture_enable !=0)
-	{
+#ifdef CONFIG_ENABLE_GESTURE_WAKEUP
+		if(mstar_gesture_enable !=0)
+		{
 
-	}
-	else
-	{
+		}
+		else
+		{
 
         printk("***%s(), msg2133a's proximity already open, tp is not suspand,so donn't need resume!\n", __func__);
 	 return;
-	}
-	#else
+		}
+#else
         printk("***%s(), msg2133a's proximity already open, tp is not suspand,so donn't need resume!\n", __func__);
 	 return;
-	#endif
+#endif
     }
 #endif
 
