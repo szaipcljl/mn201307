@@ -1,0 +1,46 @@
+
+android 和驱动相关的一些内容和变化
+
+===========
+sensor权限:
+android 5.1:
+sc7731c: device/sprd/scx20/sepolicy/file_contexts
+         device/sprd/scx20/ueventd.sc8830.rc
+
+android 6.0:
+sc7731c: device/sprd/scx20/sp7731c_1h10/rootdir/root/init.sp7731c_1h10.rc
+
+
+========
+音频参数:
+-----------
+android 5.1:
+sc7731g: device/sprd/scx35_sp7731gea/audio_params/audio_para
+sc7731c: device/sprd/scx20_sp7731cea/audio_params/audio_para
+sc9831a: device/sprd/sp9832iea_4m_volte/audio_params/audio_para
+
+android 6.0:
+sc7731c: c705/t501_648_gps/device/sprd/scx20/sp7731c_1h10/audio_params
+
+	
+=========
+温升文件:
+android 5.1:
+sc7731c: vendor/sprd/open-source/res/thermal/scx20/thermalSensorsConfig.xml
+sc9832a: vendor/sprd/open-source/res/thermal/scx35l/thermalSensorsConfig.xml
+
+
+=========
+传导文件:
+android 5.1:
+sc7731c: vendor/sprd/open-source/res/productinfo/scx20_sp7731cea_connectivity_configure.ini
+sc9831a: vendor/sprd/open-source/res/productinfo/scx35l_sp9832iea_4m_volte_connectivity_calibration.ini
+		 vendor/sprd/open-source/res/productinfo/scx35l_sp9832iea_4m_volte_connectivity_configure.ini
+		 vendor/sprd/open-source/res/productinfo/marlinba/scx35l_sp9832iea_4m_volte_connectivity_calibration.ini
+		 vendor/sprd/open-source/res/productinfo/marlinba/scx35l_sp9832iea_4m_volte_connectivity_configure.ini
+
+android 6.0:
+sc7731c: vendor/sprd/open-source/res/connectivity/sr2351/sp7731c_1h10/connectivity_configure.ini
+
+
+
