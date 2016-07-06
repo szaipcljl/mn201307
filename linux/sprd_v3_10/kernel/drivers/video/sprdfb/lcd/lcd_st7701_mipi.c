@@ -44,6 +44,9 @@ typedef struct LCM_force_cmd_code_tag{
 #define LCM_TAG_SLEEP (1 << 1)
 
 static LCM_Init_Code init_data[] = {
+{LCM_SEND(8),{6,0,0xFF,0x77,0x01,0x00,0x00,0x11}},
+{LCM_SEND(2),{0xB0,0x4D}},
+{LCM_SEND(2),{0xB1,0x40}},//vcom
 #if 0 //s66,TN屏
 //--------------------------------------ST7701 Reset Sequence---------------------------------------//
 //LCD_Nreset=1;
@@ -52,6 +55,11 @@ static LCM_Init_Code init_data[] = {
 //Delayms (1); //Delay 1ms
 //LCD_Nreset=1;
 //Delayms (10);
+
+/*{LCM_SEND(1),{0x01}},*/
+/*{LCM_SLEEP(120)},*/
+/*{LCM_SEND(8),{6,0,0xFF,0x77,0x01,0x00,0x00,0x11}},*/
+/*{LCM_SEND(2),{0xD1,0x11}},*/
 
 {LCM_SEND(1),{0x11}},
 //------------------------------------------Bank0 Setting----------------------------------------------------//
@@ -77,7 +85,7 @@ static LCM_Init_Code init_data[] = {
 
 {LCM_SEND(2),{0xB0,0x4D}},
 //-------------------------------------------Vcom Setting---------------------------------------------------//
-{LCM_SEND(2),{0xB1,0x4F}},
+/*{LCM_SEND(2),{0xB1,0x44}},*/
 //-----------------------------------------End Vcom Setting-----------------------------------------------//
 {LCM_SEND(2),{0xB2,0x07}},
 
@@ -277,7 +285,7 @@ static int32_t st7701_mipi_init(struct panel_spec *self)
 		}
 		init++;
 	}
-
+	init_data[2].data[1]++;
 	return 0;
 }
 
