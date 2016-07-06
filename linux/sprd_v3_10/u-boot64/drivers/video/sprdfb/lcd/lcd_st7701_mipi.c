@@ -51,7 +51,7 @@ typedef struct LCM_force_cmd_code_tag{
 #define LCM_TAG_SLEEP (1 << 1)
 
 static LCM_Init_Code init_data[] = {
-#if 0 //s66,TN屏
+#if 1 //s66,TN屏
 //--------------------------------------ST7701 Reset Sequence---------------------------------------//
 //LCD_Nreset=1;
 //Delayms (1); //Delay 1ms
@@ -61,7 +61,7 @@ static LCM_Init_Code init_data[] = {
 //Delayms (10);
 
 {LCM_SEND(1),{0x01}},
-LCM_SLEEP(120)},
+{LCM_SLEEP(120)},
 {LCM_SEND(8),{6,0,0xFF,0x77,0x01,0x00,0x00,0x11}},
 {LCM_SEND(2),{0xD1,0x11}},
 
@@ -235,6 +235,16 @@ static LCM_Init_Code sleep_in =  {LCM_SEND(1), {0x10}};
 
 static LCM_Init_Code sleep_out =  {LCM_SEND(1), {0x11}};
 
+static LCM_Init_Code pre_id[] = { 
+	{LCM_SEND(1), {0x01}},//reset 软复位
+	{LCM_SLEEP(120)}, 
+	{LCM_SEND(1), {0x11}},//power on 升电压 
+	{LCM_SLEEP(120)}, 
+	{LCM_SEND(8),{6,0,0xFF,0x77,0x01,0x00,0x00,0x11}},
+	{LCM_SEND(2),{0xd1,0x11}},//mipi方面
+
+};
+
 static int32_t st7701_mipi_init(struct panel_spec *self)
 {
 	int32_t i;
@@ -281,9 +291,24 @@ static uint32_t st7701_readid(struct panel_spec *self)
 	mipi_force_read_t mipi_force_read = self->info.mipi->ops->mipi_force_read;
 	mipi_eotp_set_t mipi_eotp_set = self->info.mipi->ops->mipi_eotp_set;
         mipi_set_lp_mode_t mipi_set_lp_mode = self->info.mipi->ops->mipi_set_lp_mode;
+    mipi_gen_write_t mipi_gen_write = self->info.mipi->ops->mipi_gen_write;
+
+    LCM_Init_Code *init = pre_id;
 
 	printk("****lcd_st7701_mipi read id!\n");	
 	mipi_set_lp_mode();
+	
+	for(i = 0; i < ARRAY_SIZE(pre_id); i++){
+		tag = (init->tag >>24);
+		if(tag & LCM_TAG_SEND){
+			mipi_gen_write(init->data, (init->tag & LCM_TAG_MASK));
+			udelay(20);
+		}else if(tag & LCM_TAG_SLEEP){
+			mdelay((init->tag & LCM_TAG_MASK));
+		}
+		init++;
+	}
+
 	for(j = 0; j < 4; j++){
 		rd_prepare = rd_prep_code;
 		for(i = 0; i < ARRAY_SIZE(rd_prep_code); i++){

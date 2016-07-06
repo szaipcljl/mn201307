@@ -254,6 +254,17 @@ static LCM_Force_Cmd_Code rd_prep_code[]={
 	{0x37, {LCM_SEND(2), {0x3, 0}}},
 };
 
+static LCM_Init_Code pre_id[] = { 
+	{LCM_SEND(1), {0x01}},//reset 软复位
+	{LCM_SLEEP(120)}, 
+	{LCM_SEND(1), {0x11}},//power on 升电压 
+	{LCM_SLEEP(120)}, 
+	{LCM_SEND(8),{6,0,0xFF,0x77,0x01,0x00,0x00,0x11}},
+	{LCM_SEND(2),{0xd1,0x11}},//mipi方面
+
+};
+
+
 static LCM_Force_Cmd_Code rd_prep_code_1[]={
 	{0x39, {LCM_SEND(8), {6,0,0xFF,0x77,0x01,0x00,0x00,0x00}}},
 	{0x37, {LCM_SEND(2), {0x1, 0}}},
@@ -311,9 +322,24 @@ static uint32_t st7701_readid(struct panel_spec *self)
 	mipi_force_write_t mipi_force_write = self->info.mipi->ops->mipi_force_write;
 	mipi_force_read_t mipi_force_read = self->info.mipi->ops->mipi_force_read;
 	mipi_eotp_set_t mipi_eotp_set = self->info.mipi->ops->mipi_eotp_set;
+    mipi_gen_write_t mipi_gen_write = self->info.mipi->ops->mipi_gen_write;
+
+    LCM_Init_Code *init = pre_id;
 
 	printk("****lcd_st7701_mipi read id!\n");	
 	mipi_set_cmd_mode();
+	
+	for(i = 0; i < ARRAY_SIZE(pre_id); i++){
+		tag = (init->tag >>24);
+		if(tag & LCM_TAG_SEND){
+			mipi_gen_write(init->data, (init->tag & LCM_TAG_MASK));
+			udelay(20);
+		}else if(tag & LCM_TAG_SLEEP){
+			mdelay((init->tag & LCM_TAG_MASK));
+		}
+		init++;
+	}
+
 	mipi_eotp_set(1,0);
 	for(j = 0; j < 4; j++){
 		rd_prepare = rd_prep_code;
