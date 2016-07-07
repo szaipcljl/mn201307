@@ -35,6 +35,17 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_CFLAGS := -DLOG_TAG=\"Sensors\" \
 				-Wall
+ifeq ($(BOARD_HAVE_ACC),Bma222e)
+	LOCAL_CFLAGS += -DSENSORHAL_ACC_BMA222E
+endif
+
+ifeq ($(BOARD_HAVE_PLS),ELAN)
+	LOCAL_CFLAGS += -DSENSORHAL_PLS_ELAN
+endif
+
+ifeq ($(BOARD_HAVE_ORI),VTC)
+	LOCAL_CFLAGS += -DSENSORHAL_ORI_VTC
+endif
 
 LOCAL_SRC_FILES := \
 			SensorBase.cpp \
@@ -51,7 +62,9 @@ endif
 ifneq ($(BOARD_HAVE_ACC),NULL)
 LOCAL_SRC_FILES += Acc_$(BOARD_HAVE_ACC).cpp
 LOCAL_CFLAGS += -DACC_INSTALL_$(BOARD_ACC_INSTALL)
-
+ifeq ($(BOARD_HAVE_ACC),Bma222e)
+LOCAL_CFLAGS += -DSENSORHAL_ACC_BMA222E
+endif
 #MAGNETIC_FIELD&ORIENTATION
 ifneq ($(BOARD_HAVE_ORI),NULL)
 LOCAL_SRC_FILES += Ori_$(BOARD_HAVE_ORI).cpp
@@ -68,11 +81,17 @@ endif
 #################################################################
 #LIGHT&PROXIMITY
 ifneq ($(BOARD_HAVE_PLS),NULL)
+LOCAL_CFLAGS += -DPLS_$(BOARD_HAVE_PLS) 
 ifeq ($(BOARD_PLS_COMPATIBLE),true)
 LOCAL_SRC_FILES += PlsSensor.cpp
 LOCAL_CFLAGS += -DPLS_COMPATIBLE
 else
+ifeq ($(BOARD_HAVE_PLS),ELAN)
+LOCAL_SRC_FILES += Psensor_elan.cpp
+LOCAL_SRC_FILES += Lsensor_elan.cpp
+else
 LOCAL_SRC_FILES += Pls_$(BOARD_HAVE_PLS).cpp
+endif
 endif
 else
 LOCAL_CFLAGS += -DPLS_NULL

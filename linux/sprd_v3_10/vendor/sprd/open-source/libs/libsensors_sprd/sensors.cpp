@@ -29,9 +29,25 @@
 #include <utils/Log.h>
 
 #include "sensors.h"
+#if defined (SENSORHAL_ACC_BMA222E)
+#include "Acc_Bma222e.h"
+#elif defined (SENSORHAL_ACC_MIR3DA)
+#include "mir3daSensor.h"
+#else
 #include "AccSensor.h"
+#endif
 #include "OriSensor.h"
+#ifdef SENSORHAL_PLS_STK3X1X
+#include "STKProximitySensor.h"
+#include "STKLightSensor.h"
+#else
+#ifdef SENSORHAL_PLS_ELAN
+#include "PSensor.h"
+#include "LSensor.h"
+#else
 #include "PlsSensor.h"
+#endif
+#endif
 
 /*****************************************************************************/
 
@@ -54,10 +70,56 @@
 /*****************************************************************************/
 
 /* The SENSORS Module */
+#ifdef SENSORHAL_PLS_STK3X1X
+
+#ifdef SENSORHAL_ACC_BMA222E
+	static struct sensor_t sSensorList[BmaSensor::numSensors
+						+ OriSensor::numSensors +
+					   STKProximitySensor::numSensors + STKLightSensor::numSensors] = {
+	};
+#else
 static struct sensor_t sSensorList[AccSensor::numSensors
 					+ OriSensor::numSensors +
+					   STKProximitySensor::numSensors + STKLightSensor::numSensors] = {
+	};
+#endif
+
+#else
+
+#ifdef SENSORHAL_PLS_ELAN
+
+#ifdef SENSORHAL_ACC_BMA222E
+	static struct sensor_t sSensorList[BmaSensor::numSensors
+						+ OriSensor::numSensors +
+					   PSensor::numSensors+LSensor::numSensors] = {
+	};
+#else
+	static struct sensor_t sSensorList[AccSensor::numSensors
+						+ OriSensor::numSensors +
+					   PSensor::numSensors+LSensor::numSensors] = {
+	};
+#endif
+
+#else
+
+#if defined (SENSORHAL_ACC_BMA222E)
+	static struct sensor_t sSensorList[BmaSensor::numSensors
+						+ OriSensor::numSensors +
 				   PlsSensor::numSensors] = {
 };
+#elif defined (SENSORHAL_ACC_MIR3DA)
+	static struct sensor_t sSensorList[mir3daSensor::numSensors
+						+ OriSensor::numSensors +
+					   PlsSensor::numSensors] = {
+	};
+#else
+	static struct sensor_t sSensorList[AccSensor::numSensors
+						+ OriSensor::numSensors +
+					   PlsSensor::numSensors] = {
+	};
+#endif
+#endif
+#endif
 
 static int numSensors = 0;
 static char GetChipInfo[256] = {0};
@@ -110,7 +172,17 @@ private:
 		ori,
 #endif
 #ifndef PLS_NULL
+#ifdef SENSORHAL_PLS_STK3X1X 
 		pls,
+		als,
+#else
+#ifdef SENSORHAL_PLS_ELAN
+		als,
+		ps,
+#else
+		pls,
+#endif
+#endif
 #endif
 		numSensorDrivers,
 		numFds,
@@ -121,8 +193,9 @@ private:
 	struct pollfd mPollFds[numFds];
 	int mWritePipeFd;
 	SensorBase *mSensors[numSensorDrivers];
+	#ifdef PLS_COMPATIBLE 
 	PlsSensor *PlsObjList[PlsChipNum];
-
+	#endif
 	int handleToDriver(int handle) const {
 		switch (handle) {
 		case ID_A:
@@ -134,9 +207,26 @@ private:
 #ifndef ORI_NULL
 			return ori;
 #endif
-		case ID_L:case ID_P:
+
 #ifndef PLS_NULL
+#ifdef SENSORHAL_PLS_STK3X1X
+		case ID_P:
 			return pls;
+		case ID_L:
+			return als;
+#else
+#ifdef SENSORHAL_PLS_ELAN
+		case ID_L:
+			return als;
+		case ID_P:
+			return ps;			
+#else
+		case ID_L:case ID_P:
+			return pls;
+#endif	
+#endif
+#else
+		case ID_L:case ID_P:
 #endif
 		return 0;
 		} 
@@ -150,13 +240,25 @@ private:
 sensors_poll_context_t::sensors_poll_context_t()
 {
 #ifndef ACC_NULL
+	#if defined (SENSORHAL_ACC_BMA222E)
+		mSensors[acc] = new BmaSensor("bma222e", BOTTOM_Y_FORWARD );
+	#elif defined (SENSORHAL_ACC_MIR3DA)
+		mSensors[acc] = new mir3daSensor();
+	#else
 	mSensors[acc] = new AccSensor();
+	#endif
 	numSensors +=
 	    mSensors[acc]->populateSensorList(sSensorList + numSensors);
 	mPollFds[acc].fd = mSensors[acc]->getFd();
 	mPollFds[acc].events = POLLIN;
 	mPollFds[acc].revents = 0;
+	#if defined (SENSORHAL_ACC_BMA222E)
+		ALOGD("AnumSensors=%d; %d", numSensors, BmaSensor::numSensors);
+	#elif defined (SENSORHAL_ACC_MIR3DA)
+		ALOGD("AnumSensors=%d; %d", numSensors, mir3daSensor::numSensors);
+	#else
 	ALOGD("AnumSensors=%d; %d", numSensors, AccSensor::numSensors);
+	#endif
 #endif
 #ifndef ORI_NULL
 	mSensors[ori] = new OriSensor();
@@ -171,7 +273,7 @@ sensors_poll_context_t::sensors_poll_context_t()
 #ifdef PLS_COMPATIBLE
 	PlsObjList[LTR558ALS] = new PlsLTR558();
 	PlsObjList[EPL2182] = new PlsEPL2182();
-	PlsObjList[EM3071] = new PlsEM3071();//开机时会调用,三个注释任意一个，会引起开机重启
+	PlsObjList[EM3071] = new PlsEM3071();
 	for( int i=0; i<PlsChipNum; i++) {
 		memset(GetChipInfo,0,sizeof(GetChipInfo));
 		mSensors[pls] = PlsObjList[i];
@@ -192,15 +294,52 @@ sensors_poll_context_t::sensors_poll_context_t()
 		PlsNewSuccess = true;
 	}
 #else
+#ifdef SENSORHAL_PLS_STK3X1X
+	mSensors[pls] = new STKProximitySensor();
+	numSensors +=
+	    mSensors[pls]->populateSensorList(sSensorList + numSensors);
+	mPollFds[pls].fd = mSensors[pls]->getFd();
+	mPollFds[pls].events = POLLIN;
+	mPollFds[pls].revents = 0;
+	ALOGD("PnumSensors=%d; %d", numSensors, STKProximitySensor::numSensors);
+
+	mSensors[als] = new STKLightSensor();
+	numSensors +=
+	    mSensors[als]->populateSensorList(sSensorList + numSensors);
+	mPollFds[als].fd = mSensors[als]->getFd();
+	mPollFds[als].events = POLLIN;
+	mPollFds[als].revents = 0;
+	ALOGD("LnumSensors=%d; %d", numSensors, STKLightSensor::numSensors);
+#else
+#ifdef SENSORHAL_PLS_ELAN
+	mSensors[ps] = new PSensor();
+	numSensors +=
+	    mSensors[ps]->populateSensorList(sSensorList + numSensors);
+	mPollFds[ps].fd = mSensors[ps]->getFd();
+	mPollFds[ps].events = POLLIN;
+	mPollFds[ps].revents = 0;
+	ALOGD("PnumSensors=%d; %d", numSensors, PSensor::numSensors);
+
+	mSensors[als] = new LSensor();
+	numSensors +=
+	    mSensors[als]->populateSensorList(sSensorList + numSensors);
+	mPollFds[als].fd = mSensors[als]->getFd();
+	mPollFds[als].events = POLLIN;
+	mPollFds[als].revents = 0;
+	ALOGD("LnumSensors=%d; %d", numSensors, LSensor::numSensors);
+#else
 	mSensors[pls] = new PlsSensor();
 	ALOGD("[PlsSensor]non compatible\n");
-#endif
+
 	numSensors +=
 	    mSensors[pls]->populateSensorList(sSensorList + numSensors);
 	mPollFds[pls].fd = mSensors[pls]->getFd();
 	mPollFds[pls].events = POLLIN;
 	mPollFds[pls].revents = 0;
 	ALOGD("PnumSensors=%d; %d", numSensors, PlsSensor::numSensors);
+#endif	
+#endif
+#endif
 #endif
 	int wakeFds[2];
 	int result = pipe(wakeFds);
