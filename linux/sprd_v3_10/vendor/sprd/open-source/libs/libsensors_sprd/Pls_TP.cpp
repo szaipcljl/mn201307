@@ -53,6 +53,7 @@ const tp_info tp_dev_info[] = {
 	{"FT5206", "focaltech_ts"},
 	{"MSG2133A", "msg2133a_ts"},
 	{"MSG22XX", "msg2xxx_ts"},
+	{"MSG28XX", "msg2xxx_ts"},
 	{"GT9147", "goodix_ts"},
 	{"GT9157", "goodix_ts"},
 	{"himax 852Xes", "himax-touchscreen"},

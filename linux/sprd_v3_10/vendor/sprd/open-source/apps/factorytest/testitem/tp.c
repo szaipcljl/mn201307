@@ -9,12 +9,14 @@ static int thread_run = 0;
 static int firstdraw = 0;
 //GST_guojiangping modify 20150625 begin
 const tp_info tp_dev_info[] = {
+	{"FT6336GU", "focaltech_ts"},
 	{"FT6x36", "focaltech_ts"},
 	{"FT6x06", "focaltech_ts"},
 	{"FT5206", "focaltech_ts"},
 	{"FT5x46", "focaltech_ts"},
 	{"MSG2133A", "msg2133a_ts"},
 	{"MSG22XX", "msg2xxx_ts"},//huafeizhou150924 add
+	{"MSG28XX", "msg2xxx_ts"},
 	{"GT9147", "goodix_ts"},
 	{"GT9157", "goodix_ts"},
 	{"himax 852Xes", "himax-touchscreen"},//huafeizhou150924 add
