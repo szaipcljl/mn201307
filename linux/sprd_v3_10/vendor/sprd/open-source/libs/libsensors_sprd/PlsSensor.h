@@ -60,11 +60,19 @@ public:
     virtual ~PlsSensor();
 
 #ifndef PLS_NULL
+#ifdef PLS_TP 
     enum {
-        Light   = 0,
-        Proximity   = 1,
-        numSensors
+        Proximity  = 0,
+        Light      = 1,
+        numSensors = 1  // Fixme;
     };
+#else
+    enum {
+        Proximity  = 0,
+        Light      = 1,
+        numSensors   
+    };
+#endif
 #else
 	static const int numSensors = 0;
 #endif
@@ -79,12 +87,20 @@ public:
 
 private:
     int update_delay();
+#ifdef PLS_TP 
+    int mEnabled;
+#else
     uint32_t mEnabled;
+#endif
     uint32_t mPendingMask;
     InputEventCircularReader mInputReader;
     bool mHasPendingEvent;
     sensors_event_t mPendingEvents[numSensors];
     uint64_t mDelays[numSensors];
+
+    // Gstonechina, modify by xingjiang.lu to add px3003 support, begin;
+	char mSysFsPath_Enable[PATH_MAX];
+    // Gstonechina, modify by xingjiang.lu to add px3003 support, end;
 };
 
 class PlsLTR558 : public PlsSensor {
