@@ -48,8 +48,8 @@
 #define DRIVER_VERSION "v1.0.2"
 #define PS_INTERRUPT_MODE		1		// 0 is polling mode, 1 is interrupt mode
 
-#define P_SENSOR_LTHD		200	// 120		//100
-#define P_SENSOR_HTHD		450	// 170		//500
+#define P_SENSOR_LTHD		50  // 200	// 120		//100
+#define P_SENSOR_HTHD		180  // 450	// 170		//500
 #define HS_ENABLE       0  // //1 is enable, 0 is disable    //heart rate
 #define DYN_ENABLE      0   //PS Dynamic Calibration
 
@@ -730,7 +730,7 @@ static void elan_epl_als_rawdata(void)
     input_report_abs(epld->ps_input_dev, ABS_MISC, lux);
     input_sync(epld->ps_input_dev);
 #else
-    input_report_abs(epld->als_input_dev, ABS_MISC, lux);
+	input_report_abs(epld->als_input_dev, ABS_MISC, lux*3/2/*gRawData.ps_ch1_raw*/);
     input_sync(epld->als_input_dev);
 #endif
 }
