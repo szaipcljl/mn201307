@@ -542,10 +542,17 @@
 			lux_rate = <15000>;
 		};
 		*/
+		/*
 		epl259x_pls@49{
 			compatible = "ELAN,epl259x_pls";
 			reg = <0x49>;
 			gpios = <&d_gpio_gpio 140 0>;
+		};
+		*/
+		 epld@0x49{
+			compatible = "ELAN,epld";
+			reg = <0x49>;
+			gpios = <&d_gpio_gpio 216 0>;
 		};
 
 	};

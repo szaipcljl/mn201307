@@ -747,6 +747,17 @@ config INPUT_EPL2182_I2C
 
 	  To compile this driver as a module, choose M here.
 
+
+config INPUT_ELAN_I2C_V2
+	tristate "elan proximity and light sensor device with I2C bus"
+	depends on I2C
+	default n
+	help
+	  Say Y here if you have a elan device on the board and use I2C
+	  communication, else say N.
+
+	  To compile this driver as a module, choose M here.
+
 config INPUT_EPL259X_I2C
 	tristate "epl259x proximity and light sensor device with I2C bus"
 	depends on I2C

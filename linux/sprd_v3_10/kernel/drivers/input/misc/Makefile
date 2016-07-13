@@ -65,6 +65,7 @@ obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
 obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
 obj-$(CONFIG_INPUT_LTR558_I2C)		+= ltr_558als.o
 obj-$(CONFIG_INPUT_EPL2182_I2C)         += epl2182_pls_v2.o
+obj-$(CONFIG_INPUT_ELAN_I2C_V2)		+= elan_v2.o
 obj-$(CONFIG_INPUT_EPL259X_I2C)         += epl259x.o
 obj-$(CONFIG_INPUT_EM3071_I2C)         += em3071_pls.o
 obj-$(CONFIG_INPUT_STK3X1X_I2C)         += stk3x1x.o
