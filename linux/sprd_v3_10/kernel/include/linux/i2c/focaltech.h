@@ -53,7 +53,7 @@ struct ft5x0x_ts_platform_data{
 	int irq_gpio_number;
 	int reset_gpio_number;
 	const char *vdd_name;
-	int virtualkeys[12];
+	int virtualkeys[16];
 	int TP_MAX_X;
 	int TP_MAX_Y;
 };

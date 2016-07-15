@@ -634,10 +634,11 @@ static ssize_t virtual_keys_show(struct kobject *kobj, struct kobj_attribute *at
 {
 	struct ft5x0x_ts_data *data = i2c_get_clientdata(this_client);
 	struct ft5x0x_ts_platform_data *pdata = data->platform_data;
-	return sprintf(buf,"%s:%s:%d:%d:%d:%d:%s:%s:%d:%d:%d:%d:%s:%s:%d:%d:%d:%d\n"
+	return sprintf(buf,"%s:%s:%d:%d:%d:%d:%s:%s:%d:%d:%d:%d:%s:%s:%d:%d:%d:%d:%s:%s:%d:%d:%d:%d\n"
 		,__stringify(EV_KEY), __stringify(KEY_MENU),pdata ->virtualkeys[0],pdata ->virtualkeys[1],pdata ->virtualkeys[2],pdata ->virtualkeys[3]
 		,__stringify(EV_KEY), __stringify(KEY_HOMEPAGE),pdata ->virtualkeys[4],pdata ->virtualkeys[5],pdata ->virtualkeys[6],pdata ->virtualkeys[7]
-		,__stringify(EV_KEY), __stringify(KEY_BACK),pdata ->virtualkeys[8],pdata ->virtualkeys[9],pdata ->virtualkeys[10],pdata ->virtualkeys[11]);
+		,__stringify(EV_KEY), __stringify(KEY_BACK),pdata ->virtualkeys[8],pdata ->virtualkeys[9],pdata ->virtualkeys[10],pdata ->virtualkeys[11]
+		,__stringify(EV_KEY), __stringify(KEY_LEFTSHIFT),pdata ->virtualkeys[12],pdata ->virtualkeys[13],pdata ->virtualkeys[14],pdata ->virtualkeys[15]);
 }
 
 static struct kobj_attribute virtual_keys_attr = {
@@ -1441,7 +1442,7 @@ static struct ft5x0x_ts_platform_data *ft5x0x_ts_parse_dt(struct device *dev)
 	struct ft5x0x_ts_platform_data *pdata;
 	struct device_node *np = dev->of_node;
 	int ret,i = 0;
-	u32 data[12] = {0};
+	u32 data[16] = {0};
 	u32 tmp_val_u32;
 	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
 	if (!pdata) {
@@ -1463,12 +1464,12 @@ static struct ft5x0x_ts_platform_data *ft5x0x_ts_parse_dt(struct device *dev)
 		dev_err(dev, "fail to get vdd_name\n");
 		goto fail;
 	}
-	ret = of_property_read_u32_array(np, "virtualkeys", data,12);
+	ret = of_property_read_u32_array(np, "virtualkeys", data,16);
 	if(ret){
 		dev_err(dev, "fail to get virtualkeys\n");
 		goto fail;
 	}
-	for(i = 0; i < 12; i ++){
+	for(i = 0; i < 16; i ++){
 		pdata->virtualkeys[i] = data[i];
 	}
 	ret = of_property_read_u32(np, "TP_MAX_X", &tmp_val_u32);
@@ -1589,6 +1590,7 @@ static int ft5x0x_ts_probe(struct i2c_client *client, const struct i2c_device_id
 	__set_bit(KEY_BACK,  input_dev->keybit);
 	__set_bit(KEY_HOMEPAGE,  input_dev->keybit);
 	__set_bit(BTN_TOUCH, input_dev->keybit);
+	__set_bit(KEY_LEFTSHIFT,  input_dev->keybit);
 #ifdef TP_PROXIMITY_SENSOR
 	__set_bit(ABS_DISTANCE, input_dev->absbit);
 #endif
