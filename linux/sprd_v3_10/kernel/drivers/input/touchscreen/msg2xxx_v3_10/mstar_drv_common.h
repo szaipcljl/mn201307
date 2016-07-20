@@ -58,6 +58,7 @@
 #include <asm/irq.h>
 #include <asm/io.h>
 
+#define REPORT_NEW_KEY_REPLACE_MENU_BACK //maning add 20160719; when KEY_MENU and  KEY_BACK is pressed at the same time
 /*--------------------------------------------------------------------------*/
 /* TOUCH DEVICE DRIVER RELEASE VERSION                                      */
 /*--------------------------------------------------------------------------*/

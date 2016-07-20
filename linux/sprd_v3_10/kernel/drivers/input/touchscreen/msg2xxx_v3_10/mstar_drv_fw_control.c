@@ -12266,6 +12266,13 @@ void _DrvFwCtrlSelfHandleFingerTouch(void) // for MSG21xxA/MSG22xx
                 {	
                     nTouchKeyCode = g_TpVirtualKey[3];           
                 }
+#ifdef REPORT_NEW_KEY_REPLACE_MENU_BACK //maning add 20160719;
+				// Method 1: report a new key when KEY_MENU and KEY_BACK were pressed at the same time
+				else if (tInfo.nTouchKeyCode == 5) //KEY_MENU and KEY_BACK
+				{
+					nTouchKeyCode = KEY_LEFTSHIFT/*KEY_VOLUMEDOWN*/;           
+				}
+#endif
 #elif defined(CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM)
 #ifdef CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
                 if (tpd_dts_data.use_tpd_button)
@@ -12314,10 +12321,28 @@ void _DrvFwCtrlSelfHandleFingerTouch(void) // for MSG21xxA/MSG22xx
                     
                     nLastKeyCode = nTouchKeyCode;
 
-                    input_report_key(g_InputDevice, BTN_TOUCH, 1);
-                    input_report_key(g_InputDevice, nTouchKeyCode, 1);
+#ifdef REPORT_MENU_AND_BACK //Method 2:  report  KEY_BACK after reporting KEY_MENU
+					if(tInfo.nTouchKeyCode == 5)
+					{
+						input_report_key(g_InputDevice, BTN_TOUCH, 1);
+						input_report_key(g_InputDevice, TOUCH_KEY_MENU, 1);
+						input_sync(g_InputDevice);
 
-                    input_sync(g_InputDevice);
+						input_report_key(g_InputDevice, BTN_TOUCH, 1);
+						input_report_key(g_InputDevice, TOUCH_KEY_BACK, 1);
+						input_sync(g_InputDevice);
+
+					}
+					else
+					{
+#endif
+						input_report_key(g_InputDevice, BTN_TOUCH, 1);
+						input_report_key(g_InputDevice, nTouchKeyCode, 1);
+
+						input_sync(g_InputDevice);
+#ifdef REPORT_MENU_AND_BACK
+					}
+#endif
 
 #ifdef CONFIG_ENABLE_TYPE_B_PROTOCOL 
                     _gPrevTouchStatus = 0;

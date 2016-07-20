@@ -1586,6 +1586,9 @@ s32 DrvPlatformLyrInputDeviceInitialize(struct i2c_client *pClient)
         {
             input_set_capability(g_InputDevice, EV_KEY, g_TpVirtualKey[i]);
         }
+#ifdef REPORT_NEW_KEY_REPLACE_MENU_BACK //maning add 20160719,
+		input_set_capability(g_InputDevice, EV_KEY, KEY_LEFTSHIFT);
+#endif
     }
 
 #ifdef CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE
