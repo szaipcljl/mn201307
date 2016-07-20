@@ -27,6 +27,10 @@ adb shell logcat | grep “关键字”    把包含关键字的log信息直接�
 
 sudo adb shell logcat -> ~/samba_mn/sensor_gc5004_log.txt
 
+进入adb shell 后:
+触摸按键的log
+cat proc/kmsg | grep key
+
 =========
 fastboot:
 
