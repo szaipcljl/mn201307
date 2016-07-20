@@ -5,58 +5,41 @@
         <sensor_name>cpu sensor</sensor_name>
 		<sensor_file>/sys/class/thermal/thermal_zone1/temp</sensor_file>
 		<polling_delay>2000</polling_delay>
-		<AvgPeriod>20000</AvgPeriod>
+		<AvgPeriod>60000</AvgPeriod>
         <zone_level id ="1" type="active">
-               <temp>53000</temp>
+               <temp>56000</temp>
                <trip id ="0" >
                         <action name="cpu" arg="0,4,1200000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                         <action name="charge" arg="0" file="/sys/class/power_supply/battery/chg_cool_state" />
                         <action name="brightness" arg="255" file="/sys/class/backlight/sprd_backlight/max_brightness" />
                </trip>
                <trip id ="1" >
-                        <action name="cpu" arg="1,4,1000000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
+                        <action name="cpu" arg="1,4,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                         <action name="charge" arg="1" file="/sys/class/power_supply/battery/chg_cool_state" />
                         <action name="brightness" arg="178" file="/sys/class/backlight/sprd_backlight/max_brightness" />
                </trip>
                <trip id ="2" >
-                        <action name="cpu" arg="2,4,900000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
-                        <action name="charge" arg="1" file="/sys/class/power_supply/battery/chg_cool_state" />
-                        <action name="brightness" arg="127" file="/sys/class/backlight/sprd_backlight/max_brightness" />
-               </trip>
-			   <trip id ="3" >
-                        <action name="cpu" arg="3,4,813000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
-                        <action name="charge" arg="1" file="/sys/class/power_supply/battery/chg_cool_state" />
-                        <action name="brightness" arg="127" file="/sys/class/backlight/sprd_backlight/max_brightness" />
-               </trip>
-			   <trip id ="4" >
-                        <action name="cpu" arg="4,3,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
-                        <action name="charge" arg="1" file="/sys/class/power_supply/battery/chg_cool_state" />
-                        <action name="brightness" arg="127" file="/sys/class/backlight/sprd_backlight/max_brightness" />
-               </trip>
-			   <trip id ="5" >
-                        <action name="cpu" arg="5,2,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
+                        <action name="cpu" arg="2,3,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                         <action name="charge" arg="1" file="/sys/class/power_supply/battery/chg_cool_state" />
                         <action name="brightness" arg="127" file="/sys/class/backlight/sprd_backlight/max_brightness" />
                </trip>
          </zone_level>
          <zone_level id = "2" type = "hot">
-               <temp>80000</temp>
+               <temp>85000</temp>
                <trip id="0" >
-                        <action name="cpu" arg="6,2,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
-						<action name="charge_stop" arg="1" file="/sys/class/power_supply/battery/stop_charge" />
+                        <action name="cpu" arg="3,3,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                </trip>
          </zone_level>
          <zone_level id = "3" type = "hot">
                <temp>95000</temp>
                <trip id="0" >
-                        <action name="cpu" arg="7,1,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
-						<action name="charge_stop" arg="1" file="/sys/class/power_supply/battery/stop_charge" />
+                        <action name="cpu" arg="4,2,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                </trip>
          </zone_level>
          <zone_level id = "4" type = "hot">
                <temp>105000</temp>
                <trip id="0" >
-                        <action name="cpu" arg="8,1,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
+                        <action name="cpu" arg="5,1,768000" file="/sys/class/thermal/cooling_device0/cur_ctrl_param" />
                </trip>
          </zone_level>
          <zone_level id="5" type="critical">
