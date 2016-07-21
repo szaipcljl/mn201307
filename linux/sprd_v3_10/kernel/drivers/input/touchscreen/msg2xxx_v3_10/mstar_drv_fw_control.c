@@ -12322,6 +12322,34 @@ void _DrvFwCtrlSelfHandleFingerTouch(void) // for MSG21xxA/MSG22xx
                     
                     nLastKeyCode = nTouchKeyCode;
 
+					//wyc0715 modify touch coordinate for vib when touch key
+#if 0 //def CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE 
+					switch(nTouchKeyCode)
+					{
+					case TOUCH_KEY_MENU_COORDINATE_MAP:   
+						DrvPlatformLyrFingerTouchPressed(150, 1330, 0, 0);
+						DBG(&g_I2cClient->dev,"--MENU--\n");
+						break;
+					case TOUCH_KEY_HOME_COORDINATE_MAP:
+						DrvPlatformLyrFingerTouchPressed(50, 1330, 0, 0);
+						DBG(&g_I2cClient->dev,"--HOME--\n");
+						break;
+					case TOUCH_KEY_BACK_COORDINATE_MAP:
+						DrvPlatformLyrFingerTouchPressed(250, 1330, 0, 0);
+						DBG(&g_I2cClient->dev,"--BACK--\n");
+						break;
+					case TOUCH_KEY_SEARCH_COORDINATE_MAP:
+						DrvPlatformLyrFingerTouchPressed(350, 1330, 0, 0);
+						DBG(&g_I2cClient->dev,"--SEARCH--\n");
+						break;	
+
+					default:
+						break;
+					}
+					input_sync(g_InputDevice);
+
+#else
+
 #ifdef REPORT_MENU_AND_BACK //Method 2:  report  KEY_BACK after reporting KEY_MENU
 					if(tInfo.nTouchKeyCode == 5)
 					{
@@ -12344,7 +12372,8 @@ void _DrvFwCtrlSelfHandleFingerTouch(void) // for MSG21xxA/MSG22xx
 #ifdef REPORT_MENU_AND_BACK
 					}
 #endif
-
+#endif
+			
 #ifdef CONFIG_ENABLE_TYPE_B_PROTOCOL 
                     _gPrevTouchStatus = 0;
 #endif //CONFIG_ENABLE_TYPE_B_PROTOCOL
