@@ -171,9 +171,27 @@ typedef enum
 #define SPRD_PLS_LIGHT_THRESHOLD	30
 #define SPRD_PLS_INPUT_DEV			"alps_pxy"
 #else
+#if defined(BOARD_HAVE_PLS_EPL2182)
 #define SPRD_PLS_CTL				"/dev/epl2182_pls"
+#define SPRD_LS_CTL				"/dev/epl2182_pls"
 #define SPRD_PLS_LIGHT_THRESHOLD	1
-#define SPRD_PLS_INPUT_DEV			"proximity"
+#define SPRD_LS_INPUT_DEV			"lightsensor-level"
+#define SPRD_PS_INPUT_DEV			"proximity"
+#elif defined(BOARD_HAVE_PLS_ELAN)
+#define SPRD_LS_CTL				"/dev/elan_als"
+#define SPRD_PS_CTL				"/dev/elan_ps"
+#define SPRD_PLS_LIGHT_THRESHOLD	1
+#define SPRD_LS_INPUT_DEV			"lightsensor-level"
+#define SPRD_PS_INPUT_DEV			"proximity"
+#elif defined(BOARD_HAVE_PLS_TP)
+#define SPRD_PS_CTL				"/sys/board_properties/facemode"
+#define SPRD_PS_INPUT_DEV			"focaltech_ts"
+#else
+#define SPRD_LS_CTL				"/dev/ltr_558als"
+#define SPRD_PLS_LIGHT_THRESHOLD	30
+#define SPRD_LS_INPUT_DEV			"lightsensor-level"
+#define SPRD_PS_INPUT_DEV			"proximity"
+#endif
 #endif
 
 /**************TP**********/
@@ -182,24 +200,33 @@ typedef enum
 #else
 #define SPRD_TS_INPUT_DEV			"focaltech_ts"
 #endif
-//huafeizhou160107 add-s
+//add-s
 #define DEVICE_HWINFO_PATH "/sys/board_properties/tp_information"
 
 typedef struct {
 	char* vendor;
 	char* dev_name;
 }tp_info;
-//huafeizhou160107 add-e
+//add-e
 
 /**************Gsensor**********/
 #define SPRD_ACC_INPUT_DEV			"accelerometer"
 
+#if defined(BOARD_HAVE_PLS_ELAN)
+#define LTR_IOCTL_MAGIC         'c'
+#define LTR_IOCTL_GET_PFLAG	    _IOR(LTR_IOCTL_MAGIC, 1, int)
+#define LTR_IOCTL_GET_LFLAG     _IOR(LTR_IOCTL_MAGIC, 2, int)
+#define LTR_IOCTL_SET_PFLAG     _IOW(LTR_IOCTL_MAGIC, 3, int)
+#define LTR_IOCTL_SET_LFLAG     _IOW(LTR_IOCTL_MAGIC, 4, int)
+#define LTR_IOCTL_GET_DATA      _IOW(LTR_IOCTL_MAGIC, 5, unsigned char)
+#else
 #define LTR_IOCTL_MAGIC         0x1C
 #define LTR_IOCTL_GET_PFLAG	    _IOR(LTR_IOCTL_MAGIC, 1, int)
 #define LTR_IOCTL_GET_LFLAG     _IOR(LTR_IOCTL_MAGIC, 2, int)
 #define LTR_IOCTL_SET_PFLAG     _IOW(LTR_IOCTL_MAGIC, 3, int)
 #define LTR_IOCTL_SET_LFLAG     _IOW(LTR_IOCTL_MAGIC, 4, int)
 #define LTR_IOCTL_GET_DATA      _IOW(LTR_IOCTL_MAGIC, 5, unsigned char)
+#endif
 /**************end Lsensor********/
 
 
