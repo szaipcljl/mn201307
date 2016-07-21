@@ -3245,6 +3245,67 @@ ERR_GET_VCC:
 }
 #endif
 
+#ifdef CONFIG_OF //160624 add
+static int SCREEN_X_MAX = 480;
+static int SCREEN_Y_MAX = 800;
+
+struct goodix_ts_platform_data{
+	int irq_gpio_number;
+	int reset_gpio_number;
+	const char *vdd_name;
+	int virtualkeys[12];
+	int TP_MAX_X;
+	int TP_MAX_Y;
+};
+
+static struct goodix_ts_platform_data *goodix_ts_parse_dt(struct device *dev)
+{
+	struct goodix_ts_platform_data *pdata;
+	struct device_node *np = dev->of_node;
+	int ret;
+
+	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
+	if (!pdata) {
+		dev_err(dev, "Could not allocate struct ft5x0x_ts_platform_data");
+		return NULL;
+	}
+	pdata->reset_gpio_number = of_get_gpio(np, 0);
+	if(pdata->reset_gpio_number < 0){
+		dev_err(dev, "fail to get reset_gpio_number\n");
+		goto fail;
+	}
+	pdata->irq_gpio_number = of_get_gpio(np, 1);
+	if(pdata->reset_gpio_number < 0){
+		dev_err(dev, "fail to get reset_gpio_number\n");
+		goto fail;
+	}
+	ret = of_property_read_string(np, "vdd_name", &pdata->vdd_name);
+	if(ret){
+		dev_err(dev, "fail to get vdd_name\n");
+		goto fail;
+	}
+	ret = of_property_read_u32_array(np, "virtualkeys", &pdata->virtualkeys,12);
+	if(ret){
+		dev_err(dev, "fail to get virtualkeys\n");
+		goto fail;
+	}
+	ret = of_property_read_u32(np, "TP_MAX_X", &pdata->TP_MAX_X);
+	if(ret){
+		dev_err(dev, "fail to get TP_MAX_X\n");
+		goto fail;
+	}
+	ret = of_property_read_u32(np, "TP_MAX_Y", &pdata->TP_MAX_Y);
+	if(ret){
+		dev_err(dev, "fail to get TP_MAX_Y\n");
+		goto fail;
+	}
+
+	return pdata;
+fail:
+	kfree(pdata);
+	return NULL;
+}
+#endif
 /*******************************************************
 Function:
     I2c probe.
@@ -3282,17 +3343,25 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
         return -ENOMEM;
     }
 
-#ifdef GTP_CONFIG_OF	/* device tree support */
-    if (client->dev.of_node) {
-		gtp_parse_dt(&client->dev);
-    }
-    ret = gtp_power_switch(client, 1);
-	if (ret) {
-		GTP_ERROR("GTP power on failed.");
-		return -EINVAL;
+#ifdef CONFIG_OF //160624 add for CONFIG_OF
+	struct goodix_ts_platform_data *pdata = client->dev.platform_data;
+	struct device_node *np = client->dev.of_node;
+	if (np && !pdata)
+	{
+		pdata = goodix_ts_parse_dt(&client->dev);
+		if(pdata){
+			client->dev.platform_data = pdata;
+		}
+		else{
+			return ret;
+		}
+
+		gtp_rst_gpio = pdata->reset_gpio_number;
+		gtp_int_gpio = pdata->irq_gpio_number;
+		SCREEN_X_MAX = pdata->TP_MAX_X;
+		SCREEN_Y_MAX = pdata->TP_MAX_Y;
+		printk("*** %s(rst=%d,int=%d,x_max=%d,y_max=%d) ***\n",__func__,gtp_rst_gpio,gtp_int_gpio,SCREEN_X_MAX,SCREEN_Y_MAX);
 	}
-	gtp_rst_gpio = GTP_RST_PORT;
-	gtp_int_gpio = GTP_INT_PORT;
 #else			/* use gpio defined in gt9xx.h */
 	gtp_rst_gpio = GTP_RST_PORT;
 	gtp_int_gpio = GTP_INT_PORT;
