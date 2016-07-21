@@ -18,7 +18,7 @@
 #define HIMAX_PLATFORM_H
 
 #include <linux/delay.h>
-#include <linux/fs.h>s
+#include <linux/fs.h>
 #include <linux/gpio.h>
 #include <linux/types.h>
 #include <linux/i2c.h>

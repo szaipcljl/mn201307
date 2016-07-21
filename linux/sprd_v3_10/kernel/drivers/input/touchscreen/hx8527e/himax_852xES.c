@@ -25,10 +25,132 @@ static u8 proximity_flag = 0;
 static u8 g_proximity_en = 0;
 #endif
 
+#ifdef HX_SMART_WAKEUP
+static struct class  *tp_gesture_class;
+static struct device *tp_gesture_dev;
+
+static ssize_t gesture_enable_show(struct device *dev, struct device_attribute *attr, char *buf);
+static ssize_t gesture_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size);
+
+// Fixme;
+static DEVICE_ATTR(enable, 4775, gesture_enable_show, gesture_enable_store);
+//static DEVICE_ATTR(mode, 4775, gesture_mode_show, gesture_mode_store);
+enum {
+    TP_GESTURE_DISABLE = 0,
+    TP_GESTURE_ENABLE,
+};
+
+enum {
+    TP_GESTURE_OFF = 0x00,
+    TP_GESTURE_DOBULECLICK = 0x01,
+    TP_GESTURE_UP=0x02,
+    TP_GESTURE_C=0x04,
+    TP_GESTURE_O=0x08,
+    TP_GESTURE_E=0x10,
+    TP_GESTURE_V=0x20,
+    TP_GESTURE_M=0x40,
+    TP_GESTURE_W=0x80,
+    TP_GESTURE_S=0x100,
+    TP_GESTURE_Z=0x200,
+    TP_GESTURE_DOWN=0x400,
+    TP_GESTURE_LEFT=0x800,
+    TP_GESTURE_RIGHT=0x1000,
+    TP_GESTURE_v=0x2000,
+    TP_GESTURE_a=0x4000,
+};
+
+static u16 tp_gesture_enable       = TP_GESTURE_OFF;
+static u8 tp_gesture_id       = 0x00;
+
+static ssize_t gesture_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+    return (sprintf(buf, "tp_gesture_enable = 0x%x! tp_gesture_id=0x%x\n", tp_gesture_enable,tp_gesture_id));
+}
+
+static ssize_t gesture_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
+{
+	struct himax_ts_data *ts = private_ts;
+	int ret       = 0;
+	size_t on_off = simple_strtoul(buf, NULL, 10);
+	tp_gesture_enable=on_off;
+	int index = 0;
+#if 0
+	do{
+		ts->gesture_cust_en[index] = (tp_gesture_enable >> index )& 0x1;//stay the same as focaltech
+	}while(++index < 16);
+	if(tp_gesture_enable)
+		ts->SMWP_enable = 1;
+	else
+		ts->SMWP_enable = 0;
+#else
+	memset(ts->gesture_cust_en, 0x0, sizeof(ts->gesture_cust_en));
+	do{
+	switch(index){
+	case 0:
+		ts->gesture_cust_en[0] = (tp_gesture_enable >> index )& 0x1;//'double click'
+		break; 	
+	case 1:
+		ts->gesture_cust_en[1] = (tp_gesture_enable >> index )& 0x1;//'up' 
+		break; 
+	case 2:
+		ts->gesture_cust_en[5] = (tp_gesture_enable >> index )& 0x1;//'c'
+		break; 
+	case 3:
+		ts->gesture_cust_en[8] = (tp_gesture_enable >> index )& 0x1;//'o'
+		break; 
+	case 4:
+		ts->gesture_cust_en[12] = (tp_gesture_enable >> index )& 0x1;//'e'
+		break; 
+	case 5:
+		ts->gesture_cust_en[10] = (tp_gesture_enable >> index )& 0x1;//'v'
+		break; 
+	case 6:
+		ts->gesture_cust_en[7] = (tp_gesture_enable >> index )& 0x1;//'m'
+		break; 
+	case 7:
+		ts->gesture_cust_en[11] = (tp_gesture_enable >> index )& 0x1;//'w'
+		break; 
+	case 8:
+		ts->gesture_cust_en[9] = (tp_gesture_enable >> index )& 0x1;//'s'
+		break; 
+	case 9:
+		ts->gesture_cust_en[6] = (tp_gesture_enable >> index )& 0x1;//'z'
+		break; 
+	case 10:
+		ts->gesture_cust_en[2] = (tp_gesture_enable >> index )& 0x1;//'down'
+		break; 
+	case 11:
+		ts->gesture_cust_en[3] = (tp_gesture_enable >> index )& 0x1;//'left'
+		break; 
+	case 12:
+		ts->gesture_cust_en[4] = (tp_gesture_enable >> index )& 0x1;//'right'
+		break; 
+	case 13:
+		ts->gesture_cust_en[13] = (tp_gesture_enable >> index )& 0x1;//
+		break; 
+	case 14:
+		ts->gesture_cust_en[14] = (tp_gesture_enable >> index )& 0x1;//
+		break; 
+	case 15:
+		ts->gesture_cust_en[15] = (tp_gesture_enable >> index )& 0x1;//
+		break; 
+
+	}
+	}while(++index < 16);
+	if(tp_gesture_enable)
+		ts->SMWP_enable = 1;
+	else
+		ts->SMWP_enable = 0;
+#endif
+	return size;
+}
+#endif
+
 #if defined(HX_AUTO_UPDATE_FW)||defined(HX_AUTO_UPDATE_CONFIG)
 	static unsigned char i_CTPM_FW[]=
 	{
 		#include "BOOYI_T50KB80_NA_C02_2015-08-21_1927.i"
+		#include "HLL_A23-S55_XLL_C12_2016-03-23.i"
 	};
 #endif
 
@@ -101,6 +223,11 @@ static void himax_ts_late_resume(struct early_suspend *h);
 static int himax_parse_config(struct himax_ts_data *ts, struct himax_config *pdata);
 #endif
 #endif
+
+//zhangbei
+int KEY_EVENT=0;
+int HX_PROC_SEND_FLAG=0;
+
 
 #if 1 //huafeizhou150123 add
 u8 himax_ic_info[8]={0};
@@ -758,6 +885,21 @@ static int himax_input_register(struct himax_ts_data *ts)
 	set_bit(KEY_SEARCH, ts->input_dev->keybit);
 #if defined(HX_SMART_WAKEUP)||defined(HX_PALM_REPORT)
 	set_bit(KEY_POWER, ts->input_dev->keybit);
+	set_bit(KEY_CUST_01, ts->input_dev->keybit);
+	set_bit(KEY_CUST_02, ts->input_dev->keybit);
+	set_bit(KEY_CUST_03, ts->input_dev->keybit);
+	set_bit(KEY_CUST_04, ts->input_dev->keybit);
+	set_bit(KEY_CUST_05, ts->input_dev->keybit);
+	set_bit(KEY_CUST_06, ts->input_dev->keybit);
+	set_bit(KEY_CUST_07, ts->input_dev->keybit);
+	set_bit(KEY_CUST_08, ts->input_dev->keybit);
+	set_bit(KEY_CUST_09, ts->input_dev->keybit);
+	set_bit(KEY_CUST_10, ts->input_dev->keybit);
+	set_bit(KEY_CUST_11, ts->input_dev->keybit);
+	set_bit(KEY_CUST_12, ts->input_dev->keybit);
+	set_bit(KEY_CUST_13, ts->input_dev->keybit);
+	set_bit(KEY_CUST_14, ts->input_dev->keybit);
+	set_bit(KEY_CUST_15, ts->input_dev->keybit);
 #endif	
 	set_bit(BTN_TOUCH, ts->input_dev->keybit);
 
@@ -780,7 +922,7 @@ static int himax_input_register(struct himax_ts_data *ts)
 	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X,ts->pdata->abs_x_min, ts->pdata->abs_x_max, ts->pdata->abs_x_fuzz, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y,ts->pdata->abs_y_min, ts->pdata->abs_y_max, ts->pdata->abs_y_fuzz, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR,ts->pdata->abs_pressure_min, ts->pdata->abs_pressure_max, ts->pdata->abs_pressure_fuzz, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE,ts->pdata->abs_pressure_min, ts->pdata->abs_pressure_max, ts->pdata->abs_pressure_fuzz, 0);
+//zhangbei 160324	input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE,ts->pdata->abs_pressure_min, ts->pdata->abs_pressure_max, ts->pdata->abs_pressure_fuzz, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR,ts->pdata->abs_width_min, ts->pdata->abs_width_max, ts->pdata->abs_pressure_fuzz, 0);
 
 //	input_set_abs_params(ts->input_dev, ABS_MT_AMPLITUDE, 0, ((ts->pdata->abs_pressure_max << 16) | ts->pdata->abs_width_max), 0, 0);
@@ -935,6 +1077,19 @@ void himax_touch_information(void)
 			data[1] = 0x00;
 			i2c_himax_master_write(private_ts->client, &data[0],2,DEFAULT_RETRY_CNT);
 			msleep(10);
+
+			HX_RX_NUM				= 24;
+			HX_TX_NUM				= 11;
+			HX_BT_NUM				= 3;
+			HX_X_RES				= 720;
+			HX_Y_RES				= 1280;
+			HX_MAX_PT				= 5;
+			HX_XY_REVERSE			= false;
+			Is_2T2R					= true;
+			HX_RX_NUM_2 			= 12;				 
+			HX_TX_NUM_2 			= 19;
+			HX_INT_IS_EDGE			= false;
+
 			I("%s:HX_RX_NUM =%d,HX_TX_NUM =%d,HX_MAX_PT=%d \n", __func__,HX_RX_NUM,HX_TX_NUM,HX_MAX_PT);
 
 			if (i2c_himax_read(private_ts->client, HX_VER_FW_CFG, data, 1, 3) < 0) {
@@ -1054,9 +1209,17 @@ static int i_update_FW(void)
 
 	I("IMAGE FW_VER=%x,%x.\n",i_CTPM_FW[FW_VER_MAJ_FLASH_ADDR],i_CTPM_FW[FW_VER_MIN_FLASH_ADDR]);
 	I("IMAGE CFG_VER=%x.\n",i_CTPM_FW[FW_CFG_VER_FLASH_ADDR]);
+//zhangbei  change start 160319
+/*
 	if (( private_ts->vendor_fw_ver_H != i_CTPM_FW[FW_VER_MAJ_FLASH_ADDR] )
 		|| ( private_ts->vendor_fw_ver_L != i_CTPM_FW[FW_VER_MIN_FLASH_ADDR] )
-		|| ( private_ts->vendor_config_ver != i_CTPM_FW[FW_CFG_VER_FLASH_ADDR] ))
+		|| ( private_ts->vendor_config_ver != i_CTPM_FW[FW_CFG_VER_FLASH_ADDR] )
+        || (himax_calculateChecksum(false)==0))       */
+	if ((( private_ts->vendor_fw_ver_H == i_CTPM_FW[FW_VER_MAJ_FLASH_ADDR] )
+		&& ( private_ts->vendor_fw_ver_L == i_CTPM_FW[FW_VER_MIN_FLASH_ADDR] )
+		&& ( private_ts->vendor_config_ver < i_CTPM_FW[FW_CFG_VER_FLASH_ADDR] ))//固件版本号小升级  FW under(young),update
+        || (himax_calculateChecksum(false)==0)) //固件升级失败，再次升级  FW update false, again update
+//zhangbei change end 160319
 		{	
 			if(fts_ctpm_fw_upgrade_with_sys_fs(ImageBuffer,fullFileLength,true) == 0)
 				E("%s: TP upgrade error\n", __func__);
@@ -1868,21 +2031,86 @@ static struct notifier_block hallsensor_status_handler = {
 #ifdef HX_SMART_WAKEUP
 static int himax_parse_wake_event(struct himax_ts_data *ts)
 {
-	uint8_t buf[5];
-	if (i2c_himax_read(ts->client, 0x86, buf, 4,HIMAX_I2C_RETRY_TIMES))	
+	uint8_t buf[128];
+	unsigned char check_sum_cal = 0;
+	//int tmp_max_x=0x00,tmp_min_x=0xFFFF,tmp_max_y=0x00,tmp_min_y=0xFFFF;
+	//int gest_len, gest_point;
+	int i=0, check_FC = 0, gesture_flag = 0;
+
+	if (i2c_himax_read(ts->client, 0x86, buf, 128,DEFAULT_RETRY_CNT))
 		E("%s: can't read data from chip!\n", __func__);
-		
-	if((buf[0]==0x57)&&(buf[1]==0x61)&&(buf[2]==0x6B)&&(buf[3]==0x65))
+
+	for(i=0;i<GEST_PTLG_ID_LEN;i++)
+	{
+		if (check_FC==0)
 		{
-			I("%s: WAKE UP system!\n", __func__);
-			return 1;//Yes, wake up system
+			if((buf[0]!=0x00)&&((buf[0]<=0x0F)||(buf[0]==0x80)))
+			{
+				check_FC = 1;
+				gesture_flag = buf[i];
+			}
+			else
+			{
+				check_FC = 0;
+				I("ID START at %x , value = %x skip the event\n", i, buf[i]);
+				break;
+			}
 		}
+		else
+		{
+			if(buf[i]!=gesture_flag)
+			{
+				check_FC = 0;
+				I("ID NOT the same %x != %x So STOP parse event\n", buf[i], gesture_flag);
+				break;
+			}
+		}
+
+		I("0x%2.2X ", buf[i]);
+		if (i % 8 == 7)
+				I("\n");
+	}
+	I("Himax gesture_flag= %x\n",gesture_flag );
+	I("Himax check_FC is %d\n", check_FC);
+
+	if (check_FC == 0)
+		return 0;
+	if(buf[GEST_PTLG_ID_LEN] != GEST_PTLG_HDR_ID1 ||
+			buf[GEST_PTLG_ID_LEN+1] != GEST_PTLG_HDR_ID2)
+		return 0;
+	for(i=0;i<(GEST_PTLG_ID_LEN+GEST_PTLG_HDR_LEN);i++)
+	{
+		I("P[%x]=0x%2.2X \n", i, buf[i]);
+		I("checksum=0x%2.2X \n", check_sum_cal);
+		check_sum_cal += buf[i];
+	}
+	if ((check_sum_cal != 0x00) )
+	{
+		I(" %s : check_sum_cal: 0x%02X\n",__func__ ,check_sum_cal);
+		return 0;
+	}
+
+	if(gesture_flag != 0x80)
+	{
+		if(!ts->gesture_cust_en[gesture_flag])
+			{
+				I("%s NOT report customer key \n ",__func__);
+				return 0;//NOT report customer key
+			}
+	}
 	else
-		{
-			I("%s: NOT WKAE packet, SKIP!\n", __func__);
-			I("buf[0]=%x, buf[1]=%x, buf[2]=%x, buf[3]=%x\n",buf[0],buf[1],buf[2],buf[3]);
-			return 0;
-		}
+	{
+		if(!ts->gesture_cust_en[0])
+			{
+				I("%s NOT report report double click \n",__func__);
+				return 0;//NOT report power key
+			}
+	}
+
+	if(gesture_flag == 0x80)
+		return EV_GESTURE_PWR;
+	else
+		return gesture_flag;
 }
 #endif
 
@@ -2071,7 +2299,9 @@ inline void himax_ts_work(struct himax_ts_data *ts)
 
 	memset(buf, 0x00, sizeof(buf));
 	memset(hw_reset_check, 0x00, sizeof(hw_reset_check));
-
+#if defined(HX_USB_DETECT2)
+	himax_cable_detect_func();
+#endif
 #ifdef HX_CHIP_STATUS_MONITOR
 		HX_CHIP_POLLING_COUNT=0;
 		if(HX_ON_HAND_SHAKING)//chip on hand shaking,wait hand shaking
@@ -2398,9 +2628,9 @@ bypass_checksum_failed_packet:
 								input_mt_slot(ts->input_dev, loop_i);
 							}
 
-							input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, w);
-							input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR, w);
-							input_report_abs(ts->input_dev, ABS_MT_PRESSURE, w);
+						//zhangbei 160324	input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, w);
+						//	input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR, w);
+						//	input_report_abs(ts->input_dev, ABS_MT_PRESSURE, w);
 							input_report_abs(ts->input_dev, ABS_MT_POSITION_X, x);
 							input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, y);
 							
@@ -2606,6 +2836,7 @@ static irqreturn_t himax_ts_thread(int irq, void *ptr)
 	struct himax_ts_data *ts = ptr;
 	struct timespec timeStart, timeEnd, timeDelta;
 
+	int ret_event=0x0;
 	if (ts->debug_log_level & BIT(2)) {
 			getnstimeofday(&timeStart);
 			/*I(" Irq start time = %ld.%06ld s\n",
@@ -2613,19 +2844,73 @@ static irqreturn_t himax_ts_thread(int irq, void *ptr)
 	}
 #ifdef HX_SMART_WAKEUP
 	if (atomic_read(&ts->suspend_mode)&&(!FAKE_POWER_KEY_SEND)&&(ts->SMWP_enable)) {
+		I("Start to parse wake event\n");
 		wake_lock_timeout(&ts->ts_SMWP_wake_lock, TS_WAKE_LOCK_TIMEOUT);
-		if(himax_parse_wake_event((struct himax_ts_data *)ptr))
+		msleep(200);
+		ret_event = himax_parse_wake_event((struct himax_ts_data *)ptr);
+		switch (ret_event) {
+			case EV_GESTURE_PWR:
+				KEY_EVENT = KEY_POWER;
+			break;
+			case EV_GESTURE_01:
+				KEY_EVENT = KEY_CUST_01;
+			break;
+			case EV_GESTURE_02:
+				KEY_EVENT = KEY_CUST_02;
+			break;
+			case EV_GESTURE_03:
+				KEY_EVENT = KEY_CUST_03;
+			break;
+			case EV_GESTURE_04:
+				KEY_EVENT = KEY_CUST_04;
+			break;
+			case EV_GESTURE_05:
+				KEY_EVENT = KEY_CUST_05;
+			break;
+			case EV_GESTURE_06:
+				KEY_EVENT = KEY_CUST_06;
+			break;
+			case EV_GESTURE_07:
+				KEY_EVENT = KEY_CUST_07;
+			break;
+			case EV_GESTURE_08:
+				KEY_EVENT = KEY_CUST_08;
+			break;
+			case EV_GESTURE_09:
+				KEY_EVENT = KEY_CUST_09;
+			break;
+			case EV_GESTURE_10:
+				KEY_EVENT = KEY_CUST_10;
+			break;
+			case EV_GESTURE_11:
+				KEY_EVENT = KEY_CUST_11;
+			break;
+			case EV_GESTURE_12:
+				KEY_EVENT = KEY_CUST_12;
+			break;
+			case EV_GESTURE_13:
+				KEY_EVENT = KEY_CUST_13;
+			break;
+			case EV_GESTURE_14:
+				KEY_EVENT = KEY_CUST_14;
+			break;
+			case EV_GESTURE_15:
+				KEY_EVENT = KEY_CUST_15;
+			break;
+			}
+		if(ret_event)
 			{
 				I(" %s SMART WAKEUP KEY power event press\n",__func__);
-				input_report_key(ts->input_dev, KEY_POWER, 1);
+				input_report_key(ts->input_dev, KEY_EVENT, 1);
 				input_sync(ts->input_dev);
 				msleep(100);
 				I(" %s SMART WAKEUP KEY power event release\n",__func__);
-				input_report_key(ts->input_dev, KEY_POWER, 0);
+				input_report_key(ts->input_dev, KEY_EVENT, 0);
 				input_sync(ts->input_dev);
 				FAKE_POWER_KEY_SEND=true;
 				return IRQ_HANDLED;
 			}
+		return IRQ_HANDLED;
 	}
 #endif
 	himax_ts_work((struct himax_ts_data *)ptr);
@@ -2668,12 +2953,16 @@ int himax_ts_register_interrupt(struct i2c_client *client)
 		if(HX_INT_IS_EDGE)
 			{
 				I("%s edge triiger falling\n ",__func__);
-				ret = request_threaded_irq(client->irq, NULL, himax_ts_thread,IRQF_TRIGGER_FALLING | IRQF_ONESHOT, client->name, ts);
+				ret = request_threaded_irq(client->irq, NULL, himax_ts_thread,
+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_NO_SUSPEND, client->name, ts);//
 			}
 		else
 			{
 				I("%s level trigger low\n ",__func__);
-				ret = request_threaded_irq(client->irq, NULL, himax_ts_thread,IRQF_TRIGGER_LOW | IRQF_ONESHOT, client->name, ts);
+				I("%s level trigger low  irq =%d \n ",__func__,client->irq);
+				ret = request_threaded_irq(client->irq, NULL, himax_ts_thread,
+					IRQF_TRIGGER_LOW | IRQF_ONESHOT| IRQF_NO_SUSPEND , client->name, ts);//
+				I("%s level trigger low  fanhui =%d \n ",__func__,ret);
 			}
 		if (ret == 0) {
 			ts->irq_enabled = 1;
@@ -2717,6 +3006,7 @@ static int touch_event_handler(void *ptr)
 {
 	struct sched_param param = { .sched_priority = RTPM_PRIO_TPD };
 	sched_setscheduler(current, SCHED_RR, &param);
+	int ret_event=0x0;
 
 	do
 	{
@@ -2728,6 +3018,82 @@ static int touch_event_handler(void *ptr)
 
 		set_current_state(TASK_RUNNING);
 
+#ifdef HX_SMART_WAKEUP
+	if (atomic_read(&private_ts->suspend_mode)&&(!FAKE_POWER_KEY_SEND)&&(private_ts->SMWP_enable)) {
+		I("Start to parse wake event\n");
+		wake_lock_timeout(&private_ts->ts_SMWP_wake_lock, TS_WAKE_LOCK_TIMEOUT);
+		msleep(200);
+		ret_event = himax_parse_wake_event(private_ts);
+		switch (ret_event) {
+			case EV_GESTURE_PWR:
+				KEY_EVENT = KEY_POWER;
+			break;
+			case EV_GESTURE_01:
+				KEY_EVENT = KEY_CUST_01;
+			break;
+			case EV_GESTURE_02:
+				KEY_EVENT = KEY_CUST_02;
+			break;
+			case EV_GESTURE_03:
+				KEY_EVENT = KEY_CUST_03;
+			break;
+			case EV_GESTURE_04:
+				KEY_EVENT = KEY_CUST_04;
+			break;
+			case EV_GESTURE_05:
+				KEY_EVENT = KEY_CUST_05;
+			break;
+			case EV_GESTURE_06:
+				KEY_EVENT = KEY_CUST_06;
+			break;
+			case EV_GESTURE_07:
+				KEY_EVENT = KEY_CUST_07;
+			break;
+			case EV_GESTURE_08:
+				KEY_EVENT = KEY_CUST_08;
+			break;
+			case EV_GESTURE_09:
+				KEY_EVENT = KEY_CUST_09;
+			break;
+			case EV_GESTURE_10:
+				KEY_EVENT = KEY_CUST_10;
+			break;
+			case EV_GESTURE_11:
+				KEY_EVENT = KEY_CUST_11;
+			break;
+			case EV_GESTURE_12:
+				KEY_EVENT = KEY_CUST_12;
+			break;
+			case EV_GESTURE_13:
+				KEY_EVENT = KEY_CUST_13;
+			break;
+			case EV_GESTURE_14:
+				KEY_EVENT = KEY_CUST_14;
+			break;
+			case EV_GESTURE_15:
+				KEY_EVENT = KEY_CUST_15;
+			break;
+			}
+		if(ret_event)
+			{
+				I(" %s SMART WAKEUP KEY event %x press\n",__func__,KEY_EVENT);
+				input_report_key(private_ts->input_dev, KEY_EVENT, 1);
+				input_sync(private_ts->input_dev);
+				//msleep(100);
+				I(" %s SMART WAKEUP KEY event %x release\n",__func__,KEY_EVENT);
+				input_report_key(private_ts->input_dev, KEY_EVENT, 0);
+				input_sync(private_ts->input_dev);
+				FAKE_POWER_KEY_SEND=true;
+
+				//I("gest_start_x= %d, gest_start_y= %d, gest_end_x= %d, gest_end_y= %d\n",gest_start_x,gest_start_y,
+				//gest_end_x,gest_end_y);
+				//I("gest_width= %d, gest_height= %d, gest_mid_x= %d, gest_mid_y= %d\n",gest_width,gest_height,
+				//gest_mid_x,gest_mid_y);
+			}
+		himax_int_enable(private_ts->client->irq,1,false);
+		continue;
+	}
+#endif
 		himax_ts_work((struct himax_ts_data *)ptr);
 		
 	}
@@ -2788,13 +3154,15 @@ static void himax_cable_tp_status_handler_func(int connect_status)
 	ts = private_ts;
 	if (ts->cable_config) {
 		if (!atomic_read(&ts->suspend_mode)) {
-			if ((!!connect_status) != ts->usb_connected) {
-				if (!!connect_status) {
+			if ((connect_status) != ts->usb_connected) {
+				if (connect_status) {
+					ts->cable_config[0] = 0xF0;
 					ts->cable_config[1] = 0x01;
-					ts->usb_connected = 0x01;
+					ts->usb_connected = 1;
 				} else {
+					ts->cable_config[0] = 0xF0;
 					ts->cable_config[1] = 0x00;
-					ts->usb_connected = 0x00;
+					ts->usb_connected = 0;
 				}
 
 				i2c_himax_master_write(ts->client, ts->cable_config,
@@ -2805,9 +3173,9 @@ static void himax_cable_tp_status_handler_func(int connect_status)
 				I("%s: Cable status is the same as previous one, ignore.\n", __func__);
 		} else {
 			if (connect_status)
-				ts->usb_connected = 0x01;
+				ts->usb_connected = 1;
 			else
-				ts->usb_connected = 0x00;
+				ts->usb_connected = 0;
 			I("%s: Cable status remembered: 0x%2.2X\n", __func__, ts->usb_connected);
 		}
 	}
@@ -2817,7 +3185,47 @@ static struct t_cable_status_notifier himax_cable_status_handler = {
 	.name = "usb_tp_connected",
 	.func = himax_cable_tp_status_handler_func,
 };
+#endif
 
+#if defined(HX_USB_DETECT2)
+static void himax_cable_detect_func(void)
+{
+	struct himax_ts_data *ts;
+	u32 connect_status = 0;
+
+	//connect_status = upmu_is_chr_det();
+	//connect_status = sprdchg_charger_is_adapter();
+	//connect_status = 0;
+	connect_status = sprdchg_charger_is_adc();
+	if(connect_status > 0)
+		connect_status =1;
+	else
+		connect_status =0;
+	//I("Touch: cable status%d\n", connect_status);
+	ts = private_ts;
+	if (ts->cable_config) {I("%s:zhagnbei **** ts->usb_connected =%d, ignore.*********\n", __func__,ts->usb_connected?1:0);
+		if ((connect_status) != ts->usb_connected) {
+			if (connect_status) {
+				ts->cable_config[0] = 0xF0;				
+				ts->cable_config[1] = 0x01;
+				ts->usb_connected = 1;
+			//i2c_himax_master_write(ts->client, ts->cable_config,
+				//sizeof(ts->cable_config), DEFAULT_RETRY_CNT);
+			} else {
+				ts->cable_config[0] = 0xF0;
+				ts->cable_config[1] = 0x00;
+				ts->usb_connected = 0;
+			}
+
+			i2c_himax_master_write(ts->client, ts->cable_config,
+				sizeof(ts->cable_config), DEFAULT_RETRY_CNT);
+
+			I("%s: Cable status change: 0x%2.2X\n", __func__, ts->cable_config[1]);
+			}
+		//else
+		//	I("%s: Cable status is the same as previous one, ignore.\n", __func__);
+	}
+}
 #endif
 
 #if !defined(CONFIG_FB) //huafeizhou150828 mod
@@ -2935,7 +3343,7 @@ static ssize_t himax_int_status_store(struct device *dev,
 #endif
 #ifdef QCT
 					ret = request_threaded_irq(ts->client->irq, NULL, himax_ts_thread,
-					IRQF_TRIGGER_FALLING | IRQF_ONESHOT, ts->client->name, ts);
+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_NO_SUSPEND, ts->client->name, ts);
 #endif
 				}
 				else
@@ -2947,7 +3355,7 @@ static ssize_t himax_int_status_store(struct device *dev,
 #endif
 #ifdef QCT
 					ret = request_threaded_irq(ts->client->irq, NULL, himax_ts_thread,
-					IRQF_TRIGGER_LOW | IRQF_ONESHOT, ts->client->name, ts);
+					IRQF_TRIGGER_LOW | IRQF_ONESHOT | IRQF_NO_SUSPEND, ts->client->name, ts);
 #endif
 				}
 		if (ret == 0) {
@@ -4668,41 +5076,125 @@ static DEVICE_ATTR(cover, (S_IWUSR|S_IRUGO|S_IWUGO),
 #endif
 
 #ifdef HX_SMART_WAKEUP
-static ssize_t himax_SMWP_show(struct device *dev,
-		struct device_attribute *attr, char *buf)
+static ssize_t himax_SMWP_read(struct file *file, char *buf,
+	size_t len, loff_t *pos)
 {
 	struct himax_ts_data *ts = private_ts;
-	size_t count = 0;
-	count = snprintf(buf, PAGE_SIZE, "%d\n", ts->SMWP_enable);
+	size_t ret = 0;
 
-	return count;
+	if(!HX_PROC_SEND_FLAG)
+	{
+		ret = snprintf(buf, PAGE_SIZE, "%d\n", ts->SMWP_enable);
+		HX_PROC_SEND_FLAG=1;
+	}
+	else
+		HX_PROC_SEND_FLAG=0;
+
+	return ret;
 }
 
-static ssize_t himax_SMWP_store(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count)
+static ssize_t himax_SMWP_write(struct file *file, const char *buff,
+	size_t len, loff_t *pos)
 {
 
 	struct himax_ts_data *ts = private_ts;
+	char buf[80] = {0};
 
-	if (sysfs_streq(buf, "0"))
+	if (len >= 80)
+	{
+		I("%s: no command exceeds 80 chars.\n", __func__);
+		return -EFAULT;
+	}
+	if (copy_from_user(buf, buff, len))
+	{
+		return -EFAULT;
+	}
+
+	if(buf[0] == '0')
 		ts->SMWP_enable = 0;
-	else if (sysfs_streq(buf, "1"))
+	else if(buf[0] == '1')
 		ts->SMWP_enable = 1;
 	else
 		return -EINVAL;
 	
 	I("%s: SMART_WAKEUP_enable = %d.\n", __func__, ts->SMWP_enable);
 
-	return count;
+	return len;
 }
 
-static DEVICE_ATTR(SMWP, (S_IWUSR|S_IRUGO|S_IWUGO),
-	himax_SMWP_show, himax_SMWP_store);
+static struct file_operations himax_proc_SMWP_ops =
+{
+	.owner = THIS_MODULE,
+	.read = himax_SMWP_read,
+	.write = himax_SMWP_write,
+};
 
+static ssize_t himax_GESTURE_read(struct file *file, char *buf,
+	size_t len, loff_t *pos)
+{
+	struct himax_ts_data *ts = private_ts;
+	size_t ret = 0;
+
+	if(HX_PROC_SEND_FLAG<16)
+	{
+		ret = sprintf(buf, "ges_en[%d]=%d \n",HX_PROC_SEND_FLAG ,ts->gesture_cust_en[HX_PROC_SEND_FLAG]);
+		HX_PROC_SEND_FLAG++;
+	}
+	else
+	{
+		HX_PROC_SEND_FLAG = 0;
+		ret = 0;
+	}
+	return ret;
+}
+
+static ssize_t himax_GESTURE_write(struct file *file, const char *buff,
+	size_t len, loff_t *pos)
+{
+	struct himax_ts_data *ts = private_ts;
+	int i =0;
+	char buf[80] = {0};
+
+	if (len >= 80)
+	{
+		I("%s: no command exceeds 80 chars.\n", __func__);
+		return -EFAULT;
+	}
+	if (copy_from_user(buf, buff, len))
+	{
+		return -EFAULT;
+	}
+
+	for (i=0;i<16;i++)
+		{
+			if (buf[i] == '0')
+				ts->gesture_cust_en[i]= 0;
+			else if (buf[i] == '1')
+				ts->gesture_cust_en[i]= 1;
+			else
+				ts->gesture_cust_en[i]= 0;
+			I("gesture en[%d]=%d \n", i, ts->gesture_cust_en[i]);
+		}
+	return len;
+}
+
+static struct file_operations himax_proc_Gesture_ops =
+{
+	.owner = THIS_MODULE,
+	.read = himax_GESTURE_read,
+	.write = himax_GESTURE_write,
+};
 #endif
 static int himax_touch_sysfs_init(void)
 {
 	int ret;
+	himax_touch_proc_dir = proc_mkdir( HIMAX_PROC_TOUCH_FOLDER, NULL);
+	if (himax_touch_proc_dir == NULL)
+	{
+
+		E(" %s: himax_touch_proc_dir file create failed!\n", __func__);
+		return -ENOMEM;
+	}
 	android_touch_kobj = kobject_create_and_add("android_touch", NULL);
 	if (android_touch_kobj == NULL) {
 		E("%s: subsystem_register failed\n", __func__);
@@ -4811,12 +5303,20 @@ static int himax_touch_sysfs_init(void)
 	#endif
 
 	#ifdef HX_SMART_WAKEUP
-		ret = sysfs_create_file(android_touch_kobj, &dev_attr_SMWP.attr);
-		if (ret) 
-		{
-			E("sysfs_create_file dev_attr_cover failed\n");
-			return ret;
-		}
+	himax_proc_SMWP_file = proc_create(HIMAX_PROC_SMWP_FILE, (S_IWUSR|S_IRUGO|S_IWUGO),
+		himax_touch_proc_dir, &himax_proc_SMWP_ops);
+	if(himax_proc_SMWP_file == NULL)
+	{
+		E(" %s: proc SMWP file create failed!\n", __func__);
+		return -ENOMEM; //goto fail_14; //zhangbei
+	}
+	himax_proc_GESTURE_file = proc_create(HIMAX_PROC_GESTURE_FILE, (S_IWUSR|S_IRUGO|S_IWUGO),
+		himax_touch_proc_dir, &himax_proc_Gesture_ops);
+	if(himax_proc_GESTURE_file == NULL)
+	{
+		E(" %s: proc GESTURE file create failed!\n", __func__);
+		return -ENOMEM; //goto fail_14;//zhangbei
+	}
 	#endif
 	
 	return 0 ;
@@ -4855,12 +5355,17 @@ static void himax_touch_sysfs_deinit(void)
 	sysfs_remove_file(android_touch_kobj, &dev_attr_hitouch.attr);
 	#endif
 
+#ifdef HX_SMART_WAKEUP
+		remove_proc_entry( HIMAX_PROC_GESTURE_FILE, himax_touch_proc_dir );
+		remove_proc_entry( HIMAX_PROC_SMWP_FILE, himax_touch_proc_dir );
+#endif
 	#ifdef HX_DOT_VIEW
 	sysfs_remove_file(android_touch_kobj, &dev_attr_cover.attr);
 	#endif
 
 	#ifdef HX_SMART_WAKEUP
-	sysfs_remove_file(android_touch_kobj, &dev_attr_SMWP.attr);
+	
+	//sysfs_remove_file(android_touch_kobj, &dev_attr_SMWP.attr);
 	#endif
 	
 	kobject_del(android_touch_kobj);
@@ -5281,7 +5786,7 @@ static void himax_vk_parser(struct device_node *dt,
 
 	node = of_parse_phandle(dt, "virtualkey", 0);
 	if (node == NULL) {
-		I(" DT-No vk info in DT");
+		I(" DT-No vk info in DT\n");
 		return;
 	} else {
 		while ((pp = of_get_next_child(node, pp)))
@@ -5364,7 +5869,7 @@ static int himax_parse_dt(struct himax_ts_data *ts,
 
 	if (of_property_read_u32(dt, "report_type", &data) == 0) {
 		pdata->protocol_type = data;
-		I(" DT:protocol_type=%d", pdata->protocol_type);
+		I(" DT:protocol_type=%d\n", pdata->protocol_type);
 	}
 
 #if defined(CONFIG_TOUCHSCREEN_PROXIMITY)
@@ -5442,7 +5947,15 @@ static int himax852xes_probe(struct i2c_client *client, const struct i2c_device_
 	ts->rst_gpio = pdata->gpio_reset;
 #endif
 
-himax_gpio_power_config(ts->client, pdata);
+//huafeizhou160715 mod-s
+	err=himax_gpio_power_config(ts->client, pdata);
+	printk("******himax_gpio_power_config(err=%d)!!!!\n",err);
+	if(err !=0)
+	{
+		printk("******himax_gpio_power_config failed !!!!\n");
+		goto err_power_config_failed;
+	}
+//huafeizhou160715 mod-e
 
 #ifndef CONFIG_OF
 	if (pdata->power) {
@@ -5533,11 +6046,12 @@ himax_gpio_power_config(ts->client, pdata);
 	ts->pdata->abs_pressure_max        = 200;
 	ts->pdata->abs_width_min           = 0;
 	ts->pdata->abs_width_max           = 200;
+#endif
 	pdata->cable_config[0]             = 0x90;
 	pdata->cable_config[1]             = 0x00;
-#endif
+
 	ts->suspended                      = false;
-#if defined(HX_USB_DETECT)	
+#if defined(HX_USB_DETECT)||defined(HX_USB_DETECT2)
 	ts->usb_connected = 0x00;
 	ts->cable_config = pdata->cable_config;
 #endif
@@ -5589,6 +6103,27 @@ himax_gpio_power_config(ts->client, pdata);
 #ifdef HX_SMART_WAKEUP
 	ts->SMWP_enable=0;
 	wake_lock_init(&ts->ts_SMWP_wake_lock, WAKE_LOCK_SUSPEND, HIMAX852xes_NAME);
+
+	tp_gesture_class = class_create(THIS_MODULE, "ctp_class");
+	if (IS_ERR(tp_gesture_class))
+	{
+	    pr_err("Failed to create class(gesture)!\n");
+	    goto exit_fail_create_gesture_class;
+	}
+
+	tp_gesture_dev = device_create(tp_gesture_class, NULL, 0, NULL, "ctp_dev");
+	if (IS_ERR(tp_gesture_dev))
+	{
+	    pr_err("Failed to create device(gesture)!\n");
+	    goto exit_fail_create_gesture_device;
+	}
+
+	if (device_create_file(tp_gesture_dev, &dev_attr_enable) < 0)
+	{
+	    pr_err("Failed to create file(gesture_store)!\n");
+	    goto exit_fail_create_gesture_device_file;
+	}
+
 #endif
 
 #if defined(CONFIG_TOUCHSCREEN_HIMAX_DEBUG)
@@ -5617,10 +6152,25 @@ HW_RESET_ACTIVATE = 0;
 
 return 0;
 
+#ifdef HX_SMART_WAKEUP
+exit_fail_create_gesture_device_file:
+    device_remove_file(tp_gesture_dev, &dev_attr_enable);
+
+exit_fail_create_gesture_device:
+    device_destroy(tp_gesture_class, tp_gesture_dev);
+    tp_gesture_dev = NULL;
+
+exit_fail_create_gesture_class:
+    class_destroy(tp_gesture_class);
+    tp_gesture_class = NULL;
+#endif // Endif HX_SMART_WAKEUP
 err_register_interrupt_failed:
 err_get_intr_bit_failed:
 err_input_register_device_failed:
 	input_free_device(ts->input_dev);
+#ifdef HX_SMART_WAKEUP
+	wake_lock_destroy(&ts->ts_SMWP_wake_lock);
+#endif
 #if defined(CONFIG_TOUCHSCREEN_PROXIMITY)
 	if(pdata->proximity_bytp_enable)
 		wake_lock_destroy(&ts->ts_wake_lock);
@@ -5633,13 +6183,15 @@ err_detect_failed:
 err_create_wq_failed:
 #endif
 err_ic_package_failed:
+	gpio_free(pdata->gpio_irq);//zhangbei add 160122
+	gpio_free(pdata->gpio_reset);//zhangbei add 160122
 #ifndef CONFIG_OF
 err_power_failed:
 #else
 err_dt_platform_data_fail:
 #endif
 	kfree(pdata);
-
+err_power_config_failed: //huafeizhou160715 add
 err_get_platform_data_fail:
 #ifdef CONFIG_OF
 err_alloc_dt_pdata_failed:
@@ -5863,6 +6415,9 @@ static int himax852xes_resume(struct device *dev)
 				return 0;
 			}
 	}
+#endif
+#if defined(HX_USB_DETECT2)
+	himax_cable_detect_func();
 #endif
 #ifdef HX_SMART_WAKEUP
 	if(ts->SMWP_enable)

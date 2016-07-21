@@ -453,13 +453,14 @@ int himax_gpio_power_config(struct i2c_client *client,struct himax_i2c_platform_
 
 	if (pdata->gpio_reset >= 0) {
 		error = gpio_request(pdata->gpio_reset, "himax-reset");
+		printk("%s: request reset pin (error=%d)\n", __func__,error);
 		if (error < 0){
-				E("%s: request reset pin failed\n", __func__);
+				printk("%s: request reset pin failed\n", __func__);
 				return error;
 		}
 		error = gpio_direction_output(pdata->gpio_reset, 0);
 		if (error) {
-			E("unable to set direction for gpio [%d]\n",
+			printk("unable to set direction for gpio [%d]\n",
 				pdata->gpio_reset);
 			return error;
 		}
@@ -467,7 +468,7 @@ int himax_gpio_power_config(struct i2c_client *client,struct himax_i2c_platform_
 	if (pdata->gpio_3v3_en >= 0) {
 		error = gpio_request(pdata->gpio_3v3_en, "himax-3v3_en");
 		if (error < 0) {
-				E("%s: request 3v3_en pin failed\n", __func__);
+				printk("%s: request 3v3_en pin failed\n", __func__);
 				return error;
 			}
 		gpio_direction_output(pdata->gpio_3v3_en, 1);
@@ -476,18 +477,19 @@ int himax_gpio_power_config(struct i2c_client *client,struct himax_i2c_platform_
 	if (gpio_is_valid(pdata->gpio_irq)) {
 	/* configure touchscreen irq gpio */
 	error = gpio_request(pdata->gpio_irq, "himax_gpio_irq");
+	printk("%s: request irq pin (error=%d)\n", __func__,error);
 	if (error) {
-			E("unable to request gpio [%d]\n",pdata->gpio_irq);
+			printk("unable to request gpio [%d]\n",pdata->gpio_irq);
 			return error;
 		}
 		error = gpio_direction_input(pdata->gpio_irq);
 		if (error) {
-			E("unable to set direction for gpio [%d]\n",pdata->gpio_irq);
+			printk("unable to set direction for gpio [%d]\n",pdata->gpio_irq);
 			return error;
 		}
 		client->irq = gpio_to_irq(pdata->gpio_irq);
 	} else {
-		E("irq gpio not provided\n");
+		printk("irq gpio not provided\n");
 		return error;
 	}
 	msleep(20);
@@ -495,7 +497,7 @@ int himax_gpio_power_config(struct i2c_client *client,struct himax_i2c_platform_
 	if (pdata->gpio_reset >= 0) {
 		error = gpio_direction_output(pdata->gpio_reset, 1);
 		if (error) {
-			E("unable to set direction for gpio [%d]\n",
+			printk("unable to set direction for gpio [%d]\n",
 				pdata->gpio_reset);
 			return error;
 		}

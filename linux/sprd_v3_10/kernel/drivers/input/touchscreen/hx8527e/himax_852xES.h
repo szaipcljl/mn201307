@@ -38,6 +38,12 @@
 #include <linux/buffer_head.h>
 #include <linux/wakelock.h>
 #include "himax_platform.h"
+#include <linux/proc_fs.h>  //zhangbei 
+#include <linux/init.h>
+
+static struct proc_dir_entry *himax_touch_proc_dir = NULL;
+#define HIMAX_PROC_TOUCH_FOLDER "android_touch"
+
 
 #if !defined(CONFIG_FB) //huafeizhou150828 mod
 #include <linux/notifier.h>
@@ -96,9 +102,9 @@
 //===========Himax Option function=============
 #define HX_RST_PIN_FUNC
 //#define HX_LOADIN_CONFIG
-#define HX_AUTO_UPDATE_FW
+//#define HX_AUTO_UPDATE_FW
 //#define HX_AUTO_UPDATE_CONFIG		//if enable HX_AUTO_UPDATE_CONFIG, need to disable HX_LOADIN_CONFIG
-//#define HX_SMART_WAKEUP
+#define HX_SMART_WAKEUP
 //#define HX_DOT_VIEW
 //#define HX_PALM_REPORT
 #define HX_ESD_WORKAROUND
@@ -280,6 +286,10 @@ struct himax_ts_data {
 #ifdef HX_USB_DETECT
 	uint8_t usb_connected;
 	uint8_t *cable_config;
+#endif
+
+#ifdef HX_SMART_WAKEUP
+	int gesture_cust_en[16];//zhangbei
 #endif
 };
 
@@ -482,6 +492,54 @@ static u8 		HW_RESET_ACTIVATE 	= 1;
 #endif
 
 #ifdef HX_SMART_WAKEUP
+#define GEST_PTLG_ID_LEN    (4)
+#define GEST_PTLG_HDR_LEN   (4)
+#define GEST_PTLG_HDR_ID1   (0xCC)
+#define GEST_PTLG_HDR_ID2   (0x44)
+#define GEST_PT_MAX_NUM     (128)
+
+	struct ges_cust_en {
+
+		};
+	enum gesture_event_type {
+		EV_GESTURE_01 = 0x01,
+		EV_GESTURE_02,
+		EV_GESTURE_03,
+		EV_GESTURE_04,
+		EV_GESTURE_05,
+		EV_GESTURE_06,
+		EV_GESTURE_07,
+		EV_GESTURE_08,
+		EV_GESTURE_09,
+		EV_GESTURE_10,
+		EV_GESTURE_11,
+		EV_GESTURE_12,
+		EV_GESTURE_13,
+		EV_GESTURE_14,
+		EV_GESTURE_15,
+		EV_GESTURE_PWR = 0x80,
+	};
+
+	#define KEY_CUST_01 70//up
+	#define KEY_CUST_02 87//down
+	#define KEY_CUST_03 67//left
+	#define KEY_CUST_04 68//right
+	#define KEY_CUST_05 63//c
+	#define KEY_CUST_06 66//z
+	#define KEY_CUST_07 61//m
+	#define KEY_CUST_08 59//o
+	#define KEY_CUST_09 64//s
+	#define KEY_CUST_10 65//v
+	#define KEY_CUST_11 60//w
+	#define KEY_CUST_12 62//e
+	#define KEY_CUST_13 263//not support
+	#define KEY_CUST_14 264//not support
+	#define KEY_CUST_15 88//^
+
+	#define HIMAX_PROC_SMWP_FILE "SMWP"
+	static struct proc_dir_entry *himax_proc_SMWP_file = NULL;
+	#define HIMAX_PROC_GESTURE_FILE "GESTURE"
+	static struct proc_dir_entry *himax_proc_GESTURE_file = NULL;
 	static bool FAKE_POWER_KEY_SEND = false;
 #endif
 
