@@ -43,13 +43,13 @@ extern  struct wake_lock ctp_gesture_wake_lock;
 #endif
 #endif
 
-#ifdef TP_PROXIMITY_SENSOR 
+extern u32 SLAVE_I2C_ID_DBBUS;
+extern u32 SLAVE_I2C_ID_DWI2C;
+
+#ifdef TP_PROXIMITY_SENSOR //huafeizhou150814 add
 extern int PROXIMITY_SWITCH;
 extern int PROXIMITY_STATE;
 #endif
-
-extern u32 SLAVE_I2C_ID_DBBUS;
-extern u32 SLAVE_I2C_ID_DWI2C;
 
 #ifdef CONFIG_TP_HAVE_KEY
 extern int g_TpVirtualKey[];
@@ -1764,6 +1764,27 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 
             if ((pPacket[5] != 0x00) && (pPacket[5] != 0xFF)) /* pPacket[5] is key value */
             {   /* 0x00 is key up, 0xff is touch screen up */
+	#ifdef TP_PROXIMITY_SENSOR //huafeizhou150814 add
+		if (PROXIMITY_SWITCH == 1) 
+		{
+			printk("PROXIMITY_SWITCH = %d, pPacket[5]= %x \n",PROXIMITY_SWITCH, pPacket[5]);
+			if(0x80 == pPacket[5])
+			{
+				// ps_state = 0;
+				PROXIMITY_STATE=0;
+				input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
+				input_sync(g_InputDevice);
+				printk("**************tp is near*****************\n");
+			}else if (0x40 == pPacket[5]){
+				// ps_state = 1;
+				PROXIMITY_STATE=1;
+				input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
+				input_sync(g_InputDevice);
+				printk("**************tp is far******************\n");
+			}
+		}
+	#endif
+			
 #ifdef CONFIG_ENABLE_PROXIMITY_DETECTION
 #if defined(CONFIG_TOUCH_DRIVER_RUN_ON_SPRD_PLATFORM) || defined(CONFIG_TOUCH_DRIVER_RUN_ON_QCOM_PLATFORM)
                 DBG(&g_I2cClient->dev, "g_EnableTpProximity = %d, pPacket[5] = 0x%x\n", g_EnableTpProximity, pPacket[5]);
@@ -1906,26 +1927,6 @@ static s32 _DrvFwCtrlSelfParsePacket(u8 *pPacket, u16 nLength, SelfTouchInfo_t *
 
 #endif //CONFIG_ENABLE_REPORT_KEY_WITH_COORDINATE
 #endif //CONFIG_TOUCH_DRIVER_RUN_ON_MTK_PLATFORM
-
-#ifdef TP_PROXIMITY_SENSOR 
-	            printk("proximity_flag~~ = %d, pPacket[5]= %x \n",PROXIMITY_SWITCH, pPacket[5]);
-		    if (PROXIMITY_SWITCH == 1) {
-			if(0x80 == pPacket[5]){
-			   // ps_state = 0;
-				PROXIMITY_STATE=0;
-			    input_report_abs(g_InputDevice, ABS_DISTANCE, 0);
-			    input_sync(g_InputDevice);
-			    printk("**************pPacket[5]= %x  tp is near*****************\n", pPacket[5]);
-			}else if (0x40 == pPacket[5]){
-			   // ps_state = 1;
-				PROXIMITY_STATE=1;
-			    input_report_abs(g_InputDevice, ABS_DISTANCE, 1);
-			    input_sync(g_InputDevice);
-	                    printk("**************pPacket[5]= %x  tp is far******************\n", pPacket[5]);
-			}
-		    }
-#endif
-
             }
             else
             {   /* key up or touch up */
