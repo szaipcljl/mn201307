@@ -41,6 +41,9 @@
 #include <soc/sprd/usb.h>
 #include "sprd_battery.h"
 
+#ifdef CONFIG_TOUCHSCREEN_MSG2XXX_V3_10
+#include "../input/touchscreen/msg2xxx_v3_10/mstar_drv_fw_control.h"//zhangbei add 150510  TP-MSG5846
+#endif
 
 #define SPRDBAT__DEBUG
 #ifdef SPRDBAT__DEBUG
@@ -954,6 +957,10 @@ static void sprdbat_change_module_state(uint32_t event)
 static int plugin_callback(int usb_cable, void *data)
 {
 	SPRDBAT_DEBUG("charger plug in interrupt happen\n");
+	
+#ifdef CONFIG_TOUCHSCREEN_MSG2XXX_V3_10
+	DrvFwCtrlChargerDetection(1); //zhangbei add 150510  TP-MSG5846 charger plug-in
+#endif
 
 	mutex_lock(&sprdbat_data->lock);
 #ifndef SPRDBAT_TWO_CHARGE_CHANNEL
@@ -1004,6 +1011,10 @@ static int plugout_callback(int usb_cable, void *data)
 	uint32_t adp_type = sprdbat_data->bat_info.adp_type;
 
 	SPRDBAT_DEBUG("charger plug out interrupt happen\n");
+
+#ifdef CONFIG_TOUCHSCREEN_MSG2XXX_V3_10
+	DrvFwCtrlChargerDetection(0); //zhangbei add 150510  TP-MSG5846 charger plug-out
+#endif
 
 	mutex_lock(&sprdbat_data->lock);
 
