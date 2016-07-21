@@ -924,16 +924,32 @@ static void fts_resume_work(struct work_struct *work)
 * Output: None
 * Return: None
 *******************************************************************************/
-static void fts_hw_init(struct fts_ts_data *fts)
+static int fts_hw_init(struct fts_ts_data *fts)
 {
 	struct regulator *reg_vdd;
 	struct i2c_client *client = fts->client;
 	struct fts_platform_data *pdata = fts->platform_data;
+	int retval = 0;//160719 add
 
 	pr_info("[FST] %s [irq=%d];[rst=%d]\n",__func__,
 		pdata->irq_gpio_number,pdata->reset_gpio_number);
-	gpio_request(pdata->irq_gpio_number, "ts_irq_pin");
-	gpio_request(pdata->reset_gpio_number, "ts_rst_pin");
+	retval=gpio_request(pdata->irq_gpio_number, "ts_irq_pin");
+	//160719 add-s
+	if(retval < 0)
+	{
+	  printk("***fts_hw_init(ts_irq_pin request failed!!)\n");
+	  return retval;
+	}
+	//160718 add-e
+
+	retval=gpio_request(pdata->reset_gpio_number, "ts_rst_pin");
+	//160719 add-s
+	if(retval < 0)
+	{
+	  printk("***fts_hw_init(ts_rst_pin request failed!!)\n");
+          return retval;
+	}
+	//160719 add-e
 	gpio_direction_output(pdata->reset_gpio_number, 1);
 	gpio_direction_input(pdata->irq_gpio_number);
 
@@ -944,6 +960,8 @@ static void fts_hw_init(struct fts_ts_data *fts)
 	}
 	msleep(100);
 	fts_reset();
+
+	return 0;//160719 add
 }
 
 #ifdef CONFIG_OF
@@ -1057,12 +1075,19 @@ static int fts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	fts->platform_data = pdata;
 	fts_i2c_client = client;
 	fts->client = client;
-	fts_hw_init(fts);
+	err=fts_hw_init(fts);
+	//160719 add-s
+	if(err < 0)
+	{
+	  return err;
+	}
+	//160719 add-e
+
 	i2c_set_clientdata(client, fts);
 	client->irq = gpio_to_irq(pdata->irq_gpio_number);
 
 	#if(defined(CONFIG_I2C_SPRD) ||defined(CONFIG_I2C_SPRD_V1))
-	sprd_i2c_ctl_chg_clk(client->adapter->nr, 400000);
+	sprd_i2c_ctl_chg_clk(client->adapter->nr, 100000);//400000-->10000 //160719 mod
 	#endif
 
 	err = fts_read_reg(fts_i2c_client, FTS_REG_CIPHER, &uc_reg_value);
