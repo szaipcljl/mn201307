@@ -588,10 +588,16 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
     s32 nRetVal = 0;
 
     DBG(&g_I2cClient->dev, "*** %s() ***\n", __func__);
-  
-    DrvPlatformLyrVariableInitialize(); 
+    //huafeizhou160715 add-s
+    nRetVal=DrvPlatformLyrTouchDeviceRequestGPIO(pClient);
+    if(nRetVal < 0)
+    {
+	printk("***%s,mstar gpio request failed!!\n",__func__);
+	return nRetVal;
+    }
+    //huafeizhou160715 add-e
 
-    DrvPlatformLyrTouchDeviceRequestGPIO(pClient);
+    DrvPlatformLyrVariableInitialize(); 
 
 #ifdef CONFIG_ENABLE_REGULATOR_POWER_ON
     DrvPlatformLyrTouchDeviceRegulatorPowerOn(true);
