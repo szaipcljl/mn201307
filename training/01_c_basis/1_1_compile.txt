@@ -1,0 +1,23 @@
+compilation process(编译过程)：
+
+编译命令:
+gcc xxx.c            => 生成 a.out
+gcc code.c -o code.o => 生成 code.o
+
+编译过程:
+1、预处理：
+	gcc -E 1.c -o 1.i
+
+	特点：打开头文件，进行宏替换，不检查语法错误
+
+2、编译：
+	gcc -S 1.i -o 1.s
+
+	特点：生成汇编文件，检查语法错误
+
+3、汇编：
+	gcc -c  1.s -o 1.o
+
+4、链接：
+	gcc 1.o
+
