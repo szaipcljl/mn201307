@@ -73,7 +73,7 @@ static unsigned int write_fm_reg(u32 reg_addr, u32 val)
 
 static void fm_register_set(void)
 {  
-	write_fm_reg(FM_REG_FM_CTRL	,		0x00001011);
+	write_fm_reg(FM_REG_FM_CTRL	,		0x00041011);
 	write_fm_reg(FM_REG_FM_EN	,		0x000032EE);
 	write_fm_reg(FM_REG_CHAN	,		(899-1)*2);
 	write_fm_reg(FM_REG_AGC_TBL_CLK,		0x00000000);
@@ -106,7 +106,7 @@ static void fm_register_set(void)
 	write_fm_reg(FM_REG_DEPHA_SCAL	,	5);
 	write_fm_reg(FM_REG_HW_MUTE	,		0);
 	write_fm_reg(FM_REG_SW_MUTE	,		0x01A601A1);
-	write_fm_reg(FM_REG_UPD_CTRL	,	0x01013356);
+	write_fm_reg(FM_REG_UPD_CTRL	,	0x0D013356);
 	write_fm_reg(FM_REG_AUD_BLD0	,	0x01AD01A1);
 	write_fm_reg(FM_REG_AUD_BLD1	,	0x81A901A5);
 	write_fm_reg(FM_REG_AGC_HYS	,		0x00000202);
