@@ -1,0 +1,38 @@
+数据库
+
+
+======
+sqlite
+
+显示当前打开的文件路径
+sqlite> .database
+显表格式
+sqlite> .schema
+
+
+显示所有表名称
+sqlite> .table
+打印表数据
+sqlite> select * from stu
+
+删除一个表
+sqlite> drop table stu;
+
+复制一个表
+sqlite> create table stu as select id,name,english from new_stu;
+添加一个数据项名称
+sqlite> alter table new_stu add english real null default 60;
+删除一个数据
+sqlite> delete from stu where name='xiaoming';
+更新一条数据
+sqlite> update stu set score=100 where name='wang';
+查找一条数据
+sqlite> select * from stu where name='xiaoming';
+
+插入一条数据
+sqlite> insert into stu(id,name,score) values(10000,'xiaoming',90);
+
+
+sqlite> alter table stu rename to ss;
+
+
