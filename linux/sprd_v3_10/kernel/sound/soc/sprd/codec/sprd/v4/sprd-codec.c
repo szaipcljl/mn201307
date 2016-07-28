@@ -1980,7 +1980,7 @@ static int sprd_inter_headphone_pa(struct snd_soc_codec *codec, int on)
 		sprd_codec_ldocg_ldocg_ramp_en(codec, 1);
 
 		/* Head_L_INT pull up power down */
-		sprd_codec_head_l_int_pu_pd(codec, 1);
+		//sprd_codec_head_l_int_pu_pd(codec, 1);
 		/* DANGL/R EN */
 		if (AUDIO_2723_VER_AA == sci_get_ana_chip_ver()) {
 			sprd_codec_hp_cg_dangl_en(codec, 1);

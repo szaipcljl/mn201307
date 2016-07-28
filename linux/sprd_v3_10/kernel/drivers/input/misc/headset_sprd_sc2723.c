@@ -95,6 +95,7 @@ do{ printk(KERN_ERR "[SPRD_HEADSET_ERR][%d] func: %s  line: %04d  info: " format
 #define HEADMIC_DETECT_GLB_REG(X) (ANA_REGS_GLB_BASE + (X))
 #define HDT_EN (BIT(5))
 #define AUD_EN (BIT(4))
+#define EIC_EN (BIT(3))
 
 //no use
 #define HEADMIC_BUTTON_BASE (ANA_HDT_INT_BASE)
@@ -108,9 +109,11 @@ do{ printk(KERN_ERR "[SPRD_HEADSET_ERR][%d] func: %s  line: %04d  info: " format
 #define ANA_PMU0 (0x0000)
 #define ANA_CDC1 (0x0020)
 #define ANA_HDT0 (0x0068)
+#define ANA_HDT1 (0x006c)
 #define ANA_STS0 (0x0074)
 
 #define AUDIO_HEADMIC_SLEEP_EN (BIT(6))
+#define AUDIO_PLGPD_EN (BIT(4))
 
 #define AUDIO_ADPGAR_BYP_SHIFT (10)
 #define AUDIO_ADPGAR_BYP_MASK (0x3 << AUDIO_ADPGAR_BYP_SHIFT)
@@ -144,12 +147,13 @@ do{ printk(KERN_ERR "[SPRD_HEADSET_ERR][%d] func: %s  line: %04d  info: " format
 #define AUDIO_HEAD2ADC_SEL_MASK (0xF << AUDIO_HEAD2ADC_SEL_SHIFT)
 #define AUDIO_HEAD2ADC_SEL_DISABLE (0)
 #define AUDIO_HEAD2ADC_SEL_HEADMIC_IN (1)
-#define AUDIO_HEAD2ADC_SEL_HEADSET_L_INT (3)
-#define AUDIO_HEAD2ADC_SEL_HEAD_DRO_L (4)
+#define AUDIO_HEAD2ADC_SEL_HEADSET_L_INT (4)
+#define AUDIO_HEAD2ADC_SEL_HEAD_DRO_L (3)
 
 #define AUDIO_HEAD_BUTTON (BIT(11))
 #define AUDIO_HEAD_INSERT (BIT(10))
 #define AUDIO_HEAD_INSERT_2 (BIT(9))
+#define AUDIO_HEAD_L_INT_PU_PD (BIT(14))
 
 #define AUDIO_PMUR1 (BIT(0))
 #define ANA_PMU1 (0x0004)
@@ -199,12 +203,19 @@ typedef enum sprd_headset_type {
         HEADSET_NO_MIC,
         HEADSET_4POLE_NOT_NORMAL,
         HEADSET_APPLE,
+        HEADSET_CAMERA_POLE,
         HEADSET_TYPE_ERR = -1,
 } SPRD_HEADSET_TYPE;
 
 static struct delayed_work reg_dump_work;
 static struct workqueue_struct *reg_dump_work_queue;
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+static struct delayed_work camera_pole_work;
+static struct workqueue_struct *camera_pole_work_queue;
+static int headset_ctl = 0;
+#define CAMERA_POLE_CODE KEY_CAMERA
+#endif
 #ifdef ADPGAR_BYP_SELECT
 static struct delayed_work adpgar_byp_select_work;
 static struct workqueue_struct *adpgar_byp_select_work_queue;
@@ -413,7 +424,7 @@ static void headset_detect_circuit(unsigned on)
 static void headset_detect_clk_en(void)
 {
         //address:0x4003_8800+0x00
-        headset_reg_set_bit(HEADMIC_DETECT_GLB_REG(0x00), (HDT_EN | AUD_EN));
+        headset_reg_set_bit(HEADMIC_DETECT_GLB_REG(0x00), (HDT_EN | AUD_EN | EIC_EN));
         //address:0x4003_8800+0x04
         headset_reg_set_bit(HEADMIC_DETECT_GLB_REG(0x04), (CLK_AUD_HID_EN | CLK_AUD_HBD_EN));
 }
@@ -425,6 +436,16 @@ static void headset_detect_init(void)
         headset_reg_set_bit(HEADMIC_DETECT_REG(ANA_PMU1), AUDIO_PMUR1);
         headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), AUDIO_HEAD_SDET_2P5, AUDIO_HEAD_SDET_MASK, AUDIO_HEAD_SDET_SHIFT);
         headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), AUDIO_HEAD_INS_VREF_2P1, AUDIO_HEAD_INS_VREF_MASK, AUDIO_HEAD_INS_VREF_SHIFT);
+ 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+        if (1 == headset_ctl) {
+            headset_reg_clr_bit(HEADMIC_DETECT_REG(ANA_PMU0), AUDIO_PLGPD_EN);
+        } else {
+#endif
+        headset_reg_set_bit(HEADMIC_DETECT_REG(ANA_PMU0), AUDIO_PLGPD_EN);//Added by peng.lee for headset plug in/out dpop.
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+		}
+#endif
 }
 
 static void headmic_sleep_disable(struct device *dev, int on);
@@ -463,11 +484,23 @@ static void headset_button_irq_threshold(int enable)
         int audio_head_sbut = 0;
 
         audio_head_sbut = pdata->irq_threshold_buttont;
-
+        
+        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+        if(enable) {
+                if(HEADSET_CAMERA_POLE == ht->raw_type)
+                        headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), 11, AUDIO_HEAD_SBUT_MASK, AUDIO_HEAD_SBUT_SHIFT);
+                else
+                        headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), audio_head_sbut, AUDIO_HEAD_SBUT_MASK, AUDIO_HEAD_SBUT_SHIFT);
+        }
+        else
+                headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), 0xF, AUDIO_HEAD_SBUT_MASK, AUDIO_HEAD_SBUT_SHIFT);
+        #else
+        
         if (enable)
                 headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), audio_head_sbut, AUDIO_HEAD_SBUT_MASK, AUDIO_HEAD_SBUT_SHIFT);
         else
                 headset_reg_set_val(HEADMIC_DETECT_REG(ANA_HDT0), 0xF, AUDIO_HEAD_SBUT_MASK, AUDIO_HEAD_SBUT_SHIFT);
+        #endif
 }
 
 static void headset_irq_button_enable(int enable, unsigned int irq)
@@ -739,7 +772,18 @@ static int headset_button_valid(int gpio_detect_value_current)
         struct sprd_headset_platform_data *pdata = ht->platform_data;
         int button_is_valid = 0;
 
+        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+        int irq_trigger_level;
+        if(1 == headset_ctl) {
+                irq_trigger_level = pdata->irq_trigger_level_detect_mic;
+        } else {
+                irq_trigger_level = pdata->irq_trigger_level_detect;
+        }
+				
+        if(1 == irq_trigger_level) {
+        #else
         if(1 == pdata->irq_trigger_level_detect) {
+		#endif
                 if(1 == gpio_detect_value_current)
                         button_is_valid = 1;
                 else
@@ -775,7 +819,7 @@ static int headset_gpio_2_button_state(int gpio_button_value_current)
         return button_state_current; //0==released, 1==pressed
 }
 
-static int headset_plug_confirm_by_adc(int last_gpio_detect_value)
+static int headset_plug_confirm_by_adc(int gpio_detect, int last_gpio_detect_value)
 {
         struct sprd_headset *ht = &headset;
         struct sprd_headset_platform_data *pdata = ht->platform_data;
@@ -784,7 +828,7 @@ static int headset_plug_confirm_by_adc(int last_gpio_detect_value)
         int count = 0;
         int adc_read_interval = 10;
 
-        adc_last = adc_get_average(pdata->gpio_detect, last_gpio_detect_value);
+        adc_last = adc_get_average(gpio_detect, last_gpio_detect_value);
         if(-1 == adc_last) {
                 PRINT_INFO("headset_plug_confirm_by_adc failed!!!\n");
                 return -1;
@@ -792,7 +836,7 @@ static int headset_plug_confirm_by_adc(int last_gpio_detect_value)
 
         while(count < PLUG_CONFIRM_COUNT) {
                 msleep(adc_read_interval);
-                adc_current = adc_get_average(pdata->gpio_detect, last_gpio_detect_value);
+                adc_current = adc_get_average(gpio_detect, last_gpio_detect_value);
                 if(-1 == adc_current) {
                         PRINT_INFO("headset_plug_confirm_by_adc failed!!!\n");
                         return -1;
@@ -809,7 +853,7 @@ static int headset_plug_confirm_by_adc(int last_gpio_detect_value)
 }
 static int adc_get_ideal(u32 adc_mic);
 
-static SPRD_HEADSET_TYPE headset_type_detect(int last_gpio_detect_value)
+static SPRD_HEADSET_TYPE headset_type_detect(int gpio_detect, int last_gpio_detect_value)
 {
         struct sprd_headset *ht = &headset;
         struct sprd_headset_platform_data *pdata = ht->platform_data;
@@ -836,7 +880,7 @@ no_mic_retry:
                 PRINT_INFO("HEADSET_DETECT_GPIO=%d, matched the reference phone, now getting adc value of left\n", pdata->gpio_detect);
                 set_adc_to_headmic(0);
                 msleep(100);
-                adc_left_average = headset_plug_confirm_by_adc(last_gpio_detect_value);
+                adc_left_average = headset_plug_confirm_by_adc(gpio_detect, last_gpio_detect_value);
                 if(-1 == adc_left_average)
                         return HEADSET_TYPE_ERR;
         } else {
@@ -848,7 +892,7 @@ no_mic_retry:
         //get adc value of mic
         set_adc_to_headmic(1);
         msleep(50);
-        adc_mic_average = headset_plug_confirm_by_adc(last_gpio_detect_value);
+        adc_mic_average = headset_plug_confirm_by_adc(gpio_detect, last_gpio_detect_value);
         if(-1 == adc_mic_average)
                 return HEADSET_TYPE_ERR;
         adc_mic_ideal = adc_get_ideal(adc_mic_average);
@@ -859,7 +903,7 @@ no_mic_retry:
         PRINT_INFO("adc_mic_average = %d\n", adc_mic_average);
         PRINT_INFO("adc_left_average = %d\n", adc_left_average);
 
-        if((gpio_get_value(pdata->gpio_detect)) != last_gpio_detect_value) {
+        if((gpio_get_value(gpio_detect)) != last_gpio_detect_value) {
                 PRINT_INFO("software debance (gpio check)!!!(headset_type_detect)\n");
                 return HEADSET_TYPE_ERR;
         }
@@ -878,13 +922,22 @@ no_mic_retry:
                 return HEADSET_NO_MIC;
         } else if((adc_left_average < ADC_GND) && (adc_mic_average > ADC_GND))
                 return HEADSET_4POLE_NORMAL;
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+        else if((adc_left_average > ADC_GND) && (adc_mic_average > ADC_GND)) {
+                if (ABS(adc_mic_average - adc_left_average) < ADC_GND  && adc_left_average < 2300)
+                        return HEADSET_4POLE_NOT_NORMAL;
+                else
+                        return HEADSET_CAMERA_POLE;
+        }
+#else
         else if((adc_left_average > ADC_GND) && (adc_mic_average > ADC_GND)
                 && (ABS(adc_mic_average - adc_left_average) < ADC_GND))
                 return HEADSET_4POLE_NOT_NORMAL;
-        else
+#endif
+        else {
                 return HEADSET_TYPE_ERR;
+        }
 
-        return HEADSET_TYPE_ERR;
 }
 
 static void button_release_verify(void)
@@ -954,7 +1007,11 @@ static void headset_button_work_func(struct work_struct *work)
                                 current_key_code = KEY_RESERVED;
                         }
                 }
-
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                if(HEADSET_CAMERA_POLE == ht->raw_type) {
+                        current_key_code = CAMERA_POLE_CODE;
+                }
+                #endif
                 if(0 == button_state_last) {
                         input_event(ht->input_dev, EV_KEY, current_key_code, 1);
                         input_sync(ht->input_dev);
@@ -1023,7 +1080,15 @@ static void headset_detect_work_func(struct work_struct *work)
         }
 
         if(0 == plug_state_last) {
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                if(1 == headset_ctl) {
+                gpio_detect_value_current = gpio_get_value(pdata->gpio_detect_mic);
+				} else {
+                #endif		
                 gpio_detect_value_current = gpio_get_value(pdata->gpio_detect);
+				#ifdef CONFIG_CAMERA_POLE_SUPPORT
+				}
+				#endif
                 PRINT_INFO("gpio_detect_value_current = %d, gpio_detect_value_last = %d, plug_state_last = %d\n",
                            gpio_detect_value_current, gpio_detect_value_last, plug_state_last);
 
@@ -1031,8 +1096,18 @@ static void headset_detect_work_func(struct work_struct *work)
                         PRINT_INFO("software debance (step 1)!!!(headset_detect_work_func)\n");
                         goto out;
                 }
-
+				#ifdef CONFIG_CAMERA_POLE_SUPPORT
+                int irq_trigger_level;
+				if(1 == headset_ctl) {
+                        irq_trigger_level = pdata->irq_trigger_level_detect_mic;
+				} else {
+                        irq_trigger_level = pdata->irq_trigger_level_detect;
+				}
+				
+                if(1 == irq_trigger_level) {
+				#else
                 if(1 == pdata->irq_trigger_level_detect) {
+				#endif
                         if(1 == gpio_detect_value_current)
                                 plug_state_current = 1;
                         else
@@ -1047,7 +1122,21 @@ static void headset_detect_work_func(struct work_struct *work)
                 plug_state_current = 0;//no debounce for plug out!!!
 
         if(1 == plug_state_current && 0 == plug_state_last) {
-                headset_type = headset_type_detect(gpio_detect_value_last);
+                headset_reg_set_bit(HEADMIC_DETECT_REG(ANA_HDT1), AUDIO_HEAD_L_INT_PU_PD);
+				
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                if(1 == headset_ctl) {
+				
+                        headset_type = headset_type_detect(pdata->gpio_detect_mic, gpio_detect_value_last);
+				} else {
+                #endif	
+                        headset_type = headset_type_detect(pdata->gpio_detect, gpio_detect_value_last);
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+				}
+				
+				ht->raw_type = headset_type;
+				#endif
+				
                 headset_adc_en(0);
                 switch (headset_type) {
                 case HEADSET_TYPE_ERR:
@@ -1073,6 +1162,11 @@ static void headset_detect_work_func(struct work_struct *work)
                         PRINT_INFO("headset_type = %d (HEADSET_APPLE)\n", headset_type);
                         PRINT_INFO("we have not yet implemented this in the code\n");
                         break;
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+                case HEADSET_CAMERA_POLE:
+                        PRINT_INFO("headset_type = %d (HEADSET_CAMERA_POLE)\n", headset_type);
+                        break;
+#endif
                 default:
                         PRINT_INFO("headset_type = %d (HEADSET_UNKNOWN)\n", headset_type);
                         break;
@@ -1110,9 +1204,15 @@ static void headset_detect_work_func(struct work_struct *work)
                                 headset_irq_button_enable(1, ht->irq_button);
                         }
 
+                        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                        if(HEADSET_CAMERA_POLE != ht->raw_type) {
+                        #endif
                         ht->type = BIT_HEADSET_MIC;
                         //hp_notifier_call_chain(ht->type);
                         switch_set_state(&ht->sdev, ht->type);
+                        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                        }
+                        #endif
                         PRINT_INFO("headset plug in (headset_detect_work_func)\n");
 #ifdef ADPGAR_BYP_SELECT
                         queue_delayed_work(adpgar_byp_select_work_queue, &adpgar_byp_select_work, msecs_to_jiffies(500));
@@ -1128,8 +1228,22 @@ static void headset_detect_work_func(struct work_struct *work)
                         headset_irq_set_irq_type(ht->irq_detect, IRQF_TRIGGER_LOW);
                 else
                         headset_irq_set_irq_type(ht->irq_detect, IRQF_TRIGGER_HIGH);
+						
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT		
+                if(1 == pdata->irq_trigger_level_detect_mic)
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_LOW);
+                else
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_HIGH);
+						
+                if(1 != headset_ctl) {
+                #endif
 
                 headset_irq_detect_enable(1, ht->irq_detect);
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                } else {
+                        headset_irq_detect_mic_enable(1, ht->irq_detect_mic);
+                }
+                #endif
 #endif
         } else if(0 == plug_state_current && 1 == plug_state_last) {
 
@@ -1141,9 +1255,15 @@ static void headset_detect_work_func(struct work_struct *work)
                 } else {
                         PRINT_INFO("headset plug out (headset_detect_work_func)\n");
                 }
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                if(HEADSET_CAMERA_POLE != ht->raw_type) {
+                #endif
                 ht->type = BIT_HEADSET_OUT;
                 //hp_notifier_call_chain(ht->type);
                 switch_set_state(&ht->sdev, ht->type);
+                #ifdef CONFIG_CAMERA_POLE_SUPPORT
+                }
+                #endif
                 plug_state_last = 0;
 #ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
 				headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
@@ -1153,7 +1273,28 @@ static void headset_detect_work_func(struct work_struct *work)
                 else
                         headset_irq_set_irq_type(ht->irq_detect, IRQF_TRIGGER_LOW);
 #endif
+                headset_reg_clr_bit(HEADMIC_DETECT_REG(ANA_HDT1), AUDIO_HEAD_L_INT_PU_PD);
+
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+                if(1 == pdata->irq_trigger_level_detect_mic)
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_HIGH);
+                else
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_LOW);
+						
+				if(1 == headset_ctl) {
+				
+						
+				headset_irq_detect_mic_enable(1, ht->irq_detect_mic);
+
+				} else {
+				headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
+				#endif
+				
+				
                 headset_irq_detect_enable(1, ht->irq_detect);
+				#ifdef CONFIG_CAMERA_POLE_SUPPORT
+				}
+				#endif
         } else {
                 PRINT_INFO("irq_detect must be enabled anyway!!!\n");
                 goto out;
@@ -1167,11 +1308,15 @@ out:
 				headset_irq_detect_enable(1, ht->irq_detect);
 			}
 #endif
+			#ifdef CONFIG_CAMERA_POLE_SUPPORT
+			if(0 == headset_ctl)
+			#endif
 			headmicbias_power_on(&this_pdev->dev, 0);
 		//	headset_detect_clk_en();
 		//	if (sprd_hts_power.head_mic) {
 		//		regulator_set_mode(sprd_hts_power.head_mic, REGULATOR_MODE_NORMAL);
 		//	}
+			headset_reg_clr_bit(HEADMIC_DETECT_REG(ANA_HDT1), AUDIO_HEAD_L_INT_PU_PD);
 		}
 #ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
 		if (1 == plug_state_last) {
@@ -1179,6 +1324,11 @@ out:
 			headset_irq_detect_enable(0, ht->irq_detect);
 		}
 #else
+		#ifdef CONFIG_CAMERA_POLE_SUPPORT
+		if(1 == headset_ctl) {
+		headset_irq_detect_mic_enable(1, ht->irq_detect_mic);
+		} else 
+		#endif
         headset_irq_detect_enable(1, ht->irq_detect);
 #endif
         //wake_unlock(&headset_detect_wakelock);
@@ -1191,8 +1341,7 @@ static void adpgar_byp_select_func(struct work_struct *work)
 {
 	if ((0x2723 == (sci_get_ana_chip_id() >> 16))
 			&& (SC2723ES == sci_get_ana_chip_ver()
-				|| SC2723TS == sci_get_ana_chip_ver()
-				|| SC2723MBB == sci_get_ana_chip_ver())) {
+				|| SC2723TS == sci_get_ana_chip_ver())) {
 		return;
 	}
 
@@ -1230,7 +1379,7 @@ static void reg_dump_func(struct work_struct *work)
 
         gpio_detect = gpio_get_value(headset.platform_data->gpio_detect);
         gpio_button = gpio_get_value(headset.platform_data->gpio_button);
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		gpio_detect_mic = gpio_get_value(headset.platform_data->gpio_detect_mic);
 #endif
 
@@ -1279,6 +1428,52 @@ static void reg_dump_func(struct work_struct *work)
         return;
 }
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+/* 
+*/
+static void camera_pole_func(struct work_struct *work)
+{
+        struct sprd_headset *ht = &headset;
+        struct sprd_headset_platform_data *pdata = ht->platform_data;
+
+        down(&headset_sem);
+        
+        if(1 == headset_ctl) {
+				headmicbias_power_on(&this_pdev->dev, 1);
+                msleep(5);
+                headset_detect_circuit(1);
+                msleep(5);
+                if(1 == pdata->irq_trigger_level_detect_mic)
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_HIGH);
+                else
+                        headset_irq_set_irq_type(ht->irq_detect_mic, IRQF_TRIGGER_LOW);
+						
+                headset_reg_clr_bit(HEADMIC_DETECT_REG(ANA_PMU0), AUDIO_PLGPD_EN);
+				if (0 == plug_state_last ||
+				   (1 == plug_state_last && HEADSET_CAMERA_POLE == ht->raw_type)) {
+						headset_irq_detect_mic_enable(1, ht->irq_detect_mic);
+				}
+                PRINT_INFO("enable headmic_in insert detect\n");
+        }
+        else
+        {
+                headset_reg_set_bit(HEADMIC_DETECT_REG(ANA_PMU0), AUDIO_PLGPD_EN);
+                if((HEADSET_CAMERA_POLE == ht->raw_type) || (0 == plug_state_last)) {
+                        headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
+						headmicbias_power_on(&this_pdev->dev, 0);
+                        msleep(5);
+                        headset_detect_circuit(1);
+                        msleep(5);
+                        PRINT_INFO("disable headmic_in insert detect\n");
+                }
+
+                headset_irq_detect_enable(1, ht->irq_detect);
+        }
+
+        up(&headset_sem);
+}
+#endif
+
 /**
  * some phone boards, when no headset plugin, the button headset_button_valid()
  * will always return 0, so we need to disable headset_button irq in here
@@ -1299,6 +1494,9 @@ static irqreturn_t headset_button_irq_handler(int irq, void *dev)
         int button_state_current = 0;
         int gpio_button_value_current = 0;
 
+        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+        if(HEADSET_CAMERA_POLE != ht->raw_type)
+        #endif
         if(0 == headset_button_valid(gpio_get_value(ht->platform_data->gpio_detect))) {
                 PRINT_INFO("headset_button_irq_handler: button is invalid!!! IRQ_%d(GPIO_%d) = %d, ANA_STS0 = 0x%08X\n",
                            ht->irq_button, ht->platform_data->gpio_button, gpio_button_value_last,
@@ -1340,7 +1538,7 @@ static irqreturn_t headset_detect_irq_handler(int irq, void *dev)
 	PRINT_INFO("headset_detect_irq_handler in \n");
 	headset_irq_button_enable(0, ht->irq_button);
 	headset_irq_detect_enable(0, ht->irq_detect);
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 	headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
 #endif
 	wake_lock_timeout(&headset_detect_wakelock, msecs_to_jiffies(2000));
@@ -1357,11 +1555,16 @@ static irqreturn_t headset_detect_mic_irq_handler(int irq, void *dev)
 {
 	struct sprd_headset *ht = dev;
 	PRINT_INFO("headset_detect_mic_irq_handler in \n");
+	#ifndef CONFIG_CAMERA_POLE_SUPPORT
 	if (plug_state_last != 1) {
 		headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
 		PRINT_INFO("headset_detect_mic_irq_handler out0 \n");
 		return IRQ_HANDLED;
 	}
+	#else
+	headset_irq_button_enable(0, ht->irq_button);
+	gpio_detect_value_last = gpio_get_value(ht->platform_data->gpio_detect_mic);
+	#endif
 	headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
 	headset_irq_detect_enable(0, ht->irq_detect);
 	wake_lock_timeout(&headset_detect_wakelock, msecs_to_jiffies(2000));
@@ -1393,6 +1596,29 @@ static struct kobject *headset_debug_kobj = NULL;
 static struct kobj_attribute headset_debug_attr =
         __ATTR(debug_level, 0644, headset_debug_level_show, headset_debug_level_store);
 
+
+#ifdef CONFIG_CAMERA_POLE_SUPPORT 
+static ssize_t headset_ctl_show(struct kobject *kobj, struct kobj_attribute *attr, char *buff)
+{
+        PRINT_INFO("headset_ctl = %d\n", headset_ctl);
+        return sprintf(buff, "%d\n", headset_ctl);
+}
+
+static ssize_t headset_ctl_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buff, size_t len)
+{
+        unsigned long ctl = simple_strtoul(buff, NULL, 10);
+	if (headset_ctl == ctl)
+		return len;
+        headset_ctl = ctl;
+        PRINT_INFO("headset_ctl = %d\n", headset_ctl);
+        queue_delayed_work(camera_pole_work_queue, &camera_pole_work, msecs_to_jiffies(100));
+        return len;
+}
+
+static struct kobj_attribute headset_ctl_attr =
+        __ATTR(headset_ctl, 0666, headset_ctl_show, headset_ctl_store);
+#endif
+
 static int headset_debug_sysfs_init(void)
 {
         int ret = -1;
@@ -1409,6 +1635,14 @@ static int headset_debug_sysfs_init(void)
                 PRINT_ERR("create sysfs failed. ret = %d\n", ret);
                 return ret;
         }
+
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+        ret = sysfs_create_file(headset_debug_kobj, &headset_ctl_attr.attr);
+        if (ret) {
+                PRINT_ERR("create sysfs failed 2. ret = %d\n", ret);
+                return ret;
+        }
+#endif
 
         PRINT_INFO("headset_debug_sysfs_init success\n");
         return ret;
@@ -1438,7 +1672,7 @@ static struct sprd_headset_platform_data *headset_detect_parse_dt(struct device 
                 dev_err(dev, "fail to get gpio_detect\n");
                 goto fail;
         }
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		ret = of_property_read_u32(np, "gpio_detect_mic", &pdata->gpio_detect_mic);
 		if (ret) {
 			dev_err(dev, "fail to get gpio_detect_mic\n");
@@ -1455,7 +1689,7 @@ static struct sprd_headset_platform_data *headset_detect_parse_dt(struct device 
                 dev_err(dev, "fail to get irq_trigger_level_detect\n");
                 goto fail;
         }
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		ret = of_property_read_u32(np, "irq_trigger_level_detect_mic", &pdata->irq_trigger_level_detect_mic);
 		if (ret) {
 			dev_err(dev, "fail to get irq_trigger_level_detect_mic\n");
@@ -1625,7 +1859,7 @@ static int headset_detect_probe(struct platform_device *pdev)
                 PRINT_ERR("failed to request GPIO_%d(headset_detect)\n", pdata->gpio_detect);
                 goto failed_to_request_gpio_detect;
         }
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		ret = gpio_request(pdata->gpio_detect_mic, "headset_detect_mic");
 		if (ret < 0) {
 			PRINT_ERR("failed to request GPIO_%d(headset_detect_mic)\n", pdata->gpio_detect_mic);
@@ -1641,13 +1875,13 @@ static int headset_detect_probe(struct platform_device *pdev)
         if(0 != pdata->gpio_switch)
                 gpio_direction_output(pdata->gpio_switch, 0);
         gpio_direction_input(pdata->gpio_detect);
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		gpio_direction_input(pdata->gpio_detect_mic);
 #endif
         gpio_direction_input(pdata->gpio_button);
         ht->irq_detect = gpio_to_irq(pdata->gpio_detect);
         ht->irq_button = gpio_to_irq(pdata->gpio_button);
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		ht->irq_detect_mic = gpio_to_irq(pdata->gpio_detect_mic);
 #endif
         ret = switch_dev_register(&ht->sdev);
@@ -1672,6 +1906,9 @@ static int headset_detect_probe(struct platform_device *pdev)
                 unsigned int type = buttons->type ?: EV_KEY;
                 input_set_capability(input_dev, type, buttons->code);
         }
+        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+        input_set_capability(input_dev, EV_KEY, CAMERA_POLE_CODE);
+        #endif
 
         ret = input_register_device(input_dev);
         if (ret) {
@@ -1704,6 +1941,15 @@ static int headset_detect_probe(struct platform_device *pdev)
         if (debug_level >= 2)
                 queue_delayed_work(reg_dump_work_queue, &reg_dump_work, msecs_to_jiffies(500));
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+        INIT_DELAYED_WORK(&camera_pole_work, camera_pole_func);
+        camera_pole_work_queue = create_singlethread_workqueue("camera_pole");
+        if(NULL == camera_pole_work_queue) {
+                PRINT_ERR("create_singlethread_workqueue for camera_pole failed!\n");
+                goto failed_to_create_singlethread_workqueue_for_camera_pole;
+        }
+#endif
+
 #ifdef ADPGAR_BYP_SELECT
         //work queue for Bug#298417
         INIT_DELAYED_WORK(&adpgar_byp_select_work, adpgar_byp_select_func);
@@ -1723,7 +1969,7 @@ static int headset_detect_probe(struct platform_device *pdev)
         //set EIC5 de-bounce time for inser irq
         headset_reg_set_val((ANA_EIC_BASE+EIC8_DBNC_CTRL), DBNC_CNT8_VALUE, DBNC_CNT8_MASK, DBNC_CNT8_SHIFT);
 
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		/* set EIC5 de-bounce time for ins_mic irq */
 		headset_reg_set_val((ANA_EIC_BASE+EIC5_DBNC_CTRL), DBNC_CNT5_VALUE, DBNC_CNT5_MASK, DBNC_CNT5_SHIFT);
 #endif
@@ -1742,19 +1988,20 @@ static int headset_detect_probe(struct platform_device *pdev)
                 PRINT_ERR("failed to request IRQ_%d(GPIO_%d)\n", ht->irq_detect, pdata->gpio_detect);
                 goto failed_to_request_irq_headset_detect;
         }
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 		irqflags = pdata->irq_trigger_level_detect_mic ? IRQF_TRIGGER_HIGH : IRQF_TRIGGER_LOW;
 		ret = request_irq(ht->irq_detect_mic, headset_detect_mic_irq_handler, irqflags | IRQF_NO_SUSPEND, "headset_detect_mic", ht);
 		if (ret < 0) {
 			PRINT_ERR("failed to request IRQ_%d(GPIO_%d)\n", ht->irq_detect_mic, pdata->gpio_detect_mic);
 			goto failed_to_request_irq_mic_headset_detect;
 		}
+		headset_irq_detect_mic_enable(0, ht->irq_detect_mic);
 #endif
         ret = headset_debug_sysfs_init();
         adc_cal_from_efuse();
         PRINT_INFO("headset_detect_probe success\n");
         return ret;
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 failed_to_request_irq_mic_headset_detect:
 		free_irq(ht->irq_detect_mic, ht);
 #endif
@@ -1768,6 +2015,11 @@ failed_to_request_irq_headset_button:
 failed_to_create_singlethread_workqueue_for_adpgar_byp_select:
 #endif
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT
+        cancel_delayed_work_sync(&camera_pole_work);
+        destroy_workqueue(camera_pole_work_queue);
+failed_to_create_singlethread_workqueue_for_camera_pole:
+#endif
         cancel_delayed_work_sync(&reg_dump_work);
         destroy_workqueue(reg_dump_work_queue);
 failed_to_create_singlethread_workqueue_for_headset_reg_dump:
@@ -1784,7 +2036,7 @@ failed_to_register_switch_dev:
         gpio_free(pdata->gpio_button);
 failed_to_request_gpio_button:
         gpio_free(pdata->gpio_detect);
-#ifdef CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13
+#if (defined(CONFIG_SND_SOC_SPRD_USE_EAR_JACK_TYPE13) || defined(CONFIG_CAMERA_POLE_SUPPORT))
 failed_to_request_gpio_detect_mic:
 		gpio_free(pdata->gpio_detect_mic);
 #endif

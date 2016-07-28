@@ -439,6 +439,31 @@ SprdCamera3OEMIf::~SprdCamera3OEMIf()
 	timer_stop();
 }
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT 
+void SprdCamera3OEMIf::EnableCameraPole(uint8_t enable)
+{
+#define DISABLE_CAMERA_POLE	"0"
+#define ENABLE_CAMERA_POLE	"1"
+    const char* const headset_ctl = "/sys/kernel/headset/headset_ctl";
+    const char* cmd_str;
+    FILE* fp = fopen(headset_ctl, "w");
+    LOGI("camera pole enable %d", enable);
+    if (!fp) {
+	LOGE("Failed to open %s", headset_ctl);
+	return;
+    }
+    if(1 == enable) {
+	cmd_str = ENABLE_CAMERA_POLE;
+    } else {
+	cmd_str = DISABLE_CAMERA_POLE;
+    }
+    fprintf(fp, "%s", cmd_str);
+    fclose(fp);
+    return;
+}
+#endif
+
+
 void SprdCamera3OEMIf::closeCamera()
 {
 	HAL_LOGD("E");
@@ -451,6 +476,9 @@ void SprdCamera3OEMIf::closeCamera()
 		getCameraStateStr(getCameraState()), getCameraStateStr(getPreviewState()),
 		getCameraStateStr(getCaptureState()));
 
+#ifdef CONFIG_CAMERA_POLE_SUPPORT 
+	EnableCameraPole(0);
+#endif
 	if (isCapturing()) {
 		cancelPictureInternal();
 	}
@@ -526,6 +554,9 @@ void SprdCamera3OEMIf::initialize()
 	mDropPreviewFrameNum = 0;
 	mDropVideoFrameNum = 0;
 	mDropZslFrameNum = 0;
+#ifdef CONFIG_CAMERA_POLE_SUPPORT 
+	EnableCameraPole(1);
+#endif	
 }
 
 int SprdCamera3OEMIf::start(camera_channel_type_t channel_type, uint32_t frame_number)

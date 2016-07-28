@@ -688,6 +688,12 @@ config  HEADSET_STS_POLLING_DISABLED
 	help
 	  Say Y to disable HEADSET_STS_POLLING.
 
+config  CAMERA_POLE_SUPPORT
+	bool "CAMERA_POLE_SUPPORT"
+	depends on INPUT_HEADSET_SPRD_SC2723
+	help
+	  Say Y to enable camera pole support.
+
 config INPUT_LIS3DH_I2C
 	tristate "ST lid3dh 3-Axid accelerometer device with I2C bus"
 	depends on I2C

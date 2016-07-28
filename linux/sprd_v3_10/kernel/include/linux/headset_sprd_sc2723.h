@@ -50,6 +50,9 @@ struct sprd_headset_platform_data {
 struct sprd_headset {
         int headphone;
         int type;
+        #ifdef CONFIG_CAMERA_POLE_SUPPORT
+        int raw_type;
+        #endif
         int irq_detect;
         int irq_button;
 		int irq_detect_mic;

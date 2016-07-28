@@ -239,6 +239,10 @@ private:
 	void HandleAutoExposure(enum camera_cb_type cb, void* parm4);
 	void HandleCancelPicture(enum camera_cb_type cb, void* parm4);
 	void calculateTimestampForSlowmotion(int64_t frm_timestamp);
+	
+#ifdef CONFIG_CAMERA_POLE_SUPPORT 
+	void EnableCameraPole(uint8_t enable);
+#endif
 
 	enum Sprd_camera_state {
 		SPRD_INIT,

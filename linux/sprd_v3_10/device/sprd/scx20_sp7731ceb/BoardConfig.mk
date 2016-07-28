@@ -33,6 +33,8 @@ else
 KERNEL_DEFCONFIG := sp7731ceb_defconfig
 endif
 
+TARGET_BOARD_CAMERA_POLE_SUPPORT := true
+
 #camera preview/video only support 720p
 TARGET_BOARD_CAMERA_SUPPORT_720P := true
 #Path1's line buffer width of pike is 1280, so camera preview can just support max size 1280x960
