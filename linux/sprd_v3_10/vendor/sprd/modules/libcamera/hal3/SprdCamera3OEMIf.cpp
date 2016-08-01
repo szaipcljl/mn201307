@@ -1278,9 +1278,15 @@ void SprdCamera3OEMIf::setCameraPreviewMode(bool isRecordMode)
 
 	fps_param.is_recording = isRecordMode;
 	if (isRecordMode) {
+	#if 0
 		fps_param.min_fps = controlInfo.ae_target_fps_range[1];
 		fps_param.max_fps = controlInfo.ae_target_fps_range[1];
 		fps_param.video_mode = 1;
+	#else //mod by FAE 20160616 ;录像帧率改为浮动帧率,减少录像噪点
+		fps_param.min_fps = controlInfo.ae_target_fps_range[0];
+		fps_param.max_fps = controlInfo.ae_target_fps_range[1];
+		fps_param.video_mode = 0;
+	#endif
 	} else {
 		fps_param.min_fps = controlInfo.ae_target_fps_range[0];
 		fps_param.max_fps = controlInfo.ae_target_fps_range[1];
