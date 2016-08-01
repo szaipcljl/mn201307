@@ -40,6 +40,10 @@
 #include "mstar_drv_hotknot.h"
 #endif //CONFIG_ENABLE_HOTKNOT
 
+#ifdef CONFIG_I2C_SPRD //160726 add
+#include <soc/sprd/i2c-sprd.h>
+#endif
+
 /*=============================================================*/
 // EXTERN VARIABLE DECLARATION
 /*=============================================================*/
@@ -596,6 +600,10 @@ s32 /*__devinit*/ MsDrvInterfaceTouchDeviceProbe(struct i2c_client *pClient, con
 	return nRetVal;
     }
     //huafeizhou160715 add-e
+
+#ifdef CONFIG_I2C_SPRD //160726 add
+    sprd_i2c_ctl_chg_clk(pClient->adapter->nr, 100000);
+#endif
 
     DrvPlatformLyrVariableInitialize(); 
 

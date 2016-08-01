@@ -216,11 +216,6 @@ static int /*__devinit*/ touch_driver_probe(struct i2c_client *client,
 	*/
 #endif //CONFIG_ENABLE_REGULATOR_POWER_ON
 
-
-#ifdef CONFIG_I2C_SPRD
-	sprd_i2c_ctl_chg_clk(client->adapter->nr, 100000);
-#endif
-
     return MsDrvInterfaceTouchDeviceProbe(g_I2cClient, id);
 }
 
