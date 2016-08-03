@@ -1398,9 +1398,11 @@ static void sprdbat_update_capacty(void)
 			fgu_capacity = 100;
 		} else {
 			if (fgu_capacity >= 100) {
+#if 1 //充电99%时间过长问题:vbat_ocv 大于比ocv中100%的值略小的一个值
 				if(sprdbat_data->bat_info.vbat_ocv > 4120)
 					fgu_capacity = 100;
 				else	
+#endif
 					fgu_capacity = 99;
 			}
 		}
