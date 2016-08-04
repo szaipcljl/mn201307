@@ -349,7 +349,7 @@ static struct timing_rgb lcd_jd9161_mipi_timing = {
 	.hbp = 20,//80
 	.hsync = 20,//6
 	.vfp =6, /*unit: line*/
-	.vbp =5,
+	.vbp =5, //顶部白线条vbp减1
 	.vsync =4, //6,
 };
 
