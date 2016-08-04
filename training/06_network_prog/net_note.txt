@@ -1,0 +1,197 @@
+ip：网络层路由选择使用
+子网掩码： 由连续的1 和 0构成，共路由选择时区分网络号和主机号
+
+
+ip地址分类：
+A:0xxx xxxx.X.X.X   0 ~ 127.X.X.X   2^24 - 2
+	掩码：255.0.0.0
+B:10xx xxxx.X.X.X   128 ~ 191.X.X.X 2^16 - 2
+	掩码 255.255.0.0
+C:110x xxxx.X.X.X   192 ~ 223.X.X.X 2^8 - 2
+	掩码 255.255.255.0
+
+组播地址 可以让同一个网络里的多人同时拥有
+D:1110 xxxx.X.X.X   224 ~ 239.x.x.x
+
+保留地址，测试地址
+E:1111 0xxx.X.X.X  240 ~ 247.X.X.X
+
+主机号为全1 广播地址
+主机号为全0 网络号保留
+
+127.x.x.x 本地回环地址
+
+局域网ip地址 ：1.局域网和互联网相互独立，2.局域网ip地址不能在广域网上出现
+		3.广域网无法直接访问局域网的ip 4.局域可以访问广域网ip{nat}
+192.168.x.x
+172.16.x.x
+10.x.x.x
+
+
+
+
+端口：由传输层提供，用于区分一台主机上不同的 链接
+
+	16bit无符号整形 0~65535
+
+协议：(协议向上一级提供端口：tcp的端口和udp端口是相互独立的)
+	TCP UDP
+TCP：
+	可靠性协议（数据冗余大）
+
+UDP:
+	非可靠性协议（数据冗余小）
+
+
+
+
+
+socket:
+	ip 协议 端口
+
+端口：
+	0 ~ 1023 常用服务默认端口 ：在自己的程序里， 1024之前的端口禁止使用
+	1024 ~ 50000 系统自动分配端口：避免使用
+	50000 ~65535 ：由开发者手动分配
+
+字节序：
+	本机字节序：可能是大端也可能是小端
+	网络字节序：大端
+
+nc 使用 ：
+	接收一个 udp 数据包 ：nc ip port -u
+
+
+sudo apt-get install xinetd
+sudo vi /etc/xinetd.d/echo
+disable = no
+sudo service xinetd restart
+netstat -anu
+
+显示：udp        0      0 0.0.0.0:7
+
+
+
+
+udp 循环服务器：(循环{轮询}并发服务器)
+
+
+	socket
+	bind
+
+	while(){
+		recvfrom
+		。。。。
+		sendto
+	}
+	close(fd);
+
+
+客户端：(发送)
+	socket
+	//bind
+
+	while（）{
+		sendto
+		//。。。。。
+	}
+
+
+
+tcp:
+
+	socket
+	bind
+
+	listen
+while(){
+	accept
+
+	while(){
+
+	}
+}
+
+	socket
+	//bind
+
+	connect
+
+	while(){
+	}
+
+
+并发式tcp服务器：
+
+	socket
+	bind
+	listen
+	while(){
+		accept()
+		if(0 == fork()){
+			.........
+		}
+	}
+
+
+sudo apt-get install wireshark
+
+
+io模型：
+	阻塞IO ： 结构简单，读取多资源时，及时性差
+	非阻塞IO ：读取多资源需要轮询，消耗cpu ，可以相对及时的读取数据
+	多路复用IO ：不需要轮询资源，可以及时读取任意资源
+	异步信号驱动：先注册请求，等待信号到达后在进行操作
+
+超时检测：
+	1.setsockopt 设置套接字超时属性：一次设置，终身有效
+	2.select 超时，每一次都要重新填充计数值
+	3.alarm(5); 利用闹钟进行超时检测
+
+
+
+显示当前打开的文件路径
+sqlite> .database
+显表格式
+sqlite> .schema
+
+
+显示所有表名称
+sqlite> .table
+打印表数据
+sqlite> select * from stu
+
+删除一个表
+sqlite> drop table stu;
+
+复制一个表
+sqlite> create table stu as select id,name,english from new_stu;
+添加一个数据项名称
+sqlite> alter table new_stu add english real null default 60;
+删除一个数据
+sqlite> delete from stu where name='xiaoming';
+更新一条数据
+sqlite> update stu set score=100 where name='wang';
+查找一条数据
+sqlite> select * from stu where name='xiaoming';
+
+插入一条数据
+sqlite> insert into stu(id,name,score) values(10000,'xiaoming',90);
+
+
+sqlite> alter table stu rename to ss;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
