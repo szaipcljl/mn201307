@@ -5,6 +5,7 @@
 
 static void *sprd_handle_camera_dl;
 static int eng_front_camera =0;
+extern int flashlightSetValue(int value);
 
 int test_fcamera_start(void)
 {
@@ -42,7 +43,10 @@ int test_fcamera_start(void)
 
 	LOGD("mmitest start preview with front camera");
 	//eng_draw_handle_softkey(ENG_ITEM_FCAMERA);
+	
+	flashlightSetValue(17 | 0xff0000);
 	rtn = ui_handle_button(TEXT_PASS,NULL,TEXT_FAIL);//, TEXT_GOBACK
+	flashlightSetValue(16 | 0xff0000);
 
 	typedef void (*pf_eng_tst_camera_deinit)(void);
 	pf_eng_tst_camera_deinit eng_tst_camera_deinit = (pf_eng_tst_camera_deinit)dlsym(sprd_handle_camera_dl,"eng_tst_camera_deinit" );
