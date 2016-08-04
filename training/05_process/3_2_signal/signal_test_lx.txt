@@ -1,0 +1,22 @@
+写一个程序：
+1、当父进程中从终端输入字符串begin时，父进程给子进程发送一个信号（SIGUSR1）
+
+2、子进程接收到信号SIGUSR1之后，执行信号处理函数。
+   需要向文件“test.txt”中写入当前的系统时间，包括行号。
+   (fopen、打开文件“a+”，再获得一次当前时间以及文件原有的行数。fprintf（）输出到文件中。)
+
+
+3、当按ctrl + c 的时候，由子进程捕获这个信号（SIGINT），打印出文件中一共有多少行系统时间。
+   父进程忽略信号（SIGINT）
+
+
+4、按ctrl + z ，父进程捕获，给子进程发送信号（SIGUSR2）。wait（NULL）。exit（0）
+   子进程忽略SIGTSTP,接收SIGUSR2，接收到信号后。exit。
+
+父进程：
+捕捉：SIGTSTP
+忽略：SIGINT
+
+子进程：
+捕捉：SIGUSR1、SIGUSR2、SIGINT
+忽略：SIGTSTP

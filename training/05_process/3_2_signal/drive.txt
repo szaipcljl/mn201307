@@ -1,0 +1,18 @@
+司机售票员问题（必做题）
+创建子进程代表售票员，父进程代表司机 ，同步过程如下：
+
+售票员捕捉SIGINT(代表开车)，发SIGUSR1给司机，司机打印(“let’s gogogo”)
+售票员捕捉SIGQUIT(代表停车)，发SIGUSR2给司机，司机打印(“stop the bus”)
+司机捕捉SIGTSTP(代表车到总站)，发SIGUSR1给售票员，售票员打印(“please get off 
+the bus”)
+
+售票员（子进程）
+捕捉：SIGINT、SIGQUIT、SIGUSR1
+忽略：SIGTSTP
+
+
+司机（父进程）
+捕捉：SIGUSR1、SIGUSR2、SIGTSTP
+忽略：SIGINT、SIGQUIT、
+
+发送信号kill（）；
