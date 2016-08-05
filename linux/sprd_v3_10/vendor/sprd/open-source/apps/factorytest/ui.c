@@ -361,6 +361,7 @@ void ui_push_result(int result)
 
 void ui_init(void)
 {
+	//gr init
     gr_init();
     ev_init();
 
@@ -938,6 +939,7 @@ int ui_handle_button(const char* left,const char* center,const char* right)
 	//return 0;
 }
 
+//填充屏幕
 void ui_fill_screen(unsigned char r,unsigned char g,unsigned char b)
 {
 	gr_color(r, g, b, 255);

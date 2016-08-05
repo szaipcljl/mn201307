@@ -811,6 +811,7 @@ void ggl_uninit_context(context_t* c)
 
 using namespace android;
 
+//pixelflinger的初始化函数
 ssize_t gglInit(GGLContext** context)
 {
     void* const base = malloc(sizeof(context_t) + 32);

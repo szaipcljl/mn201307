@@ -50,6 +50,7 @@ typedef struct {
 } GRFont;
 
 static GRFont *gr_font = 0;
+//GGLContext 在vendor/目录下没搜到，在system/下
 static GGLContext *gr_context = 0;
 static GGLSurface gr_font_texture;
 static GGLSurface gr_framebuffer[2];
@@ -175,6 +176,7 @@ void gr_flip(void)
     set_active_framebuffer(gr_active_fb);
 }
 
+//设置颜色
 void gr_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     GGLContext *gl = gr_context;
@@ -183,6 +185,7 @@ void gr_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a
     color[1] = ((g << 8) | g) + 1;
     color[2] = ((b << 8) | b) + 1;
     color[3] = ((a << 8) | a) + 1;
+	//gl
     gl->color4xv(gl, color);
 }
 
@@ -446,6 +449,7 @@ static void gr_init_font(void)
 
 int gr_init(void)
 {
+	//gglInit在vendor/下未搜到，在system/下
     gglInit(&gr_context);
     GGLContext *gl = gr_context;
 

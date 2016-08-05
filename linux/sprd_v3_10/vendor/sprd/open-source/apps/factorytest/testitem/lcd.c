@@ -24,22 +24,27 @@ int test_lcd_start(void)
 	int row = 2;
 
 	ui_fill_locked();
+	//白
 	ui_fill_screen(255, 255, 255);
 	gr_flip();
 	usleep(500*1000);
 
+	//黑
 	ui_fill_screen(0, 0, 0);
 	gr_flip();
 	usleep(500*1000);
 
+	//红
 	ui_fill_screen(255, 0, 0);
 	gr_flip();
 	usleep(500*1000);
 
+	//绿
 	ui_fill_screen(0, 255, 0);
 	gr_flip();
 	usleep(500*1000);
 
+	//蓝
 	ui_fill_screen(0, 0, 255);
 	gr_flip();
 	usleep(500*1000);

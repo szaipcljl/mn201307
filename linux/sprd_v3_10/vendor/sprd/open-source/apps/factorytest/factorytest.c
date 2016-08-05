@@ -1041,6 +1041,7 @@ static void test_result_init(void)
 	int value = -1;
       char property[32] = {0};
 
+	  //ui init
 	ui_init();
 	ui_set_background(BACKGROUND_ICON_NONE);
 	read_bin();
@@ -1120,11 +1121,13 @@ void sdcard_fm_init(void)
         sdcard_fm_state=0;
 }
 
+//factory测试程序的main函数
 int main(int argc, char **argv)
 {
     LOGD("==== factory test start ====");
     test_printlog_init();
     test_result_mkdir();
+	//test result init
     test_result_init();
     test_item_init();
     sdcard_fm_init();

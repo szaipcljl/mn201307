@@ -526,6 +526,7 @@ struct state_t {
 // ----------------------------------------------------------------------------
 
 struct context_t {
+	//Pixelflinger对外是用GGLContext结构提供接口引用的
 	GGLContext          procs;
 	state_t             state;
     shade_t             shade;
