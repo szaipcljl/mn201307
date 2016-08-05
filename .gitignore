@@ -40,6 +40,8 @@ Module.symvers
 *.dwo
 *.su
 a.out
+tags
+tags.fn
 
 #
 # Top-level generic files
