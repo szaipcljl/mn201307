@@ -760,11 +760,13 @@ static struct panel_spec *adapt_panel_from_readid(struct sprdfb_device *dev)
 		}
 		dev->ctrl->update_clk(dev);
 		panel_init(dev);
+		//readid之前判断是否需要reset
 		if ((b_panel_reset==0) || (1 == dev->panel->is_need_reset))
 		{
 			panel_reset(dev);
 			b_panel_reset=1;
 		}
+
 		id = dev->panel->ops->panel_readid(dev->panel);
 		if(id == panel_cfg[i].lcd_id) {
 			printf("sprdfb: [%s]: LCD Panel 0x%x is attached!\n", __FUNCTION__, panel_cfg[i].lcd_id);

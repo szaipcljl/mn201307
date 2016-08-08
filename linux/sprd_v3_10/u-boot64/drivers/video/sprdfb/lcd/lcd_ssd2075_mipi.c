@@ -229,6 +229,7 @@ struct panel_spec lcd_ssd2075_mipi_spec = {
 	.fps = 60,
 	.type = LCD_MODE_DSI,
 	.direction = LCD_DIRECT_NORMAL,
+	//需要reset
 	.is_need_reset = 1,	/*need reset after the former panel init*/
 	.info = {
 		.mipi = &lcd_ssd2075_mipi_info
