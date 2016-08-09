@@ -391,6 +391,7 @@ dsih_error_t mipi_dsih_ecc_rx(dsih_ctrl_t * instance, int enable)
     }
     return ERR_DSI_INVALID_INSTANCE;
 }
+
 /**
  * Enable the sending of EoT (End of Transmission) packets at the end of HS
  * transmission. It was made optional in the DSI spec. for retro-compatibility.
@@ -398,12 +399,14 @@ dsih_error_t mipi_dsih_ecc_rx(dsih_ctrl_t * instance, int enable)
  * @param enable or disable
  * @return error code
  */
+//mipi_dsih_eotp_tx函数实现
 dsih_error_t mipi_dsih_eotp_tx(dsih_ctrl_t * instance, int enable)
 {
     if (instance != 0)
     {
         if (instance->status == INITIALIZED)
         {
+			//
             mipi_dsih_hal_gen_eotp_tx_en(instance, enable);
             return OK;
         }

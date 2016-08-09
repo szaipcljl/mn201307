@@ -32,6 +32,7 @@ struct sprdfb_dsi_context {
 
 static struct sprdfb_dsi_context dsi_ctx;
 
+//函数实现
 static uint32_t dsi_core_read_function(unsigned long addr, uint32_t offset)
 {
 	return __raw_readl(addr + offset);
@@ -188,11 +189,12 @@ static void dsi_log_error(const char * string)
 	FB_PRINT(string);
 }
 
-
+//dsi 初始化
 int32_t sprdfb_dsi_init(struct sprdfb_device *dev)
 {
 	dsih_error_t result = OK;
 	dsih_ctrl_t* dsi_instance = &(dsi_ctx.dsi_inst);
+	//dphy_t 结构体指针
 	dphy_t *phy = &(dsi_instance->phy_instance);
 	struct info_mipi * mipi = dev->panel->info.mipi;
 	int i = 0;
@@ -203,6 +205,7 @@ int32_t sprdfb_dsi_init(struct sprdfb_device *dev)
 
 	dsi_early_int();
 	phy->address = DSI_CTL_BEGIN;
+	//dphy_t 结构体的core_read/write_function成员
 	phy->core_read_function = dsi_core_read_function;
 	phy->core_write_function = dsi_core_write_function;
 	phy->log_error = dsi_log_error;
@@ -476,6 +479,7 @@ static int32_t sprd_dsi_force_read(uint8_t command, uint8_t bytes_to_read, uint8
 	return iRtn;
 }
 
+//mipi_eotp_set成员实现
 static int32_t sprd_dsi_eotp_set(uint8_t rx_en, uint8_t tx_en)
 {
 	dsih_ctrl_t *curInstancePtr = &(dsi_ctx.dsi_inst);
@@ -484,12 +488,14 @@ static int32_t sprd_dsi_eotp_set(uint8_t rx_en, uint8_t tx_en)
 	else if(1 == rx_en)
 		mipi_dsih_eotp_rx(curInstancePtr, 1);
 	if(0 == tx_en)
+		//dsih eotp tx
 		mipi_dsih_eotp_tx(curInstancePtr, 0);
 	else if(1 == tx_en)
 		mipi_dsih_eotp_tx(curInstancePtr, 1);
 	return 0;
 }
 
+//默认填充的ops_mipi结构体，在panel_mount中使用
 struct ops_mipi sprdfb_mipi_ops = {
 	.mipi_set_cmd_mode = sprdfb_dsi_set_cmd_mode,
 	.mipi_set_video_mode = sprdfb_dsi_set_video_mode,
@@ -501,5 +507,6 @@ struct ops_mipi sprdfb_mipi_ops = {
 	.mipi_dcs_read = sprdfb_dsi_dcs_read,
 	.mipi_force_write = sprd_dsi_force_write,
 	.mipi_force_read = sprd_dsi_force_read,
+	//ops_mipi 结构体的 mipi_eotp_set 成员
 	.mipi_eotp_set = sprd_dsi_eotp_set,
 };

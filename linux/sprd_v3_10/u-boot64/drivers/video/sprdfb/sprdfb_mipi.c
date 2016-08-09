@@ -146,6 +146,7 @@ static void sprdfb_mipi_panel_mount(struct sprdfb_device *dev)
 		dev->panel_if_type = SPRDFB_PANEL_IF_DPI;
 	}
 
+	//在panel_mount中使用默认sprdfb_mipi_ops
 	dev->panel->info.mipi->ops = &sprdfb_mipi_ops;
 
 	if(NULL == dev->panel->ops->panel_readid){

@@ -285,11 +285,13 @@ static uint32_t otm1287a_readid(struct panel_spec *self)
 	mipi_set_cmd_mode_t mipi_set_cmd_mode = self->info.mipi->ops->mipi_set_cmd_mode;
 	mipi_force_write_t mipi_force_write = self->info.mipi->ops->mipi_force_write;
 	mipi_force_read_t mipi_force_read = self->info.mipi->ops->mipi_force_read;
+	//mipi_eotp_set 初始化
 	mipi_eotp_set_t mipi_eotp_set = self->info.mipi->ops->mipi_eotp_set;
 
 	LCD_PRINT("lcd_otm1287a_mipi read id!\n");
 
 	mipi_set_cmd_mode();
+	//读id前：关eotp
 	mipi_eotp_set(1,0);
 
 	for(j = 0; j < 4; j++){
@@ -308,6 +310,7 @@ static uint32_t otm1287a_readid(struct panel_spec *self)
 		LCD_PRINT("lcd_otm1287a_mipi read id 0xa1 value is 0x%x, 0x%x, 0x%x, 0x%x, 0x%x!\n",
 			read_data[0], read_data[1], read_data[2], read_data[3], read_data[4]);
 
+		//读id后:再打开eotp
                 mipi_eotp_set(1,1);
 
 		if((0x01 == read_data[0])&&(0x8b == read_data[1])&&(0x12 == read_data[2])&&(0x87 == read_data[3])&&(0xff == read_data[4])){
@@ -351,6 +354,7 @@ static struct info_mipi lcd_otm1287a_mipi_info = {
 	.color_mode_pol			= SPRDFB_POLARITY_NEG,
 	.shut_down_pol			= SPRDFB_POLARITY_NEG,
 	.timing					= &lcd_otm1287a_mipi_timing,
+	//self->info.mipi->ops 为空，在panel_mount中使用默认填充的ops_mip结构体
 	.ops					= NULL,
 };
 
@@ -360,6 +364,7 @@ struct panel_spec lcd_otm1287a_mipi_spec = {
 	.fps					= 60,
 	.type					= LCD_MODE_DSI,
 	.direction				= LCD_DIRECT_NORMAL,
+	//self->info.mipi->ops
 	.info = {
 		.mipi				= &lcd_otm1287a_mipi_info
 	},

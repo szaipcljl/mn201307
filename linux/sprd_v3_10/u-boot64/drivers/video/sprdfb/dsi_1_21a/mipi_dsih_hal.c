@@ -7,17 +7,21 @@
  */
 #include "mipi_dsih_hal.h"
 
+
 /**
  * Write a 32-bit word to the DSI Host core
  * @param instance pointer to structure holding the DSI Host core information
  * @param reg_address register offset in core
  * @param data 32-bit word to be written to register
  */
+
 void mipi_dsih_write_word(dsih_ctrl_t * instance, uint32_t reg_address, uint32_t data)
 {
 
+
 	instance->core_write_function(instance->address, reg_address, data);
 }
+
 /**
  * Write a bit field o a 32-bit word to the DSI Host core
  * @param instance pointer to structure holding the DSI Host core information
@@ -26,23 +30,29 @@ void mipi_dsih_write_word(dsih_ctrl_t * instance, uint32_t reg_address, uint32_t
  * @param shift bit shift from the left (system is BIG ENDIAN)
  * @param width of bit field
  */
+//mipi_dsih_write_part实现
 void mipi_dsih_write_part(dsih_ctrl_t * instance, uint32_t reg_address, uint32_t data, uint8_t shift, uint8_t width)
 {
 	uint32_t mask = (1 << width) - 1;
+
 	uint32_t temp = mipi_dsih_read_word(instance, reg_address);
 
 	temp &= ~(mask << shift);
 	temp |= (data & mask) << shift;
+
 	mipi_dsih_write_word(instance, reg_address, temp);
 }
+
 /**
  * Write a 32-bit word to the DSI Host core
  * @param instance pointer to structure holding the DSI Host core information
  * @param reg_address offset of register
  * @return 32-bit word value stored in register
  */
+
 uint32_t mipi_dsih_read_word(dsih_ctrl_t * instance, uint32_t reg_address)
 {
+
 	return instance->core_read_function(instance->address, reg_address);
 }
 /**
@@ -867,13 +877,16 @@ void mipi_dsih_hal_gen_eotp_rx_en(dsih_ctrl_t * instance, int enable)
 {
 	mipi_dsih_write_part(instance, R_DSI_HOST_PCKHDL_CFG, enable, 1, 1);
 }
+
 /**
  * Enable EOTp transmission
  * @param instance pointer to structure holding the DSI Host core information
  * @param enable
  */
+//mipi_dsih_hal_gen_eotp_tx_en实现
 void mipi_dsih_hal_gen_eotp_tx_en(dsih_ctrl_t * instance, int enable)
 {
+
 	mipi_dsih_write_part(instance, R_DSI_HOST_PCKHDL_CFG, enable, 0, 1);
 }
 /**

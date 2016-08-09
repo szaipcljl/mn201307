@@ -175,6 +175,7 @@ typedef enum
 	DSI_MAX_EVENT
 }
 dsih_event_t;
+
 /**
  * DSI Host state machine states
  * Holds the mapping of D-PHY to the OS, logging I/O, and hardware access layer.
@@ -182,17 +183,20 @@ dsih_event_t;
 typedef enum
 {
 	NOT_INITIALIZED = 0,
+
 	INITIALIZED,
 	ON,
 	OFF
 }
 dsih_state_t;
 
+//MIPI D-PHY
 /**
  * MIPI D-PHY
  * Holds the mapping of API to the OS, logging I/O, and hardware access layer
  * and HW module information.
  */
+//dphy_t 类型结构体
 typedef struct dphy_t
 {
 	/** Physical base address of PHY module - REQUIRED */
@@ -205,8 +209,10 @@ typedef struct dphy_t
 	 * in order to set up the environment for the D-PHY before it is
 	 * configured. */
 	void (*bsp_pre_config)(struct dphy_t *instance, void* param);
+	//注册读访问函数指针:在何处赋值?
 	/** Register read access function handle - REQUIRED */
 	uint32_t (*core_read_function)(unsigned long addr, uint32_t offset);
+	//注册写访问函数指针
 	/** Register write access function handle - REQUIRED */
 	void (*core_write_function)(unsigned long addr, uint32_t offset, uint32_t data);
 	/** Log errors function handle */
@@ -216,6 +222,7 @@ typedef struct dphy_t
 }
 dphy_t;
 
+//MIPI DSI 主机控制器
 /**
  * MIPI DSI Host Controller
  * Holds important information for the functioning of the DSI Host Controller API
@@ -223,10 +230,12 @@ dphy_t;
  * It also holds important information set by the user about the HW considerations
  * and internal state variables.
  */
+//dsih_ctrl_t 结构体
 typedef struct dsih_ctrl_t
 {
 	/** Physical base address of controller - REQUIRED */
 	unsigned long address;
+	//dphy_t 类型成员 phy_instance: 与DSI主机控制器关联的D-PHY 实例
 	/** D-PHY instance associated with the DSI host controller - REQUIRED */
 	dphy_t phy_instance;
 	/**D-PHY frequency*/
@@ -242,10 +251,12 @@ typedef struct dsih_ctrl_t
 	int shut_down_polarity;
 	/** initialised or not */
 	dsih_state_t status;
+
 	/** Register read access function handle - REQUIRED */
 	uint32_t (*core_read_function)(unsigned long addr, uint32_t offset);
 	/** Register write access function handle - REQUIRED */
 	void (*core_write_function)(unsigned long addr, uint32_t offset, uint32_t data);
+
 	/** Log errors function handle */
 	void (*log_error)(const char * string);
 	/** Log information function handle */
