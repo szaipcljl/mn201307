@@ -54,6 +54,7 @@
 		i2c1 = &i2c1;
 		i2c2 = &i2c2;
 		i2c3 = &i2c3;
+		i2c4 = &i2c4;
 		lcd0 = &fb0;
 		spi0 = &spi0;
 		spi1 = &spi1;
@@ -601,6 +602,18 @@
 			TP_MAX_Y = <800>;
 		 };*/
 
+	};
+	i2c4: i2c@70900000{
+		compatible  = "sprd,i2c";
+		interrupts = <0 15 0x0>;
+		reg = <0x70900000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		fan54015_chg@0x6a {
+			compatible = "fairchild,fan54015_chg";
+			reg = <0x6a>;
+		};
 	};
 	sprd_dcam {
 		compatible = "sprd,sprd_dcam";
