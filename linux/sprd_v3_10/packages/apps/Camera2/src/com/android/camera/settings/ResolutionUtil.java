@@ -167,7 +167,7 @@ public class ResolutionUtil {
         result.add(largest);
         Size lastSize = largest;
         for (Size size : sizes) {
-            double targetArea = Math.pow(.5, result.size()) * area(largest);
+            double targetArea = Math.pow(.7, result.size()) * area(largest);
             if (area(size) < targetArea) {
                 // This candidate is smaller than half the mega pixels of the
                 // last one. Let's see whether the previous size, or this size
