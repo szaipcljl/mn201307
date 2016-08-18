@@ -669,7 +669,9 @@ public class CameraSettingsActivity extends FragmentActivity {
             		result = "(4:3) VGA";
             	} else if (size.toString().equals("Size: (720 x 480)")) {
             		result = "(16:9) 0.3MP";
-              	}
+            	}else if (size.toString().equals("Size: (864 x 480)")) {
+            		result = "(16:9) 0.4MP";
+            	}
 //            } else if (SystemProperties.get("gst.camera.size.mp", "").equals("true")){
 //            	if (size.toString().equals("3264 x 2448")){
 //            		result = "8MP";
