@@ -56,7 +56,7 @@
 #define VIBRATOR_REG_UNLOCK     (0xA1B2)
 #endif
 #define VIBRATOR_REG_LOCK       ((~VIBRATOR_REG_UNLOCK) & 0xffff)
-#define VIBRATOR_STABLE_LEVEL   (4)
+#define VIBRATOR_STABLE_LEVEL   (7) // 5 70mA  ,7  90mA
 #ifdef CONFIG_ARCH_SCX15
 #define VIBRATOR_INIT_LEVEL     (0x0f)
 #define VIBRATOR_INIT_STATE_CNT (0x600)
@@ -193,7 +193,7 @@ static void vibrator_enable(struct timed_output_dev *dev, int value)
 	if (value == 0)
 		vibe_state = 0;
 	else {
-		value = (value > 15000) ? 15000 : value;
+		value = (value > 15000) ? 15000 : (value+30);//151023 add
 		vibe_state = 1;
 		hrtimer_start(&vibe_timer,
 			      ktime_set(value / 1000, (value % 1000) * 1000000),
