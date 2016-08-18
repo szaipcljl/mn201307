@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/preferences_item_sector"
+    android:clickable="true" >
+
+    <TextView
+        android:id="@+id/fp_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:gravity="left|fill_vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="5dp"
+        android:paddingTop="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/apple_blue" />
+
+    <TextView
+        android:id="@+id/fp_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/fp_name"
+        android:layout_below="@+id/fp_name"
+        android:paddingLeft="5dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/gray_level_three"
+        android:textColorHint="@color/gray_level_three" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/fp_description"
+        android:background="@color/gray_level_two" />
+
+    <TextView
+        android:id="@+id/testapi_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fp_description"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:text="@string/preferences_more"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray_level_three"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/fp_show_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/testapi_log"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:textSize="30dp"
+        android:textColor="@color/red"
+        android:textColorHint="@color/gray_level_three" />
+
+</RelativeLayout>

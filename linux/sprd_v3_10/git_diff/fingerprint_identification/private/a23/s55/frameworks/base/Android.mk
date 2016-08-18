@@ -59,6 +59,12 @@ LOCAL_SRC_FILES += \
 ## across process boundaries.
 ##
 ## READ ME: ########################################################
+#add by hy
+LOCAL_SRC_FILES += \
+	core/java/android/gxFP/IEnrollCallback.aidl \
+	core/java/android/gxFP/IFingerprintManager.aidl \
+	core/java/android/gxFP/IVerifyCallback.aidl 
+#add by hy end
 LOCAL_SRC_FILES += \
 	core/java/android/accessibilityservice/IAccessibilityServiceConnection.aidl \
 	core/java/android/accessibilityservice/IAccessibilityServiceClient.aidl \

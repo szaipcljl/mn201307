@@ -1,0 +1,118 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/gray_level_one"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_button_left_padding"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="12dp" >
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:clickable="false" >
+
+                <Button
+                    android:id="@+id/btn_change_psw"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/preferences_item_sector"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="@string/password_change_password"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#3E8BDD" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/password_line_width"
+                android:background="@color/gray_level_two" />
+
+            <RelativeLayout
+                android:id="@+id/preferences_fpmanager_panel"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@drawable/preferences_item_sector"
+                android:clickable="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" >
+
+                <TextView
+                    android:id="@+id/preferences_txt_mng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="false"
+                    android:layout_centerVertical="true"
+                    android:text="@string/fingerprint_manager"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/apple_blue" />
+
+                <TextView
+                    android:id="@+id/fingerprint_manager_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="@string/fingerprint_manager_sub"
+                    android:textColor="@color/gray_level_three" />
+
+                <TextView
+                    android:id="@+id/capture_text_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="14dp"
+                    android:text="@string/preferences_more"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/gray_level_three"
+                    android:textSize="28sp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/password_line_width"
+                android:background="@color/gray_level_two" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp" >
+
+                <Button
+                    android:id="@+id/aboutme"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/preferences_item_sector"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="@string/about"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#3E8BDD" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

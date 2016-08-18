@@ -127,6 +127,8 @@ import static android.view.WindowManagerPolicy.WindowManagerFuncs.CAMERA_LENS_UN
 import static android.view.WindowManagerPolicy.WindowManagerFuncs.CAMERA_LENS_COVERED;
 //SPRD: 380668 add kill-stop process
 import com.sprd.android.config.OptConfig;
+import android.gxFP.FingerprintManager;
+
 /**
  * WindowManagerPolicy implementation for the Android phone UI.  This
  * introduces a new method suffix, Lp, for an internal lock of the
@@ -244,6 +246,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
      * where the window manager is calling in with its own lock held.)
      */
     private final Object mLock = new Object();
+    private FingerprintManager mFingerprintManager;
 
     Context mContext;
     IWindowManager mWindowManager;
@@ -1192,7 +1195,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mHandler = new PolicyHandler();
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
         mOrientationListener = new MyOrientationListener(mContext, mHandler);
-        try {
+        SystemProperties.set("sys.goodix.fpdaemon","1");//goodix touch daemon start
+		try {
             mOrientationListener.setCurrentRotation(windowManager.getRotation());
         } catch (RemoteException ex) { }
         mSettingsObserver = new SettingsObserver(mHandler);
@@ -1294,7 +1298,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_DREAMING_STARTED);
         filter.addAction(Intent.ACTION_DREAMING_STOPPED);
-        filter.addAction("gst.action.screenshot");//GST_guojiangping modify screenshot 20150914
         context.registerReceiver(mDreamReceiver, filter);
 
         // register for multiuser-relevant broadcasts
@@ -4860,6 +4863,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     msg.sendToTarget();
                 }
             }
+	   break;
+	case KeyEvent.KEYCODE_F10:{
+
+ 		if(down) {
+		mFingerprintManager=FingerprintManager.getFpManager();			
+		mFingerprintManager.setFFmod(false);
+ 		}
+	     }
+	   break;		
         }
 
         if (useHapticFeedback) {

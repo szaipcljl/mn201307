@@ -12426,6 +12426,79 @@ package android.graphics.pdf {
 
 }
 
+package android.gxFP {
+
+  public class FingerprintManager {
+    ctor public FingerprintManager(android.gxFP.IFingerprintManager);
+    method public boolean changePassword(java.lang.String, java.lang.String);
+    method public boolean checkPassword(java.lang.String);
+    method public int delete(int);
+    method public static android.gxFP.FingerprintManager getFpManager();
+    method public java.lang.String getInformation();
+    method public android.gxFP.FingerprintManager.EnrollSession newEnrollSession(android.gxFP.IEnrollCallback);
+    method public android.gxFP.FingerprintManager.VerifySession newVerifySession(android.gxFP.IVerifyCallback);
+    method public int query();
+    method public void setFFmod(boolean);
+  }
+
+  public final class FingerprintManager.EnrollSession {
+    ctor public FingerprintManager.EnrollSession(android.gxFP.IEnrollCallback);
+    method public int enter();
+    method public int exit();
+    method public int reset();
+    method public int save(int);
+  }
+
+  public final class FingerprintManager.VerifySession {
+    ctor public FingerprintManager.VerifySession(android.gxFP.IVerifyCallback);
+    method public int enter();
+    method public int exit();
+  }
+
+  public abstract interface IEnrollCallback implements android.os.IInterface {
+    method public abstract void handleMessage(int, int, int, byte[]) throws android.os.RemoteException;
+  }
+
+  public static abstract class IEnrollCallback.Stub extends android.os.Binder implements android.gxFP.IEnrollCallback {
+    ctor public IEnrollCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static android.gxFP.IEnrollCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public abstract interface IFingerprintManager implements android.os.IInterface {
+    method public abstract int cancelEnroll(android.os.IBinder) throws android.os.RemoteException;
+    method public abstract int cancelVerify(android.os.IBinder) throws android.os.RemoteException;
+    method public abstract int delete(int) throws android.os.RemoteException;
+    method public abstract int enroll(android.os.IBinder, android.gxFP.IEnrollCallback) throws android.os.RemoteException;
+    method public abstract java.lang.String getInfo() throws android.os.RemoteException;
+    method public abstract int query() throws android.os.RemoteException;
+    method public abstract int resetEnroll(android.os.IBinder) throws android.os.RemoteException;
+    method public abstract int saveEnroll(android.os.IBinder, int) throws android.os.RemoteException;
+    method public abstract void setFFmod(boolean) throws android.os.RemoteException;
+    method public abstract int verify(android.os.IBinder, android.gxFP.IVerifyCallback) throws android.os.RemoteException;
+  }
+
+  public static abstract class IFingerprintManager.Stub extends android.os.Binder implements android.gxFP.IFingerprintManager {
+    ctor public IFingerprintManager.Stub();
+    method public android.os.IBinder asBinder();
+    method public static android.gxFP.IFingerprintManager asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public abstract interface IVerifyCallback implements android.os.IInterface {
+    method public abstract void handleMessage(int, int, int, byte[]) throws android.os.RemoteException;
+  }
+
+  public static abstract class IVerifyCallback.Stub extends android.os.Binder implements android.gxFP.IVerifyCallback {
+    ctor public IVerifyCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static android.gxFP.IVerifyCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+}
+
 package android.hardware {
 
   public deprecated class Camera {

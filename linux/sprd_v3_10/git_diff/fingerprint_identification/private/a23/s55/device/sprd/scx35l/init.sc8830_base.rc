@@ -822,3 +822,11 @@ service modemDriver /system/bin/modemDriver_vpad_main
 
 on property:persist.sys.volte.enable=true
     start modemDriver
+
+
+service fpdaemon /system/bin/gxFpDaemon
+    class late_start
+    user system
+    disabled
+on property:sys.goodix.fpdaemon=1
+    start fpdaemon

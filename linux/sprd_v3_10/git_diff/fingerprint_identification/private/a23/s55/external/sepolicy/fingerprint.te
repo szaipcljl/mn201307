@@ -1,0 +1,42 @@
+# goodix server - fingerprint daemon
+type fingerprintserver, domain;
+type fingerprintserver_exec, exec_type, file_type;
+typeattribute fingerprintserver mlstrustedsubject;
+
+init_daemon_domain(fingerprintserver)
+
+r_dir_file(fingerprintserver, sdcard_type)
+
+binder_use(fingerprintserver)
+binder_call(fingerprintserver, binderservicedomain)
+binder_call(fingerprintserver, appdomain)
+binder_service(fingerprintserver)
+
+allow fingerprintserver self:process execmem;
+allow fingerprintserver kernel:system module_request;
+#allow fingerprintserver app_data_file:dir search;
+#allow fingerprintserver app_data_file:file rw_file_perms;
+allow fingerprintserver sdcard_type:file write;
+
+
+
+# Access fingerprintserver devices at all.
+allow fingerprintserver fingerprint_device:chr_file rw_file_perms;
+#allow fingerprintserver fingerprint_device:chr_file { read write getattr ioctl };
+# Connect to tee service.
+allow fingerprintserver fingerprintserver_service:service_manager add;
+
+# fingerprint data
+r_dir_file(fingerprintserver, fingerprint_data_file)
+
+# Grant access to fingerprint files to fingerprintserver
+allow fingerprintserver fingerprint_data_file:dir ra_dir_perms;
+allow fingerprintserver fingerprint_data_file:file create_file_perms;
+allow fingerprintserver system_data_file:dir create_dir_perms;
+allow fingerprintserver system_data_file:file create_file_perms;
+#allow fingerprintserver apk_data_file:dir create_dir_perms;
+#allow fingerprintserver apk_data_file:file {create_file_perms execute}; 
+
+allow fingerprintserver self:capability { dac_override dac_read_search };
+allow fingerprintserver fuse:dir create_dir_perms;
+allow fingerprintserver fuse:file create_file_perms;

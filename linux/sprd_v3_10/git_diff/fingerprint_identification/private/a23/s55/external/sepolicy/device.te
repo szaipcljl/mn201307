@@ -67,3 +67,4 @@ type root_block_device, dev_type;
 
 # factory reset protection block device
 type frp_block_device, dev_type;
+type fingerprint_device,dev_type;

@@ -1321,6 +1321,14 @@ public final class SystemServer {
     }
 
     static final void startSystemUi(Context context) {
+
+//add by hy
+	Intent intentfp = new Intent();
+        intentfp.setComponent(new ComponentName("com.goodix.FPservice",
+                    "com.goodix.service.gxFpService"));
+        Slog.d(TAG, "Starting service: " + intentfp);
+        context.startServiceAsUser(intentfp, UserHandle.OWNER);
+//add by hy end
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.android.systemui",
                     "com.android.systemui.SystemUIService"));

@@ -96,7 +96,9 @@ PRODUCT_PACKAGES += \
         fm.$(TARGET_PLATFORM) \
         ValidationTools \
 		download \
-		gnss_download
+		gnss_download \
+		gxFpService \
+		NewFpSetting
 
 #[[ for autotest
         PRODUCT_PACKAGES += autotest
@@ -134,7 +136,7 @@ $(call inherit-product-if-exists, vendor/sprd/open-source/common_packages.mk)
 $(call inherit-product-if-exists, vendor/sprd/open-source/plus_special_packages.mk)
 $(call inherit-product, vendor/sprd/partner/shark/bluetooth/device-shark-bt.mk)
 $(call inherit-product, vendor/sprd/gps/gnss/device-sprd-gps.mk)
-
+$(call inherit-product, vendor/sprd/partner/fingerprint/gxfp_native_service.mk)
 
 PRODUCT_SP9832IEE_4M_VOLTE := true
 WCN_EXTENSION := true

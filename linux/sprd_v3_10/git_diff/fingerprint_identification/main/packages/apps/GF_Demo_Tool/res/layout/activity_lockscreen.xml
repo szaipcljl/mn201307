@@ -1,0 +1,389 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lock_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ImageView
+        android:id="@+id/image_image1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_lockscreen_bg" />
+
+    <LinearLayout
+        android:id="@+id/lockscreen_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:background="@color/no_color"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:background="@color/no_color"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/key_one"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="60dp"
+                android:minWidth="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_1"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_two"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_2"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_three"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_3"
+                android:textSize="@dimen/password_key_text_size" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/password_line_width"
+            android:layout_weight="1"
+            android:background="@color/no_color" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:background="@color/no_color"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/key_four"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_4"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_five"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_5"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_six"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_6"
+                android:textSize="@dimen/password_key_text_size" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/password_line_width"
+            android:layout_weight="1"
+            android:background="@color/no_color" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/key_seven"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_7"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_eight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_8"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_nine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_9"
+                android:textSize="@dimen/password_key_text_size" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/password_line_width"
+            android:layout_weight="1"
+            android:background="@color/no_color" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/back_capture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:text="@string/lockscreen_back" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_zero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_0"
+                android:textSize="@dimen/password_key_text_size" />
+
+            <TextView
+                android:layout_width="@dimen/password_line_width"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/no_color" />
+
+            <Button
+                android:id="@+id/key_clear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/lockscreen_passwordkey_color_sector"
+                android:minHeight="@dimen/password_key_min_height"
+                android:text="@string/password_keyboard_c"
+                android:textSize="@dimen/password_key_text_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/carrieroperator_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/china_nosim"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/time_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/timesmall_default"
+        android:textColor="@color/white" />
+
+    <RelativeLayout
+        android:id="@+id/time_panel"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="17dp" >
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="28dp"
+            android:text="@string/date_default"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date"
+            android:layout_centerHorizontal="true"
+            android:text="@string/time_default"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lock_showpassword"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/half_gray_one"
+        android:contentDescription="@string/hello_world" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="240dp"
+            android:layout_height="@dimen/password_inputicon_height"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_x="40dp"
+            android:layout_y="80dp"
+            android:gravity="center_vertical|center_horizontal" >
+
+            <ImageView
+                android:id="@+id/password_one"
+                android:layout_width="@dimen/password_inputicon_width"
+                android:layout_height="@dimen/password_inputicon_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_weight="1"
+                android:contentDescription="@string/hello_world"
+                android:src="@drawable/ic_password_input" />
+
+            <ImageView
+                android:id="@+id/password_two"
+                android:layout_width="@dimen/password_inputicon_width"
+                android:layout_height="@dimen/password_inputicon_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_weight="1"
+                android:contentDescription="@string/hello_world"
+                android:src="@drawable/ic_password_input" />
+
+            <ImageView
+                android:id="@+id/password_three"
+                android:layout_width="@dimen/password_inputicon_width"
+                android:layout_height="@dimen/password_inputicon_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_weight="1"
+                android:contentDescription="@string/hello_world"
+                android:src="@drawable/ic_password_input" />
+
+            <ImageView
+                android:id="@+id/password_four"
+                android:layout_width="@dimen/password_inputicon_width"
+                android:layout_height="@dimen/password_inputicon_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_weight="1"
+                android:contentDescription="@string/hello_world"
+                android:src="@drawable/ic_password_input" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_input_wrong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="35dp"
+            android:background="@drawable/password_notice_bg_shape"
+            android:gravity="center"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:text="@string/wrong_password"
+            android:textColor="#FFFFFFFF" />
+
+        <TextView
+            android:id="@+id/text_input_info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="19dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/input_password"
+            android:textColor="@color/gray_level_three" />
+
+    </RelativeLayout>
+	<!-- @drawable/lockscreen_view_bg -->
+    <com.goodix.widget.LockScreenView
+        android:id="@+id/lockscreen_view"
+        android:layout_width="255dp"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/lockscreen_view_bg" />
+
+</RelativeLayout>

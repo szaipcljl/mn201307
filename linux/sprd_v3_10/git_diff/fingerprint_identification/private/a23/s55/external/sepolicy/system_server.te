@@ -397,6 +397,10 @@ allow system_server frp_block_device:blk_file rw_file_perms;
 # Clean up old cgroups
 allow system_server cgroup:dir { remove_name rmdir };
 
+#add by hy
+allow system_server system_app_service:service_manager add;
+#add by hy end
+
 # /oem access
 r_dir_file(system_server, oemfs)
 

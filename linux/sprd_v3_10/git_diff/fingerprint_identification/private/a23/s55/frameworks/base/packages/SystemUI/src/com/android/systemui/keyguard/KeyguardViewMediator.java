@@ -73,7 +73,7 @@ import com.android.systemui.statusbar.phone.StatusBarWindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import android.os.Vibrator;
 import static android.provider.Settings.System.SCREEN_OFF_TIMEOUT;
 
 
@@ -302,6 +302,30 @@ public class KeyguardViewMediator extends SystemUI {
 
     private final ArrayList<IKeyguardStateCallback> mKeyguardStateCallbacks = new ArrayList<>();
 
+//add by hy 
+		private Vibrator vibrator;
+		private long[] pattern = {50,100};
+		FingerprintVerify.FpVerifyCallback mFpVerifyCallback=new FingerprintVerify.FpVerifyCallback() {
+			    		public void onFpVerifySuccess(){
+			    				mViewMediatorCallback.userActivity();
+			    				 mViewMediatorCallback.keyguardDone(true);
+               //  PowerManager mPM = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+               //  PowerManager.WakeLock mFpVerifyWakeLock=mPM.newWakeLock(PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP|PowerManager.ON_AFTER_RELEASE,"fingerprint wakeup");
+			    		}
+							public void onFpVerifyFail(){//失败这里可以添加震动给用户一个反馈
+									vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+		    					vibrator.vibrate(pattern,-1);
+						      Log.d(TAG, "verify fail");
+							}
+							public void WakeupByFp() {
+								PowerManager.WakeLock mFpVerifyWakeLock=mPM.newWakeLock(PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP|PowerManager.ON_AFTER_RELEASE,"fingerprint wakeup");
+	             // mPM.wakeUp(SystemClock.uptimeMillis());
+	              mFpVerifyWakeLock.acquire();
+	              mFpVerifyWakeLock.release();  
+	            }
+		};
+		private FingerprintVerify mFpVerify=new FingerprintVerify(mFpVerifyCallback);
+//add by hy end		
     KeyguardUpdateMonitorCallback mUpdateCallback = new KeyguardUpdateMonitorCallback() {
 
         @Override
@@ -1126,6 +1150,9 @@ public class KeyguardViewMediator extends SystemUI {
         EventLog.writeEvent(70000, 2);
         Message msg = mHandler.obtainMessage(KEYGUARD_DONE, authenticated ? 1 : 0, wakeup ? 1 : 0);
         mHandler.sendMessage(msg);
+        //add by hy 
+        mFpVerify.mFpHandler.sendMessage(mFpVerify.mFpHandler.obtainMessage(mFpVerify.MSG_WAKEUP_SCREEN,0,0));
+        //add by hy end
     }
 
     /**
@@ -1227,6 +1254,10 @@ public class KeyguardViewMediator extends SystemUI {
         }
 
         handleHide();
+        //add by hy
+        //if(SystemProperties.get("persist.goodix.fpunlock").equals("1") ) //default open
+        mFpVerify.stopFingerVerify();
+        //add by hy end
     }
 
     private void sendUserPresentBroadcast() {
@@ -1338,6 +1369,10 @@ public class KeyguardViewMediator extends SystemUI {
             mShowKeyguardWakeLock.release();
         }
         mKeyguardDisplayManager.show();
+        //add by hy
+        //if(SystemProperties.get("persist.goodix.fpunlock").equals("1") ) //default open
+        	mFpVerify.startFingerVerify();
+        //add by hy end
     }
 
     private final Runnable mKeyguardGoingAwayRunnable = new Runnable() {

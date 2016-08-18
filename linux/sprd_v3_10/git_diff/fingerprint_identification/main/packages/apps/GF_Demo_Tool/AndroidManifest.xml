@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.goodix.fpsetting"
+    android:versionCode="1" 
+    android:versionName="GF66XX_1.01.01" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FINGERPRINT_ENROLL" />
+    <uses-permission android:name="android.permission.FINGERPRINT_VERIFY" />    
+    
+
+    <application
+        android:name="com.goodix.application.FpApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/PreferencesTheme" >
+        <activity
+            android:name="com.goodix.fpsetting.PasswordActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferencesTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- android:label="@string/preferences_title_text" -->
+        <activity
+            android:name="com.goodix.fpsetting.PreferencesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferencesTheme" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.goodix.fpsetting.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferencesTheme" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.goodix.fpsetting.TouchIDActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferencesTheme" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.goodix.fpsetting.LockScreenActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.goodix.fpsetting.AboutActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferencesTheme" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.goodix.service.FpDBContentProvider"
+            android:authorities="com.goodix.service.fpdbcontentprovider" />
+
+        <service
+            android:name="com.goodix.service.FingerprintHandleService"
+            android:enabled="true"
+            android:permission="com.fingerprint.FP_HANDLE_PERMISSION" >
+        </service>
+
+    </application>
+
+</manifest>

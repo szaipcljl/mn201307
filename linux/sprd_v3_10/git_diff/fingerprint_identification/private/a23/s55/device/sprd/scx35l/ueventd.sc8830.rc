@@ -107,3 +107,5 @@
 /dev/power_ctl		0660     system      system
 /dev/ntrig		0666     system      system
 /dev/ntrig_de		0666     system      system
+#goodix fingerprint
+/dev/goodix_fp  0666    system  system

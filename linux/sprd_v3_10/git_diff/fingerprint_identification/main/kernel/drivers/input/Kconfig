@@ -203,6 +203,16 @@ config INPUT_KEYCOMBO
 	  To compile this driver as a module, choose M here: the
 	  module will be called keycombo.
 
+config INPUT_GOODIX_FP_SPI
+	tristate "GOODIX finger print"
+	default	n
+	depends on INPUT
+	---help---
+	  Say Y here if you want to take action when press finger;
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called goodix_finger_print.
+
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"

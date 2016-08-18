@@ -252,3 +252,7 @@
 /mnt/asec/[^/]+/[^/]+\.zip  u:object_r:asec_public_file:s0
 /mnt/asec/[^/]+/lib(/.*)?   u:object_r:asec_public_file:s0
 /data/app-asec(/.*)?        u:object_r:asec_image_file:s0
+
+#add by hy 
+/dev/goodix_fp u:object_r:fingerprint_device:s0
+/system/bin/gxFpDaemon u:object_r:fingerprintserver_exec:s0

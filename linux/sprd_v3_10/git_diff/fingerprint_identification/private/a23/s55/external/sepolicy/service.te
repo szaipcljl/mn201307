@@ -10,3 +10,4 @@ type radio_service,             service_manager_type;
 type surfaceflinger_service,    service_manager_type;
 type system_app_service,        service_manager_type;
 type system_server_service,     service_manager_type;
+type fingerprintserver_service, service_manager_type;

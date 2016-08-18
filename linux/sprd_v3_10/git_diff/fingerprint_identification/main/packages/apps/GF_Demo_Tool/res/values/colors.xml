@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="red">#FFFF0000</color>
+    <color name="black">#FF000000</color>
+    <color name="green">#FF00FF00</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="gray_level_one">#FFEEEEEE</color>
+    <color name="gray_level_two">#FFDDDDDD</color>
+    <color name="gray_level_three">#FFAAAAAA</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="no_color">#00000000</color>
+    <color name="blue_level">#FF5D7CD6</color>
+    <color name="button_red">#FFFF9CAF</color>
+    <color name="apple_blue">#3E8BDD</color>
+    <color name="white_half">#32FFFFFF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="half_black">#aa000000</color>
+    <color name="press_red">#FFFC86A0</color>
+    <color name="half_gray_one">#33EEEEEE</color>
+    <color name="half_gray_two">#33999999</color>
+    <color name="half_apple_blue">#883E8BDD</color>
+
+</resources>
