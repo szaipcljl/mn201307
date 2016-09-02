@@ -26,3 +26,6 @@ ubuntu客户端
 访问其他ubuntu(或服务器):
 ssh -l 用户名 IP
 根据提示输入密码
+
+ssh username@ipaddress
+ssh username@hostname
