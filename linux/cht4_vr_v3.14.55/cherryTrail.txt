@@ -1,0 +1,17 @@
+CherryTrail
+===============================================================================
+out/target/product/cht_vr/obj/kernel/.config:
+CONFIG_HID_SENSOR_HUB=m
+
+kernel/cht/drivers/hid/Makefile:119:obj-$(CONFIG_HID_SENSOR_HUB)	+= hid-sensor-hub.o
+kernel/cht/arch/x86/configs/x86_64_defconfig:2912:CONFIG_HID_SENSOR_HUB=m
+
+kernel/cht/drivers/hid/hid-sensor-hub.c 
+	--sensor hub 和 android 之间通信的驱动,还没启动,启动的是IPC
+
+
+===============================================================================
+find . -name   "*ensor*anager.cpp"
+
+./frameworks/native/libs/gui/SensorManager.cpp
+./frameworks/base/core/jni/android_hardware_SensorManager.cpp
