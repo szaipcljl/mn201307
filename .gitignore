@@ -42,6 +42,7 @@ Module.symvers
 a.out
 tags
 tags.fn
+*.class
 
 #
 # Top-level generic files
