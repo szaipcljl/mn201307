@@ -2,7 +2,13 @@
 #include <string.h>
 #include <ctype.h> //toupper()
 
+#define BUILD_TWO_CPP_FILE 1 
+
 char *strupr(char *str);
+#if BUILD_TWO_CPP_FILE
+extern int myprint();
+#endif
+
 char *strupr(char *str)
 {
 	char *orign=str;
@@ -13,6 +19,9 @@ char *strupr(char *str)
 
 JNIEXPORT jint JNICALL Java_Sample1_intMethod(JNIEnv *env, jobject obj, jint num)
 {
+#if BUILD_TWO_CPP_FILE
+	myprint();
+#endif
 	return num * num;
 }
 
