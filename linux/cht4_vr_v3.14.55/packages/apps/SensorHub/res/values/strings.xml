@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SensorHub</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_exit">Exit</string>
+    <string name="button_output_cfg">Output Cfg</string>
+    <string name="button_step_start">Start</string>
+    <string name="button_step_calibrating">Calibrating</string>
+    <string name="button_step_next">Next</string>
+    <string name="button_step_end">End</string>
+    <string name="sensor_no_data">Sensor no data</string>
+    <string name="calibrate_step_1">Put device on a flat surface,point north,point east,screen up.</string>
+    <string name="calibrate_step_2">Rotate screen 180 degrees clockwise,point south,point west,screen up.</string>
+    <string name="calibrate_step_3">Flip over screen,point north,point east,screen down.</string>
+    <string name="calibrate_step_4">Lay device flat with screen up, rotate screen clockwise.</string>
+    <string name="calibrate_step_5">Lold device vertical, rotate device clockwise along the axis between bottom and top.</string>
+    <string name="calibrate_step_end">Calibration is end.</string>
+    <string name="calibrate_start_info">Press the Start key to start calibration.</string>
+    <string name="calibrate_next_info">Press the Next key to next calibration.</string>
+    <string name="calibrate_calibrating_info">Calibrating.</string>
+    <string name="calibrate_precess_step1">step one </string>
+    <string name="calibrate_precess_step2">step two </string>
+    <string name="calibrate_precess_step3">step three </string>
+    <string name="calibrate_precess_step4">step four </string>
+    <string name="calibrate_precess_step5">step five </string>
+    <string name="calibrate_precess_calibrating">calibrating.</string>
+    <string name="calibrate_precess_calibrate_pass">calibrate pass.</string>
+    <string name="calibrate_precess_calibrate_fail">calibrate fail.</string>
+    <string name="calibrate_precess_get_poit">get poit:</string>
+    <string name="Calibrate_result_testing">Calibrating</string>
+    <string name="Calibrate_result_Pass">Pass</string>
+    <string name="Calibrate_result_Fail">Fail</string>
+
+</resources>

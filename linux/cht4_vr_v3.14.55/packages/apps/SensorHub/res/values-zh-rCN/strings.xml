@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SensorHub</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_exit">退出</string>
+    <string name="button_output_cfg">导出配置文件</string>
+    <string name="button_step_start">开始校准</string>
+    <string name="button_step_calibrating">正在校准</string>
+    <string name="button_step_next">下一步</string>
+    <string name="button_step_end">结束</string>
+    <string name="sensor_no_data">Sensor no data</string>
+    <string name="calibrate_step_1">第一步：将设备平放于桌面，方向正北，正东，正上。</string>
+    <string name="calibrate_step_2">第二步：设备转180度，方向正南，正西，正上。</string>
+    <string name="calibrate_step_3">第三步：设备反屏放置，方向正北，正东，正下。</string>
+    <string name="calibrate_step_4">第四步：屏幕朝上，顺时针旋转，系统采样20个点。</string>
+    <string name="calibrate_step_5">第五步：设备立起来，以底部和顶部为轴线，顺时针旋转，系统采样20个点。</string>
+    <string name="calibrate_step_end">校准结束.</string>
+    <string name="calibrate_start_info">点击开始按键，进行校准。</string>
+    <string name="calibrate_next_info">点击下一步按键，进行下一步校准.</string>
+    <string name="calibrate_calibrating_info">正在校准中 &#8230;</string>
+    <string name="calibrate_precess_step1">第一步</string>
+    <string name="calibrate_precess_step2">第二步</string>
+    <string name="calibrate_precess_step3">第三步</string>
+    <string name="calibrate_precess_step4">第四步</string>
+    <string name="calibrate_precess_step5">第五步</string>
+    <string name="calibrate_precess_calibrating">正在校准.</string>
+    <string name="calibrate_precess_calibrate_pass">校准通过.</string>
+    <string name="calibrate_precess_calibrate_fail">校准失败.</string>
+    <string name="calibrate_precess_get_poit">获取点数:</string>
+    <string name="Calibrate_result_testing">正在校准中 &#8230;</string>
+    <string name="Calibrate_result_Pass">Pass</string>
+    <string name="Calibrate_result_Fail">Fail</string>
+
+</resources>

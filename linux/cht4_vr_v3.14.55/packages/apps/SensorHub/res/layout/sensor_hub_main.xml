@@ -1,0 +1,154 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.intel.sensorhub.SensorHubMain" >
+
+    <LinearLayout
+        android:id="@+id/test_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ButtonLayout"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5sp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/describe_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="#FFFFFFFF"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/describe_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:gravity="center_vertical|start"
+                android:textColor="#FFFF0000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/process_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center|center_horizontal|center_vertical"
+                android:textColor="#FFFF0000"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cam_and_acc_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5sp"
+            android:layout_weight="3"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/step_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5sp"
+                android:layout_weight="1"
+                android:background="#FFAAAAAA"
+                android:textColor="#FF000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/acc_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_weight="1"
+                android:background="#FF00FF00"
+                android:textColor="#FF000000"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gyro_and_progress"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5sp"
+            android:layout_weight="3"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/gyro_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5sp"
+                android:layout_weight="1"
+                android:background="#FF00FF00"
+                android:textColor="#FF000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/compass_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_weight="1"
+                android:background="#FF00FF00"
+                android:textColor="#FF000000"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5sp"
+            android:layout_weight="2" >
+
+            <TextView
+                android:id="@+id/result_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF00"
+                android:gravity="center|center_horizontal|center_vertical"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5sp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/exit_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5sp"
+            android:layout_weight="1"
+            android:background="#FFAAAAAA"
+            android:text="@string/button_exit"
+            android:textColor="#FF000000"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/output_cfg_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:layout_weight="1"
+            android:background="#FFAAAAAA"
+            android:text="@string/button_output_cfg"
+            android:textColor="#FF000000"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+</RelativeLayout>
