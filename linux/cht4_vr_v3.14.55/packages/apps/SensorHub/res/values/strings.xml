@@ -32,5 +32,7 @@
     <string name="Calibrate_result_testing">Calibrating</string>
     <string name="Calibrate_result_Pass">Pass</string>
     <string name="Calibrate_result_Fail">Fail</string>
+    <string name="save_calibration_data_file_succes">succes</string>
+    <string name="save_calibration_data_file_fail">fail</string>
 
 </resources>

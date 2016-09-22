@@ -9,6 +9,10 @@
 #include <cstring>
 //#include <iostream>
 
+#include <log/log.h>
+#undef LOG_TAG
+#define LOG_TAG "calibrate"
+
 #include "mySensorManager.h"
 
 
@@ -248,15 +252,15 @@ int SetAGM_STEP_A()
 
 	if (queue == NULL)
 	{
-		printf("createEventQueue returned NULL\n");
+		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_mag == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	}
+	} 
 	else {
 		count = mgr.getSensorList(&list);
 	}
@@ -266,22 +270,22 @@ int SetAGM_STEP_A()
 	Sensor const *sensor_mag = NULL;
 	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACCELEROMETER, incalibrate);
 	if (sensor_thread == NULL){
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYROSCOPE, incalibrate);
 	if (sensor_thread_gyro == NULL) {
-		printf("failed to create gyro sensor thread\n");
+		ALOGD("failed to create gyro sensor thread\n");
 		return 0;
 	}
 	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_MAGNETIC_FIELD, incalibrate);
 	if (sensor_thread_mag == NULL) {
-		printf("failed to create mag sensor thread\n");
+		ALOGD("failed to create mag sensor thread\n");
 		return 0;
 
 	}
 
-	printf("before run\n");
+	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i]->isWakeUpSensor() == wakeup) {
@@ -299,37 +303,37 @@ int SetAGM_STEP_A()
 		}
 	}
 	if (sensor == NULL){
-		printf("get sensor of type:Acc error\n");
+		ALOGD("get sensor of type:Acc error\n");
 		return 0;
 	}
 	if (sensor_gyro == NULL) {
-		printf("get sensor of type:Gyr error\n");
+		ALOGD("get sensor of type:Gyr error\n");
 		return 0;
 	}
 	if (sensor_mag == NULL) {
-		printf("get sensor of type:Mag error\n");
+		ALOGD("get sensor of type:Mag error\n");
 		return 0;
 	}
 
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type Acc  error\n");
+		ALOGD("enable sensor of type Acc  error\n");
 		//return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type gyro error\n");
+		ALOGD("enable sensor of type gyro error\n");
 		//return 0;
 	}
 
 	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type magcal error\n");
+		ALOGD("enable sensor of type magcal error\n");
 		//return 0;
 	}
 
-	printf("after acc gyro magcal enable\n");
+	ALOGD("after acc gyro magcal enable\n");
 
 
 
@@ -337,9 +341,9 @@ int SetAGM_STEP_A()
 	//==============================================
 	//step 1:
 
-	//printf("Please check sensor drivers status all ready!\n\n");
-	printf("[1/6]Lay the device on a flat surface with the Windows button pointing due South\n");
-	//printf("Press enter when ready or press s to skip.\n");
+	//ALOGD("Please check sensor drivers status all ready!\n\n");
+	ALOGD("[1/6]Lay the device on a flat surface with the Windows button pointing due South\n");
+	//ALOGD("Press enter when ready or press s to skip.\n");
 
 	//waiting for key pressed
 
@@ -361,16 +365,16 @@ int SetAGM_STEP_A()
 		sensor_thread_mag->run("sensor-loop", PRIORITY_BACKGROUND);
 		usleep(100000);//note: magn update time is 50ms
 #endif
-		//printf("\b=>");
+		//ALOGD("\b=>");
 	}
-	printf("====[data end]=====\n");
-	printf("<accelX=%9.4f,accelY=%9.4f,accelZ=%9.4f>\n",
+	ALOGD("====[data end]=====\n");
+	ALOGD("<accelX=%9.4f,accelY=%9.4f,accelZ=%9.4f>\n",
 			data.data.accelMilliG.accelX, data.data.accelMilliG.accelY, data.data.accelMilliG.accelZ);
-	printf("<gyroX=%9.4f,=%9.4f,=%9.4f>\n",
+	ALOGD("<gyroX=%9.4f,=%9.4f,=%9.4f>\n",
 			data.data.gyroMilliDegreesPerSecond.gyroX, data.data.gyroMilliDegreesPerSecond.gyroY, data.data.gyroMilliDegreesPerSecond.gyroZ);
-	printf("<magFieldX=%9.4f,magFieldX=%9.4f,magFieldX=%9.4f>\n",
+	ALOGD("<magFieldX=%9.4f,magFieldX=%9.4f,magFieldX=%9.4f>\n",
 			data.data.magFieldMilliGauss.magFieldX, data.data.magFieldMilliGauss.magFieldY, data.data.magFieldMilliGauss.magFieldZ);
-	printf("====[data end]=====\n");
+	ALOGD("====[data end]=====\n");
 
 	for(i = 0; i < DATA_SIZE; i++) {
 #if 0
@@ -378,7 +382,7 @@ int SetAGM_STEP_A()
 		retg = readSensorData(temp[i*3+1], SENSOR_TYPE_GYROSCOPE);
 		retm = readSensorData(temp[i*3+2], SENSOR_TYPE_MAGNETIC_FIELD);
 		//sleep(75); //note: magn update time is 50ms
-		printf("\b=>");
+		ALOGD("\b=>");
 #else
 		sensor_thread->data = &temp[i*3];
 		sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
@@ -396,16 +400,16 @@ int SetAGM_STEP_A()
 	}
 	usleep(200000);
 
-	printf("====[temp start]=====\n");
+	ALOGD("====[temp start]=====\n");
 	for (i = 0; i < DATA_SIZE; i++) {
-		printf("temp[%d]:<accelX=%9.4f,accelY=%9.4f,accelZ=%9.4f>\n",i*3,
+		ALOGD("temp[%d]:<accelX=%9.4f,accelY=%9.4f,accelZ=%9.4f>\n",i*3,
 				temp[i*3].data.accelMilliG.accelX, temp[i*3].data.accelMilliG.accelY, temp[i*3].data.accelMilliG.accelZ);
-		printf("temp[%d]:<gyroX=%9.4f,=%9.4f,=%9.4f>\n",i*3+1,
+		ALOGD("temp[%d]:<gyroX=%9.4f,=%9.4f,=%9.4f>\n",i*3+1,
 				temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroX, temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroY, temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ);
-		printf("<temp[%d]:magFieldX=%9.4f,magFieldX=%9.4f,magFieldX=%9.4f>\n",i*3+2,
+		ALOGD("<temp[%d]:magFieldX=%9.4f,magFieldX=%9.4f,magFieldX=%9.4f>\n",i*3+2,
 				temp[i*3+2].data.magFieldMilliGauss.magFieldX, temp[i*3+2].data.magFieldMilliGauss.magFieldY, temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
 	}
-	printf("====[temp end]=====\n");
+	ALOGD("====[temp end]=====\n");
 
 	Filter(temp, DATA_SIZE);
 	if (1) {
@@ -430,17 +434,17 @@ int SetAGM_STEP_A()
 	sensor_thread_gyro->join();
 	sensor_thread_mag->join();
 	if (verbose)
-		printf("sensor thread terminated\n");
+		ALOGD("sensor thread terminated\n");
 
 	err = queue->disableSensor(sensor);
 	if (err != NO_ERROR) {
-		printf("disableSensor() for '%s'failed (%d)\n",
+		ALOGD("disableSensor() for '%s'failed (%d)\n",
 				getSensorName(type), err);
 		return 0;
 	}
 #endif
 
-	printf("The first step is completed\n");
+	ALOGD("The first step is completed\n");
 
 	return 0;
 
@@ -470,15 +474,15 @@ int SetAGM_STEP_B()
 
 	if (queue == NULL)
 	{
-		printf("createEventQueue returned NULL\n");
+		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_mag == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	}
+	} 
 	else {
 		count = mgr.getSensorList(&list);
 	}
@@ -488,22 +492,22 @@ int SetAGM_STEP_B()
 	Sensor const *sensor_mag = NULL;
 	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACCELEROMETER, incalibrate);
 	if (sensor_thread == NULL){
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYROSCOPE, incalibrate);
 	if (sensor_thread_gyro == NULL) {
-		printf("failed to create gyro sensor thread\n");
+		ALOGD("failed to create gyro sensor thread\n");
 		return 0;
 	}
 	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_MAGNETIC_FIELD, incalibrate);
 	if (sensor_thread_mag == NULL) {
-		printf("failed to create mag sensor thread\n");
+		ALOGD("failed to create mag sensor thread\n");
 		return 0;
 
 	}
 
-	printf("before run\n");
+	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i]->isWakeUpSensor() == wakeup) {
@@ -521,37 +525,37 @@ int SetAGM_STEP_B()
 		}
 	}
 	if (sensor == NULL){
-		printf("get sensor of type:Acc error\n");
+		ALOGD("get sensor of type:Acc error\n");
 		return 0;
 	}
 	if (sensor_gyro == NULL) {
-		printf("get sensor of type:Gyro error\n");
+		ALOGD("get sensor of type:Gyro error\n");
 		return 0;
 	}
 	if (sensor_mag == NULL) {
-		printf("get sensor of type:Mag error\n");
+		ALOGD("get sensor of type:Mag error\n");
 		return 0;
 	}
 
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type Acc  error\n");
+		ALOGD("enable sensor of type Acc  error\n");
 		//return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type gyro error\n");
+		ALOGD("enable sensor of type gyro error\n");
 		//return 0;
 	}
 
 	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type magcal error\n");
+		ALOGD("enable sensor of type magcal error\n");
 		//return 0;
 	}
 
-	printf("after acc gyro magcal enable\n");
+	ALOGD("after acc gyro magcal enable\n");
 
 
 
@@ -559,15 +563,15 @@ int SetAGM_STEP_B()
 	//==============================================
 	//step 2:
 
-	printf("[2/6]Rotate the screen 180 degrees clockwise so the Windows button is pointing due North\n");
-	//printf("Press enter when ready or press s to skip.\n");
+	ALOGD("[2/6]Rotate the screen 180 degrees clockwise so the Windows button is pointing due North\n");
+	//ALOGD("Press enter when ready or press s to skip.\n");
 
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 #if 0
 		retm = readSensorData(temp[i*3+2], SENSOR_TYPE_MAGNETIC_FIELD);
 		//sleep(75); //note: magn update time is 50ms
-		printf("\b=>");
+		ALOGD("\b=>");
 #else
 		sensor_thread_mag->data = &temp[i*3+2];
 		sensor_thread_mag->run("sensor-loop", PRIORITY_BACKGROUND);
@@ -576,7 +580,7 @@ int SetAGM_STEP_B()
 
 #endif
 	}
-	printf("\n");
+	ALOGD("\n");
 	Filter(temp, DATA_SIZE);
 
 	if (1) {
@@ -593,18 +597,18 @@ int SetAGM_STEP_B()
 	sensor_thread_gyro->join();
 	sensor_thread_mag->join();
 	if (verbose)
-		printf("sensor thread terminated\n");
+		ALOGD("sensor thread terminated\n");
 
 	err = queue->disableSensor(sensor);
 	if (err != NO_ERROR) {
-		printf("disableSensor() for '%s'failed (%d)\n",
+		ALOGD("disableSensor() for '%s'failed (%d)\n",
 				getSensorName(type), err);
 		return 0;
 	}
 
 #endif
 
-	printf("The 2nd step is completed\n");
+	ALOGD("The 2nd step is completed\n");
 	return 0;
 }
 
@@ -632,15 +636,15 @@ int SetAGM_STEP_C()
 
 	if (queue == NULL)
 	{
-		printf("createEventQueue returned NULL\n");
+		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_mag == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	}
+	} 
 	else {
 		count = mgr.getSensorList(&list);
 	}
@@ -650,22 +654,22 @@ int SetAGM_STEP_C()
 	Sensor const *sensor_mag = NULL;
 	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACCELEROMETER, incalibrate);
 	if (sensor_thread == NULL){
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYROSCOPE, incalibrate);
 	if (sensor_thread_gyro == NULL) {
-		printf("failed to create gyro sensor thread\n");
+		ALOGD("failed to create gyro sensor thread\n");
 		return 0;
 	}
 	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_MAGNETIC_FIELD, incalibrate);
 	if (sensor_thread_mag == NULL) {
-		printf("failed to create mag sensor thread\n");
+		ALOGD("failed to create mag sensor thread\n");
 		return 0;
 
 	}
 
-	printf("before run\n");
+	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i]->isWakeUpSensor() == wakeup) {
@@ -683,52 +687,52 @@ int SetAGM_STEP_C()
 		}
 	}
 	if (sensor == NULL){
-		printf("get sensor of type:Acc error\n");
+		ALOGD("get sensor of type:Acc error\n");
 		return 0;
 	}
 	if (sensor_gyro == NULL) {
-		printf("get sensor of type:gyr error\n");
+		ALOGD("get sensor of type:gyr error\n");
 		return 0;
 	}
 	if (sensor_mag == NULL) {
-		printf("get sensor of type:mag error\n");
+		ALOGD("get sensor of type:mag error\n");
 		return 0;
 	}
 
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type Acc  error\n");
+		ALOGD("enable sensor of type Acc  error\n");
 		//return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type gyro error\n");
+		ALOGD("enable sensor of type gyro error\n");
 		//return 0;
 	}
 
 	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type magcal error\n");
+		ALOGD("enable sensor of type magcal error\n");
 		//return 0;
 	}
 
-	printf("after acc gyro magcal enable\n");
+	ALOGD("after acc gyro magcal enable\n");
 
 
 
 
 	//==============================================
 	//step 3:
-	printf("[3/6]Now Lay the device flat, screen down with the windows button pointing due South\n");
-	//printf("Press enter when ready or press s to skip.\n");
+	ALOGD("[3/6]Now Lay the device flat, screen down with the windows button pointing due South\n");
+	//ALOGD("Press enter when ready or press s to skip.\n");
 
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 #if 0
 		retm = readSensorData(temp[i*3+2], SENSOR_TYPE_MAGNETIC_FIELD);
 		//sleep(75); //note: magn update time is 50ms
-		printf("\b=>");
+		ALOGD("\b=>");
 #else
 		sensor_thread_mag->data = &temp[i*3+2];
 		sensor_thread_mag->run("sensor-loop", PRIORITY_BACKGROUND);
@@ -736,14 +740,14 @@ int SetAGM_STEP_C()
 		usleep(100000);
 #endif
 	}
-	printf("\n");
+	ALOGD("\n");
 	Filter(temp, DATA_SIZE);
 	if (1) {
 		file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
 	}
 
 
-	printf("The 3rd step is completed\n");
+	ALOGD("The 3rd step is completed\n");
 
 	return 0;
 }
@@ -773,15 +777,15 @@ int SetAGM_STEP_D()
 
 	if (queue == NULL)
 	{
-		printf("createEventQueue returned NULL\n");
+		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_mag == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	}
+	} 
 	else {
 		count = mgr.getSensorList(&list);
 	}
@@ -791,22 +795,22 @@ int SetAGM_STEP_D()
 	Sensor const *sensor_mag = NULL;
 	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACCELEROMETER, incalibrate);
 	if (sensor_thread == NULL){
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYROSCOPE, incalibrate);
 	if (sensor_thread_gyro == NULL) {
-		printf("failed to create gyro sensor thread\n");
+		ALOGD("failed to create gyro sensor thread\n");
 		return 0;
 	}
 	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_MAGNETIC_FIELD, incalibrate);
 	if (sensor_thread_mag == NULL) {
-		printf("failed to create mag sensor thread\n");
+		ALOGD("failed to create mag sensor thread\n");
 		return 0;
 
 	}
 
-	printf("before run\n");
+	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i]->isWakeUpSensor() == wakeup) {
@@ -824,45 +828,45 @@ int SetAGM_STEP_D()
 		}
 	}
 	if (sensor == NULL){
-		printf("get sensor of type:Acc error\n");
+		ALOGD("get sensor of type:Acc error\n");
 		return 0;
 	}
 	if (sensor_gyro == NULL) {
-		printf("get sensor of type:Gyr error\n");
+		ALOGD("get sensor of type:Gyr error\n");
 		return 0;
 	}
 	if (sensor_mag == NULL) {
-		printf("get sensor of type:Mag error\n");
+		ALOGD("get sensor of type:Mag error\n");
 		return 0;
 	}
 
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type Acc  error\n");
+		ALOGD("enable sensor of type Acc  error\n");
 		//return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type gyro error\n");
+		ALOGD("enable sensor of type gyro error\n");
 		//return 0;
 	}
 
 	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type magcal error\n");
+		ALOGD("enable sensor of type magcal error\n");
 		//return 0;
 	}
 
-	printf("after acc gyro magcal enable\n");
+	ALOGD("after acc gyro magcal enable\n");
 
 
 
 
 	//==============================================
 	//step 4:
-	printf("[4/6]Lay the device flat with the screen up, rotate the device counter clockwise\n");
-	//printf("Press enter when ready or press s to skip.\n");
+	ALOGD("[4/6]Lay the device flat with the screen up, rotate the device counter clockwise\n");
+	//ALOGD("Press enter when ready or press s to skip.\n");
 	//FlushKeyBuffer();
 
 	//read the data...
@@ -907,7 +911,7 @@ int SetAGM_STEP_D()
 					buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
 				}
 				i++;
-				printf("\b=>");
+				ALOGD("\b=>");
 #else
 				sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
 				if (1) {
@@ -943,7 +947,7 @@ int SetAGM_STEP_D()
 				buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
 				buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
 			}
-#else
+#else 
 			sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
 			if (1) {
 				buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
@@ -960,11 +964,11 @@ int SetAGM_STEP_D()
 
 #endif
 			i++;
-			printf("\b=>");
+			ALOGD("\b=>");
 		}
 		//sleep(30);
 	}
-	printf("\n");
+	ALOGD("\n");
 	Filter(buf, SAMPLES);
 	if (1/*0 == retg*/) {
 		file_content.calibration.gyrozx = buf[1].data.gyroMilliDegreesPerSecond.gyroX;
@@ -978,7 +982,7 @@ int SetAGM_STEP_D()
 	delete []buf;
 
 
-	printf("The 4th step is completed\n");
+	ALOGD("The 4th step is completed\n");
 
 	return 0;
 }
@@ -1007,15 +1011,15 @@ int SetAGM_STEP_E()
 
 	if (queue == NULL)
 	{
-		printf("createEventQueue returned NULL\n");
+		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_mag == NULL) {
-		printf("queue_gyro: createEventQueue returned NULL\n");
+		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	}
+	} 
 	else {
 		count = mgr.getSensorList(&list);
 	}
@@ -1025,22 +1029,22 @@ int SetAGM_STEP_E()
 	Sensor const *sensor_mag = NULL;
 	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACCELEROMETER, incalibrate);
 	if (sensor_thread == NULL){
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYROSCOPE, incalibrate);
 	if (sensor_thread_gyro == NULL) {
-		printf("failed to create gyro sensor thread\n");
+		ALOGD("failed to create gyro sensor thread\n");
 		return 0;
 	}
 	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_MAGNETIC_FIELD, incalibrate);
 	if (sensor_thread_mag == NULL) {
-		printf("failed to create mag sensor thread\n");
+		ALOGD("failed to create mag sensor thread\n");
 		return 0;
 
 	}
 
-	printf("before run\n");
+	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i]->isWakeUpSensor() == wakeup) {
@@ -1058,37 +1062,37 @@ int SetAGM_STEP_E()
 		}
 	}
 	if (sensor == NULL){
-		printf("get sensor of type:Acc error\n");
+		ALOGD("get sensor of type:Acc error\n");
 		return 0;
 	}
 	if (sensor_gyro == NULL) {
-		printf("get sensor of type:Gyr error\n");
+		ALOGD("get sensor of type:Gyr error\n");
 		return 0;
 	}
 	if (sensor_mag == NULL) {
-		printf("get sensor of type:Mag error\n");
+		ALOGD("get sensor of type:Mag error\n");
 		return 0;
 	}
 
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type Acc  error\n");
+		ALOGD("enable sensor of type Acc  error\n");
 		//return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type gyro error\n");
+		ALOGD("enable sensor of type gyro error\n");
 		//return 0;
 	}
 
 	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		printf("enable sensor of type magcal error\n");
+		ALOGD("enable sensor of type magcal error\n");
 		//return 0;
 	}
 
-	printf("after acc gyro magcal enable\n");
+	ALOGD("after acc gyro magcal enable\n");
 
 
 
@@ -1096,8 +1100,8 @@ int SetAGM_STEP_E()
 	//==============================================
 
 	//step 5:
-	printf("[5/6]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise along the axis between the top of the screen and the windows button\n");
-	//printf("Press enter when ready or press s to skip.\n");
+	ALOGD("[5/6]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise along the axis between the top of the screen and the windows button\n");
+	//ALOGD("Press enter when ready or press s to skip.\n");
 	//FlushKeyBuffer();
 
 
@@ -1115,8 +1119,8 @@ int SetAGM_STEP_E()
 		//retg = readSensorData(data, SENSOR_TYPE_GYROSCOPE);
 		sensor_thread_gyro->run("sensor-loop", PRIORITY_BACKGROUND);
 
-		printf("in for\n");
-		usleep(200000);
+		ALOGD("in for\n");
+		usleep(200000); 
 		if (1/*0 == retg*/) {
 			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
 					data.data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
@@ -1144,7 +1148,7 @@ int SetAGM_STEP_E()
 					buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
 				}
 				i++;
-				printf("if=>\n");
+				ALOGD("if=>\n");
 			}
 		} else {
 			//reta = readSensorData(data, SENSOR_TYPE_ACCELEROMETER);
@@ -1164,11 +1168,11 @@ int SetAGM_STEP_E()
 				buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
 			}
 			i++;
-			printf("else=>\n");
+			ALOGD("else=>\n");
 		}
 		usleep(30000);
 	}
-	printf("\n");
+	ALOGD("\n");
 	Filter(buf, SAMPLES);
 	if (1/*0 == retg*/) {
 		file_content.calibration.gyroyx = buf[1].data.gyroMilliDegreesPerSecond.gyroX;
@@ -1186,7 +1190,7 @@ int SetAGM_STEP_E()
 	*/
 	delete []buf;
 
-	printf("The 5th step is completed\n");
+	ALOGD("The 5th step is completed\n");
 
 	Calibrated = 1;
 	file_content.config.calibrated = 1;
@@ -1201,7 +1205,7 @@ int SetAGM_STEP_F()
 	//saveStructureToFile("file_content.bin", &file_content, sizeof(SENSOR_CALIBRATION));
 
 	WriteDataToFileInTxt();
-	printf("Done.\n");
+	ALOGD("Done.\n");
 
 	return 0;
 

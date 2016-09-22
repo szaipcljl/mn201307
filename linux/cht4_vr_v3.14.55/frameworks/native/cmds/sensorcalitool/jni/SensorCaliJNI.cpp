@@ -21,7 +21,7 @@ extern int SetAGM_STEP_E();
 extern int SetAGM_STEP_F();
 #endif
 
-#if 1
+#if 0
  int SetAGM_STEP_A_test()
  {
 	ALOGE("ERROR: SetAGM_STEP_A_test.\n");
@@ -94,12 +94,12 @@ JNIEXPORT jint JNICALL Java_SensorCaliJNI_setAGMStepF(JNIEnv *env, jobject obj, 
 }
 
 static JNINativeMethod gMethods[] = {
-    {"nativeSetAGM_STEP_A", "()I",       (void*)SetAGM_STEP_A_test},
-	{"nativeSetAGM_STEP_B", "()I",       (void*)SetAGM_STEP_B_test},
-	{"nativeSetAGM_STEP_C", "()I",       (void*)SetAGM_STEP_C_test},
-	{"nativeSetAGM_STEP_D", "()I",       (void*)SetAGM_STEP_D_test},
-	{"nativeSetAGM_STEP_E", "()I",       (void*)SetAGM_STEP_E_test},
-	{"nativeSetAGM_STEP_F", "()I",       (void*)SetAGM_STEP_F_test}
+    {"nativeSetAGM_STEP_A", "()I",       (void*)SetAGM_STEP_A},
+	{"nativeSetAGM_STEP_B", "()I",       (void*)SetAGM_STEP_B},
+	{"nativeSetAGM_STEP_C", "()I",       (void*)SetAGM_STEP_C},
+	{"nativeSetAGM_STEP_D", "()I",       (void*)SetAGM_STEP_D},
+	{"nativeSetAGM_STEP_E", "()I",       (void*)SetAGM_STEP_E},
+	{"nativeSetAGM_STEP_F", "()I",       (void*)SetAGM_STEP_F}
 };
 
 jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
@@ -107,7 +107,7 @@ jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
     JNIEnv* env = NULL;
     jint result = -1;
 
-    ALOGE("JNI_OnLoad in sensor hub.\n");
+    ALOGD("JNI_OnLoad in sensor hub.\n");
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("ERROR: GetEnv failed\n");
         return -1;

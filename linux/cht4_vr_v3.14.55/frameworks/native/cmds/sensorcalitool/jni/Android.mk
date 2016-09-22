@@ -17,8 +17,7 @@ LOCAL_SHARED_LIBRARIES := \
 
 LOCAL_C_INCLUDES += \
 	frameworks/base/nitive/include \
-
-LOCAL_MODULE_RELATIVE_PATH := hw
+	
 LOCAL_MODULE:= libsensorcalitool
 
 LOCAL_MODULE_TAGS := optional

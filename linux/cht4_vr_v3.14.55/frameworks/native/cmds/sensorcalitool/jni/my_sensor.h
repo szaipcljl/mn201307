@@ -1,7 +1,7 @@
 
 typedef struct _SENSOR_DATA {
     union {
-        /*! \struct accelMilliG
+        /*! \struct accelMilliG 
         *  \brief Accelerometer sensor data.
         * */
         struct {

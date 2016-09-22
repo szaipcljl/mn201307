@@ -20,6 +20,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.intel.sensorhub.CalibrateStepCallack;
 
 public class SensorHubMain extends Activity {
@@ -99,16 +101,15 @@ public class SensorHubMain extends Activity {
 		ResultTextShow = (TextView) findViewById(R.id.result_text);
 		ResultTextShow.setText(getString(R.string.Calibrate_result_testing));
 
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mAccSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		mCompassSensor = mSensorManager
-				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+//		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//		mAccSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//		mCompassSensor = mSensorManager
+//				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+//		mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
 		iStepErrorCount = 0;
 		SetButtonListener();
 		
-		mDataFileSave = new DataFileSave(this);
 
 	}
 
@@ -130,6 +131,16 @@ public class SensorHubMain extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				DataFileSave mDataFileSave = new DataFileSave(getApplicationContext());
+				int result = mDataFileSave.SaveDataToSDCard();
+				if (result==0)
+				{
+				Toast.makeText(getApplicationContext(), getString(R.string.save_calibration_data_file_succes),
+					     Toast.LENGTH_SHORT).show();
+				}else{
+					Toast.makeText(getApplicationContext(), getString(R.string.save_calibration_data_file_fail),
+						     Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		attachOnTouchListener(mOutputCfgButton);
@@ -317,12 +328,12 @@ public class SensorHubMain extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		mSensorManager.registerListener(mAccEventListener, mAccSensor,
-				SensorManager.SENSOR_DELAY_UI);
-		mSensorManager.registerListener(mCompassEventListener, mCompassSensor,
-				SensorManager.SENSOR_DELAY_UI);
-		mSensorManager.registerListener(mGyroEventListener, mGyroSensor,
-				SensorManager.SENSOR_DELAY_UI);
+//		mSensorManager.registerListener(mAccEventListener, mAccSensor,
+//				SensorManager.SENSOR_DELAY_UI);
+//		mSensorManager.registerListener(mCompassEventListener, mCompassSensor,
+//				SensorManager.SENSOR_DELAY_UI);
+//		mSensorManager.registerListener(mGyroEventListener, mGyroSensor,
+//				SensorManager.SENSOR_DELAY_UI);
 
 	}
 
@@ -330,9 +341,9 @@ public class SensorHubMain extends Activity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		mSensorManager.unregisterListener(mAccEventListener);
-		mSensorManager.unregisterListener(mCompassEventListener);
-		mSensorManager.unregisterListener(mGyroEventListener);
+//		mSensorManager.unregisterListener(mAccEventListener);
+//		mSensorManager.unregisterListener(mCompassEventListener);
+//		mSensorManager.unregisterListener(mGyroEventListener);
 	}
 
 	@Override

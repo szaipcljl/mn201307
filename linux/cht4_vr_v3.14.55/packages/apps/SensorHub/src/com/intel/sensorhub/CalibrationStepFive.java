@@ -12,18 +12,22 @@ public class CalibrationStepFive  implements Runnable {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "start CalibrationStepFive");
 		SensorHubNativeInterface mSensorHubNativeInterface = new SensorHubNativeInterface();
-
+		int step_result = -1;
 		// Thread.sleep(2000);//step one
 		try {
-			mSensorHubNativeInterface.SetAGM_STEP_E();
+			step_result = mSensorHubNativeInterface.SetAGM_STEP_E();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		mCalibrateStepCallack.DoStepCallback(0);
+		if (step_result==0)
+		{
+			step_result = mSensorHubNativeInterface.SetAGM_STEP_F();
+		}
+		mCalibrateStepCallack.DoStepCallback(step_result);
 		
-		Log.d(TAG, "start CalibrationStepFive sleep 2000");
+		Log.d(TAG, "CalibrationStepFive end");
 	}
 	
 	void SetCallbackFun(CalibrateStepCallack cb)

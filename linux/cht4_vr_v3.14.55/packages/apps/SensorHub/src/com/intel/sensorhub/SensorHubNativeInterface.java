@@ -14,7 +14,6 @@ public class SensorHubNativeInterface {
 	public native int nativeSetAGM_STEP_F();
 
 	static {
-		//System.load("system/lib/sensorcalitool.so");
 		System.loadLibrary("sensorcalitool");
 	}
 
@@ -38,7 +37,7 @@ public class SensorHubNativeInterface {
 		return nativeSetAGM_STEP_E();
 	}
 
-	private int SetAGM_STEP_F() {
+	public int SetAGM_STEP_F() {
 		return nativeSetAGM_STEP_F();
 	}
 
