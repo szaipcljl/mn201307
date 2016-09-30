@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     TestJNI
+ * Method:    nativeCallbackInitilize
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_TestJNI_nativeCallbackInitilize
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     TestJNI
  * Method:    set
  * Signature: (I)V
  */
