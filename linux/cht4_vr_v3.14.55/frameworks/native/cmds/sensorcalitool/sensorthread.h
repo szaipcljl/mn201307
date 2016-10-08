@@ -6,13 +6,29 @@
 #include <gui/SensorManager.h>
 #include <gui/SensorEventQueue.h>
 
-#include"sensorcali.h"
-#include "my_sensor.h"
+#include <log/log.h>
+#undef LOG_TAG
+#define LOG_TAG "calitool"
 
-using namespace android;
-//int readSensorData(SENSOR_DATA_T& data,int type);
+/*
+ * used for adb debug
+ * Android.mk use "include $(BUILD_EXECUTABLE)" instead of
+ * "include $(BUILD_SHARED_LIBRARY)"
+ *
+ */
+
+#define DEBUG_USE_ADB 0
+#if DEBUG_USE_ADB
+#define ALOGD printf
+#endif
+
+#define SENSOR_TYPE_ACC_RAW (SENSOR_TYPE_DEVICE_PRIVATE_BASE+16)
+#define SENSOR_TYPE_GYRO_RAW (SENSOR_TYPE_DEVICE_PRIVATE_BASE+17)
+#define SENSOR_TYPE_COMPS_RAW (SENSOR_TYPE_DEVICE_PRIVATE_BASE+18)
+
 char const* getSensorName(int type);
 
+using namespace android;
 
 class SensorThread : public Thread
 {
@@ -21,8 +37,6 @@ class SensorThread : public Thread
 			: mSensorEventQueue(queue), mTypes(type), mIncalibrate(incalibrate), mCount(0) { }
 		~SensorThread() { }
 
-		SENSOR_DATA_T* data;
-
 	private:
 		virtual bool threadLoop();
 		sp<SensorEventQueue> mSensorEventQueue;
@@ -30,4 +44,3 @@ class SensorThread : public Thread
 		int mIncalibrate;
 		int mCount;
 };
-

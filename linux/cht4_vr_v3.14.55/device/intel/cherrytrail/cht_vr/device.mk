@@ -16,6 +16,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/../media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/../video_isv_profile.xml:system/etc/video_isv_profile.xml \
 
+# Sensor Calibration tool
+PRODUCT_PACKAGES += \
+	libsensorcalitool
 # Camera: Device-specific configuration files.
 PRODUCT_PACKAGES += \
     camera3_profiles.xml
