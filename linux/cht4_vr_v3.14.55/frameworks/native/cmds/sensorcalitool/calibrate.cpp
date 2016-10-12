@@ -88,6 +88,16 @@ SENSOR_CALIBRATION file_content ={
 	}
 };
 
+void child_handler(int signo)
+{
+
+	if(signo == SIGINT)	{
+		ALOGD("child_handler\n");
+		apk_exit = 1;
+	}
+
+}
+
 int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 {
 	int fd;
@@ -366,10 +376,17 @@ void *sensorAGM_read_data_loop(void *arg)
 
 	enable_finish = 1;
 	sensor_thread->join();
+	sensor_thread_gyro->join();
+	sensor_thread_mag->join();
 
 	while(1) {
-		if(1 == apk_exit)
+		ALOGD("after join(),go to while(1)\n");
+		usleep(2000000);
+
+		if(1 == apk_exit) {
+			ALOGD("when apk exit, sensorAGM_read_data_loop break\n");
 			break;
+		}
 	}
 
 	return NULL;
@@ -451,6 +468,7 @@ int SetAGM_STEP_A()
 	int ret_mag = 0;
 	pthread_t tid;
 
+	signal(SIGINT,child_handler);
 
 	ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
 	if(ret) {
@@ -491,7 +509,7 @@ int SetAGM_STEP_A()
 				data.data.magFieldMilliGauss.magFieldY,\
 				data.data.magFieldMilliGauss.magFieldZ);
 
-		usleep(50000);//note: magn update time is 50ms
+		usleep(200000);//note: magn update time is 50ms
 	}
 
 	for(i = 0; i < DATA_SIZE; i++) {//now read the data...
@@ -508,12 +526,12 @@ int SetAGM_STEP_A()
 				temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ);
 
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("<temp[%d][1/5]:magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
+		ALOGD("temp[%d][1/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldY,
 				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
 
-		usleep(50000);//note: magn update time is 50ms
+		usleep(200000);//note: magn update time is 50ms
 	}
 
 
@@ -556,7 +574,7 @@ int SetAGM_STEP_B()
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("<temp[%d][2/5]:magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
+		ALOGD("temp[%d][2/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldY,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
@@ -590,12 +608,12 @@ int SetAGM_STEP_C()
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("<temp[%d][3/5]:magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
+		ALOGD("temp[%d][3/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldY,\
 				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
 
-		usleep(50000);//note: magn update time is 50ms
+		usleep(200000);//note: magn update time is 50ms
 	}
 	Filter(temp, DATA_SIZE);
 	if (0 == ret_mag) {
@@ -628,7 +646,7 @@ int SetAGM_STEP_D()
 	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
 	for(i = 0; i< SAMPLES;)	{
-		usleep(20000); //gyro update is 20ms
+		usleep(200000); //gyro update is 20ms
 		ret_gyr = readGyrSensor(&data);
 		ALOGD("data[4/5]<gyroX=%9d,=%9d,=%9d>\n",\
 				data.data.gyroMilliDegreesPerSecond.gyroX,\
@@ -637,11 +655,11 @@ int SetAGM_STEP_D()
 
 		if (0 == ret_gyr) {//retg
 			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroX < -40000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY > 40000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY < -40000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ > 40000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ < -40000)	{
+					data.data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
+					data.data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
+					data.data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
+					data.data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
+					data.data.gyroMilliDegreesPerSecond.gyroZ < -45000)	{
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroX = data.data.gyroMilliDegreesPerSecond.gyroX;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroY = data.data.gyroMilliDegreesPerSecond.gyroY;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ = data.data.gyroMilliDegreesPerSecond.gyroZ;
@@ -747,7 +765,7 @@ int SetAGM_STEP_E()
 	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
 	for(i = 0; i< SAMPLES;) {
-		usleep(20000); //gyro update is 20ms
+		usleep(200000); //gyro update is 20ms
 
 		ret_gyr = readGyrSensor(&data);
 		ALOGD("data[5/5][if=>]<gyroX=%9d,=%9d,=%9d>\n",\
