@@ -10,6 +10,7 @@
 #include "sensorthread.h"
 
 #define AGM_SENSOR_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
+#define TXT_BUF_SIZE 1024
 
 
 void SwapData(SENSOR_DATA_T* a, SENSOR_DATA_T* b);
@@ -88,6 +89,7 @@ SENSOR_CALIBRATION file_content ={
 	}
 };
 
+#ifdef DEBUG_USE_ADB
 void child_handler(int signo)
 {
 
@@ -97,6 +99,7 @@ void child_handler(int signo)
 	}
 
 }
+#endif
 
 int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 {
@@ -118,7 +121,7 @@ int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 
 int WriteDataToFileInTxt()
 {
-	char buf[1024];
+	char buf[TXT_BUF_SIZE];
 	memset(buf,0xff,sizeof(buf));
 
 	sprintf(buf, \
@@ -285,8 +288,7 @@ void *sensorAGM_read_data_loop(void *arg)
 	int incalibrate = 0;
 
 
-	if (queue == NULL)
-	{
+	if (queue == NULL) {
 		ALOGD("createEventQueue returned NULL\n");
 		return 0;
 	} else if (queue_gyro == NULL) {
@@ -323,6 +325,8 @@ void *sensorAGM_read_data_loop(void *arg)
 	ALOGD("before run\n");
 
 	for (int i=0 ; i<count ; i++) {
+		if(list[i] == NULL)
+			break;
 		if(list[i]->isWakeUpSensor() == wakeup) {
 			switch (list[i]->getType()) {
 			case SENSOR_TYPE_ACC_RAW:
@@ -381,7 +385,7 @@ void *sensorAGM_read_data_loop(void *arg)
 
 	while(1) {
 		ALOGD("after join(),go to while(1)\n");
-		usleep(2000000);
+		usleep(100000);
 
 		if(1 == apk_exit) {
 			ALOGD("when apk exit, sensorAGM_read_data_loop break\n");
@@ -460,7 +464,7 @@ int ApkExit()
 
 int SetAGM_STEP_A()
 {
-
+	apk_exit = 0;//avoid to run app again failed
 	int i;
 	int ret;
 	int ret_acc = 0;
@@ -468,7 +472,9 @@ int SetAGM_STEP_A()
 	int ret_mag = 0;
 	pthread_t tid;
 
+#ifdef DEBUG_USE_ADB
 	signal(SIGINT,child_handler);
+#endif
 
 	ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
 	if(ret) {
