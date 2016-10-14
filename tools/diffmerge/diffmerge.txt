@@ -1,0 +1,14 @@
+ubuntu 14.04 安装 diffmerge
+
+
+1.官网下载
+
+	http://www.sourcegear.com/diffmerge/downloads.php
+
+2.安装
+
+    sudo dpkg -i diffmerge_4.2.0.697.stable_amd64.deb
+
+3.运行
+
+	diffmerge
