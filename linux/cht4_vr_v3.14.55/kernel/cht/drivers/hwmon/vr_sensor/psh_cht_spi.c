@@ -233,7 +233,7 @@ int read_psh_data(struct psh_ia_priv *ia_data)
 		long elapsedTime_t34 = timespec_to_ns(&t4) - timespec_to_ns(&t3);
 		long elapsedTime_t42 = timespec_to_ns(&t2) - timespec_to_ns(&t4);
 
-		dev_err(&psh_if_info->pshc->dev, "elapsedTime_t12 = %lld ns, t13 = %lld ns, t34 = %lld ns, t42 = %lld ns\n", 
+		dev_dbg(&psh_if_info->pshc->dev, "elapsedTime_t12 = %lld ns, t13 = %lld ns, t34 = %lld ns, t42 = %lld ns\n", 
 												elapsedTime_t12,
 												elapsedTime_t13,
 												elapsedTime_t34,
@@ -358,6 +358,11 @@ int process_send_cmd(struct psh_ia_priv *ia_data,
 
 		goto exit;
 	}
+
+		while(!gpio_get_value(psh_if_info->gpio_psh_int)){
+
+                       msleep(1);
+        }
 
 		spi_message_init(&msg);
 		spi_message_add_tail(&xfer, &msg);

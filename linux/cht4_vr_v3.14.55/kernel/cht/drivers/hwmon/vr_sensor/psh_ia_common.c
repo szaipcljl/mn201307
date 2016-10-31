@@ -291,6 +291,7 @@ int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
 	if (cmd->cmd_id == CMD_FW_UPDATE)
 		goto f_out;
 
+#if 0
 ack_wait:
 	if (!wait_for_completion_timeout(&psh_ia_data->cmd_comp,
 				5 * HZ)) {
@@ -304,6 +305,7 @@ ack_wait:
 				cmd_ack.ret);
 		ret = -EREMOTEIO;
 	}
+#endif 
 
 f_out:
 	psh_ia_data->cmd_ack = NULL;
