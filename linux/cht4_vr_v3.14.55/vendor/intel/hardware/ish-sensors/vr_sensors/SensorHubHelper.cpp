@@ -76,6 +76,12 @@ psh_sensor_t SensorHubHelper::getType(int sensorType, sensors_subname subname)
                 return SENSOR_ORIENTATION;
 		case SENSOR_TYPE_ROTATION_MATRIX:
 				return SENSOR_ROTATION_MATRIX;
+		case SENSOR_TYPE_ACC_RAW:
+				return SENSOR_ACC_RAW;
+		case SENSOR_TYPE_GYRO_RAW:
+				return SENSOR_GYRO_RAW;
+		case SENSOR_TYPE_COMPS_RAW:
+				return SENSOR_COMPS_RAW;
         case SENSOR_TYPE_GYROSCOPE_UNCALIBRATED:
         case SENSOR_TYPE_GYROSCOPE:
                 if (subname == SECONDARY)
@@ -305,7 +311,9 @@ size_t SensorHubHelper::getUnitSize(int sensorType)
 {
         switch (sensorType) {
         case SENSOR_TYPE_ACCELEROMETER:
+		case SENSOR_TYPE_ACC_RAW:
                 return sizeof(struct accel_data);
+		case SENSOR_TYPE_COMPS_RAW:
         case SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED:
         case SENSOR_TYPE_MAGNETIC_FIELD:
                 return sizeof(struct compass_raw_data);
@@ -313,6 +321,7 @@ size_t SensorHubHelper::getUnitSize(int sensorType)
                 return sizeof(struct orientation_data);
         case SENSOR_TYPE_ROTATION_MATRIX:
                 return sizeof(struct rot_matrix_raw_data);
+		case SENSOR_TYPE_GYRO_RAW:
         case SENSOR_TYPE_GYROSCOPE_UNCALIBRATED:
         case SENSOR_TYPE_GYROSCOPE:
                 return sizeof(struct gyro_raw_data);
@@ -406,6 +415,7 @@ ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* e
         //ALOGE("%s sensorType: %d", __FUNCTION__, sensorType);
 
         switch (sensorType) {
+        case SENSOR_TYPE_ACC_RAW:
         case SENSOR_TYPE_ACCELEROMETER:
                 for (unsigned int i = 0; i < count; i++) {
                         events[i].data[0] = (reinterpret_cast<struct accel_data*>(stream))[i].x;
@@ -414,9 +424,10 @@ ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* e
                         events[i].accuracy = getVectorStatus(sensorType);
                         events[i].timestamp = (reinterpret_cast<struct accel_data*>(stream))[i].ts;
 			
-                        //ALOGE("%s line: %d ACC: x=%d,  y=%d, z=%d, ts=%lld",__FUNCTION__, __LINE__, events[i].data[0], events[i].data[1], events[i].data[2], events[i].timestamp);
+                        ALOGE("%s line: %d ACC: x=%d,  y=%d, z=%d, ts=%lld",__FUNCTION__, __LINE__, events[i].data[0], events[i].data[1], events[i].data[2], events[i].timestamp);
                 }
                 break;
+		case SENSOR_TYPE_COMPS_RAW:
         case SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED:
         case SENSOR_TYPE_MAGNETIC_FIELD:
                 for (unsigned int i = 0; i < count; i++) {
@@ -445,6 +456,7 @@ ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* e
                     events[i].timestamp = (reinterpret_cast<struct rot_matrix_raw_data*>(stream))[i].ts;
                 }
                 break;
+		case SENSOR_TYPE_GYRO_RAW:
         case SENSOR_TYPE_GYROSCOPE_UNCALIBRATED:
         case SENSOR_TYPE_GYROSCOPE:
                 for (unsigned int i = 0; i < count; i++) {

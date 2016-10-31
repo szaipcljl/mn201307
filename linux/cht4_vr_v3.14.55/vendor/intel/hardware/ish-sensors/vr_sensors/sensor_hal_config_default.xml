@@ -29,6 +29,48 @@
       <fifoMaxEventCount>128</fifoMaxEventCount>
     </device>
   </sensor>
+   <sensor type="acc_raw" category="libsensorhub">
+    <device>
+      <name>PSH ACC RAW</name>
+      <vendor>Intel Inc.</vendor>
+      <version>1</version>
+      <maxRange unit="GRAVITY_EARTH">4</maxRange>
+      <resolution unit="GRAVITY_EARTH">0.000976562</resolution>
+      <power>0.006</power>
+      <minDelay>10000</minDelay>
+      <maxDelay>1000000</maxDelay>
+      <scale axis_x="0.001" axis_y="0.001" axis_z="0.001" unit="GRAVITY_EARTH"></scale>
+      <fifoMaxEventCount>128</fifoMaxEventCount>
+    </device>
+  </sensor> 
+  <sensor type="gyro_raw" category="libsensorhub">
+    <device>
+      <name>PSH GYRO RAW</name>
+      <vendor>Intel Inc.</vendor>
+      <version>1</version>
+      <maxRange unit="GRAVITY_EARTH">4</maxRange>
+      <resolution unit="GRAVITY_EARTH">0.000976562</resolution>
+      <power>0.006</power>
+      <minDelay>10000</minDelay>
+      <maxDelay>1000000</maxDelay>
+      <scale axis_x="0.001" axis_y="0.001" axis_z="0.001" unit="GRAVITY_EARTH"></scale>
+      <fifoMaxEventCount>128</fifoMaxEventCount>
+    </device>
+  </sensor> 
+    <sensor type="comps_raw" category="libsensorhub">
+    <device>
+      <name>PSH COMPS RAW</name>
+      <vendor>Intel Inc.</vendor>
+      <version>1</version>
+      <maxRange unit="GRAVITY_EARTH">4</maxRange>
+      <resolution unit="GRAVITY_EARTH">0.000976562</resolution>
+      <power>0.006</power>
+      <minDelay>10000</minDelay>
+      <maxDelay>1000000</maxDelay>
+      <scale axis_x="0.001" axis_y="0.001" axis_z="0.001" unit="GRAVITY_EARTH"></scale>
+      <fifoMaxEventCount>128</fifoMaxEventCount>
+    </device>
+  </sensor> 
   <sensor type="light" category="libsensorhub">
     <device>
       <name>PSH Ambient Light sensor</name>

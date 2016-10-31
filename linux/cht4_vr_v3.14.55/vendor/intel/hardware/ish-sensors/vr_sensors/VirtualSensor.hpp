@@ -19,6 +19,9 @@
 #define SENSOR_TYPE_LIFT                    SENSOR_TYPE_DEVICE_PRIVATE_BASE + 13
 #define SENSOR_TYPE_PAN_ZOOM                SENSOR_TYPE_DEVICE_PRIVATE_BASE + 14
 #define SENSOR_TYPE_ROTATION_MATRIX         SENSOR_TYPE_DEVICE_PRIVATE_BASE + 15
+#define SENSOR_TYPE_ACC_RAW                 SENSOR_TYPE_DEVICE_PRIVATE_BASE + 16
+#define SENSOR_TYPE_GYRO_RAW                 SENSOR_TYPE_DEVICE_PRIVATE_BASE + 17
+#define SENSOR_TYPE_COMPS_RAW                 SENSOR_TYPE_DEVICE_PRIVATE_BASE + 18
 #define SENSOR_TYPE_CALIBRATION             110
 
 // SENSOR_STRING_TYPE_XXX
@@ -38,6 +41,9 @@
 #define SENSOR_STRING_TYPE_PAN_ZOOM             "intel.sensor.pan_zoom"
 #define SENSOR_STRING_TYPE_CALIBRATION          "intel.sensor.calibration"
 #define SENSOR_STRING_TYPE_ROTATION_MATRIX      "intel.sensor.rotation_matrix"
+#define SENSOR_STRING_TYPE_ACC_RAW              "intel.sensor.acc_raw"
+#define SENSOR_STRING_TYPE_GYRO_RAW              "intel.sensor.gyro_raw"
+#define SENSOR_STRING_TYPE_COMPS_RAW              "intel.sensor.comps_raw"
 
 // Sensor event types
 

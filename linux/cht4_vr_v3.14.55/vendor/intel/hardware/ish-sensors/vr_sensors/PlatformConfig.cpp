@@ -355,6 +355,12 @@ int PlatformConfig::getType(std::string type)
                 return SENSOR_TYPE_ACCELEROMETER;
         else if (type.compare(0, 15, "rotation_matrix") == 0)
                 return SENSOR_TYPE_ROTATION_MATRIX;
+		else if (type.compare(0, 7, "acc_raw") == 0)
+				return SENSOR_TYPE_ACC_RAW; 
+		else if (type.compare(0, 8, "gyro_raw") == 0)
+				return SENSOR_TYPE_GYRO_RAW; 
+		else if (type.compare(0, 9, "comps_raw") == 0)
+				return SENSOR_TYPE_COMPS_RAW; 
         else if (type.compare(0, 7, "compass")==0)
                 return SENSOR_TYPE_MAGNETIC_FIELD;
         else if (type.compare(0, 9, "gyroscope")==0)
@@ -440,6 +446,12 @@ const char* PlatformConfig::getStringType(int sensorType)
                 return SENSOR_STRING_TYPE_LIGHT;
         case SENSOR_TYPE_ROTATION_MATRIX:
                 return SENSOR_STRING_TYPE_ROTATION_MATRIX;
+		case SENSOR_TYPE_ACC_RAW:
+				return SENSOR_STRING_TYPE_ACC_RAW;
+		case SENSOR_TYPE_GYRO_RAW:
+				return SENSOR_STRING_TYPE_GYRO_RAW;
+		case SENSOR_TYPE_COMPS_RAW:
+				return SENSOR_STRING_TYPE_COMPS_RAW;
         case SENSOR_TYPE_PROXIMITY:
                 return SENSOR_STRING_TYPE_PROXIMITY;
         case SENSOR_TYPE_ACCELEROMETER:
@@ -542,6 +554,9 @@ uint32_t PlatformConfig::getFlags(int sensorType)
         case SENSOR_TYPE_MAGNETIC_FIELD:
         case SENSOR_TYPE_GYROSCOPE:
         case SENSOR_TYPE_ROTATION_MATRIX:
+		case SENSOR_TYPE_ACC_RAW:
+		case SENSOR_TYPE_GYRO_RAW:
+		case SENSOR_TYPE_COMPS_RAW:
         case SENSOR_TYPE_PRESSURE:
         case SENSOR_TYPE_TEMPERATURE:
         case SENSOR_TYPE_AMBIENT_TEMPERATURE:
@@ -601,6 +616,9 @@ sensors_event_property_t PlatformConfig::getEventProperty(int type)
         case SENSOR_TYPE_ORIENTATION:
         case SENSOR_TYPE_GYROSCOPE:
         case SENSOR_TYPE_ROTATION_MATRIX:
+        case SENSOR_TYPE_ACC_RAW:
+        case SENSOR_TYPE_GYRO_RAW:
+        case SENSOR_TYPE_COMPS_RAW:
                 return VECTOR;
         case SENSOR_TYPE_LIGHT:
         case SENSOR_TYPE_PRESSURE:

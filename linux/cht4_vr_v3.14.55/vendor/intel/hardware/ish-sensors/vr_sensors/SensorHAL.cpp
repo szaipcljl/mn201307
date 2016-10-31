@@ -68,6 +68,9 @@ static bool initSensors()
                         case SENSOR_TYPE_MAGNETIC_FIELD:
                         case SENSOR_TYPE_GYROSCOPE:
                         case SENSOR_TYPE_ROTATION_MATRIX:
+						case SENSOR_TYPE_ACC_RAW:
+						case SENSOR_TYPE_GYRO_RAW:
+						case SENSOR_TYPE_COMPS_RAW:
                         case SENSOR_TYPE_PRESSURE:
                         case SENSOR_TYPE_LIGHT:
                         case SENSOR_TYPE_PROXIMITY:
@@ -128,6 +131,9 @@ static bool initSensors()
                         case SENSOR_TYPE_MAGNETIC_FIELD:
                         case SENSOR_TYPE_GYROSCOPE:
                         case SENSOR_TYPE_ROTATION_MATRIX:
+						case SENSOR_TYPE_ACC_RAW:
+						case SENSOR_TYPE_GYRO_RAW:
+						case SENSOR_TYPE_COMPS_RAW:
                         case SENSOR_TYPE_PRESSURE:
                         case SENSOR_TYPE_LIGHT:
                         case SENSOR_TYPE_PROXIMITY:
