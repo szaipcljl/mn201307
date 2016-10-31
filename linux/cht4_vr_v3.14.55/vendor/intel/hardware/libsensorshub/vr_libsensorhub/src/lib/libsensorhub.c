@@ -293,9 +293,10 @@ error_t psh_start_streaming_with_flag(handle_t handle, int data_rate, int buffer
 
 	ret = psh_send_recv_cmd_locked(session_context->ctlfd, &cmd, message,
                                        sizeof(cmd), MAX_MESSAGE_LENGTH, &session_context->ctlfd_lock);
+
+#if 0
 	if (ret)
 		return ret;
-
 	event_type = *((int *) message);
 	if (event_type != EVENT_CMD_ACK)
 		return ERROR_CAN_NOT_GET_REPLY;
@@ -304,6 +305,7 @@ error_t psh_start_streaming_with_flag(handle_t handle, int data_rate, int buffer
 
 	if (p_cmd_ack->ret != E_SUCCESS)
 		return ERROR_DATA_RATE_NOT_SUPPORTED;
+#endif 
 
 	return ERROR_NONE;
 }

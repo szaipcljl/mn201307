@@ -49,14 +49,14 @@ typedef enum {
 	E_LBUF_COMM = -11
 } cmd_ack_ret_t;
 
-#define SNR_NAME_MAX_LEN	5
+#define SNR_NAME_MAX_LEN	10
 
 struct sensor_name {
         char name[SNR_NAME_MAX_LEN + 1];
 };
 
 struct sensor_name sensor_type_to_name_str[SENSOR_MAX] = {
-	{"ACCEL"}, {"GYRO"}, {"COMPS"}, {"ROTM"} ,{"BARO"}, {"ALS_P"}, {"PS_P"}, {"TERMC"}, {"LPE_P"},
+	{"ACCEL"}, {"GYRO"}, {"COMPS"}, {"ROTM"} ,{"ACC_RAW"},{"GYRO_RAW"},{"COMPS_RAW"},{"BARO"}, {"ALS_P"}, {"PS_P"}, {"TERMC"}, {"LPE_P"},
 	{"ACC1"}, {"GYRO1"}, {"COMP1"}, {"ALS1"}, {"PS1"}, {"BARO1"}, {"PHYAC"}, {"GSSPT"},
 	{"GSFLK"}, {"RVECT"}, {"GRAVI"}, {"LACCL"}, {"ORIEN"}, {"COMPC"}, {"GYROC"}, {"9DOF"},
 	{"PEDOM"}, {"MAGHD"}, {"SHAKI"}, {"MOVDT"}, {"STAP"}, {"PZOOM"}, {"LTVTL"}, {"DVPOS"},

@@ -2361,10 +2361,27 @@ static int fake_sensor_enumeration()
 			.freq_max = 400,
 			.name = "ROTM",
 		},
+		[4]={
+			.id = 5,
+			.freq_max = 400,
+			.name = "ACC_RAW",
+		},
+		[5]={
+			.id = 6,
+			.freq_max = 400,
+			.name = "GYRO_RAW",
+		},
+		[6]={
+			.id = 7,
+			.freq_max = 400,
+			.name = "COMPS_RAW",
+		},
 
 	};
 
-	for(i=0; i<4; i++)
+	int sensor_num = sizeof(fake_sensor_table) / sizeof(struct sensor_info);
+
+	for(i=0; i<sensor_num; i++)
 	{
 		sensor_list[current_sensor_index].sensor_id = fake_sensor_table[i].id;
 		sensor_list[current_sensor_index].freq_max = fake_sensor_table[i].freq_max;
@@ -2468,7 +2485,7 @@ static void get_status()
 		memset(&sensor_list[current_sensor_index], 0, sizeof(sensor_state_t));
 	}
 
-	memcpy(sensor_list[current_sensor_index].name, "EVENT", SNR_NAME_MAX_LEN);
+	strncpy(sensor_list[current_sensor_index].name, "EVENT", sizeof("EVENT"));
 	current_sensor_index++;
 
 	gettimeofday(&tv1, NULL);

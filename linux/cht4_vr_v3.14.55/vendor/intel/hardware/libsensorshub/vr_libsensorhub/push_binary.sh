@@ -1,3 +1,5 @@
+sudo adb root
+sudo adb disable-verity
 sudo adb remount
 
 #$TARGET = system/vendor
