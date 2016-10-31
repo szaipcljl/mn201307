@@ -93,7 +93,7 @@ SENSOR_CALIBRATION file_content ={
 void child_handler(int signo)
 {
 
-	if(signo == SIGINT)	{
+	if(signo == SIGINT) {
 		ALOGD("child_handler\n");
 		apk_exit = 1;
 	}
@@ -122,9 +122,10 @@ int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 int WriteDataToFileInTxt()
 {
 	char buf[TXT_BUF_SIZE];
+	int len = 0;
 	memset(buf,0xff,sizeof(buf));
 
-	sprintf(buf, \
+	len = snprintf(buf, sizeof(buf),\
 			//mag
 			"magnx=%d, magny=%d, magnz=%d,\n"  \
 			"magnxnx=%d, magnxny=%d, magnxnz=%d,\n" \
@@ -179,6 +180,12 @@ int WriteDataToFileInTxt()
 			file_content.calibration.alscurve[15] , file_content.calibration.alscurve[16] , file_content.calibration.alscurve[17] ,\
 			file_content.calibration.alscurve[18] , file_content.calibration.alscurve[19] ,\
 			file_content.calibration.als_multiplier);
+
+	printf("len = %d\n", len);
+	if (0 > len) {
+		printf("an output error for setAGM_cal.txt, len = %d\n.", len);
+		return -1;
+	}
 
 	FILE* pFile = fopen("/storage/emulated/0/setAGM_cal.txt", "w+");
 	if (!pFile)
@@ -278,29 +285,35 @@ void *sensorAGM_read_data_loop(void *arg)
 	sp<SensorThread> sensor_thread_gyro;
 	sp<SensorThread> sensor_thread_mag;
 
-	SensorManager &mgr(SensorManager::getInstance());
-	sp<SensorEventQueue> queue = mgr.createEventQueue();
-	sp<SensorEventQueue> queue_gyro = mgr.createEventQueue();
-	sp<SensorEventQueue> queue_mag = mgr.createEventQueue();
-
 	Sensor const* const* list;
 	int count;
 	int incalibrate = 0;
 
+	SensorManager &mgr(SensorManager::getInstance());
 
+	sp<SensorEventQueue> queue = mgr.createEventQueue();
 	if (queue == NULL) {
 		ALOGD("createEventQueue returned NULL\n");
 		return 0;
-	} else if (queue_gyro == NULL) {
+	}
+
+	sp<SensorEventQueue> queue_gyro = mgr.createEventQueue();
+	if (queue_gyro == NULL) {
 		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	} else if (queue_mag == NULL) {
+	} 
+
+	sp<SensorEventQueue> queue_mag = mgr.createEventQueue();
+	if (queue_mag == NULL) {
 		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
 	}
-	else {
-		count = mgr.getSensorList(&list);
-	}
+
+	count = mgr.getSensorList(&list);
+	if(list == NULL)
+		return 0;
+
+
 
 	Sensor const *sensor = NULL;
 	Sensor const *sensor_gyro = NULL;
@@ -357,7 +370,7 @@ void *sensorAGM_read_data_loop(void *arg)
 	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
 				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
 		ALOGD("enable sensor of type Acc  error\n");
-		//return 0;
+		return 0;
 	}
 
 	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
