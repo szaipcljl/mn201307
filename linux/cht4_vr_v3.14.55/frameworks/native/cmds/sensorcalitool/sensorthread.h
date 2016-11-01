@@ -17,8 +17,8 @@
  *
  */
 
-#define DEBUG_USE_ADB 0
-#if DEBUG_USE_ADB
+#ifdef DEBUG_USE_ADB
+#undef ALOGD
 #define ALOGD printf
 #endif
 

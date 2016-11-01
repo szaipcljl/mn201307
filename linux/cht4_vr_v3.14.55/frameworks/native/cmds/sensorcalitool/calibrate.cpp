@@ -475,6 +475,76 @@ int ApkExit()
 	return 0;
 }
 
+
+void printAccData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+{
+	int PARAM_TEMP = 1;
+
+	ALOGD("[%d/5]", step);
+
+	if(tempFlag == PARAM_TEMP)
+		ALOGD("temp[%2d]", index);
+	else
+		ALOGD("data");
+
+	ALOGD(": <accelX   =%7d,\taccelY   =%7d,\taccelZ   =%7d>\n",\
+			data->data.accelMilliG.accelX,\
+			data->data.accelMilliG.accelY,\
+			data->data.accelMilliG.accelZ);
+}
+
+void printGyroData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+{
+	int PARAM_TEMP = 1;
+
+	ALOGD("[%d/5]", step);
+
+	if(tempFlag == PARAM_TEMP)
+		ALOGD("temp[%2d]", index);
+	else
+		ALOGD("data");
+
+	ALOGD(": <gyroX    =%7d,\tgyroY    =%7d,\tgyroZ    =%7d>\n",\
+			data->data.gyroMilliDegreesPerSecond.gyroX,\
+			data->data.gyroMilliDegreesPerSecond.gyroY,\
+			data->data.gyroMilliDegreesPerSecond.gyroZ);
+}
+
+void printMagnData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+{
+	int PARAM_TEMP = 1;
+
+	ALOGD("[%d/5]", step);
+
+	if(tempFlag == PARAM_TEMP)
+		ALOGD("temp[%2d]", index);
+	else
+		ALOGD("data");
+
+	ALOGD(": <magFieldX=%7d,\tmagFieldX=%7d,\tmagFieldX=%7d>\n",\
+			data->data.magFieldMilliGauss.magFieldX,\
+			data->data.magFieldMilliGauss.magFieldY,
+			data->data.magFieldMilliGauss.magFieldZ);
+}
+
+void skipData(int count)
+{
+	int i;
+
+	for(i =0; i < count; i++) {// skip 10 data...
+		readAccSensor(&data);
+		printAccData(1,&data,0,0);
+
+		readGyrSensor(&data);
+		printGyroData(1,&data,0,0);
+
+		readMagSensor(&data);
+		printMagnData(1,&data,0,0);
+
+		usleep(200000);//note: magn update time is 50ms
+	}
+}
+ 
 int SetAGM_STEP_A()
 {
 	apk_exit = 0;//avoid to run app again failed
@@ -507,48 +577,17 @@ int SetAGM_STEP_A()
 	//ALOGD("[1/5]Lay the device on a flat surface with the Windows button pointing due South\n");
 
 	//read the data...
-	for(i =0; i < SKIP_DATA; i++) {// skip 10 data...
-
-
-		ret_acc = readAccSensor(&data);
-		ALOGD("data[1/5]<accelX=%9d,accelY=%9d,accelZ=%9d>\n",\
-				data.data.accelMilliG.accelX,\
-				data.data.accelMilliG.accelY,\
-				data.data.accelMilliG.accelZ);
-
-		ret_gyr = readGyrSensor(&data);
-		ALOGD("data[1/5]<gyroX=%9d,=%9d,=%9d>\n",\
-				data.data.gyroMilliDegreesPerSecond.gyroX,\
-				data.data.gyroMilliDegreesPerSecond.gyroY,\
-				data.data.gyroMilliDegreesPerSecond.gyroZ);
-
-		ret_mag = readMagSensor(&data);
-		ALOGD("data[1/5]<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",\
-				data.data.magFieldMilliGauss.magFieldX,\
-				data.data.magFieldMilliGauss.magFieldY,\
-				data.data.magFieldMilliGauss.magFieldZ);
-
-		usleep(200000);//note: magn update time is 50ms
-	}
+	skipData(SKIP_DATA);
 
 	for(i = 0; i < DATA_SIZE; i++) {//now read the data...
 		ret_acc = readAccSensor(&temp[i*3]);
-		ALOGD("temp[%d][1/5]:<accelX=%9d,accelY=%9d,accelZ=%9d>\n",i*3,\
-				temp[i*3].data.accelMilliG.accelX,\
-				temp[i*3].data.accelMilliG.accelY,\
-				temp[i*3].data.accelMilliG.accelZ);
+		printAccData(1,&temp[i*3],1,i*3);
 
 		ret_gyr = readGyrSensor(&temp[i*3+1]);
-		ALOGD("temp[%d][1/5]:<gyroX=%9d,=%9d,=%9d>\n",i*3+1,\
-				temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroX,\
-				temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroY,\
-				temp[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ);
+		printGyroData(1,&temp[i*3+1],1,i*3+1);
 
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("temp[%d][1/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldY,
-				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
+		printMagnData(1,&temp[i*3+2],1,i*3+2);
 
 		usleep(200000);//note: magn update time is 50ms
 	}
@@ -560,16 +599,19 @@ int SetAGM_STEP_A()
 		file_content.calibration.acclzx = temp[0].data.accelMilliG.accelX;
 		file_content.calibration.acclzy = temp[0].data.accelMilliG.accelY;
 		file_content.calibration.acclzz = temp[0].data.accelMilliG.accelZ;
+		printAccData(1,&temp[0],1,0);
 	}
 	if (0 == ret_gyr) {
 		file_content.calibration.gyrox = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
 		file_content.calibration.gyroy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
 		file_content.calibration.gyroz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
+		printGyroData(1,&temp[1],1,1);
 	}
 	if (0 == ret_mag) {
 		file_content.calibration.magnxnx = temp[2].data.magFieldMilliGauss.magFieldX;
 		file_content.calibration.magnxny = temp[2].data.magFieldMilliGauss.magFieldY;
 		file_content.calibration.magnxnz = temp[2].data.magFieldMilliGauss.magFieldZ;
+		printMagnData(1,&temp[2],1,2);
 	}
 
 
@@ -593,10 +635,7 @@ int SetAGM_STEP_B()
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("temp[%d][2/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldY,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
+		printMagnData(2,&temp[i*3+2],1,i*3+2);
 		usleep(50000); //note: magn update time is 50ms
 	}
 
@@ -627,10 +666,7 @@ int SetAGM_STEP_C()
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
 		ret_mag = readMagSensor(&temp[i*3+2]);
-		ALOGD("temp[%d][3/5]:<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",i*3+2,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldX,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldY,\
-				temp[i*3+2].data.magFieldMilliGauss.magFieldZ);
+		printMagnData(3,&temp[i*3+2],1,i*3+2);
 
 		usleep(200000);//note: magn update time is 50ms
 	}
@@ -667,10 +703,7 @@ int SetAGM_STEP_D()
 	for(i = 0; i< SAMPLES;)	{
 		usleep(200000); //gyro update is 20ms
 		ret_gyr = readGyrSensor(&data);
-		ALOGD("data[4/5]<gyroX=%9d,=%9d,=%9d>\n",\
-				data.data.gyroMilliDegreesPerSecond.gyroX,\
-				data.data.gyroMilliDegreesPerSecond.gyroY,\
-				data.data.gyroMilliDegreesPerSecond.gyroZ);
+		printGyroData(4,&data,0,0);
 
 		if (0 == ret_gyr) {//retg
 			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
@@ -679,16 +712,14 @@ int SetAGM_STEP_D()
 					data.data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
 					data.data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
 					data.data.gyroMilliDegreesPerSecond.gyroZ < -45000)	{
+				ALOGD("[if=>]\n");
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroX = data.data.gyroMilliDegreesPerSecond.gyroX;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroY = data.data.gyroMilliDegreesPerSecond.gyroY;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ = data.data.gyroMilliDegreesPerSecond.gyroZ;
 
 
 				ret_acc = readAccSensor(&data);
-				ALOGD("data[4/5][if=>]<accelX=%9d,accelY=%9d,accelZ=%9d>\n",\
-						data.data.accelMilliG.accelX,\
-						data.data.accelMilliG.accelY,\
-						data.data.accelMilliG.accelZ);
+				printAccData(4,&data,0,0);
 				if (0 == ret_acc) {
 					buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
 					buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
@@ -696,10 +727,7 @@ int SetAGM_STEP_D()
 				}
 
 				ret_mag = readMagSensor(&data);
-				ALOGD("data[4/5][if=>]<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",\
-						data.data.magFieldMilliGauss.magFieldX,\
-						data.data.magFieldMilliGauss.magFieldY,\
-						data.data.magFieldMilliGauss.magFieldZ);
+				printMagnData(4,&data,0,0);
 				if (0 == ret_mag) {
 					buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
 					buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
@@ -712,11 +740,9 @@ int SetAGM_STEP_D()
 
 			}
 		} else {
+			ALOGD("[else=>]\n");
 			ret_acc = readAccSensor(&data);
-			ALOGD("data[4/5][else=>]<accelX=%9d,accelY=%9d,accelZ=%9d>\n",\
-					data.data.accelMilliG.accelX,\
-					data.data.accelMilliG.accelY,\
-					data.data.accelMilliG.accelZ);
+			printAccData(4,&data,0,0);
 			if (0 == ret_acc) {
 				buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
 				buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
@@ -724,10 +750,7 @@ int SetAGM_STEP_D()
 			}
 
 			ret_mag = readMagSensor(&data);
-			ALOGD("data[4/5][else=>]<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",\
-					data.data.magFieldMilliGauss.magFieldX,\
-					data.data.magFieldMilliGauss.magFieldY,\
-					data.data.magFieldMilliGauss.magFieldZ);
+			printMagnData(4,&data,0,0);
 			if (0 == ret_mag) {
 				buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
 				buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
@@ -787,10 +810,7 @@ int SetAGM_STEP_E()
 		usleep(200000); //gyro update is 20ms
 
 		ret_gyr = readGyrSensor(&data);
-		ALOGD("data[5/5][if=>]<gyroX=%9d,=%9d,=%9d>\n",\
-				data.data.gyroMilliDegreesPerSecond.gyroX,\
-				data.data.gyroMilliDegreesPerSecond.gyroY,\
-				data.data.gyroMilliDegreesPerSecond.gyroZ);
+		printGyroData(5,&data,0,0);
 
 		if (0 == ret_gyr) {
 			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
@@ -799,15 +819,13 @@ int SetAGM_STEP_E()
 					data.data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
 					data.data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
 					data.data.gyroMilliDegreesPerSecond.gyroZ < -45000)	{
+				ALOGD("[if=>]\n");
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroX = data.data.gyroMilliDegreesPerSecond.gyroX;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroY = data.data.gyroMilliDegreesPerSecond.gyroY;
 				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ = data.data.gyroMilliDegreesPerSecond.gyroZ;
 
 				ret_acc = readAccSensor(&data);
-				ALOGD("data[5/5][if=>]<accelX=%9d,accelY=%9d,accelZ=%9d>\n",\
-						data.data.accelMilliG.accelX,\
-						data.data.accelMilliG.accelY,\
-						data.data.accelMilliG.accelZ);
+				printAccData(5,&data,0,0);
 				if (0 == ret_acc) {
 					buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
 					buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
@@ -815,10 +833,7 @@ int SetAGM_STEP_E()
 				}
 
 				ret_mag = readMagSensor(&data);
-				ALOGD("data[5/5][if=>]<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",\
-						data.data.magFieldMilliGauss.magFieldX,\
-						data.data.magFieldMilliGauss.magFieldY,\
-						data.data.magFieldMilliGauss.magFieldZ);
+				printMagnData(5,&data,0,0);
 				if (0 == ret_mag)
 				{
 					buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
@@ -829,12 +844,10 @@ int SetAGM_STEP_E()
 				ALOGD("data[5/5][if=>] i = %d\n",i);
 			}
 		} else {
+			ALOGD("[else=>]\n");
 
 			ret_acc = readAccSensor(&data);
-			ALOGD("data[5/5][else=>]<accelX=%9d,accelY=%9d,accelZ=%9d>\n",\
-					data.data.accelMilliG.accelX,\
-					data.data.accelMilliG.accelY,\
-					data.data.accelMilliG.accelZ);
+			printAccData(5,&data,0,1);
 			if (0 == ret_acc) {
 				buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
 				buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
@@ -842,10 +855,7 @@ int SetAGM_STEP_E()
 			}
 
 			ret_mag = readMagSensor(&data);
-			ALOGD("data[5/5][else=>]<magFieldX=%9d,magFieldX=%9d,magFieldX=%9d>\n",\
-					data.data.magFieldMilliGauss.magFieldX,\
-					data.data.magFieldMilliGauss.magFieldY,\
-					data.data.magFieldMilliGauss.magFieldZ);
+			printMagnData(5,&data,0,0);
 			if (0 == ret_mag) {
 				buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
 				buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
