@@ -335,7 +335,7 @@ void *sensorAGM_read_data_loop(void *arg)
 
 	}
 
-	ALOGD("before run\n");
+	ALOGD("%s:before run\n", __func__);
 
 	for (int i=0 ; i<count ; i++) {
 		if(list[i] == NULL)
@@ -385,7 +385,7 @@ void *sensorAGM_read_data_loop(void *arg)
 		return 0;
 	}
 
-	ALOGD("after acc gyro magcal enable\n");
+	ALOGD("%s:after acc gyro magcal enable\n", __func__);
 
 	sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
 	sensor_thread_gyro->run("sensor-loop", PRIORITY_BACKGROUND);
@@ -913,6 +913,24 @@ int SetAGM_STEP_F()
 #if DEBUG_USE_ADB
 int main(int argc, const char *argv[])
 {
+	if (argc == 2) {
+		int ret;
+		pthread_t tid;
+		int status;
+
+		if (!strcmp(argv[1], "agm")) {
+			signal(SIGINT,child_handler);
+
+			ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
+			if(ret) {
+				ALOGD("create pthread error!ret = %d\n",ret);
+				return -1;
+			}
+		}
+		pthread_join(tid, (void **)&status);
+		return 0;
+	}
+
 	SetAGM_STEP_A();
 	SetAGM_STEP_B();
 	SetAGM_STEP_C();
