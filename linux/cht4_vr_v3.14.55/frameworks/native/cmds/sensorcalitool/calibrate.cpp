@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string.h> //memset()
 #include <cstring>
+#include <utils/CallStack.h>
 
 #include "calibrate.h"
 #include "sensorthread.h"
@@ -412,6 +413,10 @@ void *sensorAGM_read_data_loop(void *arg)
 int readAccSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
+
+	CallStack stack; 
+	stack.update(); 
+	stack.log("this stack");
 
 	do {
 
