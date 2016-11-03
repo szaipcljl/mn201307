@@ -20,18 +20,13 @@
 #include "bstdr_comm_support.h"
 #include "ak09911.h"
 #include "AlgorithmManager.h"
-#include "Dsh_ipc.h"
+#include "sensor_protocol.h"
+//#include "Dsh_ipc.h"
+
+#include "transport.h"
+#include "protocol.h"
 
 #define ONE_KHZ_TIME 1
 #define ONE_HUN_HZ_TIME 10 
 
-#define DEBUG
-
-#ifdef DEBUG
-#define debug(M, ...) printf("[DEBUG] %s: " M "\n", __func__, ##__VA_ARGS__)
-#else
-#define debug(M, ...)
-#endif
-
-void print_bytes(char* ptr, int size);
 #endif /* __MAIN_H */

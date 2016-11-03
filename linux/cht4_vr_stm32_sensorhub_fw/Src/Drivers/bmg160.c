@@ -78,6 +78,17 @@ static bmg160_t *p_bmg160;
  *
  *
 */
+void dump_register()
+{
+  uint8_t reg_address=0x0;
+  for(int i=0; i <= 0x3f; i++)
+  {
+    uint8_t reg_data;
+    p_bmg160->bus_read(p_bmg160->dev_addr, reg_address, &reg_data, 1);
+    printf("reg[%x]: %x\n", reg_address, reg_data);
+    reg_address++;
+  }
+}
 bstdr_ret_t bmg160_init(bmg160_t *bmg160)
 {
 	/* variable used to return the bus communication status*/
@@ -129,6 +140,7 @@ bstdr_ret_t bmg160_get_data_XYZ(bmg160_xyz_t *data)
 	/* variable used to return the bus communication status*/
 	bstdr_ret_t comres = BSTDR_E_GEN_ERROR;
 	uint8_t v_data_u8[BMG160_XYZ_DATA_SIZE] = {0};
+       // dump_register();
 
 	/* check the p_bmg160 struct pointer is NULL*/
 	if (p_bmg160 == BMG160_NULL) {
@@ -159,6 +171,9 @@ bstdr_ret_t bmg160_get_data_XYZ(bmg160_xyz_t *data)
 		((((int32_t)((int8_t)v_data_u8[BMG160_DATA_FRAME_Z_MSB_BYTE]))
 		<< BMG160_SHIFT_BIT_POSITION_BY_08_BITS) |
 		(v_data_u8[BMG160_DATA_FRAME_Z_LSB_BYTE]));
+               /* printf("x-data: %x, %x, Y-data:%x, %x, Z-data: %x,%x\n",v_data_u8[0], v_data_u8[1],
+                       v_data_u8[2],v_data_u8[3],
+                       v_data_u8[4],v_data_u8[5]);       */         
 	}
 	return comres;
 }

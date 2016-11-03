@@ -287,6 +287,7 @@ BOOLEAN CalibrationDeviceIsMotionless(IN const float thisGyro[NUM_AXES],
     const uint8_t COVARIANCE_X_TO_Z = 2;
     const uint8_t COVARIANCE_Y_TO_Z = 4;
     //TraceLog(TRACE_LEVEL_ERROR, TRACE_ALGO, "[%!FUNC!]cova(%f,%f,%f)",magCovariance[COVARIANCE_X_TO_Y],magCovariance[COVARIANCE_X_TO_Z],magCovariance[COVARIANCE_Y_TO_Z]);
+    printf("[%!FUNC!]cova(%f,%f,%f), magthreshold=%f\n",magCovariance[COVARIANCE_X_TO_Y],magCovariance[COVARIANCE_X_TO_Z],magCovariance[COVARIANCE_Y_TO_Z],magCovarianceThreshold);
 
     if ((fabs(avgGyroNorm - thisGyroNorm) < gyroMotionThreshold) &&
         (magCovariance[COVARIANCE_X_TO_Y] < magCovarianceThreshold) &&

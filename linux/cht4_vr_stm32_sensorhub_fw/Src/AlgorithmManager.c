@@ -40,13 +40,15 @@
 #define IVH_SENSOR_ALGO_POOL_TAG 'OGLA'
 
 static inline pIvhSensorData Alg_GetFusionData(pIvhAlgo algo);
+static IvhAlgo algostruct;
 
 pIvhAlgo Alg_Init(ALGO_NOTIFICATION AlgoNotication, ULONG sensori, ULONG* sensoro)
 {
     TraceLog(TRACE_LEVEL_INFORMATION, TRACE_ALGO, "%!FUNC! Entry");
 
-    pIvhAlgo algo = (pIvhAlgo)SAFE_ALLOCATE_POOL(NonPagedPool, sizeof(IvhAlgo), IVH_SENSOR_ALGO_POOL_TAG);
-
+   // pIvhAlgo algo = (pIvhAlgo)SAFE_ALLOCATE_POOL(NonPagedPool, sizeof(IvhAlgo), IVH_SENSOR_ALGO_POOL_TAG);
+    pIvhAlgo algo = &algostruct;
+    /*
     if (algo) 
     {
         // ZERO it!
@@ -59,7 +61,7 @@ pIvhAlgo Alg_Init(ALGO_NOTIFICATION AlgoNotication, ULONG sensori, ULONG* sensor
         TraceLog(TRACE_LEVEL_ERROR, TRACE_ALGO, "not enough memory");
         return NULL;
     }
-
+  */
     ///algo->dev = dev;
     //cjy...BackupRegistersInit(algo->dev);
     algo->platform = CreatePlatform(&algo->calibrated);

@@ -29,7 +29,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
-// SensorManagerTypes.h :
+// SensorManagerTypes.h : 
 //
 #if !defined(_SENSOR_MANAGER_TYPES_H_)
 #define _SENSOR_MANAGER_TYPES_H_
@@ -44,97 +44,97 @@
 // the timestamp when the data was acquired/calculated.
 typedef struct _IVH_SENSOR_DATA_T
 {
-	uint32_t        timeStampInMs;
-	union
-	{
-		uint32_t alsMilliLux;
-		uint32_t proximityMiniMeter;
-		uint32_t temperatureMiniCentigrade;
+    uint32_t        timeStampInMs;
+    union
+    {
+        uint32_t alsMilliLux;
+        uint32_t proximityMiniMeter;
+        uint32_t temperatureMiniCentigrade;
+        struct
+        {  
+            FLOAT_VECTOR4_T quaternion;
+            FLOAT_VECTOR9_T rotationMatrix;
+            float           yawYAxis;
+            float           yawZAxis;
+            float           pitch;
+            float           roll;
+            float           rollZAxis;
+            INT32_VECTOR3_T magRaw;
+            uint8_t         estimatedHeadingError;
+        }  orientation;
+        struct
+        {
+            INT32_VECTOR3_T xyz;
+        } accel;
+        struct
+        {
+            INT32_VECTOR3_T xyz;
+        } gyro;
+        struct
+        {
+            INT32_VECTOR3_T xyzRaw;
+            FLOAT_VECTOR3_T xyzCalibrated;
+            FLOAT_VECTOR3_T xyzRotated;
+            float           covariance[COVARIANCE_MATRIX_SIZE];
+            float           compensatedHeadingMagneticNorth;
+            uint8_t         estimatedHeadingError;
+        } mag;
+        struct
+        {
+            FLOAT_VECTOR3_T tilt;
+            uint8_t         estimatedHeadingError;
+        } inclinometer;
 		struct
 		{
-			FLOAT_VECTOR4_T quaternion;
-			FLOAT_VECTOR9_T rotationMatrix;
-			float           yawYAxis;
-			float           yawZAxis;
-			float           pitch;
-			float           roll;
-			float           rollZAxis;
-			INT32_VECTOR3_T magRaw;
-			uint8_t         estimatedHeadingError;
-		}  orientation;
-		struct
-		{
-			INT32_VECTOR3_T xyz;
-		} accel;
-		struct
-		{
-			INT32_VECTOR3_T xyz;
-		} gyro;
-		struct
-		{
-			INT32_VECTOR3_T xyzRaw;
-			FLOAT_VECTOR3_T xyzCalibrated;
-			FLOAT_VECTOR3_T xyzRotated;
-			float           covariance[COVARIANCE_MATRIX_SIZE];
-			float           compensatedHeadingMagneticNorth;
-			uint8_t         estimatedHeadingError;
-		} mag;
-		struct
-		{
-			FLOAT_VECTOR3_T tilt;
-			uint8_t         estimatedHeadingError;
-		} inclinometer;
-		struct
-		{
-			INT32_VECTOR3_T xyz;
+            INT32_VECTOR3_T xyz;
 			float           lidangle;
 			float           baseangle;
 		} protractor;
-		struct
-		{
-			float           humidity;
-			float           temperature;
-		} hygrometer;
-		struct {
-			BOOLEAN humanPresence;
-			uint32_t customValue1;
-			uint32_t customValue2;
-		} humanPresenceData;
-		struct {
-			uint8_t motionValue;
-		} motionSensorData;
-		struct {
-			uint32_t pressure;
-		} barometerData;
-		struct {
-			INT32_VECTOR3_T xyzLid;
-			INT32_VECTOR3_T xyzBase;
-			INT32_VECTOR3_T xyzLidClosedMag;
-			float lidAngleFromLevel;
-			float baseAngleFromLevel;
-			float lidToBaseAngle;
-			uint8_t lidState;
-		} lidMonitor;
-		struct {
-			int yaw; //Euler Angles
-			int pitch;
-			int roll;
-			int rotation_matrix[9]; //rotation matrix
-			int quaternion[4]; //quaternion
-			int gyro[3]; //calibrated data for output
-			int accl[3]; //calibrated data for output
-			int magn[3]; //calibrated data for output
-			int als_curve[20];
-			unsigned int als;
-			int als_multiplier;
-			int north;
-			int error;
-			int proximity;
-			int temperature;
+        struct
+        {
+            float           humidity;
+            float           temperature;
+        } hygrometer;
+        struct {
+            BOOLEAN humanPresence;
+            uint32_t customValue1;
+            uint32_t customValue2;
+        } humanPresenceData;
+        struct {
+            uint8_t motionValue;
+        } motionSensorData;
+        struct {
+            uint32_t pressure;
+        } barometerData;
+        struct {
+            INT32_VECTOR3_T xyzLid;
+            INT32_VECTOR3_T xyzBase;
+            INT32_VECTOR3_T xyzLidClosedMag;
+            float lidAngleFromLevel;
+            float baseAngleFromLevel;
+            float lidToBaseAngle;
+            uint8_t lidState;
+        } lidMonitor;
+        struct {
+            int yaw; //Euler Angles
+            int pitch;
+            int roll;
+            int rotation_matrix[9]; //rotation matrix
+            int quaternion[4]; //quaternion
+            int gyro[3]; //calibrated data for output
+            int accl[3]; //calibrated data for output
+            int magn[3]; //calibrated data for output
+            int als_curve[20];
+            unsigned int als;
+            int als_multiplier;
+            int north;
+            int error;
+            int proximity;
+            int temperature;
 			int baro;
-		} fusion;
-		BYTE bUnknown;
-	} data;
+        } fusion;
+        BYTE bUnknown;
+    } data;
 } IvhSensorData, *pIvhSensorData;
 
 #endif /* !defined(_SENSOR_MANAGER_TYPES_H_) */

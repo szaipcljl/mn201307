@@ -48,7 +48,8 @@
 #include "platformCalibration.h"
 
 #include "Fusion.h"
-#include "Dsh_ipc.h"
+//#include "Dsh_ipc.h"
+#include "sensor_protocol.h"
 
 /* physical sensor definitaion, pass to Algo_Init as argument */
 enum 

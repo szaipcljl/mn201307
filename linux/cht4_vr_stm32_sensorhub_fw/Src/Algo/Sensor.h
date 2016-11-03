@@ -42,40 +42,40 @@
 #define MAX_SENSOR_DEPENDENCY 5
 
 typedef enum {
-	IVH_SENSOR_TYPE_NONE = 0,
-	//physical sensor
-	IVH_SENSOR_TYPE_ACCELEROMETER3D = 1,
-	IVH_SENSOR_TYPE_GYROSCOPE3D,
-	IVH_SENSOR_TYPE_MAGNETOMETER3D,
-	IVH_SENSOR_TYPE_AMBIENTLIGHT,
-	IVH_SENSOR_TYPE_HYGROMETER,
-	IVH_SENSOR_TYPE_THERMOMETER,
-	IVH_SENSOR_TYPE_BAROMETER,
-	IVH_SENSOR_TYPE_PROXIMITY,
+    IVH_SENSOR_TYPE_NONE = 0,
+    //physical sensor
+    IVH_SENSOR_TYPE_ACCELEROMETER3D = 1,
+    IVH_SENSOR_TYPE_GYROSCOPE3D,
+    IVH_SENSOR_TYPE_MAGNETOMETER3D,
+    IVH_SENSOR_TYPE_AMBIENTLIGHT,
+    IVH_SENSOR_TYPE_HYGROMETER,
+    IVH_SENSOR_TYPE_THERMOMETER,
+    IVH_SENSOR_TYPE_BAROMETER,
+    IVH_SENSOR_TYPE_PROXIMITY,
 
-	//virtual sensor
-	IVH_SENSOR_TYPE_GYROSCOPE_6AXIS,
-	IVH_SENSOR_TYPE_COMPASS3D,
-	IVH_SENSOR_TYPE_ORIENTATION_6AXIS,
-	IVH_SENSOR_TYPE_ORIENTATION_9AXIS,
-	IVH_SENSOR_TYPE_INCLINOMETER,
+    //virtual sensor
+    IVH_SENSOR_TYPE_GYROSCOPE_6AXIS,
+    IVH_SENSOR_TYPE_COMPASS3D,
+    IVH_SENSOR_TYPE_ORIENTATION_6AXIS,
+    IVH_SENSOR_TYPE_ORIENTATION_9AXIS,
+    IVH_SENSOR_TYPE_INCLINOMETER,
 
-	//fusion sensor, keep me in the last!
-	IVH_SENSOR_TYPE_FUSION,
+    //fusion sensor, keep me in the last!
+    IVH_SENSOR_TYPE_FUSION,
 }IvhSensorType;
 
 typedef struct _IVH_SENSOR_ IvhSensor;
 typedef struct _IVH_SENSOR_
 {
-	int numbers;
-	IvhSensor* o[MAX_SENSOR_DEPENDENCY];
-	IvhSensorData* d[2];
-	IvhSensorType type;
+    int numbers;
+    IvhSensor* o[MAX_SENSOR_DEPENDENCY];
+    IvhSensorData* d[2];
+    IvhSensorType type;
 
-	ERROR_T (*Attach)(IvhSensor* me, IvhSensor* ob);
-	ERROR_T (*Notify)(IvhSensor* me);
-	ERROR_T (*Update)(IvhSensor* me, const IvhSensorData* data, const IvhSensorType type);
-	pIvhSensorData (*QueryData)(IvhSensor* me);
+    ERROR_T (*Attach)(IvhSensor* me, IvhSensor* ob);
+    ERROR_T (*Notify)(IvhSensor* me);
+    ERROR_T (*Update)(IvhSensor* me, const IvhSensorData* data, const IvhSensorType type);
+    pIvhSensorData (*QueryData)(IvhSensor* me);
 }*pIvhSensor;
 
 ERROR_T SensorAttach(IvhSensor* me, IvhSensor* ob);

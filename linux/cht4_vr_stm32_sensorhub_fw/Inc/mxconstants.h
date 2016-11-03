@@ -38,27 +38,26 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define AP_UART_TX_Pin GPIO_PIN_15
-#define AP_UART_TX_GPIO_Port GPIOA
-#define SENSOR_SPI_MISO_Pin GPIO_PIN_4
-#define SENSOR_SPI_MISO_GPIO_Port GPIOB
-#define SENSOR_SPI_MOSI_Pin GPIO_PIN_5
-#define SENSOR_SPI_MOSI_GPIO_Port GPIOB
-#define AP_I2C_SDA_Pin GPIO_PIN_8
-#define AP_I2C_SDA_GPIO_Port GPIOB
-#define AP_UART_RX_Pin GPIO_PIN_10
-#define AP_UART_RX_GPIO_Port GPIOA
-#define MAGN_SCL_Pin GPIO_PIN_6
-#define MAGN_SCL_GPIO_Port GPIOB
-#define MAGN_SDA_Pin GPIO_PIN_9
-#define MAGN_SDA_GPIO_Port GPIOB
-#define AP_I2C_SCL_Pin GPIO_PIN_8
-#define AP_I2C_SCL_GPIO_Port GPIOA
-#define AP_SPI_MOSI_Pin GPIO_PIN_15
-#define AP_SPI_MOSI_GPIO_Port GPIOB
-#define SENSOR_SPI_SCK_Pin GPIO_PIN_12
-#define SENSOR_SPI_SCK_GPIO_Port GPIOB
-#define AP_SPI_SCK_Pin GPIO_PIN_10
+#define B1_Pin GPIO_PIN_13
+#define B1_GPIO_Port GPIOC
+#define EXT_OSC1_Pin GPIO_PIN_14
+#define EXT_OSC1_GPIO_Port GPIOC
+#define EXT_OSC2_Pin GPIO_PIN_15
+#define EXT_OSC2_GPIO_Port GPIOC
+#define WAKEUP_Pin GPIO_PIN_4
+#define WAKEUP_GPIO_Port GPIOA
+#define AP_INT_Pin GPIO_PIN_1
+#define AP_INT_GPIO_Port GPIOA
+#define DEBUG_USART_RX_Pin GPIO_PIN_3
+#define DEBUG_USART_RX_GPIO_Port GPIOA
+#define SENSOR_SPI_SCK_Pin GPIO_PIN_5
+#define SENSOR_SPI_SCK_GPIO_Port GPIOA
+#define SENSOR_SPI_MISO_Pin GPIO_PIN_6
+#define SENSOR_SPI_MISO_GPIO_Port GPIOA
+#define SENSOR_SPI_MOSI_Pin GPIO_PIN_7
+#define SENSOR_SPI_MOSI_GPIO_Port GPIOA
+
+#define AP_SPI_SCK_Pin GPIO_PIN_13
 #define AP_SPI_SCK_GPIO_Port GPIOB
 #define DEBUG_USART_RX_Pin GPIO_PIN_3
 #define DEBUG_USART_RX_GPIO_Port GPIOA
@@ -66,22 +65,35 @@
 #define DEBUG_USART_TX_GPIO_Port GPIOA
 #define AP_SPI_MISO_Pin GPIO_PIN_14
 #define AP_SPI_MISO_GPIO_Port GPIOB
+#define AP_SPI_MOSI_Pin GPIO_PIN_15
+#define AP_SPI_MOSI_GPIO_Port GPIOB
+#define AP_I2C_SCL_Pin GPIO_PIN_8
+#define AP_I2C_SCL_GPIO_Port GPIOA
+#define AP_UART_RX_Pin GPIO_PIN_9
+#define AP_UART_RX_GPIO_Port GPIOA
+#define AP_UART_TX_Pin GPIO_PIN_10
+#define AP_UART_TX_GPIO_Port GPIOA
+#define TMS_Pin GPIO_PIN_13
+#define TMS_GPIO_Port GPIOA
+#define TCK_Pin GPIO_PIN_14
+#define TCK_GPIO_Port GPIOA
+#define SWO_Pin GPIO_PIN_3
+#define SWO_GPIO_Port GPIOB
+#define AP_I2C_SDA_Pin GPIO_PIN_4
+#define AP_I2C_SDA_GPIO_Port GPIOB
+#define ACC_CS_Pin GPIO_PIN_5
+#define ACC_CS_GPIO_Port GPIOB
+#define MAGN_SCL_Pin GPIO_PIN_6
+#define MAGN_SCL_GPIO_Port GPIOB
 #define GYRO_CS_Pin GPIO_PIN_7
-#define GYRO_CS_GPIO_Port GPIOA
-#define ACC_CS_Pin GPIO_PIN_6
-#define ACC_CS_GPIO_Port GPIOA
-#define LD2_Pin GPIO_PIN_13
-#define LD2_GPIO_Port GPIOB
-#define B1_Pin GPIO_PIN_2
-#define B1_GPIO_Port GPIOB
+#define GYRO_CS_GPIO_Port GPIOB
+#define MAGN_SDA_Pin GPIO_PIN_9
+#define MAGN_SDA_GPIO_Port GPIOB
+
 #define GYRO_INT_Pin GPIO_PIN_1
 #define GYRO_INT_GPIO_Port GPIOB
 #define ACC_INT_Pin GPIO_PIN_0
 #define ACC_INT_GPIO_Port GPIOB
-#define WAKEUP_Pin GPIO_PIN_4
-#define WAKEUP_GPIO_Port GPIOA
-#define AP_INT_Pin GPIO_PIN_1
-#define AP_INT_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

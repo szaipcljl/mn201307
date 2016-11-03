@@ -162,6 +162,13 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+void SPI2_IRQHandler(void)
+{   
+  if(READ_BIT(SPI2->SR, SPI_SR_RXNE) == (SPI_SR_RXNE))
+    SPI2_RX_Callback();
+  if(READ_BIT(SPI2->SR, SPI_SR_TXE) == (SPI_SR_TXE))
+    SPI2_TX_Callback();
+}
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

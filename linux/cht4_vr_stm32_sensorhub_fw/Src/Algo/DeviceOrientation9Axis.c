@@ -237,6 +237,7 @@ ERROR_T CalculateRotation(pIvhSensorOrientation fusion)
     // gyro.  Apply a weak LPF to reduce the jittery behavior
     const float GYRO_LPF_ALPHA = 0.4f;
 
+
     ApplyLowPassFilter(fusion->lastCalibratedGyro,
         fusion->prevGyro,
         3,
@@ -278,6 +279,11 @@ ERROR_T CalculateRotation(pIvhSensorOrientation fusion)
             fusion->lastCalibratedGyro[0],fusion->lastCalibratedGyro[1],fusion->lastCalibratedGyro[2],
             fusion->lastRotatedMag[0],fusion->lastRotatedMag[1],fusion->lastRotatedMag[2]);
 
+		printf("a(%f,%f,%f)g(%f,%f,%f)m(%f,%f,%f)\n",
+            fusion->lastCalibratedAccel[0],fusion->lastCalibratedAccel[1],fusion->lastCalibratedAccel[2],
+            fusion->lastCalibratedGyro[0],fusion->lastCalibratedGyro[1],fusion->lastCalibratedGyro[2],
+            fusion->lastRotatedMag[0],fusion->lastRotatedMag[1],fusion->lastRotatedMag[2]);
+
         CalculateRotationUsingGyro(&fusion->Rotation,
             fusion->lastCalibratedAccel , fusion->lastCalibratedGyro , fusion->lastRotatedMag,
             fusion->lastTimestampGyro,
@@ -301,6 +307,8 @@ ERROR_T CalculateRotation(pIvhSensorOrientation fusion)
     }
 
     fusion->atLeastOneSampleCalculated = TRUE;
+
+	
 
     return retVal;
 }
@@ -398,7 +406,7 @@ static BOOLEAN ShouldApplyZRT(pIvhSensorOrientation fusion)
     // new gyro offsets.
     // Milli-dps values below this threshold will be considered as motionless
     const uint16_t GYRO_MOTION_THRESHOLD = 2000;  // 1.5 dps from the AVERAGE gyro norm
-    const float MAG_COVARIANCE_THRESHOLD = 2000*1000.0f;
+    const float MAG_COVARIANCE_THRESHOLD = 2000*1000*1000.0f;
 
     const uint32_t ZRT_MOTIONLESS_TIME = 1000; // ms
 
@@ -430,6 +438,7 @@ static BOOLEAN ShouldApplyZRT(pIvhSensorOrientation fusion)
 
     if (fusion->s_motionlessTime >= ZRT_MOTIONLESS_TIME)
     {
+    	//printf("motionless time=%d(>=1000), ZRT ZRT ZRT\n",fusion->s_motionlessTime);
         return TRUE;
     }
 

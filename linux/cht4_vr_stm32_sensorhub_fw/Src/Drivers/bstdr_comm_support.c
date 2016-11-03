@@ -100,37 +100,40 @@ bstdr_ret_t bstdr_burst_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data
         if (dev_id == 0x1A)     //ACC sensor
         {
           //SPI chip select
-          HAL_GPIO_WritePin(GPIOA, ACC_CS_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
           
           //SPI transcation begin
           spi_address_cmd |= reg_addr;
           
-          hal_res = HAL_SPI_Transmit(&hspi3, &spi_address_cmd, 1, 500);
+          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
           
-          hal_res = HAL_SPI_Receive(&hspi3, reg_data, len, 500);
-          
+          hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+
+	
           //SPI transcation end
           
           //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOA, ACC_CS_Pin, GPIO_PIN_SET);
+          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
         }
         else if (dev_id == 0x1B) //Gyro sensor
         {
           //SPI chip select
-          HAL_GPIO_WritePin(GPIOA, GYRO_CS_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
           
           //SPI transcation begin
           spi_address_cmd |= reg_addr;
           
-          hal_res = HAL_SPI_Transmit(&hspi3, &spi_address_cmd, 1, 500);
+          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
           
-          hal_res = HAL_SPI_Receive(&hspi3, reg_data, len, 500);
+          hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+
+	
           
          
           //SPI transcation end
           
           //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOA, GYRO_CS_Pin, GPIO_PIN_SET);
+          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
         }
         else
         {
@@ -157,36 +160,36 @@ bstdr_ret_t bstdr_burst_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_dat
 	 if (dev_id == 0x1A)     //ACC sensor
         {
           //SPI chip select
-          HAL_GPIO_WritePin(GPIOA, ACC_CS_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
           
           //SPI transcation begin
           spi_address_cmd &= reg_addr;
           
-          hal_res = HAL_SPI_Transmit(&hspi3, &spi_address_cmd, 1, 500); 
+          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500); 
 
-          hal_res = HAL_SPI_Transmit(&hspi3, reg_data, len, 500);
+          hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
      
           //SPI transcation end
           
           //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOA, ACC_CS_Pin, GPIO_PIN_SET);
+          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
         }
         else if (dev_id == 0x1B) //Gyro sensor
         {
           //SPI chip select
-          HAL_GPIO_WritePin(GPIOA, GYRO_CS_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
           
           //SPI transcation begin
           spi_address_cmd &= reg_addr;
           
-          hal_res = HAL_SPI_Transmit(&hspi3, &spi_address_cmd, 1, 500);
+          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
 
-          hal_res = HAL_SPI_Transmit(&hspi3, reg_data, len, 500);
+          hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
        
           //SPI transcation end
           
           //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOA, GYRO_CS_Pin, GPIO_PIN_SET);
+          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
         }
         else
         {

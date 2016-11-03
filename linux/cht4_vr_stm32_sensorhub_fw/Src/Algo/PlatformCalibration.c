@@ -249,7 +249,7 @@ pIvhPlatform CreatePlatform(PULONG calibrate)
         return NULL;
     }
 
-    SAFE_FILL_MEM(pPlatform, sizeof (IvhPlatform), 0);
+    SAFE_FILL_MEM (pPlatform, sizeof (IvhPlatform), 0);
     SAFE_MEMCPY(&pPlatform->CalibrationFeatures, &DefaultCalibrationFeatures);
     SAFE_MEMCPY(&pPlatform->CalibrationSettings, &DefaultCalibrationSettings);
     SAFE_MEMCPY(&pPlatform->PlatformCalibration, &DefaultPlatformCalibration);
@@ -443,7 +443,7 @@ static PPLATFORM_CALIBRATION CreateCalibrationData(void)
         // initlize the config
         SAFE_FILL_MEM (pPlatform, sizeof (PLATFORM_CALIBRATION), 0);
         /**set golden config**/
-        pPlatform->calibrated = 2;
+        pPlatform->calibrated = 1;
         pPlatform->spen = 0;
         pPlatform->shake_th = 1800;
         pPlatform->shake_shock = 50;
@@ -468,35 +468,36 @@ static PPLATFORM_CALIBRATION CreateCalibrationData(void)
         pPlatform->magnsy = (ULONG)(-268);
         pPlatform->magnsz = (ULONG)(0);
 #if 1
-		pPlatform->magnxnx= (ULONG)(2452);
-		pPlatform->magnxny= (ULONG)(-194);
-		pPlatform->magnxnz= (ULONG)(-2561);
+		pPlatform->magnxnx= (ULONG)0;//(274);
+		pPlatform->magnxny= (ULONG)0;//(-5);
+		pPlatform->magnxnz= (ULONG)0;//(-606);
 		
-		pPlatform->magnxsx= (ULONG)(540);
-		pPlatform->magnxsy= (ULONG)(2332);
-		pPlatform->magnxsz= (ULONG)(-7105);
+		pPlatform->magnxsx= (ULONG)0;//(-4331);
+		pPlatform->magnxsy= (ULONG)0;//(291);
+		pPlatform->magnxsz= (ULONG)0;//(-4702);
 		
-		pPlatform->acclzx= (ULONG)(-9);
-		pPlatform->acclzy= (ULONG)(-10037);
-		pPlatform->acclzz= (ULONG)(-15);
+		pPlatform->acclzx= (ULONG)(-96);
+		pPlatform->acclzy= (ULONG)(459);
+		pPlatform->acclzz= (ULONG)(-9827);
 		
-		pPlatform->acclyx= (ULONG)(-49);
-		pPlatform->acclyy= (ULONG)(-10095);
-		pPlatform->acclyz= (ULONG)(-244);
+		pPlatform->acclyx= (ULONG)(-10032);
+		pPlatform->acclyy= (ULONG)(-147);
+		pPlatform->acclyz= (ULONG)(-181);
 
-		pPlatform->gyrox = (ULONG)(1196);
-		pPlatform->gyroy = (ULONG)(2136);
-		pPlatform->gyroz = (ULONG)(-2563);
+		pPlatform->gyrox = (ULONG)0;//(2306);
+		pPlatform->gyroy = (ULONG)0;//(-1965);
+		pPlatform->gyroz = (ULONG)0;//(1110);
 
-		pPlatform->gyrozx = (ULONG)(-3738);
-		pPlatform->gyrozy = (ULONG)(1570);
-		pPlatform->gyrozz = (ULONG)(224);
+		pPlatform->gyrozx = (ULONG)(4149);
+		pPlatform->gyrozy = (ULONG)(-11963);
+		pPlatform->gyrozz = (ULONG)(176058);
 
-		pPlatform->gyroyx = (ULONG)(5084);
-		pPlatform->gyroyy = (ULONG)(69914);
-		pPlatform->gyroyz = (ULONG)(-1682);
+		pPlatform->gyroyx = (ULONG)(84466);
+		pPlatform->gyroyy = (ULONG)(-3850);
+		pPlatform->gyroyz = (ULONG)(1906);
 		
 #endif		
+        
         for(int i = 0; i < sizeof(als_curve)/sizeof(ULONG); i++)
         {
             pPlatform->alscurve[i] = als_curve[i];

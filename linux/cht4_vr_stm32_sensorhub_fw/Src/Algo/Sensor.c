@@ -35,34 +35,34 @@
 
 ERROR_T SensorAttach(IvhSensor* me, IvhSensor* ob)
 {
-	for(int i = 0; i < me->numbers; i++)
-	{
-		if(me->o[i] == ob)
-		{
-			return ERROR_OK;
-		}
-	}
-	if(me->numbers == MAX_SENSOR_DEPENDENCY)
-	{
-		return ERROR_OK;
-	}
-	me->o[me->numbers++] = ob;
-	return ERROR_OK;
+    for(int i = 0; i < me->numbers; i++)
+    {
+        if(me->o[i] == ob)
+        {
+            return ERROR_OK;
+        }
+    }
+    if(me->numbers == MAX_SENSOR_DEPENDENCY)
+    {
+        return ERROR_OK;
+    }
+    me->o[me->numbers++] = ob;
+    return ERROR_OK;
 }
 
 ERROR_T SensorNotify(IvhSensor* me)
 {
-	for(int i = 0; i < me->numbers; i++)
-	{
-		if(me->o[i]->Update != NULL)
-		{
-			me->o[i]->Update(me->o[i], me->d[1], me->type);
-		}
-	}
-	return ERROR_OK;
+    for(int i = 0; i < me->numbers; i++)
+    {
+        if(me->o[i]->Update != NULL)
+        {
+            me->o[i]->Update(me->o[i], me->d[1], me->type);
+        }
+    }
+    return ERROR_OK;
 }
 
 pIvhSensorData SensorQueryData(IvhSensor* me)
 {
-	return me->d[1];
+    return me->d[1];
 }

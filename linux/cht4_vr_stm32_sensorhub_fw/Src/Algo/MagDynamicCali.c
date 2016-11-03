@@ -752,6 +752,7 @@ void MagDynamicCali(IN PMAGN_DYNAMICCALI_T cali,
     TraceLog(TRACE_LEVEL_VERBOSE, TRACE_ALGO, "correction=%f",correction);
     RotateMagPoints(correction, magVector);
     TraceLog(TRACE_LEVEL_VERBOSE, TRACE_ALGO, "mag.rot(%f,%f,%f)",magVector[0],magVector[1],magVector[2]);
+	//printf( "mag.rot(%f,%f,%f)\n",magVector[0],magVector[1],magVector[2]);
 
     pSensorData->data.mag.xyzRotated.x = magVector[AXIS_X];
     pSensorData->data.mag.xyzRotated.y = magVector[AXIS_Y];
@@ -776,6 +777,7 @@ void MagDynamicCali(IN PMAGN_DYNAMICCALI_T cali,
             pSensorData->data.mag.xyzRotated.y,
             pSensorData->data.mag.xyzRotated.z};
         TraceLog(TRACE_LEVEL_VERBOSE, TRACE_ALGO, "mag.last(%f,%f,%f,%f)",cali->s_prevRotatedMag[0],cali->s_prevRotatedMag[1],cali->s_prevRotatedMag[2],cali->Platform->CalibrationSettings.magLowPassFilterAlpha);
+	//	        printf("mag.last(%f,%f,%f,%f)\n",cali->s_prevRotatedMag[0],cali->s_prevRotatedMag[1],cali->s_prevRotatedMag[2],cali->Platform->CalibrationSettings.magLowPassFilterAlpha);
         //TODO: must use adaptive filter here due to magn sample rate is too slow!!!
         ApplyLowPassFilter(rotatedMag, 
             cali->s_prevRotatedMag, 
@@ -786,6 +788,7 @@ void MagDynamicCali(IN PMAGN_DYNAMICCALI_T cali,
         pSensorData->data.mag.xyzRotated.y = rotatedMag[AXIS_Y];
         pSensorData->data.mag.xyzRotated.z = rotatedMag[AXIS_Z];
         TraceLog(TRACE_LEVEL_VERBOSE, TRACE_ALGO, "mag.lpf(%f,%f,%f)",rotatedMag[0],rotatedMag[1],rotatedMag[2]);
+		//printf( "mag.lpf(%f,%f,%f)",rotatedMag[0],rotatedMag[1],rotatedMag[2]);
     }
 }
 
