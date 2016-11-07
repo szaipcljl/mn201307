@@ -1,0 +1,37 @@
+sensors
+
+1.sensor code 分布
+
+传感器系统
+java部分:
+	frameworks/base/core/java/android/hardware/
+
+jni部分：
+	frameworks/base/core/jni/android_hardware_SensorManager.cpp
+
+HAL层：
+	头文件：
+	hardware/libhardware/include/hardware/sensors.h
+	具体实现:
+	vendor/intel/hardware/ish-sensors/vr_sensors/
+		会通过libsensorhub.so中的接口实现与daemon通信
+
+daemon:
+	守护进程：
+	vendor/intel/hardware/libsensorhub/vr_libsensorhub/:
+	    src/daemon/	--> sensorhubd 		: init.rc 中启用一个service
+	    src/lib/	--> libsensorhub.so	: sensor HAL 通过 dlopen打开libsensorhub.so,
+	然后，通过dlsym保存其中的接口
+
+驱动层(IPC通信):
+	kernel/cht/drivers/hwmon/vr_sensors/
+	通过SPI实现与sensorhub通信
+
+sensorhub(stm32f411):
+	accl gyro magn 挂在stm32上
+	fusion算法在main中的while循环中被调用
+
+
+2.sensor 系统架构
+	java -- jni -- HAL -- daemon -- ipc driver -- sensorhub
+
