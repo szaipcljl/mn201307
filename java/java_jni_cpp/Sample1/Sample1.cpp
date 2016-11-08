@@ -50,6 +50,22 @@ JNIEXPORT jint JNICALL Java_Sample1_intArrayMethod(JNIEnv *env, jobject obj, jin
 	{
 		sum += body[i];
 	}
+
+	jint agm_data[9] = {1,2,3,4,5,6,7,8,9};
+
+	if (len < 9)
+		return -1;
+
+	for (i = 0; i < len; ++i) { //change the array value
+		body[i] = agm_data[i];
+	}
+
+
+	for (i = 0;i < len; i++) 
+		printf("body[%d]:%d ", i, body[i]);
+	printf("\n");
+
 	env->ReleaseIntArrayElements(array, body, 0);
+
 	return sum;
 }
