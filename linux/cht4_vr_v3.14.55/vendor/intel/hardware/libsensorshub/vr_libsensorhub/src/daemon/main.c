@@ -1700,17 +1700,57 @@ static void send_data_to_clients(sensor_state_t *p_sensor_state, void *data,
 #ifdef ENABLE_CONTEXT_ARBITOR
 		void *out_data;
 		int out_size;
+		ssize_t ret_value;
 
 		if (p_session_state->handle == NULL) {
-			if (send(p_session_state->datafd, data, size, MSG_NOSIGNAL|MSG_DONTWAIT) < 0) {
-                                ALOGE("%s line: %d: send message to client error: %s name: %s", __FUNCTION__, __LINE__, strerror(errno), p_sensor_state->name);
-                                return;
-                        }
-		} else if (ctx_dispatch_data(p_session_state->handle, data, size, &out_data, &out_size) == 1) {
-			if (send(p_session_state->datafd, out_data, out_size, MSG_NOSIGNAL|MSG_DONTWAIT) < 0) {
-                                ALOGE("%s line: %d: send message to client error: %s name: %s", __FUNCTION__, __LINE__, strerror(errno), p_sensor_state->name);
-                                return;
-                        }
+			do {
+				ret_value = send(p_session_state->datafd, data, size, MSG_NOSIGNAL|MSG_DONTWAIT);
+				if (ret_value < 0)
+				{
+					if (EINTR == ret_value || EAGAIN == ret_value)
+					{
+						ALOGE("%s line: %d: send message to client failed: (%d)%s name: %s, continue...", __FUNCTION__, __LINE__, 
+								errno, strerror(errno), p_sensor_state->name);
+						continue;
+					}                  
+					else
+					{
+						ALOGE("%s line: %d: send message to client error: (%d)%s name: %s, break", __FUNCTION__, __LINE__, 
+								errno, strerror(errno), p_sensor_state->name);
+						break;
+					}
+				}
+				else
+				{
+					break;
+				}                
+			}while(1);
+		} 
+        else if (ctx_dispatch_data(p_session_state->handle, data, size, &out_data, &out_size) == 1) 
+        {
+            do 
+            {
+                ret_value = send(p_session_state->datafd, out_data, out_size, MSG_NOSIGNAL|MSG_DONTWAIT);
+                if (ret_value < 0)
+                {
+                    if (EINTR == ret_value || EAGAIN == ret_value)
+                    {
+                        ALOGE("%s line: %d: send message to client failed: (%d)%s name: %s, try continue...", __FUNCTION__, __LINE__, 
+                              errno, strerror(errno), p_sensor_state->name);
+                        continue;
+                    }                  
+                    else
+                    {
+                        ALOGE("%s line: %d: send message to client error: (%d)%s name: %s, break", __FUNCTION__, __LINE__, 
+                              errno, strerror(errno), p_sensor_state->name);
+                        break;
+                    }
+                }
+                else
+				{
+					break;
+                }                
+            }while(1);
 		}
 #else
 		if (send(p_session_state->datafd, data, size, MSG_NOSIGNAL|MSG_DONTWAIT) < 0) {
@@ -1883,6 +1923,43 @@ static void dispatch_streaming(struct cmd_resp *p_cmd_resp)
 		ALOGE("%s: p_sensor_state is NULL \n", __func__);
 		return;
 	}
+
+	{
+		struct _dump_type{
+			int64_t ts;
+			short x;
+			short y;
+			short z;
+		} __attribute__ ((packed)) *lp_dumper;
+
+		int dump_length;
+
+		lp_dumper = (struct  _dump_type*)p_cmd_resp->buf;
+		dump_length = p_cmd_resp->data_len;
+
+#if 0
+		{
+			int loop_i = 0;
+			unsigned char* lp_u8 = (unsigned char*)&lp_dumper->ts;
+
+			ALOGE("yaoyuan: dump begin\n");              
+			for (loop_i = 0; loop_i < sizeof(int64_t); ++loop_i)
+			{
+				ALOGE("yaoyuan: ts[%d] = 0x%x\n", loop_i, lp_u8[loop_i]);
+			}
+			ALOGE("yaoyuan: dump end\n");
+		}
+#endif
+
+#if 0
+		ALOGE("yaoyuan: ts = %lld, x = %d, y = %d, z = %d\n",
+				lp_dumper->ts,
+				(int)lp_dumper->x,
+				(int)lp_dumper->y,
+				(int)lp_dumper->z);
+#endif
+	}
+
 
 	send_data_to_clients(p_sensor_state, p_cmd_resp->buf, p_cmd_resp->data_len);
 
@@ -2257,6 +2334,7 @@ static void start_sensorhubd()
 	/* get data from data node and dispatch it to clients, end */
 
 	while (1) {
+		ALOGD("sensorhubd-mn\n");
 		read_fds = listen_fds;
 		FD_SET(datasizefd, &datasize_fds);
 
@@ -2266,10 +2344,11 @@ static void start_sensorhubd()
 			if (errno == EINTR)
 				continue;
 			else {
-				ALOGE("sensorhubd socket "
+				log_message(CRITICAL,"sensorhubd socket "
 					"select() failed. errno "
 					"is %d\n", errno);
-				exit(EXIT_FAILURE);
+                //				exit(EXIT_FAILURE);
+                return;
 			}
 		}
 
@@ -2281,11 +2360,12 @@ static void start_sensorhubd()
 					(struct sockaddr *) &client_addr,
 					&addrlen);
 			if (clientfd == -1) {
-				ALOGE("sensorhubd socket "
+				log_message(CRITICAL,"sensorhubd socket "
 					"accept() failed.\n");
-				exit(EXIT_FAILURE);
+                //				exit(EXIT_FAILURE);
+                return;
 			} else {
-				ALOGI("new connection from client\n");
+				log_message(DEBUG,"new connection from client\n");
 				FD_SET(clientfd, &listen_fds);
 				if (clientfd > maxfd)
 					maxfd = clientfd;
@@ -2313,7 +2393,7 @@ static void start_sensorhubd()
 				/* release session resource if necessary */
 				remove_session_by_fd(i);
 				close(i);
-				log_message(DEBUG, "fd %d:error reading message \n", i);
+				log_message(CRITICAL, "fd %d:error reading message \n", i);
 				FD_CLR(i, &listen_fds);
 			} else {
 				/* process message */

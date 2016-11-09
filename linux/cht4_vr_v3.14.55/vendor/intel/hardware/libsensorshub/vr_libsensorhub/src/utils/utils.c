@@ -16,9 +16,9 @@
 
 static const char *log_file = "/data/sensorhubd.log";
 
-//static message_level current_level = CRITICAL;
-static message_level current_level = DEBUG;
-
+static message_level current_level = CRITICAL;
+//static message_level current_level = DEBUG;
+  
 void set_log_level(message_level log_level)
 {
 	if (log_level >= MAX_LEVEL)
@@ -46,7 +46,8 @@ void log_message(const message_level level, char *char_ptr, ...)
 		fprintf(logf, "%ld: %d %s", time(NULL), level, buffer);
 		fclose(logf);
 	} else {
-		printf("Open log file failed, errno is %d \n", errno);
+		ALOGD("sensorhubd-mn:Open log file failed, errno is %d \n", errno);
+		//printf("Open log file failed, errno is %d \n", errno);
 	}
 }
 
