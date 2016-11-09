@@ -23,6 +23,26 @@ extern int GetProcessPoint();
 extern int ApkExit();
 #endif
 
+extern int agm_data[9];
+
+static jint JNICALL nativeUpdateAGMDataArray(JNIEnv* env, jobject obj, jintArray array1)
+{
+	int i;
+
+	jsize len = env->GetArrayLength(array1);
+	if (len < 9)
+		return -1;
+
+	jint *body = env->GetIntArrayElements(array1, 0);
+
+
+	for (i = 0; i < len; ++i) //change the array value
+		body[i] = agm_data[i];
+
+	env->ReleaseIntArrayElements(array1, body, 0);
+
+	return 0;
+}
 
 static JNINativeMethod gMethods[] = {
 	{"nativeSetAGM_STEP_A", "()I",       (void*)SetAGM_STEP_A},
@@ -32,7 +52,8 @@ static JNINativeMethod gMethods[] = {
 	{"nativeSetAGM_STEP_E", "()I",       (void*)SetAGM_STEP_E},
 	{"nativeSetAGM_STEP_F", "()I",       (void*)SetAGM_STEP_F},
 	{"nativeGetProcessPoint", "()I",     (void*)GetProcessPoint},
-	{"nativeApkExit", "()I",     (void*)ApkExit}
+	{"nativeApkExit", "()I",     (void*)ApkExit},
+	{"nativeUpdateAGMDataArray", "([I)I", (void*)nativeUpdateAGMDataArray}
 };
 
 jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)

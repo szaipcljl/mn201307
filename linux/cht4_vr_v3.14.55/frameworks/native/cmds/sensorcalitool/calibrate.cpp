@@ -10,8 +10,16 @@
 #include "calibrate.h"
 #include "sensorthread.h"
 
-#define AGM_SENSOR_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
+#ifdef DEBUG_USE_ADB
+#define AGM_SENSOR_BIN_FILE_NAME	"/data/sensor_cali_AGM_by_exe.bin"
+#define AGM_SENSOR_TXT_FILE_NAME	"/data/sensor_cali_AGM_by_exe.txt"
+#else
+#define AGM_SENSOR_BIN_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
+#define AGM_SENSOR_TXT_FILE_NAME	"/storage/emulated/0/setAGM_cal.txt"
+#endif
+
 #define TXT_BUF_SIZE 1024
+#define ct_size 20
 
 
 void SwapData(SENSOR_DATA_T* a, SENSOR_DATA_T* b);
@@ -22,6 +30,7 @@ int Calibrated = 0;
 int enable_finish = 0;
 int apk_exit = 0;
 int point = 0;
+int agm_data[9] = {0};
 
 extern SENSOR_DATA_T data_loop_acc;
 extern SENSOR_DATA_T data_loop_gyr;
@@ -102,6 +111,20 @@ void child_handler(int signo)
 }
 #endif
 
+int GetCurrentTime(char *szCurTime, int bufsz)
+{
+	time_t  tTime;
+	struct tm *localTime;
+
+	time(&tTime);
+	localTime=localtime(&tTime);
+
+	snprintf(szCurTime,bufsz,"%d-%02d-%02d %02d:%02d:%02d",localTime->tm_year+1900,
+			localTime->tm_mon+1,localTime->tm_mday,localTime->tm_hour,localTime->tm_min,localTime->tm_sec);
+
+	return 0;
+}
+
 int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 {
 	int fd;
@@ -123,8 +146,12 @@ int WriteDataToFile(const char *pathname, /*char*/void *buf, size_t count)
 int WriteDataToFileInTxt()
 {
 	char buf[TXT_BUF_SIZE];
+	char szCurTime[ct_size];
 	int len = 0;
 	memset(buf,0xff,sizeof(buf));
+	memset(szCurTime,0,sizeof(szCurTime));
+	
+	GetCurrentTime(szCurTime, sizeof(szCurTime));
 
 	len = snprintf(buf, sizeof(buf),\
 			//mag
@@ -151,7 +178,7 @@ int WriteDataToFileInTxt()
 			"alscurve[5~9]: %d, %d, %d, %d, %d,\n" \
 			"alscurve[10~14]: %d, %d, %d, %d, %d,\n" \
 			"alscurve[15~19]: %d, %d, %d, %d, %d,\n" \
-			"als_multiplier=%d\n\n>>end<<\n\n", \
+			"als_multiplier=%d\n\n>>end<<\ntime: %s\n", \
 			//mag
 			file_content.calibration.magnx, file_content.calibration.magny, file_content.calibration.magnz, \
 			file_content.calibration.magnxnx, file_content.calibration.magnxny, file_content.calibration.magnxnz, \
@@ -180,7 +207,7 @@ int WriteDataToFileInTxt()
 			file_content.calibration.alscurve[13] , file_content.calibration.alscurve[14] ,\
 			file_content.calibration.alscurve[15] , file_content.calibration.alscurve[16] , file_content.calibration.alscurve[17] ,\
 			file_content.calibration.alscurve[18] , file_content.calibration.alscurve[19] ,\
-			file_content.calibration.als_multiplier);
+			file_content.calibration.als_multiplier, szCurTime);
 
 	printf("len = %d\n", len);
 	if (0 > len) {
@@ -188,7 +215,7 @@ int WriteDataToFileInTxt()
 		return -1;
 	}
 
-	FILE* pFile = fopen("/storage/emulated/0/setAGM_cal.txt", "w+");
+	FILE* pFile = fopen(AGM_SENSOR_TXT_FILE_NAME, "w+");
 	if (!pFile)
 		return -1;
 
@@ -281,6 +308,8 @@ void *sensorAGM_read_data_loop(void *arg)
 	int err;
 	int delay = 20, type, verbose = 0;
 	int batch_time_ms = 0, wakeup=0;
+
+	//memset(agm_data,0,sizeof(agm_data));
 
 	sp<SensorThread> sensor_thread;
 	sp<SensorThread> sensor_thread_gyro;
@@ -553,6 +582,8 @@ void skipData(int count)
 int SetAGM_STEP_A()
 {
 	apk_exit = 0;//avoid to run app again failed
+	enable_finish = 0;//wait for enable finish when run app again
+
 	int i;
 	int ret;
 	int ret_acc = 0;
@@ -564,7 +595,7 @@ int SetAGM_STEP_A()
 	signal(SIGINT,child_handler);
 #endif
 
-	ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
+	ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop, NULL);
 	if(ret) {
 		ALOGD("create pthread error!ret = %d\n",ret);
 		return -1;
@@ -595,6 +626,9 @@ int SetAGM_STEP_A()
 		printMagnData(1,&temp[i*3+2],1,i*3+2);
 
 		usleep(200000);//note: magn update time is 50ms
+
+		if (1 == apk_exit)
+			return 0;
 	}
 
 
@@ -639,6 +673,9 @@ int SetAGM_STEP_B()
 	usleep(2000000);
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
+		if (1 == apk_exit)
+			return 0;
+
 		ret_mag = readMagSensor(&temp[i*3+2]);
 		printMagnData(2,&temp[i*3+2],1,i*3+2);
 		usleep(50000); //note: magn update time is 50ms
@@ -670,6 +707,9 @@ int SetAGM_STEP_C()
 
 	//read the data...
 	for(i = 0; i < DATA_SIZE; i++) {
+		if (1 == apk_exit)
+			return 0;
+
 		ret_mag = readMagSensor(&temp[i*3+2]);
 		printMagnData(3,&temp[i*3+2],1,i*3+2);
 
@@ -706,6 +746,11 @@ int SetAGM_STEP_D()
 	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
 	for(i = 0; i< SAMPLES;)	{
+		if (1 == apk_exit) {
+			delete []buf;
+			return 0;
+		}
+
 		usleep(200000); //gyro update is 20ms
 		ret_gyr = readGyrSensor(&data);
 		printGyroData(4,&data,0,0);
@@ -768,10 +813,6 @@ int SetAGM_STEP_D()
 		point = i;
 		ALOGD("point:%d\n",point);
 
-		if(1 == apk_exit) {
-			ALOGD("apk_exit\n");
-			break;
-		}
 	}
 	ALOGD("\n");
 	//filt data
@@ -812,6 +853,11 @@ int SetAGM_STEP_E()
 	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
 	for(i = 0; i< SAMPLES;) {
+		if(1 == apk_exit) {
+			delete []buf;
+			return 0;
+		}
+
 		usleep(200000); //gyro update is 20ms
 
 		ret_gyr = readGyrSensor(&data);
@@ -873,10 +919,6 @@ int SetAGM_STEP_E()
 		point = i;
 		ALOGD("data[5/5]point:%d\n",point);
 
-		if(1 == apk_exit) {
-			ALOGD("apk_exit\n");
-			break;
-		}
 	}
 
 	//filt data
@@ -905,13 +947,21 @@ int SetAGM_STEP_E()
 int SetAGM_STEP_F()
 {
 
-	WriteDataToFile(AGM_SENSOR_FILE_NAME, &file_content, sizeof(file_content));
-	WriteDataToFileInTxt();
+	if (0 != WriteDataToFile(AGM_SENSOR_BIN_FILE_NAME, &file_content, sizeof(file_content))) {
+		ALOGD("WriteDataToFile failed\n");
+		return -1;
+	}
 
-	ALOGD("Save the files.\n");
+	if (0 != WriteDataToFileInTxt()) {
+		ALOGD("WriteDataToFileInTxt failed\n");
+		return -1;
+	}
+
+	ALOGD("Save the files successfully.\n");
+	ALOGD("The bin file path: "AGM_SENSOR_BIN_FILE_NAME"\n");
+	ALOGD("The txt file path: "AGM_SENSOR_TXT_FILE_NAME"\n");
 
 	return 0;
-
 }
 
 
@@ -923,7 +973,7 @@ int main(int argc, const char *argv[])
 		pthread_t tid;
 		int status;
 
-		if (!strcmp(argv[1], "agm")) {
+		if (!strcmp(argv[1], "agm")) { //use "sensorcalitool agm" to run three sensor loop
 			signal(SIGINT,child_handler);
 
 			ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
@@ -937,11 +987,27 @@ int main(int argc, const char *argv[])
 	}
 
 	SetAGM_STEP_A();
+
+	if(1 == apk_exit)
+		return -1;
 	SetAGM_STEP_B();
+	
+	if(1 == apk_exit)
+		return -1;
 	SetAGM_STEP_C();
+
+	if(1 == apk_exit)
+		return -1;
 	SetAGM_STEP_D();
+
+	if(1 == apk_exit)
+		return -1;
 	SetAGM_STEP_E();
+
+	if(1 == apk_exit)
+		return -1;
 	SetAGM_STEP_F();
 
+	return 0;
 }
 #endif

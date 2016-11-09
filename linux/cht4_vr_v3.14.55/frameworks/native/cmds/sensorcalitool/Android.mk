@@ -30,7 +30,7 @@ include $(BUILD_SHARED_LIBRARY)
 #
 # sensorcalitool - build exe for debug: use adb shell and print in terminal
 #
-#BUILD_EXE_FOR_DEBUG := true
+BUILD_EXE_FOR_DEBUG := true
 
 ifdef BUILD_EXE_FOR_DEBUG
 include $(CLEAR_VARS)

@@ -6,6 +6,7 @@ SENSOR_DATA_T data_loop_gyr;
 SENSOR_DATA_T data_loop_mag;
 
 extern int apk_exit;
+extern int agm_data[9];
 
 bool SensorThread::threadLoop()
 {
@@ -47,6 +48,10 @@ bool SensorThread::threadLoop()
 					data_loop_acc.data.accelMilliG.accelY = (int)(event[i].data[1] * 1000);
 					data_loop_acc.data.accelMilliG.accelZ = (int)(event[i].data[2] * 1000);
 
+					agm_data[0] = data_loop_acc.data.accelMilliG.accelX;
+					agm_data[1] = data_loop_acc.data.accelMilliG.accelY;
+					agm_data[2] = data_loop_acc.data.accelMilliG.accelZ;
+
 					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, accuracy=%d, sensor=%s\n",\
 							data_loop_acc.data.accelMilliG.accelX,\
 							data_loop_acc.data.accelMilliG.accelY,\
@@ -61,6 +66,10 @@ bool SensorThread::threadLoop()
 					data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY = (int)(event[i].data[1] * 1000);
 					data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ = (int)(event[i].data[2] * 1000);
 
+					agm_data[3] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX;
+					agm_data[4] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY;
+					agm_data[5] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ;
+
 					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, accuracy=%d, sensor=%s\n",\
 							data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX,\
 							data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY,\
@@ -74,6 +83,10 @@ bool SensorThread::threadLoop()
 					data_loop_mag.data.magFieldMilliGauss.magFieldX = (int)(event[i].data[0] * 1000);
 					data_loop_mag.data.magFieldMilliGauss.magFieldY = (int)(event[i].data[1] * 1000);
 					data_loop_mag.data.magFieldMilliGauss.magFieldZ = (int)(event[i].data[2] * 1000);
+
+					agm_data[6] = data_loop_mag.data.magFieldMilliGauss.magFieldX;
+					agm_data[7] = data_loop_mag.data.magFieldMilliGauss.magFieldY;
+					agm_data[8] = data_loop_mag.data.magFieldMilliGauss.magFieldZ;
 
 					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, accuracy=%d, sensor=%s\n",\
 							data_loop_mag.data.magFieldMilliGauss.magFieldX,\
