@@ -35,3 +35,97 @@ sensorhub(stm32f411):
 2.sensor 系统架构
 	java -- jni -- HAL -- daemon -- ipc driver -- sensorhub
 
+================================================================================
+daemon/main.c:
+	is_first_instance()
+	|
+	while(1) : getopt_long() 
+	|
+	sensor_state_t struct
+	|-- malloc/memset
+	char flush_completion_frame[MAX_UNIT_SIZE];
+	|-- memset
+	while(1)
+	|-- |
+		|-- reset_sensorhub();
+	   		|-- close(): close the following fd: ctlfd/dataf/sockfd/datasizefd/fwversionfd
+			|-- dirp = opendir("/sys/class/hwmon")
+			|-- while ((entry = readdir(dirp)) != NULL)
+				|-- strcmp() :"." || ".." -> continue
+				|-- snprintf() : "/sys/class/hwmon/%s/device/modalias" -> node_path
+				|-- fd = open(node_path, O_RDONLY); fd == -1 -> continue
+				|--	read(fd, magic_string, 32);
+					magic_string[31] = '\0';
+				|--	close(fd);
+				|-- strstr(magic_string, "vr") : platform = CHERRYTRAIL; //end while
+			|-- if (found == 0) : exit(EXIT_FAILURE);
+			|-- snprintf : "/sys/class/hwmon/%s/device/control" -> node_path
+				ctlfd = open(node_path, O_WRONLY);
+				open data data_size  fw_verion_compare node as the same way
+			|-- sockfd = android_get_control_socket(UNIX_SOCKET_PATH);//create sensorhubd Unix socket
+			|-- closedir(dirp);
+		|-- if(platform == CHERRYTRAIL) :log_message
+		|-- get_status();
+			|-- current_sensor_index = fake_sensor_enumeration();
+					|-- struct sensor_info fake_sensor_table[] = {
+					|-- use fake_sensor_table init sensor_list
+					|-- return current_sensor_index;
+			|-- if (current_sensor_index > MAX_SENSOR_INDEX) {
+					sensor_list = realloc(sensor_list, sizeof(sensor_state_t) * (current_sensor_index + 1));
+			|-- strncpy(sensor_list[current_sensor_index].name, "EVENT", sizeof("EVENT"));
+				current_sensor_index++;
+		|-- start_sensorhubd();
+			|-- /* two fd_set for I/O multiplexing */
+				FD_ZERO(&listen_fds);
+				FD_ZERO(&read_fds);
+
+				/* add sockfd to listen_fds */
+				FD_SET(sockfd, &listen_fds);
+
+				fd_set datasize_fds;
+				FD_ZERO(&datasize_fds);
+
+				if (datasizefd > maxfd)
+					maxfd = datasizefd;
+			|-- while (1) { //loop
+				|-- read_fds = listen_fds;
+					FD_SET(datasizefd, &datasize_fds);
+				|-- if (select(maxfd + 1, &read_fds, NULL, &datasize_fds, NULL)
+				|-- /*1. handle new connection request */
+					if (FD_ISSET(sockfd, &read_fds)) {
+						int clientfd = accept(sockfd, (struct sockaddr *) &client_addr,	&addrlen);
+
+						FD_SET(clientfd, &listen_fds);
+						if (clientfd > maxfd)
+							maxfd = clientfd;
+
+						FD_CLR(sockfd, &read_fds);
+				|
+				|-- /*2. get data from data node and dispatch it to clients */
+					if (FD_ISSET(datasizefd, &datasize_fds))
+						dispatch_data();
+				|
+				|-- /*3. handle request from clients */
+					int i;
+					for (i = maxfd; i >= 0; i--) {
+						char message[MAX_MESSAGE_LENGTH];
+
+						if (!FD_ISSET(i, &read_fds))
+							continue;
+
+						int length = recv(i, message, MAX_MESSAGE_LENGTH, 0);
+						if (length <= 0) {
+							/* release session resource if necessary */
+							remove_session_by_fd(i);
+							close(i);
+							log_message(CRITICAL, "fd %d:error reading message \n", i);
+							FD_CLR(i, &listen_fds);
+						} else {
+							/* process message */
+							handle_message(i, message);
+						}
+					}
+
+
+
+
