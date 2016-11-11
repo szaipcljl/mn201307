@@ -3,9 +3,12 @@ sensor HAL
 ================================================================================
 class hierarchy:
 
-class Sensor 	//Sensor.hpp
-|-- class PSHSensor		//PSHSensor.hpp
-	|-- class PSHCommonSensor 	//PSHCommonSensor.hpp
+class Sensor 						//Sensor.hpp
+|-- class PSHSensor					//PSHSensor.hpp
+	|-- class PSHCommonSensor 		//PSHCommonSensor.hpp
+
+----------
+class SensorHubHelper				//SensorHubHelper.hpp
 
 ================================================================================
 //SensorHAL.cpp
@@ -57,6 +60,20 @@ static int open(const struct hw_module_t* module, const char* id,
 						mModule.pollfds[i].revents = 0;
 				}
 
+================================================================================
+
+open()
+|-- dev.activate       = sensorActivate;
+	dev.setDelay       = sensorSetDelay;
+	dev.poll           = sensorPoll;
+	dev.batch          = sensorBatch;
+	dev.flush          = sensorFlush;
+
+
+
+
+
+
 --------------------------------------------------------------------------------
 
 new PSHCommonSensor(mDevice);
@@ -87,11 +104,49 @@ note: struct sensor_hub_methods PSHSensor::methods;
 Sensor::Sensor(SensorDevice &mDevice) // in Sensor class, //Sensor.cpp
 
 
+--------------------------------------------------------------------------------
+the relationship of function calls:
+
+open
+|-- static bool initSensors()
+	|-- int PSHCommonSensor::getPollfd()
+		|-- psh_sensor_t PSHType = SensorHubHelper::
+							getType(device.getType(), device.getSubname());
+		|
+		|--	sensorHandle = methods.psh_open_session(PSHType);
+			pollfd = methods.psh_get_fd(sensorHandle);
+
+
+methods.psh_close_session <- ~PSHCommonSensor()
+
+methods.psh_start_streaming
+
+PSHCommonSensor::hardwareSet()
+|-- if (!activated) 
+	|-- methods.psh_stop_streaming
+|-- else
+	|-- methods.psh_start_streaming_with_flag 
+
+methods.psh_set_property
+
+
+methods.psh_set_property_with_size
+<-- SensorHubHelper::setPSHPropertyIfNeeded() 
+<-- PSHCommonSensor::hardwareSet()
+<-- PSHCommonSensor::batch()
+<-- sensorBatch()
+<-- open()
+	|-- dev.batch          = sensorBatch;
 
 
 
+methods.psh_flush_streaming
+<-- int PSHSensor::flush(int handle)
+<-- int sensorFlush(struct sensors_poll_device_1* dev, int handle)
+<-- open()
+	|-- dev.flush          = sensorFlush;
 
 
-
-
+methods.psh_set_calibration
+methods.psh_get_calibration
 
