@@ -190,18 +190,30 @@ int PSHCommonSensor::getData(std::queue<sensors_event_t> &eventQue) {
                              }
                         }
                         else{
+                             if (device.getType() == SENSOR_TYPE_ACC_RAW) {
+                                event.data[device.getMapper(AXIS_X)] = sensorhubEvent[i].data[0] * MGTOG;
+                                event.data[device.getMapper(AXIS_Y)] = sensorhubEvent[i].data[1] * MGTOG;
+                                event.data[device.getMapper(AXIS_Z)] = sensorhubEvent[i].data[2] * MGTOG;
+                                event.data[device.getMapper(AXIS_W)] = sensorhubEvent[i].data[3] * MGTOG;
+                             } else {
                                 event.data[device.getMapper(AXIS_X)] = sensorhubEvent[i].data[0] * device.getScale(AXIS_X);
                                 event.data[device.getMapper(AXIS_Y)] = sensorhubEvent[i].data[1] * device.getScale(AXIS_Y);
                                 event.data[device.getMapper(AXIS_Z)] = sensorhubEvent[i].data[2] * device.getScale(AXIS_Z);
                                 event.data[device.getMapper(AXIS_W)] = sensorhubEvent[i].data[3] * device.getScale(AXIS_W);
+                             }
+                                /*ALOGE("yuanyao getScale[AXIS_X] = %f, getScale[AXIS_Y] = %f, getScale[AXIS_Z] = %f\n",
+                                  device.getScale(AXIS_X), device.getScale(AXIS_Y), device.getScale(AXIS_Z));*/
+ 
                                 if (sensorhubEvent[i].accuracy != 0)
                                         event.acceleration.status = sensorhubEvent[i].accuracy;
                         }
                         event.timestamp = sensorhubEvent[i].timestamp;
+#if 0
                         /* Workround: Not let timestamp disorder when PSH sync with IA */
                         if (event.timestamp <= last_timestamp) {
                                 event.timestamp = last_timestamp + 100000;
                         }
+#endif
                         last_timestamp = event.timestamp;
                         /* auto disable one-shot sensor */
                         if ((device.getFlags() & ~SENSOR_FLAG_WAKE_UP) == SENSOR_FLAG_ONE_SHOT_MODE)
@@ -209,7 +221,7 @@ int PSHCommonSensor::getData(std::queue<sensors_event_t> &eventQue) {
                         eventQue.push(event);
                 }
         }
-
+ 
         return 0;
 }
 

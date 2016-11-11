@@ -390,7 +390,7 @@ size_t SensorHubHelper::getUnitSize(int sensorType)
 }
 
 ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* events, size_t count, int sensorType)
-{
+{ 
         if (fd < 0)
                 return fd;
 
@@ -404,8 +404,8 @@ ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* e
         streamSize = read(fd, reinterpret_cast<void *>(stream), streamSize);
 
         if (streamSize % unitSize != 0) {
-                ALOGE("%s line: %d: invalid stream size: type: %d size: %d",
-                     __FUNCTION__, __LINE__, sensorType, streamSize);
+            /*    ALOGE("%s line: %d: invalid stream size: type: %d size: %d",
+                  __FUNCTION__, __LINE__, sensorType, streamSize);*/
                 delete[] stream;
                 return -1;
         }
@@ -424,7 +424,8 @@ ssize_t SensorHubHelper::readSensorhubEvents(int fd, struct sensorhub_event_t* e
                         events[i].accuracy = getVectorStatus(sensorType);
                         events[i].timestamp = (reinterpret_cast<struct accel_data*>(stream))[i].ts;
 			
-                        ALOGE("%s line: %d ACC: x=%d,  y=%d, z=%d, ts=%lld",__FUNCTION__, __LINE__, events[i].data[0], events[i].data[1], events[i].data[2], events[i].timestamp);
+                        /*  
+                            ALOGE("%s line: %d ACC: x=%d,  y=%d, z=%d, ts=%lld",__FUNCTION__, __LINE__, events[i].data[0], events[i].data[1], events[i].data[2], events[i].timestamp);*/
                 }
                 break;
 		case SENSOR_TYPE_COMPS_RAW:

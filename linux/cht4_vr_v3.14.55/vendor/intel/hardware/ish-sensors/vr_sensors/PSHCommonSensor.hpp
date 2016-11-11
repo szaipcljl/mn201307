@@ -3,13 +3,15 @@
 
 #include "PSHSensor.hpp"
 
+#define MGTOG 0.001
+
 class PSHCommonSensor : public PSHSensor {
 protected:
         struct sensorhub_event_t sensorhubEvent[32];
         int bufferDelay;
         streaming_flag flag;
         int64_t last_timestamp;
-public:
+public:  
         PSHCommonSensor(SensorDevice &mDevice) :PSHSensor(mDevice)
         {
                 memset(sensorhubEvent, 0, 32 * sizeof(struct sensorhub_event_t));

@@ -52,7 +52,7 @@ static bool initSensors()
         struct PlatformData mData;
         Sensor* mSensor = NULL;
         unsigned int size;
-
+ 
         size = mConfig.size();
         mModule.sensors.reserve(size);
         int newId = 0;
@@ -63,6 +63,7 @@ static bool initSensors()
                 }
 
                 if (mDevice.getCategory() == LIBSENSORHUB) {
+					ALOGD("mlog:%d\n",mDevice.getCategory());
                         switch (mDevice.getType()) {
                         case SENSOR_TYPE_ACCELEROMETER:
                         case SENSOR_TYPE_MAGNETIC_FIELD:
@@ -238,29 +239,54 @@ int sensorPoll(struct sensors_poll_device_t *dev, sensors_event_t* data, int cou
         int eventNum = 0;
         int num, err;
 
-        while (true) {
-                while (eventQue.size() > 0 && eventNum < count) {
-                        data[eventNum] = eventQue.front();
-                        eventQue.pop();
-                        eventNum++;
-                }
+        while (true)
+        {
+            while (eventQue.size() > 0 && eventNum < count)
+            {
+                data[eventNum] = eventQue.front();
+                eventQue.pop();
+                eventNum++;
+            }
+            
+            if (eventNum > 0)
+                return eventNum;
 
-                if (eventNum > 0)
-                        return eventNum;
+            num = poll(mModule.pollfds, mModule.count, -1);
+            if (num <= 0) 
+            {
+                err = errno;                
+#if 1
+                switch(err)
+                {
+                case EINTR:
+                    ALOGE("%s: line: %d poll error: %d %s, try continue..\n", __FUNCTION__, __LINE__, err, strerror(err));
+                    continue;
+                default: 
+                    ALOGE("%s: line: %d poll error: %d %s \n", __FUNCTION__, __LINE__, err, strerror(err));
+                    return err;
+                }
+#else
+                return -err;
+#endif
+            }
 
-                num = poll(mModule.pollfds, mModule.count, -1);
-                if (num <= 0) {
-                        err = errno;
-                        ALOGE("%s: line: %d poll error: %d %s", __FUNCTION__, __LINE__, err, strerror(err));
-                        return -err;
+            for (int i = 0; i < mModule.count; i++) 
+            {
+                if (mModule.pollfds[i].revents & POLLIN)
+                {   
+                    mModule.sensors[i]->getData(eventQue);
                 }
-                for (int i = 0; i < mModule.count; i++) {
-                        if (mModule.pollfds[i].revents & POLLIN)
-                                mModule.sensors[i]->getData(eventQue);
-                        else if (mModule.pollfds[i].revents != 0)
-                                ALOGE("%s: line: %d poll error: %d fd: %d type: %d", __FUNCTION__, __LINE__, mModule.pollfds[i].revents, mModule.pollfds[i].fd, mModule.sensors[i]->getDevice().getType());
-                        mModule.pollfds[i].revents = 0;
+                else if (mModule.pollfds[i].revents != 0)
+                {
+                    ALOGE("%s: line: %d poll error: %d fd: %d type: %d",
+                          __FUNCTION__, __LINE__,
+                          mModule.pollfds[i].revents,
+                          mModule.pollfds[i].fd,
+                          mModule.sensors[i]->getDevice().getType());
                 }
+                
+                mModule.pollfds[i].revents = 0;
+            }
         }
 
         return -1;
