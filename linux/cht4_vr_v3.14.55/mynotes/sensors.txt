@@ -126,6 +126,138 @@ daemon/main.c:
 						}
 					}
 
+--------------------------------------------------------------------------------
+start_sensorhubd():
+	//it`s the main loop: select -- sockfd -- datasize_fds -- connected socket
+
+	while(1):
+		1.  select() monitor read_fds and datasize_fds 
+			read_fds: sockfd (used for connection with it`s socket client)
+			datasize_fds: datasizefd (used for monitor the driver`s report data)
+
+			note:
+			On  exit,  the sets  are  modified  in place to indicate which file
+			descriptors actually changed status. Each of the three file descriptor
+			sets may be specified as  NULL  if  no file descriptors are to be 
+			watched for the corresponding class of events.
+
+		2.  test to see if sockfd become "ready":
+			if (FD_ISSET(sockfd, &read_fds))
+			FD_ISSET() tests  to see if a file descriptor is part of the set;
+			if sockfd become "ready", perform the following steps to handle new
+			connection request:
+
+			(1) create a new connected socket:
+				int clientfd = accept(sockfd, (struct sockaddr *) &client_addr,
+						&addrlen);
+
+			(2)	add it to listen_fds, (at the begin of next loop, listen_fds
+				is used to initialize read_fds)
+				FD_SET(clientfd, &listen_fds);
+
+			(3)	remove sockfd from read_fds set:
+				FD_CLR(sockfd, &read_fds);
+
+		3.  test to see if datasizefd become "ready":
+			if datasizefd becom "ready", dispatch data.
+			if (FD_ISSET(datasizefd, &datasize_fds))
+				dispatch_data();
+
+		4.  check the fd one by one from maxfd to 0, use FD_ISSET() to see which
+			connected socket become "ready" in read_fds. Then call recv() to 
+			receive message from a socket and return the message length.
+
+			if length <= 0: release session resource if necessary
+				remove_session_by_fd(i);
+				close(i);
+				FD_CLR(i, &listen_fds);
+
+			else: process message
+				handle_message(i, message);
+
+--------------------------------------------------------------------------------
+dispatch_data():
+
+	1.  read data_size node and convert the string to digital:
+		lseek(datasizefd, 0, SEEK_SET);
+		ret = read(datasizefd, datasize_buf, 8);
+
+		datasize_buf[7] = '\0';
+		sscanf(datasize_buf, "%d", &data_size);
+
+	2.  read data node
+		while (left > 0) {
+			ret = read(datafd, buf + data_size - left, left);
+			if (ret <= 0)
+				return;
+
+			left = left - ret;
+		}
+	
+	3. convert buf to the pointer to the cmd_resp structure
+		p_cmd_resp = (struct cmd_resp *) buf;
+		p = buf;
+
+	4.  while (ret > 0) { //data_size > 0
+		p_cmd_resp->cmd_type
+		(1) RESP_CMD_ACK
+			dispatch_cmd_ack(p_cmd_resp);
+
+		(2) RESP_GET_SINGLE || RESP_BIST_RESULT
+			dispatch_get_single(p_cmd_resp);
+
+		(3) RESP_STREAMING
+			dispatch_streaming(p_cmd_resp);
+
+		(4) RESP_PSH_EVT
+			#define PSH_EVT_ID_FLUSH_DONE ((unsigned char)1)
+			struct resp_psh_evt {
+				unsigned char evt_id;
+				unsigned char evt_buf_len;
+				char evt_buf[0];
+			} __attribute__ ((packed));
+			struct resp_psh_evt *p = (struct resp_psh_evt *)p_cmd_resp->buf;
+
+			if (p_cmd_resp->data_len != sizeof(*p) + p->evt_buf_len)
+
+			if (p->evt_id == PSH_EVT_ID_FLUSH_DONE)
+				dispatch_flush();
+			
+		(5) RESP_CAL_RESULT
+
+			struct cmd_calibration_param param;
+			struct resp_calibration *p = (struct resp_calibration*)p_cmd_resp->buf;
+
+			if (p_cmd_resp->data_len != sizeof(struct resp_calibration) + p->info.size)
+			param.sub_cmd = SUBCMD_CALIBRATION_GET;
+			param.calibrated = p->calib_result;
+			memcpy(&param.cal_param, &p->info, sizeof(p->info) + p->info.size);
+			
+			handle_calibration(&param, p_cmd_resp->sensor_id);
+			
+		(6) RESP_ADD_EVENT
+			handle_add_event_resp(p_cmd_resp);
+		
+		(7) RESP_CLEAR_EVENT
+			handle_clear_event_resp(p_cmd_resp);
+		
+		(8) RESP_EVENT
+			dispatch_event(p_cmd_resp);
+
+		(9)
+			//remain data len
+			ret = ret - (sizeof(struct cmd_resp) + p_cmd_resp->data_len);
+
+			p = p + sizeof(struct cmd_resp) + p_cmd_resp->data_len;
+			p_cmd_resp = (struct cmd_resp *)p;
+
+--------------------------------------------------------------------------------
+handle_message(i, message):
+
+--------------------------------------------------------------------------------
+HAL		--		sensorhubd 		--	 driver
+
+
 
 
 
