@@ -117,10 +117,13 @@ int GetCurrentTime(char *szCurTime, int bufsz)
 	struct tm *localTime;
 
 	time(&tTime);
-	localTime=localtime(&tTime);
+	localTime = localtime(&tTime);
+	if (NULL == localTime)
+		return -1;
 
-	snprintf(szCurTime,bufsz,"%d-%02d-%02d %02d:%02d:%02d",localTime->tm_year+1900,
-			localTime->tm_mon+1,localTime->tm_mday,localTime->tm_hour,localTime->tm_min,localTime->tm_sec);
+	snprintf(szCurTime, bufsz, "%d-%02d-%02d %02d:%02d:%02d",
+			localTime->tm_year+1900, localTime->tm_mon+1, localTime->tm_mday,
+			localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
 
 	return 0;
 }
@@ -150,7 +153,7 @@ int WriteDataToFileInTxt()
 	int len = 0;
 	memset(buf,0xff,sizeof(buf));
 	memset(szCurTime,0,sizeof(szCurTime));
-	
+
 	GetCurrentTime(szCurTime, sizeof(szCurTime));
 
 	len = snprintf(buf, sizeof(buf),\
@@ -331,7 +334,7 @@ void *sensorAGM_read_data_loop(void *arg)
 	if (queue_gyro == NULL) {
 		ALOGD("queue_gyro: createEventQueue returned NULL\n");
 		return 0;
-	} 
+	}
 
 	sp<SensorEventQueue> queue_mag = mgr.createEventQueue();
 	if (queue_mag == NULL) {
@@ -578,7 +581,7 @@ void skipData(int count)
 		usleep(200000);//note: magn update time is 50ms
 	}
 }
- 
+
 int SetAGM_STEP_A()
 {
 	apk_exit = 0;//avoid to run app again failed
@@ -842,7 +845,7 @@ int SetAGM_STEP_E()
 	//==============================================
 	//step 5:
 	ALOGD("[5/5]Hold the device vertical, rotate the device counter clockwise along the axis between bottom and top\n");
-	//ALOGD("[5/5]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise 
+	//ALOGD("[5/5]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise
 	//along the axis between the top of the screen and the windows button\n");
 	usleep(2000000);
 
@@ -991,7 +994,7 @@ int main(int argc, const char *argv[])
 	if(1 == apk_exit)
 		return -1;
 	SetAGM_STEP_B();
-	
+
 	if(1 == apk_exit)
 		return -1;
 	SetAGM_STEP_C();
