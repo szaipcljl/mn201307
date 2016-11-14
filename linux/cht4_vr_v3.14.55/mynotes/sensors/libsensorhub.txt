@@ -1,0 +1,117 @@
+Libsensorhub
+================================================================================
+//include/message.h
+typedef struct {
+	event_t event_type;
+	cmd_ack_ret_t ret;
+	int buf_len;
+	unsigned char buf[];
+} cmd_ack_event;
+
+
+typedef struct {
+	event_t event_type;
+	char name[SNR_NAME_MAX_LEN + 1];
+} hello_with_sensor_type_event;
+
+
+typedef struct {
+	event_t event_type;
+	cmd_t cmd;
+	int parameter;
+	int parameter1;
+	int parameter2;
+	unsigned char buf[];
+} cmd_event;
+---------
+//Libsensorhub.c
+typedef struct {
+	int datafd;
+	int ctlfd;
+	session_id_t session_id;
+	char name[SNR_NAME_MAX_LEN + 1];
+	unsigned char evt_id;
+	struct cmd_event_param *evt_param;
+        pthread_mutex_t ctlfd_lock;
+} session_context_t;
+
+================================================================================
+static ssize_t psh_send_recv_cmd_locked(int sockfd, void *buf_send, void *buf_recv,
+		size_t len_send, size_t len_recv, pthread_mutex_t *lock)
+
+|-- pthread_mutex_lock(lock); //lock ctlfd
+|-- ret = send(sockfd, buf_send, len_send, 0);
+|-- setsockopt();
+|-- ret = recv(sockfd, buf_recv, len_recv, 0);
+|-- event_type = *((int *)buf_recv);
+	if (event_type != EVENT_CMD_ACK) {
+		ret = ERROR_CAN_NOT_GET_REPLY;
+		goto err_recv;
+	}
+|-- p_cmd_ack = (cmd_ack_event *)buf_recv;
+	size -= sizeof(cmd_ack_event) + p_cmd_ack->buf_len;
+	if (p_cmd_ack->ret == E_ANOTHER_REPLY) {
+	|-- if (size > 0) {
+			memcpy(buf_recv, buf_recv + sizeof(cmd_ack_event) + p_cmd_ack->buf_len, size);
+		} else {
+			ret = recv(sockfd, buf_recv, len_recv, 0);
+			if (ret <= 0) {
+				ret = ERROR_CAN_NOT_GET_REPLY;
+				goto err_recv;
+			}
+		}
+|-- err = pthread_mutex_unlock(lock);
+
+
+--------------------------------------------------------------------------------
+handle_t psh_open_session_with_name(const char *name)
+|
+|-- datafd = socket_local_client(UNIX_SOCKET_PATH, ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
+|--	hello_with_sensor_type.event_type = EVENT_HELLO_WITH_SENSOR_TYPE;
+	memcpy(hello_with_sensor_type.name, name, len);
+	hello_with_sensor_type.name[len] = '\0';
+	ret = send(datafd, &hello_with_sensor_type, sizeof(hello_with_sensor_type), 0);
+|-- ret = recv(datafd, message, MAX_MESSAGE_LENGTH, 0);
+|-- event_type = *((int *) message);
+	if (event_type != EVENT_HELLO_WITH_SENSOR_TYPE_ACK) {
+|-- p_hello_with_sensor_type_ack = (hello_with_sensor_type_ack_event *) message;
+	session_id = p_hello_with_sensor_type_ack->session_id;
+|
+|-- ctlfd = socket_local_client("sensorhubd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
+|-- hello_with_session_id.event_type = EVENT_HELLO_WITH_SESSION_ID;
+	hello_with_session_id.session_id = session_id;
+	ret = send(ctlfd, &hello_with_session_id, sizeof(hello_with_session_id), 0);
+|--  ret = recv(ctlfd, message, MAX_MESSAGE_LENGTH, 0);
+|-- event_type = *((int *) message);
+	if (event_type != EVENT_HELLO_WITH_SESSION_ID_ACK) {
+|-- p_hello_with_session_id_ack = (hello_with_session_id_ack_event *) message;
+	ret = p_hello_with_session_id_ack->ret;
+|-- if (strncmp(name, "EVENT", SNR_NAME_MAX_LEN) == 0) {
+		evt_param = malloc(sizeof(struct cmd_event_param));
+|-- session_context_t *session_context = malloc(sizeof(session_context_t));
+	//allocate memory for session_context
+|--	session_context->datafd = datafd;
+	session_context->ctlfd = ctlfd;
+	session_context->session_id = session_id;
+	memcpy(session_context->name, name, len);
+	hello_with_sensor_type.name[len] = '\0';
+	session_context->evt_id = 0;
+	session_context->evt_param = evt_param;
+|
+|--	pthread_mutex_init(&session_context->ctlfd_lock, NULL);
+|-- return session_context;
+
+--------------------------------------------------------------------------------
+error_t psh_start_streaming_with_flag(handle_t handle, int data_rate, int buffer_delay, streaming_flag flag)
+|-- session_context_t *session_context = (session_context_t *)handle;
+|-- cmd.event_type = EVENT_CMD;
+	cmd.cmd = CMD_START_STREAMING;
+	cmd.parameter = data_rate;
+	cmd.parameter1 = buffer_delay;
+	cmd.parameter2 = flag;
+|-- ret = psh_send_recv_cmd_locked(session_context->ctlfd, &cmd, message,
+
+
+--------------------------------------------------------------------------------
+
+

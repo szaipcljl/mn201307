@@ -223,6 +223,25 @@ dispatch_get_single(p_cmd_resp);
 
 ----------------------------------------
 dispatch_streaming(p_cmd_resp);
+|-- sensor_state_t *p_sensor_state = get_sensor_state_with_id(sensor_id);
+|-- send_data_to_clients(p_sensor_state, p_cmd_resp->buf, p_cmd_resp->data_len);
+	|-- session_state_t *p_session_state = p_sensor_state->list;
+	|-- for (; p_session_state != NULL;
+			p_session_state = p_session_state->next) {
+		|-- //Android.mk:20:LOCAL_CFLAGS := -DENABLE_CONTEXT_ARBITOR
+			//#ifdef ENABLE_CONTEXT_ARBITOR
+			if (p_session_state->handle == NULL) 
+				|-- do {  }while(1);
+					|-- ret_value = send(p_session_state->datafd, data, size, MSG_NOSIGNAL|MSG_DONTWAIT);
+					|-- if (ret_value < 0)
+					|-- else {
+							break;
+			|-- else if (ctx_dispatch_data(p_session_state->handle, data, size, &out_data, &out_size) == 1) 
+				|-- do {  }while(1);
+                	|-- ret_value = send(p_session_state->datafd, out_data, out_size, MSG_NOSIGNAL|MSG_DONTWAIT);
+					|-- if (ret_value < 0)
+					|-- else {
+							break;
 
 ----------------------------------------
 dispatch_flush();

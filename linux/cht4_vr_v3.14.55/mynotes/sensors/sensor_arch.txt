@@ -38,7 +38,51 @@ sensorhub(stm32f411):
 ================================================================================
 HAL		--		sensorhubd 		--	 driver
 
+LibsensorhubClient: mn:libsensorhub:psh_start_streaming_with_flag
+|-- psh_send_recv_cmd_locked
+	|-- psh_open_session_with_name
 
 
+
+LibsensorhubClient: mn:libsensorhub:psh_open_session
+
+LibsensorhubClient: mn:libsensorhub:psh_get_fd
+
+
+
+sensorhubd:
+dispatch_data()
+|-- else if (p_cmd_resp->cmd_type == RESP_STREAMING) {
+	|-- dispatch_streaming()
+		|-- send_data_to_clients();
+
+
+================================================================================
+data package:
+drivers:
+
+sensorhubd:
+//main.c
+
+struct cmd_resp {
+	unsigned char tran_id;
+	unsigned char cmd_type;
+	unsigned char sensor_id;
+	unsigned short data_len;
+#ifdef TV_SNRD_HAL
+	struct timeval tv;
+#endif
+	char buf[0];
+} __attribute__ ((packed));
+
+>> libsensorhub:
+	//include/message.h
+
+	typedef struct {
+		event_t event_type;
+		cmd_ack_ret_t ret;
+		int buf_len;
+		unsigned char buf[];
+	} cmd_ack_event;
 
 
