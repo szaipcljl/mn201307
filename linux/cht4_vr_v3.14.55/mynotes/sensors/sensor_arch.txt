@@ -38,6 +38,34 @@ sensorhub(stm32f411):
 ================================================================================
 HAL		--		sensorhubd 		--	 driver
 
++-------------+                 +--------------+                   +------------+
+|             |                 |              |                   |            |
+|     HAL     |                 |  sensorhubd  |                   |   driver   |
+|             |                 |              |                   |            |
+|   dlopen()  |                 |              |                   |            |
++-------------+                 |              |                   |            |
+| libsensorhub| <-------------> |              | <---------------> |            |
++-------------+                 +--------------+                   +------------+
+          client    socket    server         /sys/class/hwmon/hwmon3/device:
+                                                    control
+                                                    counter
+                                                    data
+                                                    data_size
+                                                    debug
+                                                    driver
+                                                    fw_version
+                                                    hwmon
+                                                    modalias
+                                                    power
+                                                    profile_pull_control
+                                                    profile_pull_data
+                                                    status_mask
+                                                    status_trig
+                                                    trace
+                                                    uevent
+                                                                              
+                                                                             
+
 LibsensorhubClient: mn:libsensorhub:psh_start_streaming_with_flag
 |-- psh_send_recv_cmd_locked
 	|-- psh_open_session_with_name
