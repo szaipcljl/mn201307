@@ -64,6 +64,16 @@ static ssize_t psh_send_recv_cmd_locked(int sockfd, void *buf_send, void *buf_re
 
 
 --------------------------------------------------------------------------------
+
+handle_t psh_open_session(psh_sensor_t sensor_type)
+                    |
+                    |
+                    v
+psh_open_session_with_name():
+	 will initialize datafd and ctlfd, and return the pointer to 
+	 session_context_t structure,
+
+--------------------------------------------------------------------------------
 handle_t psh_open_session_with_name(const char *name)
 |
 |-- datafd = socket_local_client(UNIX_SOCKET_PATH, ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
@@ -112,6 +122,31 @@ error_t psh_start_streaming_with_flag(handle_t handle, int data_rate, int buffer
 |-- ret = psh_send_recv_cmd_locked(session_context->ctlfd, &cmd, message,
 
 
+--------------------------------------------------------------------------------
+int psh_get_fd(handle_t handle)
+return datafd
+--------------------------------------------------------------------------------
+
+psh_send_recv_cmd_locked
++--< psh_start_streaming_with_flag
+|  +--< psh_start_streaming
++--< psh_flush_streaming
++--< psh_stop_streaming
++--< psh_get_single
++--< psh_set_calibration
++--< psh_get_calibration
++--< psh_add_event
++--< psh_clear_event
++--< psh_set_property_with_size
+|  +--< psh_set_property
++--< psh_get_property_with_size
+
+
++--< psh_open_session_with_name
+ +--< psh_open_session
+
+
+other functions are the top interface provided to HAL level
 --------------------------------------------------------------------------------
 
 

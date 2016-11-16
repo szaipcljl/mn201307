@@ -10,6 +10,33 @@ class Sensor 						//Sensor.hpp
 ----------
 class SensorHubHelper				//SensorHubHelper.hpp
 
+----------
+class PlatformConfig				//PlatformConfig.hpp
+important class members: 
+	std::map<int, struct PlatformData> configs;
+	std::vector<SensorDevice> devices; //devices vector similar to array
+
+to parse XML file in the constructor,and will use default config 
+-->
+struct PlatformData					//ConfigData.hpp
+----------
+class SensorDevice 					//SensorDevice.hpp
+important class members: 
+	struct sensor_t dev;
+	int id; //start from 0
+	sensor_category_t category; // 1 for PSH sensor, 0 for direct sensor
+	sensors_event_property_t eventProperty;
+	sensors_subname subname;
+	int mapper[4];
+	float scale[4];
+
+-----------
+struct SensorModule {			//SensorHAL.cpp
+        struct sensor_t* list;
+        std::vector<Sensor*> sensors;
+        struct pollfd *pollfds;
+        int count;
+};
 ================================================================================
 //SensorHAL.cpp
 static struct hw_module_methods_t sensors_module_methods = {
@@ -20,6 +47,10 @@ static int open(const struct hw_module_t* module, const char* id,
 		struct hw_device_t** device)
 	|--	(1) *device = &dev.common;
 	|-- (2) initSensors()
+			|-- PlatformConfig mConfig; // creates an object, calling the default constructor
+				SensorDevice mDevice;
+				struct PlatformData mData;
+				Sensor* mSensor = NULL;
 			|--	size = mConfig.size();
 				mModule.sensors.reserve(size);
 			|
@@ -83,7 +114,7 @@ new PSHCommonSensor(mDevice);
 			|-- SensorHubMethodsInitialize();
 				|-- use dlopen to open libsensorhub.so, and return the handle
 					methodsHandle = dlopen("libsensorhub.so", RTLD_LAZY);
-				|-- use dlsym to the address where that symbol is loaded into memory.
+				|-- use dlsym to get the address where that symbol is loaded into memory.
 
 					methods.psh_open_session = reinterpret_cast<handle_t (*)
 						(psh_sensor_t)>(dlsym(methodsHandle, "psh_open_session"));
