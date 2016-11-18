@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<unistd.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int main(int argc, const char *argv[])
 {
@@ -7,9 +7,8 @@ int main(int argc, const char *argv[])
 	int count = 0;
 	pipe(fd);
 
-//	close(fd[0]);
-	while(1)
-	{
+	//	close(fd[0]);
+	while(1) {
 		write(fd[1],"a",1);
 
 		count ++;

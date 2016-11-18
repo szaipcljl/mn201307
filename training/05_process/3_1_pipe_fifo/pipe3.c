@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<unistd.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int main(int argc, const char *argv[])
 {
@@ -11,19 +11,15 @@ int main(int argc, const char *argv[])
 
 	pid = fork();
 
-	if(pid == -1)
-	{
+	if(pid == -1) {
 
 	}
-	else if(pid == 0)
-	{
+	else if(pid == 0) {
 		close(fd[0]);
 
 		write(fd[1],"hello",5);
 		while(1);
-	}
-	else
-	{
+	} else {
 		close(fd[0]);
 		close(fd[1]);
 		wait(&status);
@@ -32,5 +28,5 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
-//写端固定：
+//写端存在：
 //如果端不存在:发送信号SIGPIPE给子进程
