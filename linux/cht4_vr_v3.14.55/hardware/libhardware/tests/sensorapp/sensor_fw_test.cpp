@@ -21,10 +21,30 @@
 #include <gui/Sensor.h>
 #include <gui/SensorManager.h>
 #include <gui/SensorEventQueue.h>
+#include <vector>
+#include <string>
+
+
 
 char const* getSensorName(int type);
 
 using namespace android;
+
+struct SensorAttribute
+{
+    SensorAttribute(Sensor const* lp_new_sensor):
+        m_lp_sensor(lp_new_sensor), m_IsEnable(false)
+    {;}
+
+    Sensor const* m_lp_sensor;
+    bool m_IsEnable;
+    bool m_IsRequestWakeUp;
+};
+
+
+typedef std::vector<SensorAttribute> SensorCollection;
+
+
 
 class SensorThread : public Thread
 {
@@ -210,6 +230,15 @@ int getSensorType(char const* type) {
     else if (strcmp(type, "Rmx") == 0) {
         return SENSOR_TYPE_ROTATION_MATRIX;
     }
+	else if (strcmp(type, "Acc_raw") == 0) {
+		return SENSOR_TYPE_ACC_RAW;
+	}
+	else if(strcmp(type, "Gyro_raw") == 0) {
+		return SENSOR_TYPE_GYRO_RAW;
+	}
+	else if(strcmp(type, "Comps_raw") == 0) {
+		return SENSOR_TYPE_COMPS_RAW;
+	}
     else if (isdigit(type[0])) {
         return atoi(type);
     }
@@ -227,6 +256,150 @@ int skipThisSensor(int type, int* types, int numTypes) {
     return numTypes != 0;
 }
 
+static void SensorList2SensorCollection(SensorCollection& AllSensor,
+                                        Sensor const* const* lpList, int Count)
+{
+    int Loop_i;
+
+    if (!lpList || 0 == Count) {
+        return;
+    }
+
+    for (Loop_i = 0; Loop_i < Count; ++Loop_i) {
+        AllSensor.push_back(SensorAttribute(lpList[Loop_i]));
+    }
+
+    return;
+}
+
+static void DumpExistSensor(SensorCollection& AllSensor)
+{
+    SensorCollection::iterator IterBegin = AllSensor.begin();
+    SensorCollection::iterator IterEnd = AllSensor.end();
+
+    if (AllSensor.empty()) {
+        printf("Not found any exist sensors.\n");
+    }
+
+    IterEnd = AllSensor.end();
+    for (; IterBegin != IterEnd; ++IterBegin) {
+        printf("Name: %-32s| Vendor: %-28s | Handle: %10d | type: %5d | parameter name: %s\n",
+               (*IterBegin).m_lp_sensor->getName().string(),
+               (*IterBegin).m_lp_sensor->getVendor().string(),
+               (*IterBegin).m_lp_sensor->getHandle(),
+               (*IterBegin).m_lp_sensor->getType(),
+               getSensorName((*IterBegin).m_lp_sensor->getType())
+               );
+    }
+
+    return;
+}
+
+
+static bool IsNeedWakup(int Type)
+{
+    if (Type == SENSOR_TYPE_PROXIMITY
+        || Type == SENSOR_TYPE_SIGNIFICANT_MOTION
+        || Type == SENSOR_TYPE_TILT_DETECTOR
+        || Type == SENSOR_TYPE_WAKE_GESTURE
+        || Type == SENSOR_TYPE_GLANCE_GESTURE
+        || Type == SENSOR_TYPE_PICK_UP_GESTURE) {
+        return true;
+    }
+
+    return false;
+}
+
+static bool SelectRequestSensor(SensorCollection& AllSensor,
+                                std::vector<std::string>& RequestSensor)
+{
+    unsigned int Loop_i = 0;
+    int SensorType;
+    int IsWakeup;
+    bool RetValue;
+
+    SensorCollection::iterator Begin, End;
+
+    RetValue = false;
+    for(; Loop_i < RequestSensor.size(); ++Loop_i) {
+        /*
+          get type by parameter name
+          check wake up state by type
+
+         */
+        SensorType = getSensorType(RequestSensor[Loop_i].c_str());
+        if (-1 == SensorType) {
+            printf("Unknow sensor name: %s, Ignored.\n",
+                   RequestSensor[Loop_i].c_str());
+            continue;
+        }
+
+        IsWakeup = IsNeedWakup(SensorType);
+
+        /*
+          get special sensor by both type and wake up
+         */
+        Begin = AllSensor.begin();
+        End = AllSensor.end();
+        for (; Begin != End; ++Begin) {
+            printf("gettype() = %d, iswakup = %d | Sensortype = %d, wakup = %d \n",
+                   (*Begin).m_lp_sensor->getType(),
+                   (*Begin).m_lp_sensor->isWakeUpSensor(),
+                   SensorType, IsWakeup);
+
+            if ((*Begin).m_lp_sensor->getType() == SensorType
+                && (*Begin).m_lp_sensor->isWakeUpSensor() == IsWakeup) {
+                (*Begin).m_IsEnable = true;
+                (*Begin).m_IsRequestWakeUp = IsWakeup;
+                RetValue = true;
+            }
+        }
+    }
+
+    printf("RetValue = %d\n", RetValue);
+    return RetValue;
+}
+
+
+static void EnableSelectedSensor(SensorCollection& AllSensor,
+                                 sp<SensorEventQueue> SensorDataQueue,
+                                 int DelayTime, int BatchTime)
+{
+    SensorCollection::iterator Begin, End;
+
+    int Delay = ns2us(ms2ns(DelayTime));
+    int Batch = ns2us(ms2ns(BatchTime));
+    int IsFiFo;
+
+    End = AllSensor.end();
+    for(Begin = AllSensor.begin(); Begin != End; ++Begin) {
+		if ((*Begin).m_IsEnable) {
+            IsFiFo = (*Begin).m_IsRequestWakeUp ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0;
+            SensorDataQueue->enableSensor((*Begin).m_lp_sensor->getHandle(),
+                                         Delay, Batch, IsFiFo);
+            printf("Enabled Sensor: %s \n",
+                   (*Begin).m_lp_sensor->getName().string());
+        }
+    }
+}
+
+
+static void DisableSelectedSensor(SensorCollection& AllSensor,
+                                  sp<SensorEventQueue> SensorDataQueue)
+{
+    SensorCollection::iterator Begin, End;
+
+    End = AllSensor.end();
+    for(Begin = AllSensor.begin(); Begin != End; ++Begin) {
+        if ((*Begin).m_IsEnable) {
+            SensorDataQueue->disableSensor((*Begin).m_lp_sensor);
+            printf("Disable Sensor: %s \n",
+                   (*Begin).m_lp_sensor->getName().string());
+        }
+    }
+}
+
+
 int main(int argc, char** argv)
 {
     int err;
@@ -236,170 +409,207 @@ int main(int argc, char** argv)
     int batch_time_ms = 0, wakeup=0;
 
     sp<SensorThread> sensor_thread;
-    SensorManager &mgr(SensorManager::getInstance());
+    SensorManager& mgr(SensorManager::getInstance());
     sp<SensorEventQueue> queue = mgr.createEventQueue();
+
+    SensorCollection AllSensor;
+    std::vector<std::string> sensor_name_list;
+
     Sensor const* const* list;
     int count;
+
     int incalibrate = 0;
 
-    if (queue == NULL)
-    {
+    if (queue == NULL) {
         printf("createEventQueue returned NULL\n");
         return 0;
-    }
-    else
-    {
+    } else {
         count = mgr.getSensorList(&list);
+        SensorList2SensorCollection(AllSensor, list, count);
     }
 
     while (1) {
         int c = getopt_long(argc, argv,
                             short_options, long_options, NULL);
 
-        if (c == -1){
+        if (c == -1) {
             break;
         }
 
         switch (c) {
-            case 'a':
-                action = optarg;
-                break;
-            case 'd':
-                delay = atoi(optarg);
-                break;
-            case 's':
-                sample = atoi(optarg);
-                break;
-            case 'v':
-                verbose = 1;
-                break;
-            case 'l':
-                show_list = 1;
-                break;
-            case 'b':
-                batch_time_ms = atoi(optarg);
-                break;
-            case 'w':
-                wakeup = 1;
-                break;
-            default:
-                return 0;
+        case 'a':
+            action = optarg;
+            break;
+        case 'd':
+            delay = atoi(optarg);
+            break;
+        case 's':
+            sample = atoi(optarg);
+            break;
+        case 'v':
+            verbose = 1;
+            break;
+        case 'l':
+            show_list = 1;
+            break;
+        case 'b':
+            batch_time_ms = atoi(optarg);
+            break;
+        case 'w':
+            wakeup = 1;
+            break;
+        default:
+            return 0;
         }
     }
 
     /* if list is set, just put the sensor list info */
     if (show_list) {
+#if 0
         printf("%d sensors found:\n", count);
         for (int i=0 ; i<count ; i++) {
-            printf("%-32s| vendor: %-28s | handle: %10d | type: %5d | name: %s\n",
+            if(list[i] == NULL )
+                break;
+            
+            printf("index: %d, %-32s| vendor: %-28s | handle: %10d | type: %5d | name: %s\n",
+                   i,
                    list[i]->getName().string(),
                    list[i]->getVendor().string(),
                    list[i]->getHandle(),
                    list[i]->getType(),
                    getSensorName(list[i]->getType()));
         }
+#else
+        DumpExistSensor(AllSensor);
+#endif
         return 0;
     }
 
     if (strcmp(action, "set") == 0) {
-#if 0
-        // TODO: add set funtion
-#else
         printf("'set' is not supported\n");
-#endif
         return 0;
-    }
-    else if (strcmp(action, "get") == 0) {
-#if 0
-        // TODO: add get funtion
-#else
+    } else if (strcmp(action, "get") == 0) {
         printf("'get' is not supported\n");
-#endif
         return 0;
-    }
-    else if (strcmp(action, "selftest") == 0) {
-#if 0
-        // TODO: add selftest function
-#else
+    } else if (strcmp(action, "selftest") == 0) {
         printf("'selftest' is not supported\n");
-#endif
         return 0;
-    }
-        /* just open 1 sensor for easy test */
-    else if ((strcmp(action, "measure") == 0) || (strcmp(action, "calibrate") == 0)) {
+    } else if ((strcmp(action, "measure") == 0)
+             || (strcmp(action, "calibrate") == 0)) {
+		/* just open 1 sensor for easy test */
         int type;
         int numSkipSensors = 0;
         Sensor const *sensor = NULL;
 
-        if(optind >= argc){
-            printf("invalid cmd parameters\n");
-            return 0;
+		/*
+		   if(optind >= argc) {
+			   printf("invalid cmd parameters\n");
+			   return 0;
+		   }
+		   if ((type = getSensorType(argv[optind])) == -1) {
+			   printf("invalid sensor type (%s)\n", argv[optind]);
+			   return 0;
+		   }
+		   */
+
+		/*
+		   Save all request sensor name to vector
+		   */
+        for (optind; optind < argc; ++optind) {
+            printf("request Sensor type string name: (%s)\n", argv[optind]);
+            sensor_name_list.push_back(argv[optind]);
         }
 
-        if ((type = getSensorType(argv[optind])) == -1) {
-            printf("invalid sensor type (%s)\n", argv[optind]);
-            return 0;
+        if (!SelectRequestSensor(AllSensor,
+                                 sensor_name_list)) {
+            printf("No Sensor want to been enable.\n");
+            return -1;
         }
+
         if (strcmp(action, "calibrate") == 0) {
             sample = -1;
             //incalibrate =1;
             incalibrate =0;
         }
+
         sensor_thread = new SensorThread(queue, sample, incalibrate);
-        if (sensor_thread == NULL){
+        if (sensor_thread == NULL) {
             printf("failed to create sensor thread\n");
             return 0;
         }
-        if (incalibrate == 0)
-            sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
 
+        if (incalibrate == 0) {
+            sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
+        }
+        
+#if 0
         // For the following sensor types, return a wake-up sensor. These types are by default
         // defined as wake-up sensors. For the rest of the sensor types defined in sensors.h return
         // a non_wake-up version.
-        if (type == SENSOR_TYPE_PROXIMITY || type == SENSOR_TYPE_SIGNIFICANT_MOTION ||
-            type == SENSOR_TYPE_TILT_DETECTOR || type == SENSOR_TYPE_WAKE_GESTURE ||
-            type == SENSOR_TYPE_GLANCE_GESTURE || type == SENSOR_TYPE_PICK_UP_GESTURE) {
+        if (type == SENSOR_TYPE_PROXIMITY
+            || type == SENSOR_TYPE_SIGNIFICANT_MOTION
+            || type == SENSOR_TYPE_TILT_DETECTOR
+            || type == SENSOR_TYPE_WAKE_GESTURE
+            || type == SENSOR_TYPE_GLANCE_GESTURE
+            || type == SENSOR_TYPE_PICK_UP_GESTURE) {
             wakeup = true;
         }
 
         for (int i=0 ; i<count ; i++) {
+            if(list[i] == NULL)
+                break;
+
             if (list[i]->getType() == type &&
                 list[i]->isWakeUpSensor() == wakeup) {
                 sensor = list[i];
                 break;
             }
         }
-        if (sensor == NULL){
+
+        if (sensor == NULL) {
             printf("get sensor of type:%d error\n", type);
             return 0;
         }
+#endif
+
+
+#if 0
         if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
                                 ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
             printf("enable sensor of type %d error\n", type);
             return 0;
         }
+#else
+
+        EnableSelectedSensor(AllSensor, queue,
+                             delay, batch_time_ms);
+#endif
+
 
 #if 0
         if (incalibrate == 1) {
             err = queue->calibrateSensor(sensor->getHandle());
-            if (err){
+            if (err) {
                 printf("force calibrate sensor of type %d error %d\n", type, err);
             }
 
             if (type == SENSOR_TYPE_MAGNETIC_FIELD || type == SENSOR_TYPE_ORIENTATION)
                 sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
             else {
-                if (!err)
+                if (!err) {
                     printf("calibrate successful type %d\n", type);
+                }
+                
                 return 0;
             }
         }
 #endif
         sensor_thread->join();
-        if (verbose)
+        if (verbose) {
             printf("sensor thread terminated\n");
-
-        err = queue->disableSensor(sensor);
+        }
+        
+        DisableSelectedSensor(AllSensor, queue);
         if (err != NO_ERROR) {
             printf("disableSensor() for '%s'failed (%d)\n",
                    getSensorName(type), err);
