@@ -1,0 +1,1 @@
+../../../../kernel/cht/drivers/hwmon/vr_sensor/psh_cht_spi_util.h
