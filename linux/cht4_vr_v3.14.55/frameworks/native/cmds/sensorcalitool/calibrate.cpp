@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <string.h> //memset()
 #include <cstring>
-#include <utils/CallStack.h>
 
 #include "calibrate.h"
 #include "sensorthread.h"
@@ -13,6 +12,10 @@
 #ifdef DEBUG_USE_ADB
 #define AGM_SENSOR_BIN_FILE_NAME	"/data/sensor_cali_AGM_by_exe.bin"
 #define AGM_SENSOR_TXT_FILE_NAME	"/data/sensor_cali_AGM_by_exe.txt"
+int print_acc_log = 1;
+int print_gyr_log = 1;
+int print_mag_log = 1;
+char* reqSnr_g [3];
 #else
 #define AGM_SENSOR_BIN_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
 #define AGM_SENSOR_TXT_FILE_NAME	"/storage/emulated/0/setAGM_cal.txt"
@@ -36,10 +39,17 @@ extern SENSOR_DATA_T data_loop_acc;
 extern SENSOR_DATA_T data_loop_gyr;
 extern SENSOR_DATA_T data_loop_mag;
 
-static const int SKIP_DATA = 10;
-static const int DATA_SIZE = 11;
+extern void *sensorAGM_read_data_loop(void *arg);
+
+static const int SKIP_DATA = 3 * 1000;
+static const int DATA_SIZE = 3 * 1000;
 SENSOR_DATA_T data;
-SENSOR_DATA_T temp[DATA_SIZE*3];
+//SENSOR_DATA_T temp[DATA_SIZE*3];
+SENSOR_DATA_T temp[3];
+SENSOR_CALC_TOOL calc_tool[3];
+#define SNR_ACC 0
+#define SNR_GRYO 1
+#define SNR_MAGN 2
 
 SENSOR_CALIBRATION file_content ={
 	{
@@ -304,163 +314,36 @@ int Filter(SENSOR_DATA_T* data, int size)
 	return 0;
 }
 
-
-void *sensorAGM_read_data_loop(void *arg)
-{
-
-	int err;
-	int delay = 20, type, verbose = 0;
-	int batch_time_ms = 0, wakeup=0;
-
-	//memset(agm_data,0,sizeof(agm_data));
-
-	sp<SensorThread> sensor_thread;
-	sp<SensorThread> sensor_thread_gyro;
-	sp<SensorThread> sensor_thread_mag;
-
-	Sensor const* const* list;
-	int count;
-	int incalibrate = 0;
-
-	SensorManager &mgr(SensorManager::getInstance());
-
-	sp<SensorEventQueue> queue = mgr.createEventQueue();
-	if (queue == NULL) {
-		ALOGD("createEventQueue returned NULL\n");
-		return 0;
-	}
-
-	sp<SensorEventQueue> queue_gyro = mgr.createEventQueue();
-	if (queue_gyro == NULL) {
-		ALOGD("queue_gyro: createEventQueue returned NULL\n");
-		return 0;
-	}
-
-	sp<SensorEventQueue> queue_mag = mgr.createEventQueue();
-	if (queue_mag == NULL) {
-		ALOGD("queue_gyro: createEventQueue returned NULL\n");
-		return 0;
-	}
-
-	count = mgr.getSensorList(&list);
-	if(list == NULL)
-		return 0;
-
-
-
-	Sensor const *sensor = NULL;
-	Sensor const *sensor_gyro = NULL;
-	Sensor const *sensor_mag = NULL;
-	sensor_thread = new SensorThread(queue, SENSOR_TYPE_ACC_RAW, incalibrate);
-	if (sensor_thread == NULL){
-		ALOGD("failed to create sensor thread\n");
-		return 0;
-	}
-	sensor_thread_gyro = new SensorThread(queue_gyro, SENSOR_TYPE_GYRO_RAW, incalibrate);
-	if (sensor_thread_gyro == NULL) {
-		ALOGD("failed to create gyro sensor thread\n");
-		return 0;
-	}
-	sensor_thread_mag = new SensorThread(queue_mag, SENSOR_TYPE_COMPS_RAW, incalibrate);
-	if (sensor_thread_mag == NULL) {
-		ALOGD("failed to create mag sensor thread\n");
-		return 0;
-
-	}
-
-	ALOGD("%s:before run\n", __func__);
-
-	for (int i=0 ; i<count ; i++) {
-		if(list[i] == NULL)
-			break;
-		if(list[i]->isWakeUpSensor() == wakeup) {
-			switch (list[i]->getType()) {
-			case SENSOR_TYPE_ACC_RAW:
-				sensor = list[i];
-				break;
-			case SENSOR_TYPE_GYRO_RAW:
-				sensor_gyro = list[i];
-				break;
-			case SENSOR_TYPE_COMPS_RAW:
-				sensor_mag = list[i];
-				break;
-			}
-		}
-	}
-	if (sensor == NULL){
-		ALOGD("get sensor of type:Acc error\n");
-		return 0;
-	}
-	if (sensor_gyro == NULL) {
-		ALOGD("get sensor of type:Gyr error\n");
-		return 0;
-	}
-	if (sensor_mag == NULL) {
-		ALOGD("get sensor of type:Mag error\n");
-		return 0;
-	}
-
-	if (queue->enableSensor(sensor->getHandle(), ns2us(ms2ns(delay)),
-				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		ALOGD("enable sensor of type Acc  error\n");
-		return 0;
-	}
-
-	if (queue_gyro->enableSensor(sensor_gyro->getHandle(), ns2us(ms2ns(delay)),
-				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		ALOGD("enable sensor of type gyro error\n");
-		return 0;
-	}
-
-	if (queue_mag->enableSensor(sensor_mag->getHandle(), ns2us(ms2ns(delay)),
-				ns2us(ms2ns(batch_time_ms)), wakeup ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0) != NO_ERROR) {
-		ALOGD("enable sensor of type magcal error\n");
-		return 0;
-	}
-
-	ALOGD("%s:after acc gyro magcal enable\n", __func__);
-
-	sensor_thread->run("sensor-loop", PRIORITY_BACKGROUND);
-	sensor_thread_gyro->run("sensor-loop", PRIORITY_BACKGROUND);
-	sensor_thread_mag->run("sensor-loop", PRIORITY_BACKGROUND);
-
-	enable_finish = 1;
-	sensor_thread->join();
-	sensor_thread_gyro->join();
-	sensor_thread_mag->join();
-
-	while(1) {
-		ALOGD("after join(),go to while(1)\n");
-		usleep(100000);
-
-		if(1 == apk_exit) {
-			ALOGD("when apk exit, sensorAGM_read_data_loop break\n");
-			break;
-		}
-	}
-
-	return NULL;
-}
-
 int readAccSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
-
-	CallStack stack; 
-	stack.update(); 
-	stack.log("this stack");
+	int read_again = 0;
 
 	do {
 
-		if(++i > 20)//for test
-			break;
+		if (++i > 500) {
+			ALOGD("can not read acc sensor data\n");
+			return -1; //no data
+		}
+
+		if (data->snr_time.acc_time == data_loop_acc.snr_time.acc_time) {
+			read_again = 1;
+			usleep(200);//1s / 500 -> 2 ms
+			continue;
+		}
 
 		data->data.accelMilliG.accelX = data_loop_acc.data.accelMilliG.accelX;
 		data->data.accelMilliG.accelY = data_loop_acc.data.accelMilliG.accelY;
 		data->data.accelMilliG.accelZ = data_loop_acc.data.accelMilliG.accelZ;
+		data->snr_time.acc_time = data_loop_acc.snr_time.acc_time;
 
-		usleep(5000);//1s / 300 -> 3 ms
-	} while(0 == data->data.accelMilliG.accelX && 0 == data->data.accelMilliG.accelY && 0 == data->data.accelMilliG.accelZ);
+		if (0 == data->data.accelMilliG.accelX && 0 == data->data.accelMilliG.accelY && 0 == data->data.accelMilliG.accelZ) {
+			usleep(200);//1s / 500 -> 2 ms
+			read_again = 1;
+		} else {
+			read_again = 0;
+		}
+	} while(read_again);
 
 	return 0;
 }
@@ -468,16 +351,32 @@ int readAccSensor(SENSOR_DATA_T *data)
 int readGyrSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
+	int read_again = 0;
 
 	do {
-		if(++i > 20)// for test
-			break;
+		if (++i > 500) {
+			ALOGD("can not read gyro sensor data\n");
+			return -1; //no data
+		}
+
+		if (data->snr_time.gyr_time == data_loop_gyr.snr_time.gyr_time) {
+			read_again = 1;
+			usleep(200);//1s / 500 -> 2 ms
+			continue;
+		}
 
 		data->data.gyroMilliDegreesPerSecond.gyroX = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX;
 		data->data.gyroMilliDegreesPerSecond.gyroY = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY;
 		data->data.gyroMilliDegreesPerSecond.gyroZ = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ;
-		usleep(5000);
-	} while( 0 == data->data.gyroMilliDegreesPerSecond.gyroX && 0 == data->data.gyroMilliDegreesPerSecond.gyroY && 0 == data->data.gyroMilliDegreesPerSecond.gyroZ );
+		data->snr_time.gyr_time = data_loop_gyr.snr_time.gyr_time;
+
+		if(0 == data->data.gyroMilliDegreesPerSecond.gyroX && 0 == data->data.gyroMilliDegreesPerSecond.gyroY && 0 == data->data.gyroMilliDegreesPerSecond.gyroZ) {
+			usleep(200);//1s / 500 -> 2 ms
+			read_again = 1;
+		} else {
+			read_again = 0;
+		}
+	} while(read_again);
 
 	return 0;
 }
@@ -486,17 +385,32 @@ int readGyrSensor(SENSOR_DATA_T *data)
 int readMagSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
+	int read_again = 0;
 
 	do {
-		if(++i > 20)//for test
-			break;
+		if (++i > 500) {
+			ALOGD("can not read magn sensor data\n");
+			return -1; //no data
+		}
+
+		if (data->snr_time.mag_time == data_loop_mag.snr_time.mag_time) {
+			read_again = 1;
+			usleep(200);//1s / 500 -> 2 ms
+			continue;
+		}
 
 		data->data.magFieldMilliGauss.magFieldX = data_loop_mag.data.magFieldMilliGauss.magFieldX;
 		data->data.magFieldMilliGauss.magFieldY = data_loop_mag.data.magFieldMilliGauss.magFieldY;
 		data->data.magFieldMilliGauss.magFieldZ = data_loop_mag.data.magFieldMilliGauss.magFieldZ;
+		data->snr_time.mag_time = data_loop_mag.snr_time.mag_time;
 
-		usleep(5000);
-	} while(0 == data->data.magFieldMilliGauss.magFieldX && 0 == data->data.magFieldMilliGauss.magFieldY && 0 == data->data.magFieldMilliGauss.magFieldZ);
+		if (0 == data->data.magFieldMilliGauss.magFieldX && 0 == data->data.magFieldMilliGauss.magFieldY && 0 == data->data.magFieldMilliGauss.magFieldZ) {
+			usleep(200);//1s / 500 -> 2 ms
+			read_again = 1;
+		} else {
+			read_again = 0;
+		}
+	} while(read_again);
 
 	return 0;
 }
@@ -513,55 +427,37 @@ int ApkExit()
 }
 
 
-void printAccData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+void printAccData(int step, SENSOR_DATA_T *data, int count, int index)
 {
-	int PARAM_TEMP = 1;
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
 
-	ALOGD("[%d/5]", step);
-
-	if(tempFlag == PARAM_TEMP)
-		ALOGD("temp[%2d]", index);
-	else
-		ALOGD("data");
-
-	ALOGD(": <accelX   =%7d,\taccelY   =%7d,\taccelZ   =%7d>\n",\
+	ALOGD(": <accelX   =%7d,\taccelY   =%7d,\taccelZ   =%7d,\ttime  =%lld>\n",\
 			data->data.accelMilliG.accelX,\
 			data->data.accelMilliG.accelY,\
-			data->data.accelMilliG.accelZ);
+			data->data.accelMilliG.accelZ,\
+			data->snr_time.acc_time);
 }
 
-void printGyroData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+void printGyroData(int step, SENSOR_DATA_T *data, int count, int index)
 {
-	int PARAM_TEMP = 1;
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
 
-	ALOGD("[%d/5]", step);
-
-	if(tempFlag == PARAM_TEMP)
-		ALOGD("temp[%2d]", index);
-	else
-		ALOGD("data");
-
-	ALOGD(": <gyroX    =%7d,\tgyroY    =%7d,\tgyroZ    =%7d>\n",\
+	ALOGD(": <gyroX    =%7d,\tgyroY    =%7d,\tgyroZ    =%7d,\ttime  =%lld>\n",\
 			data->data.gyroMilliDegreesPerSecond.gyroX,\
 			data->data.gyroMilliDegreesPerSecond.gyroY,\
-			data->data.gyroMilliDegreesPerSecond.gyroZ);
+			data->data.gyroMilliDegreesPerSecond.gyroZ,\
+			data->snr_time.gyr_time);
 }
 
-void printMagnData(int step, SENSOR_DATA_T *data, int tempFlag, int index)
+void printMagnData(int step, SENSOR_DATA_T *data, int count, int index)
 {
-	int PARAM_TEMP = 1;
-
-	ALOGD("[%d/5]", step);
-
-	if(tempFlag == PARAM_TEMP)
-		ALOGD("temp[%2d]", index);
-	else
-		ALOGD("data");
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
 
 	ALOGD(": <magFieldX=%7d,\tmagFieldX=%7d,\tmagFieldX=%7d>\n",\
 			data->data.magFieldMilliGauss.magFieldX,\
-			data->data.magFieldMilliGauss.magFieldY,
-			data->data.magFieldMilliGauss.magFieldZ);
+			data->data.magFieldMilliGauss.magFieldY,\
+			data->data.magFieldMilliGauss.magFieldZ,\
+			data->snr_time.mag_time);
 }
 
 void skipData(int count)
@@ -569,17 +465,193 @@ void skipData(int count)
 	int i;
 
 	for(i =0; i < count; i++) {// skip 10 data...
-		readAccSensor(&data);
-		printAccData(1,&data,0,0);
+		readAccSensor(&temp[0]);
+		printAccData(1,&temp[0],i,1);
 
-		readGyrSensor(&data);
-		printGyroData(1,&data,0,0);
+		readGyrSensor(&temp[1]);
+		printGyroData(1,&temp[1],i,1);
 
-		readMagSensor(&data);
-		printMagnData(1,&data,0,0);
+		readMagSensor(&temp[2]);
+		printMagnData(1,&temp[2],i,1);
 
-		usleep(200000);//note: magn update time is 50ms
+		//usleep(2000);//note: magn update time is 2ms
 	}
+}
+
+typedef long long int int_64;
+void calc_agm_sum_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int_64 count)
+{
+	int i;
+
+	for (i = 0; i < 3; i ++) {
+		ALOGD("sum_x = %lld,\t,(int_64)data[i].data.data.x = %lld,\tavg_x = %lld,\t,count = %lld\n",
+				calc_tool[i].snr_sum.sum_x, (int_64)(data[i].data.data.x), calc_tool[i].snr_avg.avg_x, count);
+		calc_tool[i].snr_sum.sum_x += (int_64)(data[i].data.data.x);
+		calc_tool[i].snr_sum.sum_y += (int_64)(data[i].data.data.y);
+		calc_tool[i].snr_sum.sum_z += (int_64)(data[i].data.data.z);
+
+		calc_tool[i].snr_avg.avg_x = calc_tool[i].snr_sum.sum_x / count;
+		calc_tool[i].snr_avg.avg_y = calc_tool[i].snr_sum.sum_y / count;
+		calc_tool[i].snr_avg.avg_z = calc_tool[i].snr_sum.sum_z / count;
+	}
+}
+
+void calc_single_sum_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int_64 count, int index)
+{
+
+	calc_tool[index].snr_sum.sum_x += (int_64)(data[index].data.data.x);
+	calc_tool[index].snr_sum.sum_y += (int_64)(data[index].data.data.y);
+	calc_tool[index].snr_sum.sum_z += (int_64)(data[index].data.data.z);
+
+	calc_tool[index].snr_avg.avg_x = calc_tool[index].snr_sum.sum_x / count;
+	calc_tool[index].snr_avg.avg_y = calc_tool[index].snr_sum.sum_y / count;
+	calc_tool[index].snr_avg.avg_z = calc_tool[index].snr_sum.sum_z / count;
+}
+
+void get_amg_snr_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data)
+{
+	int i = 3;
+
+	for (i = 0; i < 3; i ++) {
+		data[i].data.data.x = (int)(calc_tool[i].snr_avg.avg_x);
+		data[i].data.data.y = (int)(calc_tool[i].snr_avg.avg_y);
+		data[i].data.data.z = (int)(calc_tool[i].snr_avg.avg_z);
+	}
+}
+
+void get_single_snr_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int index)
+{
+
+	data[index].data.data.x = (int)(calc_tool[index].snr_avg.avg_x);
+	data[index].data.data.y = (int)(calc_tool[index].snr_avg.avg_y);
+	data[index].data.data.z = (int)(calc_tool[index].snr_avg.avg_z);
+}
+
+int collect_agm_static_data_avg()
+{
+	int ret_acc = 0;
+	int ret_gyr = 0;
+	int ret_mag = 0;
+	int i;
+
+	for(i = 1; i <= DATA_SIZE; i++) {//now read the data...
+		ret_acc = readAccSensor(&temp[0]);
+		printAccData(1,&temp[0],i,0);
+		if (-1 == ret_acc)
+			return -1;
+
+		ret_gyr = readGyrSensor(&temp[1]);
+		printGyroData(1,&temp[1],i,1);
+		if (-1 == ret_gyr)
+			return -1;
+
+		ret_mag = readMagSensor(&temp[2]);
+		printMagnData(1,&temp[2],i,2);
+		if (-1 == ret_mag)
+			return -1;
+
+		calc_agm_sum_avg(calc_tool, temp, i);
+
+		//usleep(2000);//note: magn update time is 2ms
+
+		if (1 == apk_exit)
+			return 0;
+	}
+
+	return 0;
+}
+
+int collect_rota_data_avg(int step)
+{
+	int i;
+	int ret_acc = 0;
+	int ret_gyr = 0;
+	int ret_mag = 0;
+
+	//static const int SAMPLES = 20 * 1000;
+	//SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
+
+	for(i = 1; i < DATA_SIZE;) {
+		if(1 == apk_exit)
+			return 0;
+
+		//usleep(2000); //gyro update is 2ms
+
+		ret_gyr = readGyrSensor(&temp[1]);
+		printGyroData(step,&temp[1],i,1);
+		if (0 != ret_gyr)
+			return -1;
+
+
+		if (0 == ret_gyr) {
+			if(temp[1].data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
+					temp[1].data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
+					temp[1].data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
+					temp[1].data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
+					temp[1].data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
+					temp[1].data.gyroMilliDegreesPerSecond.gyroZ < -45000) {
+				ALOGD("[%d/5][if=>]\n",step);
+				calc_single_sum_avg(calc_tool,temp, i, SNR_GRYO);
+
+				ret_acc = readAccSensor(&temp[0]);
+				printAccData(step,&temp[0],i,0);
+				if (0 == ret_acc) {
+					calc_single_sum_avg(calc_tool,temp, i, SNR_ACC);
+				}
+
+				ret_mag = readMagSensor(&temp[2]);
+				printMagnData(step,&temp[2],i,2);
+				if (0 == ret_mag){
+					calc_single_sum_avg(calc_tool,temp, i, SNR_MAGN);
+				}
+				i++;
+				ALOGD("data[%d/5][if=>] i = %d\n", step,i);
+			}
+		} else {
+			ALOGD("[%d/5][else=>]\n", step);
+
+			ret_acc = readAccSensor(&temp[0]);
+			printAccData(step,&temp[0],i,0);
+			if (0 == ret_acc) {
+				calc_single_sum_avg(calc_tool,temp, i, SNR_ACC);
+			}
+
+			ret_mag = readMagSensor(&temp[2]);
+			printMagnData(step,&temp[2],i,2);
+			if (0 == ret_mag) {
+				calc_single_sum_avg(calc_tool,temp, i, SNR_MAGN);
+			}
+			i++;
+			ALOGD("data[%d/5]else=> i = %d\n", step, i);
+		}
+
+		point = i;
+		ALOGD("data[%d/5]point:%d\n", step, point);
+	}
+
+	return 0;
+}
+
+int collect_static_magn_data_avg(int step)
+{
+	int i;
+	int ret_mag = 0;
+
+	for(i = 1; i < DATA_SIZE; i++) {
+		if (1 == apk_exit)
+			return 0;
+
+		ret_mag = readMagSensor(&temp[2]);
+		printMagnData(step,&temp[2],1,2);
+		if (0 != ret_mag)
+			return -1;
+
+		calc_single_sum_avg(calc_tool, temp, i, SNR_MAGN);
+
+		//usleep(2000); //note: magn update time is 2ms
+	}
+
+	return 0;
 }
 
 int SetAGM_STEP_A()
@@ -589,14 +661,14 @@ int SetAGM_STEP_A()
 
 	int i;
 	int ret;
-	int ret_acc = 0;
-	int ret_gyr = 0;
-	int ret_mag = 0;
 	pthread_t tid;
 
 #ifdef DEBUG_USE_ADB
-	signal(SIGINT,child_handler);
+	//signal(SIGINT,child_handler);
 #endif
+
+	memset(calc_tool, 0,sizeof(calc_tool));
+	memset(temp, 0,sizeof(temp));
 
 	ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop, NULL);
 	if(ret) {
@@ -606,7 +678,7 @@ int SetAGM_STEP_A()
 
 	printf("enable_finish= %d\n",enable_finish);
 	while(!enable_finish)
-		usleep(50000);
+		usleep(10000);
 
 
 	//==============================================
@@ -618,43 +690,28 @@ int SetAGM_STEP_A()
 	//read the data...
 	skipData(SKIP_DATA);
 
-	for(i = 0; i < DATA_SIZE; i++) {//now read the data...
-		ret_acc = readAccSensor(&temp[i*3]);
-		printAccData(1,&temp[i*3],1,i*3);
+	memset(calc_tool, 0, sizeof(calc_tool));
+	//to select data
+	ret = collect_agm_static_data_avg();
+	if (ret != 0)
+		return -1;
 
-		ret_gyr = readGyrSensor(&temp[i*3+1]);
-		printGyroData(1,&temp[i*3+1],1,i*3+1);
+	get_amg_snr_avg(calc_tool, temp);
 
-		ret_mag = readMagSensor(&temp[i*3+2]);
-		printMagnData(1,&temp[i*3+2],1,i*3+2);
+	file_content.calibration.acclzx = temp[0].data.accelMilliG.accelX;
+	file_content.calibration.acclzy = temp[0].data.accelMilliG.accelY;
+	file_content.calibration.acclzz = temp[0].data.accelMilliG.accelZ;
+	printAccData(1,&temp[0],1,0);
 
-		usleep(200000);//note: magn update time is 50ms
+	file_content.calibration.gyrox = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyroy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyroz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
+	printGyroData(1,&temp[1],1,1);
 
-		if (1 == apk_exit)
-			return 0;
-	}
-
-
-	//filt data
-	Filter(temp, DATA_SIZE);
-	if ( 0 == ret_acc) {
-		file_content.calibration.acclzx = temp[0].data.accelMilliG.accelX;
-		file_content.calibration.acclzy = temp[0].data.accelMilliG.accelY;
-		file_content.calibration.acclzz = temp[0].data.accelMilliG.accelZ;
-		printAccData(1,&temp[0],1,0);
-	}
-	if (0 == ret_gyr) {
-		file_content.calibration.gyrox = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
-		file_content.calibration.gyroy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
-		file_content.calibration.gyroz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
-		printGyroData(1,&temp[1],1,1);
-	}
-	if (0 == ret_mag) {
-		file_content.calibration.magnxnx = temp[2].data.magFieldMilliGauss.magFieldX;
-		file_content.calibration.magnxny = temp[2].data.magFieldMilliGauss.magFieldY;
-		file_content.calibration.magnxnz = temp[2].data.magFieldMilliGauss.magFieldZ;
-		printMagnData(1,&temp[2],1,2);
-	}
+	file_content.calibration.magnxnx = temp[2].data.magFieldMilliGauss.magFieldX;
+	file_content.calibration.magnxny = temp[2].data.magFieldMilliGauss.magFieldY;
+	file_content.calibration.magnxnz = temp[2].data.magFieldMilliGauss.magFieldZ;
+	printMagnData(1,&temp[2],1,2);
 
 
 	ALOGD("The first step is completed\n");
@@ -666,31 +723,23 @@ int SetAGM_STEP_A()
 int SetAGM_STEP_B()
 {
 	int i;
-	int ret_mag = 0;
+	int ret;
 	//==============================================
 	//step 2:
 
 	ALOGD("[2/5]Rotate the screen 180 degrees clockwise, South, west, screen up \n");
 	//ALOGD("[2/5]Rotate the screen 180 degrees clockwise so the Windows button is pointing due North\n");
 
-	usleep(2000000);
+	usleep(1000000);
+
+	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	for(i = 0; i < DATA_SIZE; i++) {
-		if (1 == apk_exit)
-			return 0;
+	collect_static_magn_data_avg(2);
 
-		ret_mag = readMagSensor(&temp[i*3+2]);
-		printMagnData(2,&temp[i*3+2],1,i*3+2);
-		usleep(50000); //note: magn update time is 50ms
-	}
+	get_single_snr_avg(calc_tool, temp, SNR_MAGN);
 
-	ALOGD("\n");
-	//filt data
-	Filter(temp, DATA_SIZE);
-	if (0 == ret_mag) {
-		file_content.calibration.magnxsx = temp[2].data.magFieldMilliGauss.magFieldX;
-		file_content.calibration.magnxsy = temp[2].data.magFieldMilliGauss.magFieldY;
-	}
+	file_content.calibration.magnxsx = temp[2].data.magFieldMilliGauss.magFieldX;
+	file_content.calibration.magnxsy = temp[2].data.magFieldMilliGauss.magFieldY;
 
 	ALOGD("The 2nd step is completed\n");
 	return 0;
@@ -699,29 +748,24 @@ int SetAGM_STEP_B()
 int SetAGM_STEP_C()
 {
 	int i;
-	int ret_mag = 0;
+	int ret;
 
 
 	//==============================================
 	//step 3:
 	ALOGD("[3/5]Lay the device flat, north, east, screen down\n");
 	//ALOGD("[3/5]Now Lay the device flat, screen down with the windows button pointing due South\n");
-	usleep(2000000);
+	usleep(1000000);
 
+	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	for(i = 0; i < DATA_SIZE; i++) {
-		if (1 == apk_exit)
-			return 0;
+	ret = collect_static_magn_data_avg(3);
+	if (0 != ret)
+		return -1;
 
-		ret_mag = readMagSensor(&temp[i*3+2]);
-		printMagnData(3,&temp[i*3+2],1,i*3+2);
+	get_single_snr_avg(calc_tool, temp, SNR_MAGN);
 
-		usleep(200000);//note: magn update time is 50ms
-	}
-	Filter(temp, DATA_SIZE);
-	if (0 == ret_mag) {
-		file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
-	}
+	file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
 
 
 	ALOGD("The 3rd step is completed\n");
@@ -732,101 +776,27 @@ int SetAGM_STEP_C()
 
 int SetAGM_STEP_D()
 {
-	int i;
-	int ret_acc = 0;
-	int ret_gyr = 0;
-	int ret_mag = 0;
+	int i, ret;
 	point = 0;
 
 
 	//==============================================
 	//step 4:
 	ALOGD("[4/5]Lay the device flat with the screen up, rotate the device counter clockwise\n");
-	usleep(2000000);
+	usleep(1000000);
 
+	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	static const int SAMPLES = 20;
-	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
+	ret = collect_rota_data_avg(4);
+	if (0 != ret)
+		return -1;
 
-	for(i = 0; i< SAMPLES;)	{
-		if (1 == apk_exit) {
-			delete []buf;
-			return 0;
-		}
+	get_amg_snr_avg(calc_tool, temp);
 
-		usleep(200000); //gyro update is 20ms
-		ret_gyr = readGyrSensor(&data);
-		printGyroData(4,&data,0,0);
+	file_content.calibration.gyrozx = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyrozy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyrozz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
 
-		if (0 == ret_gyr) {//retg
-			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ < -45000)	{
-				ALOGD("[if=>]\n");
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroX = data.data.gyroMilliDegreesPerSecond.gyroX;
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroY = data.data.gyroMilliDegreesPerSecond.gyroY;
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ = data.data.gyroMilliDegreesPerSecond.gyroZ;
-
-
-				ret_acc = readAccSensor(&data);
-				printAccData(4,&data,0,0);
-				if (0 == ret_acc) {
-					buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
-					buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
-					buf[i*3].data.accelMilliG.accelZ = data.data.accelMilliG.accelZ;
-				}
-
-				ret_mag = readMagSensor(&data);
-				printMagnData(4,&data,0,0);
-				if (0 == ret_mag) {
-					buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
-					buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
-					buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
-				}
-				i++;
-
-				ALOGD("data[4/5][if=>] i = %d\n",i);
-
-
-			}
-		} else {
-			ALOGD("[else=>]\n");
-			ret_acc = readAccSensor(&data);
-			printAccData(4,&data,0,0);
-			if (0 == ret_acc) {
-				buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
-				buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
-				buf[i*3].data.accelMilliG.accelZ = data.data.accelMilliG.accelZ;
-			}
-
-			ret_mag = readMagSensor(&data);
-			printMagnData(4,&data,0,0);
-			if (0 == ret_mag) {
-				buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
-				buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
-				buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
-			}
-
-			i++;
-			ALOGD("data[4/5]else=> i = %d\n",i);
-		}
-		point = i;
-		ALOGD("point:%d\n",point);
-
-	}
-	ALOGD("\n");
-	//filt data
-	Filter(buf, SAMPLES);
-	if (0 == ret_gyr) {
-		file_content.calibration.gyrozx = buf[1].data.gyroMilliDegreesPerSecond.gyroX;
-		file_content.calibration.gyrozy = buf[1].data.gyroMilliDegreesPerSecond.gyroY;
-		file_content.calibration.gyrozz = buf[1].data.gyroMilliDegreesPerSecond.gyroZ;
-	}
-
-	delete []buf;
 
 
 	ALOGD("The 4th step is completed\n");
@@ -836,7 +806,7 @@ int SetAGM_STEP_D()
 
 int SetAGM_STEP_E()
 {
-	int i;
+	int i,ret;
 	int ret_acc = 0;
 	int ret_gyr = 0;
 	int ret_mag = 0;
@@ -847,97 +817,25 @@ int SetAGM_STEP_E()
 	ALOGD("[5/5]Hold the device vertical, rotate the device counter clockwise along the axis between bottom and top\n");
 	//ALOGD("[5/5]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise
 	//along the axis between the top of the screen and the windows button\n");
-	usleep(2000000);
+	usleep(1000000);
 
-
+	memset(calc_tool, 0, sizeof(calc_tool));
 
 	//read the data...
-	static const int SAMPLES = 20;
-	SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
+	ret = collect_rota_data_avg(5);
+	if (0 != ret)
+		return -1;
 
-	for(i = 0; i< SAMPLES;) {
-		if(1 == apk_exit) {
-			delete []buf;
-			return 0;
-		}
+	get_amg_snr_avg(calc_tool, temp);
 
-		usleep(200000); //gyro update is 20ms
+	file_content.calibration.gyroyx = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyroyy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyroyz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
 
-		ret_gyr = readGyrSensor(&data);
-		printGyroData(5,&data,0,0);
+	file_content.calibration.acclyx = temp[0].data.accelMilliG.accelX;
+	file_content.calibration.acclyy = temp[0].data.accelMilliG.accelY;
+	file_content.calibration.acclyz = temp[0].data.accelMilliG.accelZ;
 
-		if (0 == ret_gyr) {
-			if(data.data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
-					data.data.gyroMilliDegreesPerSecond.gyroZ < -45000)	{
-				ALOGD("[if=>]\n");
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroX = data.data.gyroMilliDegreesPerSecond.gyroX;
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroY = data.data.gyroMilliDegreesPerSecond.gyroY;
-				buf[i*3+1].data.gyroMilliDegreesPerSecond.gyroZ = data.data.gyroMilliDegreesPerSecond.gyroZ;
-
-				ret_acc = readAccSensor(&data);
-				printAccData(5,&data,0,0);
-				if (0 == ret_acc) {
-					buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
-					buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
-					buf[i*3].data.accelMilliG.accelZ = data.data.accelMilliG.accelZ;
-				}
-
-				ret_mag = readMagSensor(&data);
-				printMagnData(5,&data,0,0);
-				if (0 == ret_mag)
-				{
-					buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
-					buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
-					buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
-				}
-				i++;
-				ALOGD("data[5/5][if=>] i = %d\n",i);
-			}
-		} else {
-			ALOGD("[else=>]\n");
-
-			ret_acc = readAccSensor(&data);
-			printAccData(5,&data,0,1);
-			if (0 == ret_acc) {
-				buf[i*3].data.accelMilliG.accelX = data.data.accelMilliG.accelX;
-				buf[i*3].data.accelMilliG.accelY = data.data.accelMilliG.accelY;
-				buf[i*3].data.accelMilliG.accelZ = data.data.accelMilliG.accelZ;
-			}
-
-			ret_mag = readMagSensor(&data);
-			printMagnData(5,&data,0,0);
-			if (0 == ret_mag) {
-				buf[i*3+2].data.magFieldMilliGauss.magFieldX = data.data.magFieldMilliGauss.magFieldX;
-				buf[i*3+2].data.magFieldMilliGauss.magFieldY = data.data.magFieldMilliGauss.magFieldY;
-				buf[i*3+2].data.magFieldMilliGauss.magFieldZ = data.data.magFieldMilliGauss.magFieldZ;
-			}
-			i++;
-			ALOGD("data[5/5]else=> i = %d\n",i);
-		}
-
-		point = i;
-		ALOGD("data[5/5]point:%d\n",point);
-
-	}
-
-	//filt data
-	Filter(buf, SAMPLES);
-	if (0 == ret_gyr) {
-		file_content.calibration.gyroyx = buf[1].data.gyroMilliDegreesPerSecond.gyroX;
-		file_content.calibration.gyroyy = buf[1].data.gyroMilliDegreesPerSecond.gyroY;
-		file_content.calibration.gyroyz = buf[1].data.gyroMilliDegreesPerSecond.gyroZ;
-	}
-	if (0 == ret_acc) {
-		file_content.calibration.acclyx = buf[0].data.accelMilliG.accelX;
-		file_content.calibration.acclyy = buf[0].data.accelMilliG.accelY;
-		file_content.calibration.acclyz = buf[0].data.accelMilliG.accelZ;
-	}
-
-	delete []buf;
 
 	ALOGD("The 5th step is completed\n");
 
@@ -971,46 +869,78 @@ int SetAGM_STEP_F()
 #if DEBUG_USE_ADB
 int main(int argc, const char *argv[])
 {
-	if (argc == 2) {
+	if (argc < 2) {
+		reqSnr_g[0] = "Acc_raw";
+		reqSnr_g[1] = "Gyro_raw";
+		reqSnr_g[2] = "Comps_raw";
+		print_acc_log = 0;
+		print_gyr_log = 0;
+		print_mag_log = 0;
+
+		SetAGM_STEP_A();
+
+		if(1 == apk_exit)
+			return -1;
+		SetAGM_STEP_B();
+
+		if(1 == apk_exit)
+			return -1;
+		SetAGM_STEP_C();
+
+		if(1 == apk_exit)
+			return -1;
+		SetAGM_STEP_D();
+
+		if(1 == apk_exit)
+			return -1;
+		SetAGM_STEP_E();
+
+		if(1 == apk_exit)
+			return -1;
+		SetAGM_STEP_F();
+
+		return 0;
+	} else {
 		int ret;
 		pthread_t tid;
 		int status;
 
+#if 0
 		if (!strcmp(argv[1], "agm")) { //use "sensorcalitool agm" to run three sensor loop
-			signal(SIGINT,child_handler);
+			//signal(SIGINT,child_handler);
 
-			ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
-			if(ret) {
-				ALOGD("create pthread error!ret = %d\n",ret);
-				return -1;
-			}
+		} else if (!strcmp(argv[1], "gyr")) {
+			print_acc_log = 0;
+			print_gyr_log = 1;
+			print_mag_log = 0;
+		} else {
+			ALOGD("invalid prrameter\n");
+			return -1;
 		}
+#endif
+		int print_gyr_log = 1;
+		int i;
+		for (optind, i = 0; optind < argc && i < 3; ++optind, i++) {
+			ALOGD("optind=%d\n",optind);
+			reqSnr_g[i] = (char*)argv[optind];
+			//sensor_name_list.push_back(argv[optind]);
+		}
+		for (i; i < 3; i++) {
+			reqSnr_g[i] = NULL;
+		}
+
+		memset(calc_tool, 0,sizeof(calc_tool));
+		memset(temp, 0,sizeof(temp));
+
+		ret = pthread_create(&tid,NULL,sensorAGM_read_data_loop,(void*)0);
+		if(ret) {
+			ALOGD("create pthread error!ret = %d\n",ret);
+			return -1;
+		}
+
 		pthread_join(tid, (void **)&status);
 		return 0;
 	}
 
-	SetAGM_STEP_A();
-
-	if(1 == apk_exit)
-		return -1;
-	SetAGM_STEP_B();
-
-	if(1 == apk_exit)
-		return -1;
-	SetAGM_STEP_C();
-
-	if(1 == apk_exit)
-		return -1;
-	SetAGM_STEP_D();
-
-	if(1 == apk_exit)
-		return -1;
-	SetAGM_STEP_E();
-
-	if(1 == apk_exit)
-		return -1;
-	SetAGM_STEP_F();
-
-	return 0;
 }
 #endif

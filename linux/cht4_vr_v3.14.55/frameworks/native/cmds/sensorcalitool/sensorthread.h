@@ -5,6 +5,8 @@
 #include <gui/Sensor.h>
 #include <gui/SensorManager.h>
 #include <gui/SensorEventQueue.h>
+#include <vector>
+#include <string>
 
 #include <log/log.h>
 #undef LOG_TAG
@@ -30,17 +32,30 @@ char const* getSensorName(int type);
 
 using namespace android;
 
+struct SensorAttribute
+{
+    SensorAttribute(Sensor const* lp_new_sensor):
+        m_lp_sensor(lp_new_sensor), m_IsEnable(false)
+    {;}
+
+    Sensor const* m_lp_sensor;
+    bool m_IsEnable;
+    bool m_IsRequestWakeUp;
+};
+
+typedef std::vector<SensorAttribute> SensorCollection;
+
 class SensorThread : public Thread
 {
 	public:
-		SensorThread(sp<SensorEventQueue>& queue, int type, int incalibrate)
-			: mSensorEventQueue(queue), mTypes(type), mIncalibrate(incalibrate), mCount(0) { }
+		SensorThread(sp<SensorEventQueue>& queue, int sample, int incalibrate)
+			: mSensorEventQueue(queue), mSamples(sample), mIncalibrate(incalibrate), mCount(0) { }
 		~SensorThread() { }
 
 	private:
 		virtual bool threadLoop();
 		sp<SensorEventQueue> mSensorEventQueue;
-		int mTypes;
+		int mSamples;
 		int mIncalibrate;
 		int mCount;
 };

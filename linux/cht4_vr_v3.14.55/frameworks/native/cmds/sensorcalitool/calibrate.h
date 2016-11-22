@@ -31,7 +31,39 @@ typedef struct _SENSOR_DATA {
 			int n;
 		} data;
 	}data;
+	struct _SNR_TIME {
+		long long int acc_time;
+		long long int gyr_time;
+		long long int mag_time;
+	}snr_time;
 }SENSOR_DATA_T;
+
+
+typedef struct _SENSOR_CALC_TOOL {
+	struct {
+		long long int sum_x;
+		long long int sum_y;
+		long long int sum_z;
+	} snr_sum;
+
+	struct {
+		long long int avg_x;
+		long long int avg_y;
+		long long int avg_z;
+	} snr_avg;
+
+#ifdef DEBUG_USE_ADB
+	struct {
+		float agl_x;
+		float agl_y;
+		float agl_z;
+		long long int starttime;
+		long long int stoptime;
+		long long int delta_T;
+		long long int time_step;
+	} gyro_angle;
+#endif
+} SENSOR_CALC_TOOL;
 
 typedef struct _FUSION_CONFIG
 {

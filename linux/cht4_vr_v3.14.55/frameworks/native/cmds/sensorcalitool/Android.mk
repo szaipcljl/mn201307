@@ -5,6 +5,8 @@ LOCAL_PATH:= $(call my-dir)
 #
 include $(CLEAR_VARS)
 
+include external/stlport/libstlport.mk
+
 LOCAL_SRC_FILES:= \
 	jni/SensorCaliJNI.cpp \
 	calibrate.cpp \
@@ -17,10 +19,14 @@ LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libgui \
 	libui \
+	libstlport\
 	libandroid_runtime
 
 LOCAL_C_INCLUDES += \
 	frameworks/base/nitive/include \
+	$(call include-path-for, stlport) \
+	$(call include-path-for, stlport)/stl \
+	$(call include-path-for, stlport)/using/h/
 
 LOCAL_MODULE:= libsensorcalitool
 
@@ -35,6 +41,7 @@ BUILD_EXE_FOR_DEBUG := true
 ifdef BUILD_EXE_FOR_DEBUG
 include $(CLEAR_VARS)
 
+include external/stlport/libstlport.mk
 LOCAL_SRC_FILES:= \
 	calibrate.cpp \
 	sensorthread.cpp
@@ -45,6 +52,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libbinder \
 	liblog \
 	libgui \
+	libstlport\
 	libui
 
 LOCAL_C_INCLUDES += \
