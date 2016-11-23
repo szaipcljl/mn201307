@@ -21,7 +21,7 @@
 /*
  * my_fifo_init
  */
-struct my_fifo *my_fifo_init(unsigned char *buffer, unsigned int size)
+struct my_fifo *my_fifo_init(circ_buf_t* buffer, unsigned int size)
 {
 	struct my_fifo *fifo;
 
@@ -46,7 +46,7 @@ struct my_fifo *my_fifo_init(unsigned char *buffer, unsigned int size)
  */
 struct my_fifo *my_fifo_alloc(unsigned int size)
 {
-	unsigned char *buffer;
+	circ_buf_t* buffer;
 	struct my_fifo *ret;
 
 	/*
@@ -54,7 +54,7 @@ struct my_fifo *my_fifo_alloc(unsigned int size)
 	 * wrap' tachnique works only in this case.
 	 */
 
-	buffer = malloc(size);
+	buffer = malloc(size * sizeof(circ_buf_t));
 	if (!buffer)
 		return NULL;
 
@@ -81,7 +81,7 @@ void my_fifo_free(struct my_fifo *fifo)
  *  my_fifo_put()
  */
 unsigned int my_fifo_put(struct my_fifo *fifo,
-		unsigned char *buffer, unsigned int len)
+		circ_buf_t* buffer, unsigned int len)
 {
 	unsigned int l;
 
@@ -90,10 +90,10 @@ unsigned int my_fifo_put(struct my_fifo *fifo,
 
 	/* first put the data starting from fifo->in to buffer end*/
 	l = min(len, fifo->size - (fifo->in & (fifo->size -1)));
-	memcpy(fifo->buffer + (fifo->in & (fifo->size -1)), buffer, l);
+	memcpy(fifo->buffer + (fifo->in & (fifo->size -1)), buffer, l * sizeof(circ_buf_t));
 
 	/* then put the rest (if any) at the beginning of the buffer*/
-	memcpy(fifo->buffer, buffer + l, len - l);
+	memcpy(fifo->buffer, buffer + l, (len - l) * sizeof(circ_buf_t));
 
 	fifo->in += len;
 
@@ -105,7 +105,7 @@ unsigned int my_fifo_put(struct my_fifo *fifo,
  * my_fifo_get
  */
 unsigned int my_fifo_get(struct my_fifo *fifo,
-		unsigned char *buffer, unsigned int len)
+		circ_buf_t* buffer, unsigned int len)
 {
 	unsigned int l;
 
@@ -113,10 +113,10 @@ unsigned int my_fifo_get(struct my_fifo *fifo,
 
 	/* first get the data from fifo->out until the end of the buffer*/
 	l = min(len, fifo->size - (fifo->out & (fifo->size -1)));
-	memcpy(buffer, fifo->buffer + (fifo->out & (fifo->size -1)), l);
+	memcpy(buffer, fifo->buffer + (fifo->out & (fifo->size -1)), l * sizeof(circ_buf_t));
 
 	/* then get the rest (if any) from the beginning of the buffer*/
-	memcpy(buffer + l, fifo->buffer, len - l);
+	memcpy(buffer + l, fifo->buffer, (len - l) * sizeof(circ_buf_t));
 
 	fifo->out += len;
 
@@ -129,7 +129,7 @@ unsigned int my_fifo_get(struct my_fifo *fifo,
    当in==out时，表明缓冲区为空的，当(in-out)==size 时，说明缓冲区已满。
 
    我们看下具体实现，在96行处如果size-in+out ==0,也即获得的len值会0，而没有数
-   据写入到缓冲区中。所以在设计缓冲区的大小的时候要恰当，读出的速度要比定入的速
+   据写入到缓冲区中。所以在设计缓冲区的大小的时候要恰当，读出的速度要比写入的速
    度要快，否则缓冲区满了会使数据丢失，可以通过成功写入的反回值来做判断尝试再次
    写入.
    另一种情况则是缓冲区有足够的空间给要写入的数据，但是试想一下，如果空闲的空间
