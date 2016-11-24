@@ -25,8 +25,8 @@ void* data_producer(void* arg)	//producer
 		producer_buf.my_vector.y = i+2;
 		producer_buf.my_vector.z = i+3;
 
-		ret = my_fifo_put(fifo_p, &producer_buf, 1);
-		data_len = my_fifo_len(fifo_p);
+		ret = myfifo_in(fifo_p, &producer_buf, 1);
+		data_len = myfifo_used(fifo_p);
 
 		printf("@@##:%s:%d:\ta = %6d,\tb = %6d,\tproducer_buf.my_vector.x = %6d,"
 				"y = %6d, z = %6d,\twrite ret = %d,\tdata_len = %4d\n", __func__, __LINE__,
@@ -35,7 +35,7 @@ void* data_producer(void* arg)	//producer
 				producer_buf.my_vector.z, ret,data_len);
 
 		if(data_len == (SIZE-1)) //for test
-			my_fifo_reset(fifo_p);
+			myfifo_reset(fifo_p);
 
 		usleep(100 *1000);//for test
 	}
@@ -49,15 +49,17 @@ int main(int argc, const char *argv[])
 	int ret;
 	int *p;
 	pthread_t tid;
-	struct my_fifo * test_fifo;
+	struct my_fifo * pdata_fifo;
 
-	test_fifo = my_fifo_alloc(SIZE);
-	if (!test_fifo) {
+	pdata_fifo = malloc(sizeof(struct my_fifo));
+
+	ret = myfifo_alloc(pdata_fifo, SIZE, sizeof(circ_buf_t));
+	if (ret) {
 		printf("failed to alloc my_fifo.\n");
 		return -1;
 	}
 
-	ret = pthread_create(&tid, NULL, data_producer, (void*)test_fifo);
+	ret = pthread_create(&tid, NULL, data_producer, (void*)pdata_fifo);
 	if (ret < 0) {
 		return -1;	
 	} 
@@ -66,12 +68,12 @@ int main(int argc, const char *argv[])
 	int data_len;
 	circ_buf_t consumer_buf;
 
-	my_fifo_reset(test_fifo);
+	myfifo_reset(pdata_fifo);
 
 	//consumer
 	for (i = 0; i < CSM_NUM; i++) {
-		while (!(ret = my_fifo_get(test_fifo, &consumer_buf, 1)));
-		data_len = my_fifo_len(test_fifo);
+		while (!(ret = myfifo_out(pdata_fifo, &consumer_buf, 1)));
+		data_len = myfifo_used(pdata_fifo);
 
 		printf("@@##:%s:%d:\t\ta = %6d,\tb = %6d,\tconsumer_buf.my_vector.x = %6d,"
 				"y = %6d, z = %6d,\tread  ret = %d,\tdata_len = %4d\n", __func__, __LINE__,\
@@ -80,7 +82,7 @@ int main(int argc, const char *argv[])
 				consumer_buf.my_vector.z, ret, data_len);
 
 		if(data_len == (SIZE-1))//for test
-			my_fifo_reset(test_fifo);
+			myfifo_reset(pdata_fifo);
 
 		usleep(500 *1000);//for test
 	}
