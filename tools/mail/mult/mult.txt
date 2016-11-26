@@ -1,0 +1,63 @@
+mult
+
+sudo apt-get install mutt msmtp
+
+================================================================================
+1.MUTT
+系统全局设置/etc/Muttrc,如果使用某个系统用户，可以在~/.muttrc中设置。
+
+vi .muttrc
+set sendmail="/usr/bin/msmtp"
+set use_from=yes
+set realname="FengYuBin"
+set from=fyb@163.com
+set envelope_from=yes
+
+2.MSMTP
+创建~/.msmtprc和~/.msmtp.log,分别为配置和日志文件。
+
+vi .msmtprc
+account default
+host smtp.163.com
+from fyb@163.com
+auth plain
+user fyb
+password 123456
+logfile ~/.msmtp.log
+(请使用授权码登录第三方邮件客户端)
+
+由于password是明码，所以我们需要修改此文件的权限。
+chmod 600 .msmtprc
+touch ~/.msmtp.log
+
+3.查看SMTP服务器是否支持认证的TLS加密：
+
+msmtp --host=smtp.163.com --serverinfo
+
+SMTP server at smtp.163.com (m5-86.163.com [202.108.5.86]), port 25:
+163.com Anti-spam GT for Coremail System (163com[20050206])
+	Capabilities:
+PIPELINING:
+Support for command grouping for faster transmission
+AUTH:
+Supported authentication methods:
+PLAIN LOGIN
+
+4.测试用mutt发送邮件
+
+	echo "test" | mutt -s "my_first_test" ***@gmail.com
+
+去邮箱看看是否成功！
+
+---------------------------------------------------------------------------------
+
+下面是一个比较完整的发送邮件示例：
+
+ 
+1.发送给多人，抄送，添加附件:
+echo "hello" | mutt -s "title" 252578390@qq.com,zhenghong00@163.com -c 40271871@qq.com -a /tmp/ip.tmp
+
+
+2.发送邮件时设置邮件的文本类型为：html格式，邮件的等级为:重要:
+address="zhenghong@ajk.com"
+echo $content|mutt  -s "${subject}" -e 'set content_type="text/html"' -e 'send-hook . "my_hdr  X-Priority: 1"' $address
