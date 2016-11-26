@@ -1,0 +1,103 @@
+MC(Midnight Commander) 使用详述
+
+
+
+MC是什么？
+随着gnome和KDE两大图形界面的风行，MC这个来源于gnu的素有“瑞士军刀”（Swiss army knife ＃debian）之称的文件浏览器越来越不为人所知。
+
+
+首先：
+$ man mc  
+    NAME  
+           mc - Visual shell for Unix-like systems.  
+    USAGE  
+           mc [-abcCdfhPstuUVx] [-l log] [dir1 [dir2]] [-e [file]] [-v file]  
+    DESCRIPTION  
+           GNU Midnight Commander is a directory browser/file manager for Unix-like operating systems.  
+
+从在线文档里可以先粗略领略它表面的简洁。
+
+ 
+MC
+MC 的文本界面分为四块：
+ 
+1.顶部是菜单栏:
+	在虚拟终端和控制台下可以用鼠标点击（控制台下需安装gpm ＃aptitude install gpm）或者按F9 激活。
+
+2.中部两个窗口，一个在工作时是激活窗口，另一个处于未激活状态.
+	当然可以用Tab键来切换（更换激活状态）。
+
+3.倒数第二栏的是命令行（CML）。
+	在该行执行相应的shell命令。
+
+4.底部是功能键标签（function key label[s]）:
+	比如 “10' 代表退出，按F10。
+
+ 
+
+几个基本的动作：
+
+1.可以用箭头键(arrow key)上下移动，高亮标示移动到的当前文件（普通文件，目录，压缩文件）.
+2.进入当前文件（，普通文件，目录，压缩文件），可以按ENTER。
+3.想切换到上级目录，用arry key移动到/..目录，按ENTER。
+ 
+
+MC的几大特色:
+
+1.操作文件(文本文件)
+    MC内置了文档阅读器和编辑器。
+	a.直接从命令行进入此二者;
+	b.进入MC后，按F3（viewer）和F4(editor)进入。
+
+	a.命令行进入:
+		mc -v filename #进入阅读器  
+		mc -e filename #进入编辑器  
+ 
+	b.打开MC后进入：
+		按F4(F3),进入编辑模式（阅读模式）   
+		此时底部的功能键可以使用。  
+
+ 
+以下是F1－F10在不同模式下的命令。（大多数可以在底部的功能键标签上找到）
+
+	Browse mode 	View mode 	Edit mode
+F1 	Displays the main Help screen 	Displays the viewer Help screen 	Displays the editor Help screen
+F2 	Activates the User Menu 	Wrap/unwraps the text 	Saves the file
+F3 	View the selected file 	Exits View mode 	Selects text
+F4 	Edit the selected file 	Toggles ascii/hex view mode 	Find and Replace
+F5 	Copy the selected file 	Opens the Goto Line dialog 	Copy selected text to cursor position
+F6 	Rename/Move the selected file 	Regexp Search 	Move selected text to cursor position
+F7 	Creates a new directory in the active panel 	Search 	Search
+F8 	Deletes the selected file 	Toggle Raw/parsed mode 	Delete the current line or selection
+F9 	Displays the top menu 	Toggles Format/unformat view 	Displays editor's top menu
+F10 	Exits MC 	Exits View mode 	Exits Edit Mode
+
+ 
+
+ 
+
+ 
+
+2.操作VFS（virtual file system ）
+	支持的VFS包括了FTP，FISH(ssh 等远程连接)和SMB等等。
+
+
+
+
+
+
+MC 里的命令行技巧
+    cd命令可改变焦点屏幕中的目录位置。
+    Control-Enter 或 Alt-Enter 可以将文件名拷贝到命令行。在编辑命令行时可与 cp 或 mv命令结合使用。
+    Alt-Tab 显示焦点文件所属文件或目录的文件名
+    可指定 MC 两个目录窗口的起始目录；例如 mc /etc /root。
+    Esc + numberkey == Fn(例如 Esc + '1' = F1, etc.; Esc + '0' = F10)
+    Esc- key == Alt-key (= Meta, M-); 例如Esc + 'c'等价于 Alt-c
+
+
+
+
+Reference:
+
+1.http://www.Linux.com/archive/feature/113 736
+2.debian 官方文档
