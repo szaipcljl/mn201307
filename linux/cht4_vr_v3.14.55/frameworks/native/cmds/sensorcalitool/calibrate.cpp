@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h> //memset()
+#include <sys/time.h>
 #include <cstring>
 
 #include "calibrate.h"
@@ -15,6 +16,7 @@
 int print_acc_log = 1;
 int print_gyr_log = 1;
 int print_mag_log = 1;
+int calc_gyr_integral = 1;
 char* reqSnr_g [3];
 #else
 #define AGM_SENSOR_BIN_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
@@ -39,17 +41,25 @@ extern SENSOR_DATA_T data_loop_acc;
 extern SENSOR_DATA_T data_loop_gyr;
 extern SENSOR_DATA_T data_loop_mag;
 
+struct my_fifo acc_fifo;
+struct my_fifo gyr_fifo;
+struct my_fifo mag_fifo;
+
+#define MAX_FRQ(a,b) (a > b ? a:b)
+#define ACC_FRQ 1000
+#define GYR_FRQ 1000
+#define MAG_FRQ 100
+
 extern void *sensorAGM_read_data_loop(void *arg);
 
-static const int SKIP_DATA = 3 * 1000;
-static const int DATA_SIZE = 3 * 1000;
-SENSOR_DATA_T data;
-//SENSOR_DATA_T temp[DATA_SIZE*3];
+static const int SKIP_DATA = 100;
+static const int DATA_SIZE_A = 2 * 10000;
+static const int DATA_SIZE = 100;
 SENSOR_DATA_T temp[3];
 SENSOR_CALC_TOOL calc_tool[3];
-#define SNR_ACC 0
-#define SNR_GRYO 1
-#define SNR_MAGN 2
+#define ACC_INDEX 0
+#define GYR_INDEX 1
+#define MAG_INDEX 2
 
 SENSOR_CALIBRATION file_content ={
 	{
@@ -318,7 +328,14 @@ int readAccSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
 	int read_again = 0;
+	int ret = 0;
+	int len;
 
+#if 1
+	while (!(ret = myfifo_out(&acc_fifo, (void*)data, 1)));
+	//len = my_fifo_len(acc_fifo);
+	//ALOGD("%s:len = %d\n",len);
+#else
 	do {
 
 		if (++i > 500) {
@@ -344,6 +361,7 @@ int readAccSensor(SENSOR_DATA_T *data)
 			read_again = 0;
 		}
 	} while(read_again);
+#endif
 
 	return 0;
 }
@@ -352,7 +370,11 @@ int readGyrSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
 	int read_again = 0;
+	int ret = 0;
 
+#if 1
+	while (!(ret = myfifo_out(&gyr_fifo, (void*)data, 1)));
+#else
 	do {
 		if (++i > 500) {
 			ALOGD("can not read gyro sensor data\n");
@@ -377,6 +399,7 @@ int readGyrSensor(SENSOR_DATA_T *data)
 			read_again = 0;
 		}
 	} while(read_again);
+#endif
 
 	return 0;
 }
@@ -386,7 +409,11 @@ int readMagSensor(SENSOR_DATA_T *data)
 {
 	int i = 0;
 	int read_again = 0;
+	int ret = 0;
 
+#if 1
+	while (!(ret = myfifo_out(&mag_fifo, (void*)data, 1)));
+#else
 	do {
 		if (++i > 500) {
 			ALOGD("can not read magn sensor data\n");
@@ -411,6 +438,7 @@ int readMagSensor(SENSOR_DATA_T *data)
 			read_again = 0;
 		}
 	} while(read_again);
+#endif
 
 	return 0;
 }
@@ -427,9 +455,9 @@ int ApkExit()
 }
 
 
-void printAccData(int step, SENSOR_DATA_T *data, int count, int index)
+void printAccData(int step, SENSOR_DATA_T *data, int count,int size, int index)
 {
-	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, size,index);
 
 	ALOGD(": <accelX   =%7d,\taccelY   =%7d,\taccelZ   =%7d,\ttime  =%lld>\n",\
 			data->data.accelMilliG.accelX,\
@@ -438,9 +466,9 @@ void printAccData(int step, SENSOR_DATA_T *data, int count, int index)
 			data->snr_time.acc_time);
 }
 
-void printGyroData(int step, SENSOR_DATA_T *data, int count, int index)
+void printGyroData(int step, SENSOR_DATA_T *data, int count, int size, int index)
 {
-	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, size,index);
 
 	ALOGD(": <gyroX    =%7d,\tgyroY    =%7d,\tgyroZ    =%7d,\ttime  =%lld>\n",\
 			data->data.gyroMilliDegreesPerSecond.gyroX,\
@@ -449,11 +477,11 @@ void printGyroData(int step, SENSOR_DATA_T *data, int count, int index)
 			data->snr_time.gyr_time);
 }
 
-void printMagnData(int step, SENSOR_DATA_T *data, int count, int index)
+void printMagnData(int step, SENSOR_DATA_T *data, int count, int size, int index)
 {
-	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, DATA_SIZE,index);
+	ALOGD("[%d/5][%d/%d]temp[%2d]", step, count, size,index);
 
-	ALOGD(": <magFieldX=%7d,\tmagFieldX=%7d,\tmagFieldX=%7d>\n",\
+	ALOGD(": <magFieldX=%7d,\tmagFieldY=%7d,\tmagFieldZ=%7d,\ttime=%lld>\n",\
 			data->data.magFieldMilliGauss.magFieldX,\
 			data->data.magFieldMilliGauss.magFieldY,\
 			data->data.magFieldMilliGauss.magFieldZ,\
@@ -465,14 +493,14 @@ void skipData(int count)
 	int i;
 
 	for(i =0; i < count; i++) {// skip 10 data...
-		readAccSensor(&temp[0]);
-		printAccData(1,&temp[0],i,1);
+		readAccSensor(&temp[ACC_INDEX]);
+		printAccData(1,&temp[ACC_INDEX],i,count,ACC_INDEX);
 
-		readGyrSensor(&temp[1]);
-		printGyroData(1,&temp[1],i,1);
+		readGyrSensor(&temp[GYR_INDEX]);
+		printGyroData(1,&temp[GYR_INDEX],i,count,GYR_INDEX);
 
-		readMagSensor(&temp[2]);
-		printMagnData(1,&temp[2],i,1);
+		readMagSensor(&temp[MAG_INDEX]);
+		printMagnData(1,&temp[MAG_INDEX],i,count,MAG_INDEX);
 
 		//usleep(2000);//note: magn update time is 2ms
 	}
@@ -484,8 +512,9 @@ void calc_agm_sum_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int_64 c
 	int i;
 
 	for (i = 0; i < 3; i ++) {
-		ALOGD("sum_x = %lld,\t,(int_64)data[i].data.data.x = %lld,\tavg_x = %lld,\t,count = %lld\n",
-				calc_tool[i].snr_sum.sum_x, (int_64)(data[i].data.data.x), calc_tool[i].snr_avg.avg_x, count);
+		ALOGD("sum_x = %lld,sum_y = %lld,sum_z = %lld,\tavg_x = %lld,\tavg_y = %lld,\tavg_z = %lld,\tcount = %lld\n",
+				calc_tool[i].snr_sum.sum_x, calc_tool[i].snr_sum.sum_y,calc_tool[i].snr_sum.sum_z,
+				calc_tool[i].snr_avg.avg_x, calc_tool[i].snr_avg.avg_y, calc_tool[i].snr_avg.avg_z, count);
 		calc_tool[i].snr_sum.sum_x += (int_64)(data[i].data.data.x);
 		calc_tool[i].snr_sum.sum_y += (int_64)(data[i].data.data.y);
 		calc_tool[i].snr_sum.sum_z += (int_64)(data[i].data.data.z);
@@ -498,6 +527,9 @@ void calc_agm_sum_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int_64 c
 
 void calc_single_sum_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int_64 count, int index)
 {
+	ALOGD("sum_x = %lld,sum_y = %lld,sum_z = %lld,\tavg_x = %lld,\tavg_y = %lld,\tavg_z = %lld,\tcount = %lld\n",
+			calc_tool[index].snr_sum.sum_x, calc_tool[index].snr_sum.sum_y,calc_tool[index].snr_sum.sum_z,
+			calc_tool[index].snr_avg.avg_x, calc_tool[index].snr_avg.avg_y, calc_tool[index].snr_avg.avg_z, count);
 
 	calc_tool[index].snr_sum.sum_x += (int_64)(data[index].data.data.x);
 	calc_tool[index].snr_sum.sum_y += (int_64)(data[index].data.data.y);
@@ -527,30 +559,78 @@ void get_single_snr_avg(SENSOR_CALC_TOOL* calc_tool, SENSOR_DATA_T* data, int in
 	data[index].data.data.z = (int)(calc_tool[index].snr_avg.avg_z);
 }
 
-int collect_agm_static_data_avg()
+int collect_agm_static_data_avg(int size)
 {
 	int ret_acc = 0;
 	int ret_gyr = 0;
 	int ret_mag = 0;
-	int i;
+	int i, max_frq,acc_count = 0, gyr_count = 0, mag_count = 0;
 
-	for(i = 1; i <= DATA_SIZE; i++) {//now read the data...
-		ret_acc = readAccSensor(&temp[0]);
-		printAccData(1,&temp[0],i,0);
+	struct timeval tv, tv1;
+	gettimeofday(&tv, NULL);
+
+	ALOGD("enter %s, timestamp is %d, %lld \n", __func__, tv.tv_sec, tv.tv_usec);
+
+	myfifo_reset(&acc_fifo);
+	myfifo_reset(&gyr_fifo);
+	myfifo_reset(&mag_fifo);
+
+	max_frq = MAX_FRQ(ACC_FRQ,GYR_FRQ);
+	max_frq = MAX_FRQ(max_frq,MAG_FRQ);
+	int acc_samp_period = max_frq/ACC_FRQ;
+	int gyr_samp_period = max_frq/GYR_FRQ;
+	int mag_samp_period = max_frq/MAG_FRQ;
+
+	for(i = 1; i <= size; i++) {//now read the data...
+		ALOGD("\n");
+
+#if 0
+		ret_acc = readAccSensor(&temp[ACC_INDEX]);
+		printAccData(1,&temp[ACC_INDEX],i,size,ACC_INDEX);
 		if (-1 == ret_acc)
 			return -1;
 
-		ret_gyr = readGyrSensor(&temp[1]);
-		printGyroData(1,&temp[1],i,1);
+		ret_gyr = readGyrSensor(&temp[GYR_INDEX]);
+		printGyroData(1,&temp[GYR_INDEX],i,size,GYR_INDEX);
 		if (-1 == ret_gyr)
 			return -1;
 
-		ret_mag = readMagSensor(&temp[2]);
-		printMagnData(1,&temp[2],i,2);
+		ret_mag = readMagSensor(&temp[MAG_INDEX]);
+		printMagnData(1,&temp[MAG_INDEX],i,size,MAG_INDEX);
 		if (-1 == ret_mag)
 			return -1;
 
 		calc_agm_sum_avg(calc_tool, temp, i);
+#else
+
+		if (!(i % acc_samp_period)) {
+			acc_count++;
+			ret_acc = readAccSensor(&temp[ACC_INDEX]);
+			printAccData(1,&temp[ACC_INDEX], acc_count, size,ACC_INDEX);
+			if (-1 == ret_acc)
+				return -1;
+
+			calc_single_sum_avg(calc_tool, temp, acc_count, ACC_INDEX);
+		}
+
+		if (!(i % gyr_samp_period)) {
+			gyr_count++;
+			ret_gyr = readGyrSensor(&temp[GYR_INDEX]);
+			printGyroData(1,&temp[GYR_INDEX], gyr_count,size,GYR_INDEX);
+			if (-1 == ret_gyr)
+				return -1;
+			calc_single_sum_avg(calc_tool, temp, gyr_count, GYR_INDEX);
+		}
+
+		if (!(i % mag_samp_period)) {
+			mag_count++;
+			ret_mag = readMagSensor(&temp[MAG_INDEX]);
+			printMagnData(1,&temp[MAG_INDEX], mag_count,size,MAG_INDEX);
+			if (-1 == ret_mag)
+				return -1;
+			calc_single_sum_avg(calc_tool, temp, mag_count, MAG_INDEX);
+		}
+#endif
 
 		//usleep(2000);//note: magn update time is 2ms
 
@@ -558,10 +638,13 @@ int collect_agm_static_data_avg()
 			return 0;
 	}
 
+	gettimeofday(&tv1, NULL);
+	ALOGD("Done %s, latency is %d s, %lld us \n", __func__, tv1.tv_sec - tv.tv_sec, tv1.tv_usec - tv.tv_usec);
+
 	return 0;
 }
 
-int collect_rota_data_avg(int step)
+int collect_rota_data_avg(int step, int size)
 {
 	int i;
 	int ret_acc = 0;
@@ -571,38 +654,38 @@ int collect_rota_data_avg(int step)
 	//static const int SAMPLES = 20 * 1000;
 	//SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
-	for(i = 1; i < DATA_SIZE;) {
+	for(i = 1; i < size;) {
 		if(1 == apk_exit)
 			return 0;
 
 		//usleep(2000); //gyro update is 2ms
 
-		ret_gyr = readGyrSensor(&temp[1]);
-		printGyroData(step,&temp[1],i,1);
+		ret_gyr = readGyrSensor(&temp[GYR_INDEX]);
+		printGyroData(step,&temp[GYR_INDEX],i, size,GYR_INDEX);
 		if (0 != ret_gyr)
 			return -1;
 
 
 		if (0 == ret_gyr) {
-			if(temp[1].data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
-					temp[1].data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
-					temp[1].data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
-					temp[1].data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
-					temp[1].data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
-					temp[1].data.gyroMilliDegreesPerSecond.gyroZ < -45000) {
+			if(temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
+					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
+					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
+					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
+					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
+					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ < -45000) {
 				ALOGD("[%d/5][if=>]\n",step);
-				calc_single_sum_avg(calc_tool,temp, i, SNR_GRYO);
+				calc_single_sum_avg(calc_tool,temp, i, GYR_INDEX);
 
-				ret_acc = readAccSensor(&temp[0]);
-				printAccData(step,&temp[0],i,0);
+				ret_acc = readAccSensor(&temp[ACC_INDEX]);
+				printAccData(step,&temp[ACC_INDEX],i,size,ACC_INDEX);
 				if (0 == ret_acc) {
-					calc_single_sum_avg(calc_tool,temp, i, SNR_ACC);
+					calc_single_sum_avg(calc_tool,temp, i, ACC_INDEX);
 				}
 
-				ret_mag = readMagSensor(&temp[2]);
-				printMagnData(step,&temp[2],i,2);
+				ret_mag = readMagSensor(&temp[MAG_INDEX]);
+				printMagnData(step,&temp[MAG_INDEX],i,size,MAG_INDEX);
 				if (0 == ret_mag){
-					calc_single_sum_avg(calc_tool,temp, i, SNR_MAGN);
+					calc_single_sum_avg(calc_tool,temp, i, MAG_INDEX);
 				}
 				i++;
 				ALOGD("data[%d/5][if=>] i = %d\n", step,i);
@@ -610,16 +693,16 @@ int collect_rota_data_avg(int step)
 		} else {
 			ALOGD("[%d/5][else=>]\n", step);
 
-			ret_acc = readAccSensor(&temp[0]);
-			printAccData(step,&temp[0],i,0);
+			ret_acc = readAccSensor(&temp[ACC_INDEX]);
+			printAccData(step,&temp[ACC_INDEX],i, size,ACC_INDEX);
 			if (0 == ret_acc) {
-				calc_single_sum_avg(calc_tool,temp, i, SNR_ACC);
+				calc_single_sum_avg(calc_tool,temp, i, ACC_INDEX);
 			}
 
-			ret_mag = readMagSensor(&temp[2]);
-			printMagnData(step,&temp[2],i,2);
+			ret_mag = readMagSensor(&temp[MAG_INDEX]);
+			printMagnData(step,&temp[MAG_INDEX],i, size,MAG_INDEX);
 			if (0 == ret_mag) {
-				calc_single_sum_avg(calc_tool,temp, i, SNR_MAGN);
+				calc_single_sum_avg(calc_tool,temp, i, MAG_INDEX);
 			}
 			i++;
 			ALOGD("data[%d/5]else=> i = %d\n", step, i);
@@ -632,21 +715,21 @@ int collect_rota_data_avg(int step)
 	return 0;
 }
 
-int collect_static_magn_data_avg(int step)
+int collect_static_magn_data_avg(int step, int size)
 {
 	int i;
 	int ret_mag = 0;
 
-	for(i = 1; i < DATA_SIZE; i++) {
+	for(i = 1; i < size; i++) {
 		if (1 == apk_exit)
 			return 0;
 
-		ret_mag = readMagSensor(&temp[2]);
-		printMagnData(step,&temp[2],1,2);
+		ret_mag = readMagSensor(&temp[MAG_INDEX]);
+		printMagnData(step,&temp[MAG_INDEX],i,size,MAG_INDEX);
 		if (0 != ret_mag)
 			return -1;
 
-		calc_single_sum_avg(calc_tool, temp, i, SNR_MAGN);
+		calc_single_sum_avg(calc_tool, temp, i, MAG_INDEX);
 
 		//usleep(2000); //note: magn update time is 2ms
 	}
@@ -692,26 +775,26 @@ int SetAGM_STEP_A()
 
 	memset(calc_tool, 0, sizeof(calc_tool));
 	//to select data
-	ret = collect_agm_static_data_avg();
+	ret = collect_agm_static_data_avg(DATA_SIZE_A);
 	if (ret != 0)
 		return -1;
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.acclzx = temp[0].data.accelMilliG.accelX;
-	file_content.calibration.acclzy = temp[0].data.accelMilliG.accelY;
-	file_content.calibration.acclzz = temp[0].data.accelMilliG.accelZ;
-	printAccData(1,&temp[0],1,0);
+	file_content.calibration.acclzx = temp[ACC_INDEX].data.accelMilliG.accelX;
+	file_content.calibration.acclzy = temp[ACC_INDEX].data.accelMilliG.accelY;
+	file_content.calibration.acclzz = temp[ACC_INDEX].data.accelMilliG.accelZ;
+	printAccData(1,&temp[ACC_INDEX],1,1,ACC_INDEX);
 
-	file_content.calibration.gyrox = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyroy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyroz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
-	printGyroData(1,&temp[1],1,1);
+	file_content.calibration.gyrox = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyroy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyroz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
+	printGyroData(1,&temp[GYR_INDEX],1,1,GYR_INDEX);
 
-	file_content.calibration.magnxnx = temp[2].data.magFieldMilliGauss.magFieldX;
-	file_content.calibration.magnxny = temp[2].data.magFieldMilliGauss.magFieldY;
-	file_content.calibration.magnxnz = temp[2].data.magFieldMilliGauss.magFieldZ;
-	printMagnData(1,&temp[2],1,2);
+	file_content.calibration.magnxnx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
+	file_content.calibration.magnxny = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
+	file_content.calibration.magnxnz = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldZ;
+	printMagnData(1,&temp[MAG_INDEX],1,1,MAG_INDEX);
 
 
 	ALOGD("The first step is completed\n");
@@ -734,12 +817,12 @@ int SetAGM_STEP_B()
 
 	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	collect_static_magn_data_avg(2);
+	collect_static_magn_data_avg(2, DATA_SIZE);
 
-	get_single_snr_avg(calc_tool, temp, SNR_MAGN);
+	get_single_snr_avg(calc_tool, temp, MAG_INDEX);
 
-	file_content.calibration.magnxsx = temp[2].data.magFieldMilliGauss.magFieldX;
-	file_content.calibration.magnxsy = temp[2].data.magFieldMilliGauss.magFieldY;
+	file_content.calibration.magnxsx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
+	file_content.calibration.magnxsy = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
 
 	ALOGD("The 2nd step is completed\n");
 	return 0;
@@ -759,11 +842,11 @@ int SetAGM_STEP_C()
 
 	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	ret = collect_static_magn_data_avg(3);
+	ret = collect_static_magn_data_avg(3,DATA_SIZE);
 	if (0 != ret)
 		return -1;
 
-	get_single_snr_avg(calc_tool, temp, SNR_MAGN);
+	get_single_snr_avg(calc_tool, temp, MAG_INDEX);
 
 	file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
 
@@ -787,15 +870,15 @@ int SetAGM_STEP_D()
 
 	memset(calc_tool, 0, sizeof(calc_tool));
 	//read the data...
-	ret = collect_rota_data_avg(4);
+	ret = collect_rota_data_avg(4,DATA_SIZE);
 	if (0 != ret)
 		return -1;
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.gyrozx = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyrozy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyrozz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
+	file_content.calibration.gyrozx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyrozy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyrozz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 
 
 
@@ -822,19 +905,19 @@ int SetAGM_STEP_E()
 	memset(calc_tool, 0, sizeof(calc_tool));
 
 	//read the data...
-	ret = collect_rota_data_avg(5);
+	ret = collect_rota_data_avg(5,DATA_SIZE);
 	if (0 != ret)
 		return -1;
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.gyroyx = temp[1].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyroyy = temp[1].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyroyz = temp[1].data.gyroMilliDegreesPerSecond.gyroZ;
+	file_content.calibration.gyroyx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	file_content.calibration.gyroyy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	file_content.calibration.gyroyz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 
-	file_content.calibration.acclyx = temp[0].data.accelMilliG.accelX;
-	file_content.calibration.acclyy = temp[0].data.accelMilliG.accelY;
-	file_content.calibration.acclyz = temp[0].data.accelMilliG.accelZ;
+	file_content.calibration.acclyx = temp[ACC_INDEX].data.accelMilliG.accelX;
+	file_content.calibration.acclyy = temp[ACC_INDEX].data.accelMilliG.accelY;
+	file_content.calibration.acclyz = temp[ACC_INDEX].data.accelMilliG.accelZ;
 
 
 	ALOGD("The 5th step is completed\n");
@@ -876,6 +959,7 @@ int main(int argc, const char *argv[])
 		print_acc_log = 0;
 		print_gyr_log = 0;
 		print_mag_log = 0;
+		calc_gyr_integral = 0;
 
 		SetAGM_STEP_A();
 
@@ -905,19 +989,6 @@ int main(int argc, const char *argv[])
 		pthread_t tid;
 		int status;
 
-#if 0
-		if (!strcmp(argv[1], "agm")) { //use "sensorcalitool agm" to run three sensor loop
-			//signal(SIGINT,child_handler);
-
-		} else if (!strcmp(argv[1], "gyr")) {
-			print_acc_log = 0;
-			print_gyr_log = 1;
-			print_mag_log = 0;
-		} else {
-			ALOGD("invalid prrameter\n");
-			return -1;
-		}
-#endif
 		int print_gyr_log = 1;
 		int i;
 		for (optind, i = 0; optind < argc && i < 3; ++optind, i++) {

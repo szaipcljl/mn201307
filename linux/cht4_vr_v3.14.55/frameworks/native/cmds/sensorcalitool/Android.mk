@@ -10,6 +10,7 @@ include external/stlport/libstlport.mk
 LOCAL_SRC_FILES:= \
 	jni/SensorCaliJNI.cpp \
 	calibrate.cpp \
+	circ_buf.cpp\
 	sensorthread.cpp
 
 LOCAL_SHARED_LIBRARIES := \
@@ -44,6 +45,7 @@ include $(CLEAR_VARS)
 include external/stlport/libstlport.mk
 LOCAL_SRC_FILES:= \
 	calibrate.cpp \
+	circ_buf.cpp\
 	sensorthread.cpp
 
 LOCAL_SHARED_LIBRARIES := \

@@ -1,4 +1,4 @@
-
+#include "circ_buf.h"
 typedef struct _SENSOR_DATA {
 	union {
 		/*! \struct accelMilliG

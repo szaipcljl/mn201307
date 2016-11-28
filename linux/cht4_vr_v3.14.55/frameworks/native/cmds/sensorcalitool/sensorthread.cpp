@@ -5,6 +5,11 @@ SENSOR_DATA_T data_loop_acc;
 SENSOR_DATA_T data_loop_gyr;
 SENSOR_DATA_T data_loop_mag;
 
+extern struct my_fifo acc_fifo;
+extern struct my_fifo gyr_fifo;
+extern struct my_fifo mag_fifo;
+#define FIFO_SIZE (1 << 4)
+
 extern int apk_exit;
 extern int agm_data[9];
 extern int enable_finish;
@@ -12,6 +17,7 @@ extern int enable_finish;
 extern int print_acc_log;
 extern int print_gyr_log;
 extern int print_mag_log;
+extern int calc_gyr_integral;
 extern SENSOR_CALC_TOOL calc_tool[3];
 extern char* reqSnr_g[3];
 #define NS_TO_S (float)(0.000000001)
@@ -51,10 +57,15 @@ bool SensorThread::threadLoop()
 				 * ensure readAccSensor() can read acc data, just use
 				 * data_loop_acc to save acc data
 				 */
+
+				if (event[i].timestamp == data_loop_acc.snr_time.acc_time)
+					break;
+				
 				data_loop_acc.data.accelMilliG.accelX = (int)(event[i].data[0]); //float * 1000 => int
 				data_loop_acc.data.accelMilliG.accelY = (int)(event[i].data[1]);
 				data_loop_acc.data.accelMilliG.accelZ = (int)(event[i].data[2]);
 				data_loop_acc.snr_time.acc_time = event[i].timestamp;
+				myfifo_in(&acc_fifo, (void*)&data_loop_acc, 1);
 
 				agm_data[0] = data_loop_acc.data.accelMilliG.accelX;
 				agm_data[1] = data_loop_acc.data.accelMilliG.accelY;
@@ -63,26 +74,35 @@ bool SensorThread::threadLoop()
 #ifdef DEBUG_USE_ADB
 				if (print_acc_log)
 #endif
-					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, accuracy=%d, sensor=%s\n",\
+					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, sensor=%s\n",\
 							data_loop_acc.data.accelMilliG.accelX,\
 							data_loop_acc.data.accelMilliG.accelY,\
 							data_loop_acc.data.accelMilliG.accelZ,\
-							event[i].timestamp, event[i].magnetic.status, getSensorName(event[i].type));
+							event[i].timestamp, getSensorName(event[i].type));
+
+
 
 				break;
 
 			case SENSOR_TYPE_GYRO_RAW:
 
+				if (event[i].timestamp == data_loop_gyr.snr_time.gyr_time)
+					break;
+
 				data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX = (int)(event[i].data[0]);
 				data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY = (int)(event[i].data[1]);
 				data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ = (int)(event[i].data[2]);
 				data_loop_gyr.snr_time.gyr_time = event[i].timestamp;
+				myfifo_in(&gyr_fifo, (void*)&data_loop_gyr, 1);
 
 				agm_data[3] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX;
 				agm_data[4] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY;
 				agm_data[5] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ;
 
 #ifdef DEBUG_USE_ADB
+				if (!calc_gyr_integral)
+					break;
+				
 				if (calc_tool[1].gyro_angle.stoptime == 0) {
 					calc_tool[1].gyro_angle.starttime = event[i].timestamp;
 					calc_tool[1].gyro_angle.stoptime = event[i].timestamp;
@@ -114,7 +134,8 @@ bool SensorThread::threadLoop()
 
 					ALOGD("calc_tool[1].gyro_angle.agl_x = %0.9f\n", calc_tool[1].gyro_angle.agl_x);
 #endif
-					ALOGD("[gyro_angle]:<agl_x = %0.9f,\tagl_y = %0.9f,\tagl_z = %0.9f>\n\t<starttime = %lld,\tstoptime = %lld>\n\t<delta-T = %lld,\ttime_step = %lld>\n"
+					ALOGD("[gyro_angle]:<agl_x = %0.9f,\tagl_y = %0.9f,\tagl_z = %0.9f>\n\t"\
+							"<starttime = %lld,\tstoptime = %lld>\n\t<delta-T = %lld,\ttime_step = %lld>\n"\
 							, calc_tool[1].gyro_angle.agl_x
 							, calc_tool[1].gyro_angle.agl_y
 							, calc_tool[1].gyro_angle.agl_z
@@ -126,20 +147,24 @@ bool SensorThread::threadLoop()
 
 				if (print_gyr_log)
 #endif
-					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, accuracy=%d, sensor=%s\n",\
+					ALOGD("[sensorthread]:value=<%9d,%9d,%9d>, time=%lld, sensor=%s\n",\
 							data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX,\
 							data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY,\
 							data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ,\
-							event[i].timestamp, event[i].magnetic.status, getSensorName(event[i].type));
+							event[i].timestamp, getSensorName(event[i].type));
 
 				break;
 
 			case SENSOR_TYPE_COMPS_RAW:
 
+				if (event[i].timestamp == data_loop_mag.snr_time.mag_time)
+					break;
+
 				data_loop_mag.data.magFieldMilliGauss.magFieldX = (int)(event[i].data[0]);
 				data_loop_mag.data.magFieldMilliGauss.magFieldY = (int)(event[i].data[1]);
 				data_loop_mag.data.magFieldMilliGauss.magFieldZ = (int)(event[i].data[2]);
 				data_loop_mag.snr_time.mag_time = event[i].timestamp;
+				myfifo_in(&mag_fifo, (void *)&data_loop_mag, 1);
 
 				agm_data[6] = data_loop_mag.data.magFieldMilliGauss.magFieldX;
 				agm_data[7] = data_loop_mag.data.magFieldMilliGauss.magFieldY;
@@ -155,6 +180,44 @@ bool SensorThread::threadLoop()
 							event[i].timestamp, event[i].magnetic.status, getSensorName(event[i].type));
 
 				break;
+
+#ifdef DEBUG_USE_ADB
+			case SENSOR_TYPE_GYROSCOPE:
+				if (calc_tool[1].gyro_angle.stoptime == 0) {
+					calc_tool[1].gyro_angle.starttime = event[i].timestamp;
+					calc_tool[1].gyro_angle.stoptime = event[i].timestamp;
+				}
+
+				calc_tool[1].gyro_angle.delta_T = event[i].timestamp - calc_tool[1].gyro_angle.stoptime;
+
+				if (0 != calc_tool[1].gyro_angle.delta_T) {
+					calc_tool[1].gyro_angle.agl_x += ((float)event[i].data[0] * ((float)calc_tool[1].gyro_angle.delta_T * NS_TO_S));
+					calc_tool[1].gyro_angle.agl_y += ((float)event[i].data[1] * ((float)calc_tool[1].gyro_angle.delta_T * NS_TO_S));
+					calc_tool[1].gyro_angle.agl_z += ((float)event[i].data[2] * ((float)calc_tool[1].gyro_angle.delta_T * NS_TO_S));
+
+					calc_tool[1].gyro_angle.stoptime = event[i].timestamp;
+					calc_tool[1].gyro_angle.time_step = calc_tool[1].gyro_angle.stoptime - calc_tool[1].gyro_angle.starttime;
+
+					ALOGD("\n");
+					ALOGD("[gyro_angle]:<agl_x = %0.9f,\tagl_y = %0.9f,\tagl_z = %0.9f>\n\t"\
+							"<starttime = %lld,\tstoptime = %lld>\n\t<delta-T = %lld,\ttime_step = %lld>\n"\
+							, calc_tool[1].gyro_angle.agl_x
+							, calc_tool[1].gyro_angle.agl_y
+							, calc_tool[1].gyro_angle.agl_z
+							, calc_tool[1].gyro_angle.starttime
+							, calc_tool[1].gyro_angle.stoptime
+							, calc_tool[1].gyro_angle.delta_T
+							, calc_tool[1].gyro_angle.time_step);
+				}
+
+				if (print_gyr_log)
+					ALOGD("[sensorthread]:value=<%0.9f,%0.9f,%0.9f>, time=%lld, sensor=%s\n",\
+							event[i].data[0], event[i].data[1], event[i].data[2],
+							event[i].timestamp, getSensorName(event[i].type));
+
+
+				break;
+#endif
 
 			default:
 				printf("value=<%9.4f,%9.4f,%9.4f>, time=%lld, sensor=%s\n",
@@ -420,11 +483,28 @@ static void DisableSelectedSensor(SensorCollection& AllSensor,
 
 void *sensorAGM_read_data_loop(void *arg)
 {
-    int err;
-
+	int ret;
     char const* action = "measure";
     int delay = 20, sample = -1, verbose = 0, show_list = 0;
     int batch_time_ms = 0, wakeup=0;
+
+	ret = myfifo_alloc(&acc_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
+	if (ret) {
+		printf("failed to alloc acc_fifo.ret = %d\n", ret);
+		return NULL;
+	}
+
+	ret = myfifo_alloc(&gyr_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
+	if (ret) {
+		printf("failed to alloc gyr_fifo.ret = %d\n", ret);
+		return NULL;
+	}
+
+	ret = myfifo_alloc(&mag_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
+	if (ret) {
+		printf("failed to alloc mag_fifo.ret = %d\n", ret);
+		return NULL;
+	}
 
     sp<SensorThread> sensor_thread;
     SensorManager& mgr(SensorManager::getInstance());
@@ -506,10 +586,6 @@ void *sensorAGM_read_data_loop(void *arg)
 	}
 
 	DisableSelectedSensor(AllSensor, queue);
-	if (err != NO_ERROR) {
-		printf("disableSensor() for '%s'failed (%d)\n",
-				getSensorName(type), err);
-	}
 
 	return NULL;
 }
