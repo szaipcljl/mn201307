@@ -63,7 +63,6 @@ static bool initSensors()
                 }
 
                 if (mDevice.getCategory() == LIBSENSORHUB) {
-					ALOGD("mlog:%d\n",mDevice.getCategory());
                         switch (mDevice.getType()) {
                         case SENSOR_TYPE_ACCELEROMETER:
                         case SENSOR_TYPE_MAGNETIC_FIELD:

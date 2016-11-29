@@ -188,13 +188,14 @@ int PSHCommonSensor::getData(std::queue<sensors_event_t> &eventQue) {
                                  event.data[j] = sensorhubEvent[i].data[j];
                                  //ALOGE("%s [%d] %f\n", __FUNCTION__, j, event.data[j]);
                              }
-                        }
-                        else{
-                             if (device.getType() == SENSOR_TYPE_ACC_RAW) {
-                                event.data[device.getMapper(AXIS_X)] = sensorhubEvent[i].data[0] * MGTOG;
-                                event.data[device.getMapper(AXIS_Y)] = sensorhubEvent[i].data[1] * MGTOG;
-                                event.data[device.getMapper(AXIS_Z)] = sensorhubEvent[i].data[2] * MGTOG;
-                                event.data[device.getMapper(AXIS_W)] = sensorhubEvent[i].data[3] * MGTOG;
+                        } else {
+							if (device.getType() == SENSOR_TYPE_ACC_RAW \
+									|| device.getType() == SENSOR_TYPE_GYRO_RAW \
+									|| device.getType() == SENSOR_TYPE_COMPS_RAW) {
+                                event.data[device.getMapper(AXIS_X)] = sensorhubEvent[i].data[0];
+                                event.data[device.getMapper(AXIS_Y)] = sensorhubEvent[i].data[1];
+                                event.data[device.getMapper(AXIS_Z)] = sensorhubEvent[i].data[2];
+                                event.data[device.getMapper(AXIS_W)] = sensorhubEvent[i].data[3];
                              } else {
                                 event.data[device.getMapper(AXIS_X)] = sensorhubEvent[i].data[0] * device.getScale(AXIS_X);
                                 event.data[device.getMapper(AXIS_Y)] = sensorhubEvent[i].data[1] * device.getScale(AXIS_Y);
