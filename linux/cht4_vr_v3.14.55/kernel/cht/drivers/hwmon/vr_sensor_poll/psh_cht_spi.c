@@ -62,6 +62,10 @@
 #define POLLING_HZ (HZ/POLL_HZ_PER_SECOND)
 
 
+static int do_transfer(struct psh_ext_if* psh_if_info,
+                       void* lp_send, int send_size,
+                       int* lp_is_received_data);
+
 static int no_err(const struct device *dev, const char *fmt, ...)
 { return 0; }
  
@@ -74,33 +78,6 @@ static int no_err(const struct device *dev, const char *fmt, ...)
 #undef dev_info
 #define dev_info no_err
 #endif
-
-
-
-int is_polling_worker_requested(struct psh_ext_if* lp_psh_if_info)
-{
-    return FALSE;
-    //    return (lp_psh_if_info->task_flag & TASK_FLAG_REQUEST_LOOP);
-}
-
-
-void request_start_polling_worker(struct psh_ext_if* lp_psh_if_info)
-{
-    lp_psh_if_info->task_flag |= TASK_FLAG_REQUEST_LOOP;
-
-    //    queue_delayed_work(lp_psh_if_info->wq, &lp_psh_if_info->dwork, POLLING_HZ);
-    //    atomic_inc(&lp_psh_if_info->pending_polling_request);
-}
-
-
-void request_stop_polling_worker(struct psh_ext_if* lp_psh_if_info)
-{
-    //lp_psh_if_info->task_flag &= (~TASK_FLAG_REQUEST_LOOP);
-
-    //cancel_delayed_work_sync(&lp_psh_if_info->dwork);
-    //atomic_set(&lp_psh_if_info->pending_polling_request, 0);
-}
-
 
 int read_psh_data(struct psh_ia_priv *ia_data)
 {
@@ -417,6 +394,19 @@ exit:
 }
 #else
 
+static void build_transfer_buffer(void* lp_new_package_buffer, 
+                                  void* lp_buffer, int buffer_size)
+{
+    struct frame_head* lp_fh = 
+        (struct frame_head*)lp_new_package_buffer;
+    
+    INIT_FRAME_HEAD(lp_fh, buffer_size);
+    
+    memcpy(lp_fh + 1, lp_buffer, buffer_size);
+    
+    return;
+}
+
 /*buffer size is just fh's palyload total size, not include fh head size*/
 struct send_list_entry*  build_send_list_entry(void* lp_buffer, int buffer_size)
 {
@@ -431,12 +421,9 @@ struct send_list_entry*  build_send_list_entry(void* lp_buffer, int buffer_size)
     lp_new_entry = kzalloc(sizeof(struct send_list_entry), GFP_KERNEL);
     if (lp_new_entry)
     {
-        struct frame_head* lp_fh = 
-            (struct frame_head*)lp_new_entry->data;
-
-        INIT_FRAME_HEAD(lp_fh, buffer_size);        
-
-        memcpy(lp_fh + 1, lp_buffer, buffer_size);
+        build_transfer_buffer(lp_new_entry->data,
+                              lp_buffer,
+                              buffer_size);
 
         lp_new_entry->used_size = total_size;
         lp_new_entry->debug_index = 0;
@@ -478,7 +465,7 @@ struct send_list_entry* remove_send_data_entry_from_list(struct psh_ext_if* lp_p
     return lp_removed_entry;
 }
 
-/*The len is just parameter part of struct ia_cmd*/
+/* The len is actual cmd size include parameter sizes*/
 int process_send_cmd(struct psh_ia_priv *ia_data,
 			int ch, struct ia_cmd *cmd, int len)
 {
@@ -493,7 +480,7 @@ int process_send_cmd(struct psh_ia_priv *ia_data,
     /*yy: remove this limitation*/
 	// fix host2psh package len to 16 
 	//len = HOST2PSH_PACKET_LEN;
-    len += (sizeof(struct ia_cmd) - CMD_PARAM_MAX_SIZE);
+    //len += (sizeof(struct ia_cmd) - CMD_PARAM_MAX_SIZE);
     //	memset(cmd_buf, '\0', HOST2PSH_PACKET_LEN);
 	// memcpy(cmd_buf, (char *)cmd, len);    
     lp_new_entry = build_send_list_entry(cmd, len);
@@ -529,13 +516,7 @@ int process_send_cmd(struct psh_ia_priv *ia_data,
       put the send data entry to send list 
       and request delay worker
      */
-    insert_send_data_entry_to_list(psh_if_info, lp_new_entry);    
- 
-    if (!is_polling_worker_requested(psh_if_info))
-    {
-        request_start_polling_worker(psh_if_info);
-    }
-
+    insert_send_data_entry_to_list(psh_if_info, lp_new_entry);
     /*         
 #ifdef DRV_POLLING_MODE	
 	if(cmd->cmd_id == CMD_START_STREAMING)
@@ -554,6 +535,62 @@ int process_send_cmd(struct psh_ia_priv *ia_data,
 
 	pm_runtime_mark_last_busy(&psh_if_info->pshc->dev);
 	pm_runtime_put_autosuspend(&psh_if_info->pshc->dev);
+
+	return ret;
+}
+
+/*
+  The len is actual cmd size include parameter sizes
+  please make sure you already paused pulling thread
+  before you call this api!
+*/
+int process_send_cmd_sync(struct psh_ia_priv *ia_data,
+                          int ch, struct ia_cmd *cmd, int len)
+{
+	int ret = -1;
+    
+	struct psh_ext_if *psh_if_info =
+        (struct psh_ext_if *)ia_data->platform_priv;
+    
+    struct send_list_entry* lp_new_entry = NULL;
+
+    //len += (sizeof(struct ia_cmd) - CMD_PARAM_MAX_SIZE);
+    
+	pm_runtime_get_sync(&psh_if_info->pshc->dev);
+
+    lp_new_entry = build_send_list_entry(cmd, len);
+    if (lp_new_entry)
+    {
+        ret = do_transfer(psh_if_info,
+                          lp_new_entry->data,
+                          lp_new_entry->used_size,
+                          NULL);
+
+        kfree(lp_new_entry);
+    }
+    
+	pm_runtime_mark_last_busy(&psh_if_info->pshc->dev);
+	pm_runtime_put_autosuspend(&psh_if_info->pshc->dev);
+    
+	return ret;
+}
+
+/*  
+  please make sure you already paused pulling thread
+  before you call this api!
+*/
+int process_send_buffer_sync(struct psh_ia_priv *ia_data,
+                             int ch, void* lp_buffer, int len)
+{
+	int ret = -1;
+    
+	struct psh_ext_if *psh_if_info =
+        (struct psh_ext_if *)ia_data->platform_priv;
+    
+    ret = do_transfer(psh_if_info,
+                      lp_buffer,len,
+                      NULL);
+
 
 	return ret;
 }
@@ -602,12 +639,16 @@ static int psh_byt_suspend(struct device *dev)
     struct psh_ext_if* lp_psh_if_info = 
         (struct psh_ext_if*)ia_data->platform_priv;
     
-    //	struct spi_device *client =
-	//	container_of(dev, struct spi_device, dev);
+    //MUST PAUSE POLLER BEFORE psh_ia_comm_resume()!!
+    poller_pause(dev, &lp_psh_if_info->poller_worker);
 
 	ret = psh_ia_comm_suspend(dev);
 	if (ret)
-		return ret;
+    {
+        poller_resume(dev, &lp_psh_if_info->poller_worker);
+        return ret;
+    }
+	
 
     //	disable_irq(client->irq);
 
@@ -616,9 +657,6 @@ static int psh_byt_suspend(struct device *dev)
 #endif 
 
 	//enable_irq_wake(client->irq);
-
-    poller_pause(dev, &lp_psh_if_info->poller_worker);
-    request_stop_polling_worker(lp_psh_if_info);
  
 	return 0;
 }
@@ -643,11 +681,12 @@ static int psh_byt_resume(struct device *dev)
 #endif 
     //	enable_irq(client->irq);
 	//disable_irq_wake(client->irq);
+    psh_ia_comm_resume(dev);
 
+    //MUST RESUME POLLER AFTER psh_ia_comm_resume()!!
     poller_resume(dev, &lp_psh_if_info->poller_worker);
-    request_start_polling_worker(lp_psh_if_info);
 
-	return psh_ia_comm_resume(dev);
+	return 0;
 }
  
 static int psh_byt_runtime_suspend(struct device *dev)
@@ -735,59 +774,140 @@ static void poll_sensor_data(struct work_struct *work)
 #else
 
 static void process_received_data(struct psh_ext_if *lp_psh_if_info,
-                                  u8* lp_buffer, int buffer_size)
+                                  u8* lp_buffer, int buffer_size,
+                                  u64 receive_ts_ns)
 {
     int ret_value;
     int cur_read = 0;
+    int processed_size = 0;
+    int total_buffer_size;
+    int one_frame_data_size;
     struct psh_ia_priv* lp_ia_data = lp_psh_if_info->ia_data;
 
-    //skip the frame head
-    lp_buffer += SIZE_OF_FRAME_HEAD;
-    buffer_size = MAX(buffer_size - SIZE_OF_FRAME_HEAD, 0);
-
-    while (buffer_size > 0) 
+    union
     {
-        struct cmd_resp *resp = (struct cmd_resp *)lp_buffer;
-        u32 size = sizeof(*resp) + resp->data_len;
+        struct frame_head* lp_fh;
+        u8* lp_u8;
+    }check_ptr;
+
+    check_ptr.lp_u8 = lp_buffer;
+    total_buffer_size = buffer_size;
+    while(processed_size < total_buffer_size)
+    {
+        lp_buffer = (u8*)(check_ptr.lp_fh + 1);
+        buffer_size = check_ptr.lp_fh->length;
+        one_frame_data_size = check_ptr.lp_fh->length;
         
-        //printk("yy 7\n");
-        ret_value = ia_handle_frame(lp_ia_data, lp_buffer, size);
-        // printk("yy 8\n");
-        if (ret_value > 0) 
+        cur_read = 0;
+        while (buffer_size > 0) 
         {
-            cur_read += ret_value;
-            
-            if (cur_read > 250) 
+            struct cmd_resp *resp = (struct cmd_resp *)lp_buffer;
+            u32 size = sizeof(*resp) + resp->data_len;
+        
+            //printk("yy 7\n");
+            ret_value = ia_handle_frame(lp_ia_data, lp_buffer, size,
+                                        receive_ts_ns);
+            // printk("yy 8\n");
+            if (ret_value > 0) 
             {
-                cur_read = 0;
-                //printk("yy 9\n");
-                sysfs_notify(&lp_psh_if_info->pshc->dev.kobj,
-                             NULL, "data_size");
-                //printk("yy 10\n");
-                dev_err(&lp_psh_if_info->pshc->dev, "request daemon to fetch data\n");
+                cur_read += ret_value;
+            
+                if (cur_read > 250) 
+                {
+                    cur_read = 0;
+                    //printk("yy 9\n");
+                    sysfs_notify(&lp_psh_if_info->pshc->dev.kobj,
+                                 NULL, "data_size");
+                    //printk("yy 10\n");
+                    dev_err(&lp_psh_if_info->pshc->dev, "request daemon to fetch data\n");
+                }
             }
+            //ptr += frame_size(size);
+            //len -= frame_size(size);
+            lp_buffer += size;
+            buffer_size -= size;
         }
-        //ptr += frame_size(size);
-        //len -= frame_size(size);
-        lp_buffer += size;
-        buffer_size -= size;
+    
+        if (cur_read)
+        {
+            //printk("yy 11\n");
+            sysfs_notify(&lp_psh_if_info->pshc->dev.kobj, NULL, "data_size");
+            //printk("yy 12\n");
+        }    
+
+        check_ptr.lp_u8 += (SIZE_OF_FRAME_HEAD + one_frame_data_size);
+        processed_size += (SIZE_OF_FRAME_HEAD + one_frame_data_size);
     }
 
-    if (cur_read)
-    {
-        //printk("yy 11\n");
-		sysfs_notify(&lp_psh_if_info->pshc->dev.kobj, NULL, "data_size");
-        //printk("yy 12\n");
-    }    
 }
+
+
+static int do_transfer(struct psh_ext_if* psh_if_info,
+                       void* lp_send, int send_size,
+                       int* lp_is_received_data)
+{
+    int ret_value;
+    int received_size = 0;
+    u64 current_ts_ns;
+
+    /*let's run SPI!! */
+    INIT_SPI_IO_CONTEXT(&psh_if_info->send_data_list.low_spi_io_context);
+
+    GET_TIMESTAMP_NANO(current_ts_ns);
+
+    //dev_info(&psh_if_info->pshc->dev,"+++++++++++do_io_transaction++++++++++\n");
+
+    ret_value = do_io_transaction(psh_if_info->pshc, 
+                                  &psh_if_info->send_data_list.low_spi_io_context,
+                                  lp_send, send_size,
+                                  psh_if_info->psh_frame, sizeof(psh_if_info->psh_frame),
+                                  &received_size);
+    //dev_info(&psh_if_info->pshc->dev,"-----------do_io_transaction----------\n");
+
+    /*
+      by yy:
+      below part should move to high level component...just workaround here
+     */
+#if 0
+	if (ch == 0 && cmd->cmd_id == CMD_RESET) 
+    {
+        /*wait to let psh reset*/
+        dev_err(&psh_if_info->pshc->dev,"Send CMD_RESET\n");
+		msleep(1000);
+	} 
+    else if (ch == 0 && cmd->cmd_id == CMD_FW_UPDATE) 
+    {
+        /*wait to let psh reset*/
+        dev_err(&psh_if_info->pshc->dev,"Send CMD_FW_UPDATE\n");
+		msleep(1000);
+	} 
+#endif
+
+    lp_is_received_data ? *lp_is_received_data = FALSE : 0;
+    if (IS_SUCCESS(ret_value))
+    {
+        /*received something, let's check it*/
+        if (0 != received_size)
+        {
+            process_received_data(psh_if_info,
+                                  psh_if_info->psh_frame, received_size,
+                                  current_ts_ns);
+
+            lp_is_received_data ? *lp_is_received_data = TRUE : 0;
+        }
+    }
+
+    return ret_value;
+}
+
 
 
 static void poll_sensor_data_normal(struct psh_ext_if *psh_if_info)
 {
     u8* lp_send;
     int send_size;
-    int receved_size;
     int ret_value;
+    int is_received_data = FALSE;
 
 	struct psh_ia_priv *ia_data = psh_if_info->ia_data;
     struct send_list_entry* lp_send_entry = NULL;
@@ -818,46 +938,12 @@ static void poll_sensor_data_normal(struct psh_ext_if *psh_if_info)
  
     dev_info(&psh_if_info->pshc->dev,"will send data size = %d\n",
             send_size);
-        
-    /*let's run SPI!! */
-    INIT_SPI_IO_CONTEXT(&psh_if_info->send_data_list.low_spi_io_context);
+ 
+    ret_value = do_transfer(psh_if_info, lp_send, send_size, &is_received_data);
 
-    dev_info(&psh_if_info->pshc->dev,"+++++++++++do_io_transaction++++++++++\n");
-
-    ret_value = do_io_transaction(psh_if_info->pshc, 
-                                  &psh_if_info->send_data_list.low_spi_io_context,
-                                  lp_send, send_size,
-                                  psh_if_info->psh_frame, sizeof(psh_if_info->psh_frame),
-                                  &receved_size);
-    dev_info(&psh_if_info->pshc->dev,"-----------do_io_transaction----------\n");
-
-    /*
-      by yy:
-      below part should move to high level component...just workaround here
-     */
-#if 0
-	if (ch == 0 && cmd->cmd_id == CMD_RESET) 
+    if (is_received_data)
     {
-        /*wait to let psh reset*/
-        dev_err(&psh_if_info->pshc->dev,"Send CMD_RESET\n");
-		msleep(1000);
-	} 
-    else if (ch == 0 && cmd->cmd_id == CMD_FW_UPDATE) 
-    {
-        /*wait to let psh reset*/
-        dev_err(&psh_if_info->pshc->dev,"Send CMD_FW_UPDATE\n");
-		msleep(1000);
-	} 
-#endif
-
-    if (IS_SUCCESS(ret_value))
-    {
-        /*received something, let's check it*/
-        if (0 != receved_size)
-        {
-             process_received_data(psh_if_info,
-                                  psh_if_info->psh_frame, receved_size);
-        }
+        timestamp_record_loop(&psh_if_info->io_profiler);
     }
 
     /*finished, so clear resource*/
@@ -920,8 +1006,6 @@ static void poll_sensor_data_by_thread(void* lp_param)
     struct psh_ext_if *psh_if_info = (struct psh_ext_if *)lp_param;
 	struct psh_ia_priv *ia_data = psh_if_info->ia_data;
 
-    timestamp_record_begin(&psh_if_info->io_profiler);
-
     if (ia_data->is_in_debug)
     {
         poll_sensor_data_debug(psh_if_info);
@@ -930,8 +1014,6 @@ static void poll_sensor_data_by_thread(void* lp_param)
     {
         poll_sensor_data_normal(psh_if_info);
     }
-
-    timestamp_record_end(&psh_if_info->io_profiler);
 }
 
 
@@ -982,7 +1064,7 @@ static int psh_probe(struct spi_device *client)
 #if 0
 	psh_if_info->gpio_psh_ctl =
 				acpi_get_gpio_by_index(&client->dev, 1, NULL);
-#endif 
+#endif
 
 	psh_if_info->gpio_psh_ctl = -1;
 
@@ -1079,6 +1161,8 @@ static int psh_probe(struct spi_device *client)
 
     poller_init(&psh_if_info->poller_worker,
                 poll_sensor_data_by_thread, psh_if_info);
+
+    poller_set_frequency(&psh_if_info->poller_worker, 1000);
 
     if (!IS_SUCCESS(poller_start(&client->dev,
                                  &psh_if_info->poller_worker)))
@@ -1262,12 +1346,11 @@ int do_io_transaction(struct spi_device* lp_dev,
                       _OUT_ u8* lp_recv_buffer, int recv_buffer_size, 
                       _OUT_ int* lp_recved_size )
 {
-    #define DUMMY_BUFFER_SIZE  16
-
     int ret_value = ER_FAILED;
 
     int total_trafster = 0;
     int one_time_transfer = 0;
+    int total_receive_size = 0;
 
     int remain_send_count = send_buffer_size;
     int remain_recv_count = 0;
@@ -1284,13 +1367,13 @@ int do_io_transaction(struct spi_device* lp_dev,
     struct buffer recv_buffer;
 
     INIT_BUFFER(&dummy_send_buffer,
-                       lp_io_context->send_dummy_buffer,
-                       lp_io_context->send_dummy_buffer_size);
+                lp_io_context->send_dummy_buffer,
+                lp_io_context->send_dummy_buffer_size);
     
     INIT_BUFFER(&dummy_recv_buffer,
-                       lp_io_context->recv_dummy_buffer,
-                       lp_io_context->recv_dummy_buffer_size);
-
+                lp_io_context->recv_dummy_buffer,
+                lp_io_context->recv_dummy_buffer_size);
+    
     INIT_BUFFER(&send_buffer, lp_send_buffer, send_buffer_size);
 
     INIT_BUFFER(&recv_buffer, lp_recv_buffer, recv_buffer_size);
@@ -1351,7 +1434,7 @@ int do_io_transaction(struct spi_device* lp_dev,
               splited data
              */
             one_time_transfer = MIN(BUFFER_REMAIN_LENGTH(*lp_send_operator), 
-                                    BUFFER_REMAIN_LENGTH(dummy_recv_buffer));                       
+                                    BUFFER_REMAIN_LENGTH(dummy_recv_buffer));                      
         }
 
         if (0 == one_time_transfer)
@@ -1422,21 +1505,32 @@ int do_io_transaction(struct spi_device* lp_dev,
 
                 /*copy all valid data to actual receive buffer head*/
 
-                if (need_recv_buffer_size > recv_buffer_size)
+                if (need_recv_buffer_size > BUFFER_REMAIN_LENGTH(recv_buffer))
                 {
                     ret_value = ER_NO_ENOUGH_RECV_BUFFER;
                     break;
                 }
                 
-                RESET_BUFFER(&recv_buffer);
-                
+                /*do not reset buffer, because we now support
+                  received mulit-frame in one io cycle.
+                 */
+                //RESET_BUFFER(&recv_buffer);                
+
                 memcpy(BUFFER_PTR(recv_buffer), 
                        lp_recv_operator->lp_ptr + fh_start_index,
                        copy_size);
+
+                /*
+                  save total received size here to support receive mulit-frame
+                 */
+                total_receive_size += need_recv_buffer_size;
                 
                 recv_buffer.index += copy_size;
-                recv_buffer.length = need_recv_buffer_size;
-            
+                recv_buffer.length = total_receive_size;
+
+                //                pr_err("dump: index = %d, length = %d\n",
+                //       recv_buffer.index, recv_buffer.length);
+
                 is_recved_vaild_fh = TRUE;
             }
             else
@@ -1471,6 +1565,24 @@ int do_io_transaction(struct spi_device* lp_dev,
                 is_recved_vaild_fh = FALSE;
             }
         }
+        else
+        {
+            /*
+              if we already received one frame, but still has some data need
+              send, we need change is_recved_vaild_fh = FALSE to prepare receive
+              the next frame
+             */
+#if 1
+            if (remain_send_count > 0
+                && 0 == remain_recv_count)
+            {
+                is_recved_vaild_fh = FALSE;
+                RESET_BUFFER(&dummy_recv_buffer);
+                //pr_err("psh: note: try receive mulit-frame.\n");
+            }
+#endif
+
+        }
     }
 
 #if 1   
@@ -1480,11 +1592,11 @@ int do_io_transaction(struct spi_device* lp_dev,
           dump recvied buffer
          */
         
-        //        dump_buffer(lp_recv_operator->lp_ptr, BUFFER_USED_LENGTH(*lp_recv_operator));
+        dump_buffer(lp_recv_operator->lp_ptr, BUFFER_USED_LENGTH(*lp_recv_operator));
     }
     else
     {
-        dump_buffer(recv_buffer.lp_ptr, BUFFER_USED_LENGTH(recv_buffer));
+        //dump_buffer(recv_buffer.lp_ptr, BUFFER_USED_LENGTH(recv_buffer));
     }
 #endif
 

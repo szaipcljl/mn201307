@@ -52,13 +52,15 @@ void request_start_polling_worker(struct psh_ext_if* lp_psh_if_info);
 
 void request_stop_polling_worker(struct psh_ext_if* lp_psh_if_info);
 
-void dump_buffer(u8* lp_buffer, int size);
+void dump_buffer(void* lp_dumpbuffer, int size);
 
 
-#define DBG_CMD_XFER  "xfer"
-#define DBG_CMD_STRESS "stress"
+#define DBG_CMD_XFER          "xfer"
+#define DBG_CMD_STRESS        "stress"
 #define DBG_CMD_STREAM_START  "stream_start"
 #define DBG_CMD_STREAM_STOP   "stream_stop"
 #define DBG_CMD_STREAM_FREQ   "freq"
+#define DBG_CMD_TS_SOURCE     "ts_source"
+#define DBG_CMD_PWR           "pwr"
 
 #endif

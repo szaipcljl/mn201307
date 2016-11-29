@@ -24,7 +24,7 @@ typedef struct {
 /*#ifdef __KERNEL__*/
 #endif
 
-#define MAX_DIST 1002
+#define MAX_DIST 3002
 #define MIN_DIST_INDEX (1)
 #define MAX_DIST_INDEX (MAX_DIST - 1)
 
@@ -43,6 +43,7 @@ struct timestamp_item_data
 
     atomic64_t delta_max;
     atomic64_t delta_min;
+    atomic64_t delta_now;
 
     atomic64_t dist_array[MAX_DIST];
 };
@@ -83,10 +84,11 @@ struct timestamp_result
     long delta_max;
     long delta_min;
 };
- 
+
 int timestamp_init_with_name(struct device* lp_dev,
                              struct timestamp_item* lp_ts_item,
                              char* lp_name);
+
 
 void timestamp_destory(struct device* lp_dev,
                        struct timestamp_item* lp_ts_item);
@@ -94,10 +96,20 @@ void timestamp_destory(struct device* lp_dev,
 
 void timestamp_record_begin(struct timestamp_item* lp_ts_item);
 
+
+
 void timestamp_record_end(struct timestamp_item* lp_ts_item);
+
+
+
+void timestamp_record_loop(struct timestamp_item* lp_ts_item);
+
+
 
 void timestamp_get_result(struct timestamp_item* lp_ts_item,
                           struct timestamp_result* lp_ts_result);
+
+
 
 int timestamp_get_binary_result(struct timestamp_item* lp_ts_item,                                
                                 char *buf,size_t count,
@@ -105,10 +117,22 @@ int timestamp_get_binary_result(struct timestamp_item* lp_ts_item,
 
 void timestamp_enable(struct timestamp_item* lp_ts_item);
 
+
+
 void timestamp_disable(struct timestamp_item* lp_ts_item);
+
+
 
 int timestamp_is_disabled(struct timestamp_item* lp_ts_item);
 
+
+
+#define GET_TIMESTAMP_NANO(_var_64)              \
+    {                                            \
+        struct timespec __current_ts;            \
+        ktime_get_ts(&__current_ts);             \
+        _var_64 = timespec_to_ns(&__current_ts); \
+    }
 
 #endif
 

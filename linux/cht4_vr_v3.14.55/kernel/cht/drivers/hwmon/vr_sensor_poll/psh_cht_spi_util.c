@@ -233,8 +233,24 @@ void timestamp_record_end(struct timestamp_item* lp_ts_item)
         save_to_dist_array(lp_ts_item->data.dist_array, result);
     }
 
+    atomic64_set(&lp_ts_item->data.delta_now, result);
     atomic64_add(result, &lp_ts_item->data.total_delta);
     atomic64_inc(&lp_ts_item->data.count);
+}
+
+void timestamp_record_loop(struct timestamp_item* lp_ts_item)
+{
+    if (0 == lp_ts_item->begin.tv_nsec
+        && 0 == lp_ts_item->begin.tv_sec)
+    {
+        timestamp_record_begin(lp_ts_item);
+        return; 
+    }
+
+    timestamp_record_end(lp_ts_item);
+    timestamp_record_begin(lp_ts_item);
+
+    return;
 }
 
 void timestamp_get_result(struct timestamp_item* lp_ts_item,

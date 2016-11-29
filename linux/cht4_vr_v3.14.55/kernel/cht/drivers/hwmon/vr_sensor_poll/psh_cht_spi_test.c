@@ -88,7 +88,9 @@ void poll_sensor_data_debug(struct psh_ext_if *psh_if_info)
         {
             --ia_data->debug_send_count;
 
-            ret_value = ia_send_cmd(ia_data, &ia_data->test_cmd, CMD_PARAM_MAX_SIZE);           
+            ret_value = ia_send_cmd(ia_data,
+                                    &ia_data->test_cmd, CMD_PARAM_MAX_SIZE,
+                                    SEND_ASYNC);
 
             /*send the data directly here, because no normal receive when in debug*/
             {
@@ -139,7 +141,9 @@ void poll_sensor_data_debug(struct psh_ext_if *psh_if_info)
 
             data_seed = (data_seed + 1) % 255;
             
-            ret_value = ia_send_cmd(ia_data, &ia_data->test_cmd, CMD_PARAM_MAX_SIZE);
+            ret_value = ia_send_cmd(ia_data,
+                                    &ia_data->test_cmd, CMD_PARAM_MAX_SIZE,
+                                    SEND_ASYNC);
             if (IS_SUCCESS(ret_value))
             {
                 ia_data->stress_test_step = STRESS_STEP_2_WAIT_ACK;
@@ -321,13 +325,19 @@ void dump_cmd_resp(char *ptr, int len)
 	printk(KERN_DEBUG"\n");	
 }
 
-void dump_buffer(u8* lp_buffer, int size)
+void dump_buffer(void* lp_dumpbuffer, int size)
 {
 #if 0
     int loop_end = size / 8;
     int remain_end = size % 8;
     int index = 0;
-    int loop_i, loop_j;
+    int loop_i;
+    u8* lp_buffer = (u8*)lp_dumpbuffer;
+
+    if (0 == size)
+    {
+        return;
+    }
 
     printk(KERN_ERR"spi dump: size = %d\n", size); 
     for (loop_i = 0; loop_i < loop_end; ++loop_i)
@@ -350,16 +360,11 @@ void dump_buffer(u8* lp_buffer, int size)
         //printk(KERN_ERR"[%0.2d]:", index);
         for (loop_i = 0; loop_i < remain_end; ++loop_i)
         {
-            printk(KERN_ERR"spi dump [%.2d]: 0x%.2x \n", 
+            printk(KERN_ERR"spi dump: [%.2d] 0x%.2x \n", 
                    8 * loop_end + loop_i,
                    lp_buffer[loop_i]);
         }
-        //printk(KERN_ERR"\n", index);
     }
-#else
-
-    //    printk(KERN_ERR"spi dump: size = %d\n", size); 
-
 #endif
 
     return;

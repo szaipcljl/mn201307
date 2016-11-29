@@ -20,6 +20,7 @@
 #include <linux/ctype.h>
 #include <asm/intel-mid.h>
 #include <linux/hrtimer.h>
+#include <linux/pm_runtime.h>
 #include "psh_ia_common.h"
 #include "psh_cht_spi_extern.h"
 #include "psh_cht_spi_util.h"
@@ -280,40 +281,69 @@ static int ia_sync_timestamp(struct psh_ia_priv *psh_ia_data, u8 check_interval)
 	return ret;
 }
 
+
 int ia_sync_timestamp_with_sensorhub_fw(struct psh_ia_priv *psh_ia_data)
 {
-	struct ia_cmd cmd_timestamp = { 0 };
-	struct cmd_ia_notify_param *param = (struct cmd_ia_notify_param *)cmd_timestamp.param;
+    struct psh_ext_if* lp_psh_info = 
+        (struct psh_ext_if*)psh_ia_data->platform_priv;
+
+    struct frame_ia_cmd cmd;
+	struct cmd_ia_notify_param *param 
+        = (struct cmd_ia_notify_param *)cmd.data.param;
+
 	u8 *linux_base_ns = param->extra;
-	timestamp_t base_ns = 0;
+	timestamp_t base_ns, end_ns;
 	int ret;
+    int send_size;
 
-	cmd_timestamp.tran_id = 0;
-	cmd_timestamp.cmd_id = CMD_IA_NOTIFY;
-	cmd_timestamp.sensor_id = 0;
+	cmd.data.tran_id = 0;
+	cmd.data.cmd_id = CMD_IA_NOTIFY;
+	cmd.data.sensor_id = 0;
 	param->id = IA_NOTIFY_TIMESTAMP_SYNC;
-	base_ns = ktime_to_ns(ktime_get_boottime());
-	*(timestamp_t *)linux_base_ns = base_ns;
 
-	ret = process_send_cmd(psh_ia_data, PSH2IA_CHANNEL0,
-                           &cmd_timestamp, 
-                           sizeof(struct ia_cmd)
-                           - CMD_PARAM_MAX_SIZE
-                           + sizeof(struct cmd_ia_notify_param)
-                           + sizeof(base_ns));
+	pm_runtime_get_sync(&lp_psh_info->pshc->dev);
+
+    poller_pause(&lp_psh_info->pshc->dev,
+                 &lp_psh_info->poller_worker);
+
+    send_size = sizeof(struct ia_cmd)
+                - CMD_PARAM_MAX_SIZE
+                + sizeof(struct cmd_ia_notify_param)
+                + sizeof(base_ns);
+
+    INIT_FRAME_HEAD(&cmd.fh, send_size);
+        
+    GET_TIMESTAMP_NANO(base_ns);
+
+	*(timestamp_t *)linux_base_ns = base_ns;
+    ret = process_send_buffer_sync(psh_ia_data,
+                                   PSH2IA_CHANNEL0,
+                                   &cmd,
+                                   send_size + SIZE_OF_FRAME_HEAD);
+    GET_TIMESTAMP_NANO(end_ns);
+
+    //    psh_err("sensor sync_timestamp: %lld ns, end ts = %lld ns, ret = %d \n",
+    //             base_ns, end_ns, ret);
+
+    poller_resume(&lp_psh_info->pshc->dev,
+                  &lp_psh_info->poller_worker);    
+
+	pm_runtime_mark_last_busy(&lp_psh_info->pshc->dev);
+	pm_runtime_put_autosuspend(&lp_psh_info->pshc->dev);
+    
 
 	return ret;
 }
 
 
-
 int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
-			struct ia_cmd *cmd, int len)
+                struct ia_cmd *cmd, int len,
+                int mode)
 {
 	int ret = 0;
 	static struct resp_cmd_ack cmd_ack;
 
-	ia_sync_timestamp(psh_ia_data, 0);
+	//ia_sync_timestamp(psh_ia_data, 0);
 
 	mutex_lock(&psh_ia_data->cmd_mutex);
 	if (cmd->cmd_id == CMD_RESET) {
@@ -340,8 +370,18 @@ int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
 	psh_ia_data->cmd_ack = &cmd_ack;
 
 	psh_ia_data->cmd_in_progress = cmd->cmd_id;
-	ret = process_send_cmd(psh_ia_data, PSH2IA_CHANNEL0,
-			cmd, len);
+
+    if (likely(SEND_ASYNC == mode))
+    {
+        ret = process_send_cmd(psh_ia_data, PSH2IA_CHANNEL0,
+                               cmd, len);
+    }
+    else
+    {
+        ret = process_send_cmd_sync(psh_ia_data, PSH2IA_CHANNEL0,
+                                    cmd, len);
+    }
+
 	psh_ia_data->cmd_in_progress = CMD_INVALID;
 	if (ret) {
 		psh_err("send cmd (id = %d) failed, ret=%d\n",
@@ -373,6 +413,8 @@ f_out:
 	return ret;
 }
 
+
+
 ssize_t ia_start_control(struct device *dev,
 			struct device_attribute *attr,
 			const char *str, size_t count)
@@ -385,6 +427,7 @@ ssize_t ia_start_control(struct device *dev,
 	long val;
 	int token = 0;
 	int ret;
+    const char* lp_orig_str = str;
 
 	while (*str && (token < sizeof(cmd_user))) {
 		val = trans_strtol(str, &s, 0);
@@ -407,7 +450,11 @@ ssize_t ia_start_control(struct device *dev,
 		}
 	}
 
-	ret = ia_send_cmd(psh_ia_data, &cmd_user, token);
+    pr_err("ia_start_control: recv %s, parsed size = %d \n",
+           lp_orig_str, token);
+    dump_buffer(&cmd_user, token);
+
+	ret = ia_send_cmd(psh_ia_data, &cmd_user, token, SEND_ASYNC);
 	if (ret)
 		return ret;
 	else
@@ -486,7 +533,7 @@ ssize_t ia_set_dbg_mask(struct device *dev,
 		cmd.cmd_id = CMD_DEBUG;
 		cmd.sensor_id = 0;
 		param->sub_cmd = SCMD_DEBUG_SET_MASK;
-		ret = ia_send_cmd(psh_ia_data, &cmd, 10);
+		ret = ia_send_cmd(psh_ia_data, &cmd, 10, SEND_ASYNC);
 		if (ret)
 			return ret;
 		else
@@ -524,7 +571,7 @@ ssize_t ia_set_dbg_mask(struct device *dev,
         cmd.cmd_id = CMD_CFG_STREAM;
         cmd.sensor_id = dbg_param1;
 
-        ret_value = ia_send_cmd(psh_ia_data, &cmd, CMD_PARAM_MAX_SIZE);
+        ret_value = ia_send_cmd(psh_ia_data, &cmd, CMD_PARAM_MAX_SIZE, SEND_ASYNC);
         dev_err(dev, "send cmd stream start result  = %d\n", ret_value);
 
         psh_ia_data->debug_scheme = DBG_CMD_STREAM_START;
@@ -541,7 +588,7 @@ ssize_t ia_set_dbg_mask(struct device *dev,
         cmd.cmd_id = CMD_STOP_STREAM;
         cmd.sensor_id = dbg_param1;
 
-        ret_value = ia_send_cmd(psh_ia_data, &cmd, CMD_PARAM_MAX_SIZE);
+        ret_value = ia_send_cmd(psh_ia_data, &cmd, CMD_NO_PARAM_SIZE, SEND_ASYNC);
         dev_err(dev, "send cmd stream stop result  = %d\n", ret_value);
 
         psh_ia_data->debug_scheme = DBG_CMD_STREAM_STOP;
@@ -570,8 +617,6 @@ ssize_t ia_set_dbg_mask(struct device *dev,
 
         dbg_param2 = MAX(1, dbg_param2);
         psh_ia_data->stress_test_polling_time = HZ / dbg_param2;
-
-        request_start_polling_worker(psh_ia_data->platform_priv);
     }
     else if (0 == strcmp(dbg_cmd, DBG_CMD_STRESS))
     {
@@ -588,8 +633,6 @@ ssize_t ia_set_dbg_mask(struct device *dev,
             psh_ia_data->stress_test_polling_time = HZ / dbg_param1;
 
             psh_ia_data->is_in_debug = 1;
-
-            request_start_polling_worker(psh_ia_data->platform_priv);
         }
     }
     else if (0 == strcmp(dbg_cmd, DBG_CMD_STREAM_FREQ))
@@ -601,6 +644,26 @@ ssize_t ia_set_dbg_mask(struct device *dev,
                              dbg_param1);
 
         dev_err(dev, "send cmd set_frequency, freq = %d\n", dbg_param1);
+    }
+    else if (0 == strcmp(dbg_cmd, DBG_CMD_TS_SOURCE))
+    {
+        psh_ia_data->timestamp_source = dbg_param1;
+
+        dev_err(dev, "send timestamp source = %d\n", dbg_param1);
+    }
+    else if (0 == strcmp(dbg_cmd, DBG_CMD_PWR))
+    {
+        switch(dbg_param1)
+        {
+        case 0:
+            psh_ia_comm_suspend(dev);
+            break;
+        case 1:
+            psh_ia_comm_resume(dev);
+            break;
+        default:
+            break;
+        }
     }
 
     return count;
@@ -620,7 +683,7 @@ ssize_t ia_get_dbg_mask(struct device *dev,
 	cmd.cmd_id = CMD_DEBUG;
 	cmd.sensor_id = 0;
 	param->sub_cmd = SCMD_DEBUG_GET_MASK;
-	ret = ia_send_cmd(psh_ia_data, &cmd, 8);
+	ret = ia_send_cmd(psh_ia_data, &cmd, CMD_ACTUAL_SIZE(sizeof(*param)), SEND_ASYNC);
 	if (ret)
 		return snprintf(buf, PAGE_SIZE, "%s failed!\n", __func__);
 
@@ -767,7 +830,7 @@ ssize_t ia_trig_get_status(struct device *dev,
 
 	cmd.cmd_id = CMD_GET_STATUS;
 	cmd.sensor_id = 0;
-	ret = ia_send_cmd(psh_ia_data, &cmd, 7);
+	ret = ia_send_cmd(psh_ia_data, &cmd, CMD_ACTUAL_SIZE(sizeof(*param)), SEND_ASYNC);
 	if (ret)
 		return ret;
 
@@ -787,7 +850,9 @@ ssize_t ia_get_counter(struct device *dev,
 	cmd.sensor_id = 0;
 	param->sub_cmd = SCMD_GET_COUNTER;
 
-	ret = ia_send_cmd(psh_ia_data, &cmd, 5);
+	ret = ia_send_cmd(psh_ia_data,
+                      &cmd, CMD_ACTUAL_SIZE(sizeof(*param)),
+                      SEND_ASYNC);
 	if (ret)
 		return ret;
 
@@ -815,7 +880,9 @@ ssize_t ia_clear_counter(struct device *dev,
 	cmd.sensor_id = 0;
 	param->sub_cmd = SCMD_CLEAR_COUNTER;
 
-	ret = ia_send_cmd(psh_ia_data, &cmd, 5);
+	ret = ia_send_cmd(psh_ia_data,
+                      &cmd, CMD_ACTUAL_SIZE(sizeof(*param)),
+                      SEND_ASYNC);
 	if (ret)
 		return ret;
 	else
@@ -832,7 +899,9 @@ ssize_t ia_get_version(struct device *dev,
 	cmd.cmd_id = CMD_GET_VERSION;
 	cmd.sensor_id = 0;
 
-	ret = ia_send_cmd(psh_ia_data, &cmd, 3);
+	ret = ia_send_cmd(psh_ia_data,
+                      &cmd, CMD_NO_PARAM_SIZE,
+                      SEND_ASYNC);
 	if (ret)
 		return ret;
 
@@ -943,7 +1012,7 @@ const char *_get_evt_str(u16 level, u16 evt)
  * return value > 0	data frame
  * return value < 0	error data frame
  */
-int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size)
+int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size, u64 recv_ts)
 {
 	struct cmd_resp *resp = dbuf;
 	const struct snr_info *sinfo;
@@ -977,7 +1046,9 @@ int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size)
         }
 
 		if (!psh_ia_data->cmd_ack)
-			psh_err("Unexpected CMD_ACK recevied, %d\n", cmd_ack->cmd_id);
+        {
+            //            psh_err("Unexpected CMD_ACK recevied, %d\n", cmd_ack->cmd_id);
+        }		
 		else if (cmd_ack->cmd_id == psh_ia_data->cmd_ack->cmd_id) 
         {
 			printk("%s, cmd_ack->cmd_id=%d ACKED \n", __func__, cmd_ack->cmd_id);
@@ -1072,9 +1143,16 @@ int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size)
                     resp->sensor_id);
             return 0;
         }
-        
+
+        if (TS_SOURCE_KERNEL == psh_ia_data->timestamp_source)
+        {
+            u64* lp_ts = (u64*)resp->buf;
+            *lp_ts = recv_ts;
+        }
+
         /*psh_err("recevied RESP_STREAMING:\n");*/
-        dump_buffer((u8*)resp, sizeof(*resp) + resp->data_len);
+        /*dump_buffer((u8*)resp, sizeof(*resp) + resp->data_len);*/
+
         break;
         /*yy debug only end*/
 	default:
@@ -1155,6 +1233,8 @@ int psh_ia_common_init(struct device *dev, struct psh_ia_priv **data)
 	init_completion(&psh_ia_data->cmd_comp);
 	INIT_LIST_HEAD(&psh_ia_data->sensor_list);
 
+    psh_ia_data->timestamp_source = TS_SOURCE_DEFAULT;
+
 	psh_ia_data->circ.buf = kmalloc(CIRC_SIZE, GFP_KERNEL);
 	if (!psh_ia_data->circ.buf) {
 		dev_err(dev, "can not allocate circ buffer\n");
@@ -1225,19 +1305,23 @@ void psh_ia_common_deinit(struct device *dev)
 
 int psh_ia_comm_suspend(struct device *dev)
 {
-	struct psh_ia_priv *psh_ia_data =
+    struct psh_ia_priv *psh_ia_data =
 			(struct psh_ia_priv *)dev_get_drvdata(dev);
-	struct ia_cmd cmd = {
+    struct ia_cmd cmd = {
 		.cmd_id = CMD_IA_NOTIFY,
 	};
-	struct cmd_ia_notify_param *param =
+    struct cmd_ia_notify_param *param =
 			(struct cmd_ia_notify_param *)cmd.param;
-	int ret;
+    int ret;
 
 	param->id = IA_NOTIFY_SUSPEND;
-	ret = ia_send_cmd(psh_ia_data, &cmd, 4);
-	if (ret)
-		dev_warn(dev, "PSH: IA_NOTIFY_SUSPEND ret=%d\n", ret);
+
+    ret = ia_send_cmd(psh_ia_data,
+                      &cmd, CMD_ACTUAL_SIZE(sizeof(*param)),
+                      SEND_SYNC);
+
+    psh_err("PSH: IA_NOTIFY_SUSPEND ret=%d\n", ret);
+
 	return 0;
 }
 
@@ -1253,8 +1337,11 @@ int psh_ia_comm_resume(struct device *dev)
 	int ret;
 
 	param->id = IA_NOTIFY_RESUME;
-	ret = ia_send_cmd(psh_ia_data, &cmd, 4);
-	if (ret)
-		dev_warn(dev, "PSH: IA_NOTIFY_RESUME ret=%d\n", ret);
+	ret = ia_send_cmd(psh_ia_data,
+                      &cmd, CMD_ACTUAL_SIZE(sizeof(*param)),
+                      SEND_ASYNC);
+
+    psh_err("PSH: IA_NOTIFY_RESUME ret=%d\n", ret);
+
 	return 0;
 }

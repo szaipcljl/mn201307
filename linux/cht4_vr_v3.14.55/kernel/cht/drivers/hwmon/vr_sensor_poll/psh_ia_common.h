@@ -73,6 +73,8 @@ enum resp_type {
 };
 
 #define CMD_PARAM_MAX_SIZE ((u16)60)
+#define CMD_NO_PARAM_SIZE (sizeof(struct ia_cmd) - CMD_PARAM_MAX_SIZE)
+#define CMD_ACTUAL_SIZE(x) ((x) + CMD_NO_PARAM_SIZE)
 struct ia_cmd {
 	u8 tran_id;
 	u8 cmd_id;
@@ -210,7 +212,14 @@ struct loop_buffer {
 struct frame_head {
 	u16 sign;
 	u16 length;
-};
+}__packed;
+
+
+struct frame_ia_cmd
+{
+    struct frame_head fh;
+    struct ia_cmd data;
+}__packed;
 
 #define LBUF_MAX_CELL_SIZE ((u16)4096)
 #define LBUF_MAX_DATA_SIZE (LBUF_MAX_CELL_SIZE \
@@ -237,17 +246,18 @@ struct psh_ia_priv {
 	struct resp_debug_get_mask dbg_mask;
 	struct resp_counter counter;
 	struct resp_cmd_ack *cmd_ack;
-	char *version_str;
 	struct mutex cmd_mutex;
 	struct mutex circ_dbg_mutex;
 	struct completion cmd_load_comp;
 	struct completion cmd_comp;
 	struct list_head sensor_list;
+
 	u8 cmd_in_progress;
 	u32 load_in_progress;
 	u32 status_bitmask;
 
 	void *platform_priv;
+	char *version_str;
 
     /*debug only*/
 #define STRESS_STEP_QUIT              00
@@ -263,22 +273,41 @@ struct psh_ia_priv {
     unsigned char stress_test_data_seed;
 	struct ia_cmd test_cmd;
     char* debug_scheme;
-    
+
+#define TS_SOURCE_HUB         0
+#define TS_SOURCE_KERNEL      1
+#define TS_SOURCE_DEFAULT     TS_SOURCE_HUB
+
+    int timestamp_source;
 };
 
 /* exports */
 void ia_lbuf_read_init(struct loop_buffer *lbuf,
-		u8 *buf, u16 size, update_finished_f uf);
+                       u8 *buf, u16 size, update_finished_f uf);
 void ia_lbuf_read_reset(struct loop_buffer *lbuf);
+
 int ia_lbuf_read_next(struct psh_ia_priv *psh_ia_data,
-			struct loop_buffer *lbuf,
-			u8 **buf, u16 *size);
+                      struct loop_buffer *lbuf,
+                      u8 **buf, u16 *size);
+
+/*
+  if you want to use the SEND_SYNC, make sure that
+  you already paused the poller before call it!!
+*/
+#define SEND_SYNC     0x0
+#define SEND_ASYNC    0x1
 int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
-		struct ia_cmd *cmd, int len);
+                struct ia_cmd *cmd, int len,
+                int mode);
+
 int psh_ia_common_init(struct device *dev, struct psh_ia_priv **data);
+
 void psh_ia_common_deinit(struct device *dev);
-int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size);
+
+int ia_handle_frame(struct psh_ia_priv *psh_ia_data, void *dbuf, int size, u64 recv_ts);
+
 int psh_ia_comm_suspend(struct device *dev);
+
 int psh_ia_comm_resume(struct device *dev);
 
 int ia_sync_timestamp_with_sensorhub_fw(struct psh_ia_priv *psh_ia_data);
@@ -288,7 +317,7 @@ int ia_sync_timestamp_with_sensorhub_fw(struct psh_ia_priv *psh_ia_data);
 /* need implemented by user */
 int do_setup_ddr(struct device *dev);
 int process_send_cmd(struct psh_ia_priv *psh_ia_data,
-			int ch, struct ia_cmd *cmd, int len);
+                     int ch, struct ia_cmd *cmd, int len);
 
 #define PSH_ITSELF     (PHY_SENSOR_BASE) /* means PSH itself */
 #define PORT_SENSOR_NUM (PORT_SENSOR_MAX_NUM - PORT_SENSOR_BASE - 1)

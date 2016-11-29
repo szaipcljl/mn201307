@@ -62,7 +62,7 @@ struct buffer
 
 struct spi_io_context
 {
-#define SPI_IO_DUMMY_BUFFER_SIZE   16
+#define SPI_IO_DUMMY_BUFFER_SIZE   128
     u8 send_dummy_buffer[SPI_IO_DUMMY_BUFFER_SIZE];
     u8 recv_dummy_buffer[SPI_IO_DUMMY_BUFFER_SIZE];
 
@@ -107,7 +107,7 @@ struct psh_ext_if
 
 	u8  psh_frame[LBUF_MAX_CELL_SIZE];
 
-#define SEND_ZERO_SIZE  32
+#define SEND_ZERO_SIZE  16
     u8 zero_send_buffer[SEND_ZERO_SIZE];
 
 	int gpio_psh_ctl, gpio_psh_rst;
@@ -147,6 +147,12 @@ int do_io_transaction(struct spi_device* lp_dev,
                       _OUT_ u8* lp_recv_buffer, int recv_buffer_size, 
                       _OUT_ int* lp_recved_size );
 
+int process_send_cmd_sync(struct psh_ia_priv *ia_data,
+                          int ch,
+                          struct ia_cmd *cmd, int len);
 
+
+int process_send_buffer_sync(struct psh_ia_priv *ia_data,
+                             int ch, void* lp_buffer, int len);
 
 #endif
