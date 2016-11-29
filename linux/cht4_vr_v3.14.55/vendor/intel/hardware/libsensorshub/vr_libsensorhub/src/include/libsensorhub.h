@@ -261,29 +261,29 @@ error_t psh_get_property_with_size(handle_t handle, int size, void *value, int *
 /* data format of each sensor type */
 struct accel_data {
 	int64_t ts;
-	short x;
-	short y;
-	short z;
+	int x;
+	int y;
+	int z;
 } __attribute__ ((packed));
 
 struct gyro_raw_data {
 	int64_t ts;
-	short x;
-	short y;
-	short z;
+	int x;
+	int y;
+	int z;
 } __attribute__ ((packed));
 
 struct compass_raw_data {
 	int64_t ts;
-	short x;
-	short y;
-	short z;
+	int x;
+	int y;
+	int z;
 } __attribute__ ((packed));
 
 struct rot_matrix_raw_data{
 
 	int64_t ts;
-	short matrix[9];
+	int matrix[9];
 
 }__attribute__ ((packed));
 
