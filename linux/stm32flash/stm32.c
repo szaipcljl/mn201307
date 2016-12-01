@@ -786,12 +786,29 @@ static stm32_err_t stm32_pages_erase(const stm32_t *stm, uint32_t spage, uint32_
 
 	/* regular erase (0x43) */
 	if (stm->cmd->er == STM32_CMD_ER) {
+		//fprintf(stderr, "d: regular erase\n");
 		buf = malloc(1 + pages + 1);
 		if (!buf)
 			return STM32_ERR_UNKNOWN;
 
 		buf[i++] = pages - 1;
 		cs ^= (pages-1);
+		buf[i++] = cs;
+
+		p_err = port->write(port, buf, i);
+		if (p_err != PORT_ERR_OK) {
+			fprintf(stderr, "write error.\n");
+			return STM32_ERR_UNKNOWN;
+		}
+
+		s_err = stm32_get_ack_timeout(stm, pages * STM32_PAGEERASE_TIMEOUT);
+		if (s_err != STM32_ERR_OK) {
+			fprintf(stderr, "get ack error.\n");
+			return STM32_ERR_UNKNOWN;
+		}
+
+		i = 0;
+		cs = 0;
 		for (pg_num = spage; pg_num < (pages + spage); pg_num++) {
 			buf[i++] = pg_num;
 			cs ^= pg_num;
@@ -813,6 +830,7 @@ static stm32_err_t stm32_pages_erase(const stm32_t *stm, uint32_t spage, uint32_
 	}
 
 	/* extended erase */
+	//fprintf(stderr, "d: extended erase, pages %d\n", pages);
 	buf = malloc(2 + 2 * pages + 1);
 	if (!buf)
 		return STM32_ERR_UNKNOWN;
@@ -820,20 +838,41 @@ static stm32_err_t stm32_pages_erase(const stm32_t *stm, uint32_t spage, uint32_
 	/* Number of pages to be erased - 1, two bytes, MSB first */
 	pg_byte = (pages - 1) >> 8;
 	buf[i++] = pg_byte;
+	//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 	cs ^= pg_byte;
 	pg_byte = (pages - 1) & 0xFF;
 	buf[i++] = pg_byte;
+	//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 	cs ^= pg_byte;
+	buf[i++] = cs;
+	//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 
+	p_err = port->write(port, buf, i);
+	if (p_err != PORT_ERR_OK) {
+		fprintf(stderr, "write error.\n");
+		return STM32_ERR_UNKNOWN;
+	}
+
+	s_err = stm32_get_ack_timeout(stm, pages * STM32_PAGEERASE_TIMEOUT);
+	if (s_err != STM32_ERR_OK) {
+		fprintf(stderr, "get ack error.\n");
+		return STM32_ERR_UNKNOWN;
+	}
+
+	i = 0;
+	cs = 0;
 	for (pg_num = spage; pg_num < spage + pages; pg_num++) {
 		pg_byte = pg_num >> 8;
 		cs ^= pg_byte;
 		buf[i++] = pg_byte;
+		//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 		pg_byte = pg_num & 0xFF;
 		cs ^= pg_byte;
 		buf[i++] = pg_byte;
+		//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 	}
 	buf[i++] = cs;
+	//fprintf(stderr, "buf[%d]  0x%x\n", i-1, buf[i-1]);
 	p_err = port->write(port, buf, i);
 	free(buf);
 	if (p_err != PORT_ERR_OK) {

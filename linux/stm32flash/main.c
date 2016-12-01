@@ -393,7 +393,7 @@ int main(int argc, char* argv[]) {
 		fprintf(stdout,	"Done.\n");
 	} else if (action == ACT_ERASE_ONLY) {
 		ret = 0;
-		fprintf(stdout, "Erasing flash\n");
+		fprintf(stdout, "Erasing flash only\n");
 
 		if (num_pages != STM32_MASS_ERASE &&
 		    (start != flash_page_to_addr(first_page)
@@ -403,6 +403,8 @@ int main(int argc, char* argv[]) {
 			goto close;
 		}
 
+		fprintf(diag, "srart 0x%08x, end 0x%08x, first_page 0x%08x, num_pages 0x%08x\n",
+				start, end, first_page, num_pages);
 		s_err = stm32_erase_memory(stm, first_page, num_pages);
 		if (s_err != STM32_ERR_OK) {
 			fprintf(stderr, "Failed to erase memory\n");
@@ -628,6 +630,7 @@ int parse_options(int argc, char *argv[])
 					return 1;
 				}
 				npages = strtoul(optarg, NULL, 0);
+				fprintf(stderr, "npages %d\n", npages);
 				if (npages > 0xFF || npages < 0) {
 					fprintf(stderr, "ERROR: You need to specify a page count between 0 and 255");
 					return 1;
@@ -677,7 +680,7 @@ int parse_options(int argc, char *argv[])
 
 			case 'g':
 				exec_flag = 1;
-				execute   = strtoul(optarg, NULL, 0);
+				execute = strtoul(optarg, NULL, 0);
 				if (execute % 4 != 0) {
 					fprintf(stderr, "ERROR: Execution address must be word-aligned\n");
 					return 1;

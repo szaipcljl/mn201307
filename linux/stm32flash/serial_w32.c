@@ -18,13 +18,13 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include <fcntl.h>
+//#include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <windows.h>
+//#include <unistd.h>
+//#include <windows.h>
 #include <ctype.h>
 
 #include "serial.h"
