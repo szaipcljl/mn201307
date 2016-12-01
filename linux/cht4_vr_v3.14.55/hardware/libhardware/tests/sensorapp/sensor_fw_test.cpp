@@ -99,27 +99,35 @@ bool SensorThread::threadLoop()
                     else {
                         printf("value=<%9.4f,%9.4f,%9.4f>, time=%lld, accuracy=%d, sensor=%s\n",
                                event[i].data[0], event[i].data[1], event[i].data[2],
-                               event[i].timestamp, event[i].magnetic.status, getSensorName(event[i].type));
+                               (long long int)event[i].timestamp, event[i].magnetic.status, getSensorName(event[i].type));
                     }
                     break;
                 case SENSOR_TYPE_STEP_COUNTER:
-                    printf("steps=%lld, time=%lld, sensor=%s\n",
-                           event[i].u64.step_counter,
-                           event[i].timestamp, getSensorName(event[i].type));
+                    printf("steps=%llu, time=%lld, sensor=%s\n",
+                           (long long unsigned int)event[i].u64.step_counter,
+                           (long long int)event[i].timestamp, getSensorName(event[i].type));
                     break;
                 case SENSOR_TYPE_ROTATION_MATRIX:
+#if 0
                     printf("value=<%9.4f,%9.4f,%9.4f,\n       %9.4f,%9.4f,%9.4f,\n       %9.4f,%9.4f,%9.4f>\n",
                     //printf("value=<%d,%d,%d,\n       %d,%d,%d,\n       %d,%d,%d>\n",
                            event[i].data[0], event[i].data[1], event[i].data[2],
                            event[i].data[3], event[i].data[4], event[i].data[5],
                            event[i].data[6], event[i].data[7], event[i].data[8]);
                     printf("time=%lld, sensor=%s\n",
-                           event[i].timestamp, getSensorName(event[i].type));
+                           (long long int)event[i].timestamp, getSensorName(event[i].type));
+#else
+					printf("%9.4f,%9.4f,%9.4f,%9.4f,%9.4f,%9.4f,%lld\n",
+						event[i].data[0], event[i].data[1], event[i].data[2],
+						event[i].data[3], event[i].data[4], event[i].data[5],
+						(long long int)event[i].timestamp/1000000);
+
+#endif
                     break;
                 default:
                     printf("value=<%9.4f,%9.4f,%9.4f>, time=%lld, sensor=%s\n",
                            event[i].data[0], event[i].data[1], event[i].data[2],
-                           event[i].timestamp, getSensorName(event[i].type));
+                           (long long int)event[i].timestamp, getSensorName(event[i].type));
                     break;
             }
             mSamples--;
@@ -145,106 +153,87 @@ struct option long_options[] = {
         {0        ,  0                , 0,   0 }
 };
 
-char const* getSensorName(int type) {
-    switch(type) {
-        case SENSOR_TYPE_ACCELEROMETER:
-            return "Acc";
-        case SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED:
-            return "Mag";
-        case SENSOR_TYPE_MAGNETIC_FIELD:
-            return "MagCal";
-        case SENSOR_TYPE_ORIENTATION:
-            return "Ori";
-        case SENSOR_TYPE_GYROSCOPE:
-            return "Gyr";
-        case SENSOR_TYPE_LIGHT:
-            return "Lux";
-        case SENSOR_TYPE_PRESSURE:
-            return "Bar";
-        case SENSOR_TYPE_TEMPERATURE:
-            return "Tmp";
-        case SENSOR_TYPE_PROXIMITY:
-            return "Prx";
-        case SENSOR_TYPE_GRAVITY:
-            return "Grv";
-        case SENSOR_TYPE_LINEAR_ACCELERATION:
-            return "Lac";
-        case SENSOR_TYPE_ROTATION_VECTOR:
-            return "Rot";
-        case SENSOR_TYPE_RELATIVE_HUMIDITY:
-            return "Hum";
-        case SENSOR_TYPE_AMBIENT_TEMPERATURE:
-            return "Tam";
-        case SENSOR_TYPE_ROTATION_MATRIX:
-            return "Rmx";
+struct SensorNameTypeMap
+{
+    int Type;
+    const char* lpName;
+};
+
+static struct SensorNameTypeMap g_SensorNameTypeMap[] = 
+{
+    { SENSOR_TYPE_ACCELEROMETER, "Acc" },
+    { SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED, "Mag" },
+    { SENSOR_TYPE_MAGNETIC_FIELD, "MagCal" },
+    { SENSOR_TYPE_ORIENTATION, "Ori" },
+    { SENSOR_TYPE_GYROSCOPE, "Gyr" },
+    { SENSOR_TYPE_LIGHT, "Lux" },
+    { SENSOR_TYPE_PRESSURE, "Bar" },
+    { SENSOR_TYPE_TEMPERATURE, "Tmp" },
+    { SENSOR_TYPE_PROXIMITY, "Prx" },
+    { SENSOR_TYPE_GRAVITY, "Grv" },
+    { SENSOR_TYPE_LINEAR_ACCELERATION, "Lac" },
+    { SENSOR_TYPE_ROTATION_VECTOR, "Rot" },
+    { SENSOR_TYPE_RELATIVE_HUMIDITY, "Hum" },
+    { SENSOR_TYPE_AMBIENT_TEMPERATURE, "Tam" },
+    { SENSOR_TYPE_ROTATION_MATRIX, "Rmx" },
+    { SENSOR_TYPE_ACC_RAW, "Acc_raw" },
+    { SENSOR_TYPE_GYRO_RAW, "Gyro_raw" },
+    { SENSOR_TYPE_COMPS_RAW, "Comps_raw"},
+};
+
+static void DisplaySensorParameterName(void)
+{
+    int Loop_i = 0;
+    const int Loop_End = sizeof(g_SensorNameTypeMap)/sizeof(g_SensorNameTypeMap[1]);
+
+    printf("Sensor parameters may support:\n\n");
+
+    for (Loop_i; Loop_i < Loop_End; ++Loop_i) {
+        printf("Name: %s, ID = %d\n",
+               g_SensorNameTypeMap[Loop_i].lpName,
+               g_SensorNameTypeMap[Loop_i].Type);
     }
 
-    static char buf[64];
-    sprintf(buf, "%d", type);
-    return buf;
+    printf("\n");
+
+    return;
 }
 
-int getSensorType(char const* type) {
-    if (strcmp(type, "Acc") == 0) {
-        return SENSOR_TYPE_ACCELEROMETER;
+const char* getSensorName(int RequestType)
+{
+    static const char* DummyName = "";
+
+    int Loop_i = 0;
+    const int Loop_End = sizeof(g_SensorNameTypeMap)/sizeof(g_SensorNameTypeMap[1]);
+    
+    for (Loop_i; Loop_i < Loop_End; ++Loop_i) {
+        if (RequestType == g_SensorNameTypeMap[Loop_i].Type) {
+            return g_SensorNameTypeMap[Loop_i].lpName;
+        }
     }
-    else if (strcmp(type, "Mag") == 0) {
-        return SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED;
+
+    return DummyName;
+}
+
+int getSensorType(char const* RequestName)
+{
+    int Loop_i = 0;
+    const int Loop_End = sizeof(g_SensorNameTypeMap)/sizeof(g_SensorNameTypeMap[1]);
+    
+    for (Loop_i; Loop_i < Loop_End; ++Loop_i) {
+        if (0 == strcasecmp(RequestName, g_SensorNameTypeMap[Loop_i].lpName)) {
+            return g_SensorNameTypeMap[Loop_i].Type;
+        }
     }
-    else if (strcmp(type, "MagCal") == 0) {
-        return SENSOR_TYPE_MAGNETIC_FIELD;
-    }
-    else if (strcmp(type, "Ori") == 0) {
-        return SENSOR_TYPE_ORIENTATION;
-    }
-    else if (strcmp(type, "Gyr") == 0) {
-        return SENSOR_TYPE_GYROSCOPE;
-    }
-    else if (strcmp(type, "Lux") == 0) {
-        return SENSOR_TYPE_LIGHT;
-    }
-    else if (strcmp(type, "Bar") == 0) {
-        return SENSOR_TYPE_PRESSURE;
-    }
-    else if (strcmp(type, "Tmp") == 0) {
-        return SENSOR_TYPE_TEMPERATURE;
-    }
-    else if (strcmp(type, "Prx") == 0) {
-        return SENSOR_TYPE_PROXIMITY;
-    }
-    else if (strcmp(type, "Grv") == 0) {
-        return SENSOR_TYPE_GRAVITY;
-    }
-    else if (strcmp(type, "Lac") == 0) {
-        return SENSOR_TYPE_LINEAR_ACCELERATION;
-    }
-    else if (strcmp(type, "Rot") == 0) {
-        return SENSOR_TYPE_ROTATION_VECTOR;
-    }
-    else if (strcmp(type, "Hum") == 0) {
-        return SENSOR_TYPE_RELATIVE_HUMIDITY;
-    }
-    else if (strcmp(type, "Tam") == 0) {
-        return SENSOR_TYPE_AMBIENT_TEMPERATURE;
-    }
-    else if (strcmp(type, "Rmx") == 0) {
-        return SENSOR_TYPE_ROTATION_MATRIX;
-    }
-	else if (strcmp(type, "Acc_raw") == 0) {
-		return SENSOR_TYPE_ACC_RAW;
-	}
-	else if(strcmp(type, "Gyro_raw") == 0) {
-		return SENSOR_TYPE_GYRO_RAW;
-	}
-	else if(strcmp(type, "Comps_raw") == 0) {
-		return SENSOR_TYPE_COMPS_RAW;
-	}
-    else if (isdigit(type[0])) {
-        return atoi(type);
+
+    if (isdigit(RequestName[0])) {
+        return atoi(RequestName);
     }
 
     return -1;
+
 }
+
 
 int skipThisSensor(int type, int* types, int numTypes) {
     for (int i=0; i<numTypes; i++) {
@@ -387,14 +376,21 @@ static void EnableSelectedSensor(SensorCollection& AllSensor,
 static void DisableSelectedSensor(SensorCollection& AllSensor,
                                   sp<SensorEventQueue> SensorDataQueue)
 {
+    int err;
     SensorCollection::iterator Begin, End;
 
     End = AllSensor.end();
     for(Begin = AllSensor.begin(); Begin != End; ++Begin) {
         if ((*Begin).m_IsEnable) {
-            SensorDataQueue->disableSensor((*Begin).m_lp_sensor);
-            printf("Disable Sensor: %s \n",
-                   (*Begin).m_lp_sensor->getName().string());
+            err = SensorDataQueue->disableSensor((*Begin).m_lp_sensor);
+
+            if (err != NO_ERROR) {
+                printf("disableSensor() for '%s'failed, ret err = %d\n",
+                       (*Begin).m_lp_sensor->getName().string(), err);
+            } else {
+                printf("Disable Sensor: %s \n",
+                       (*Begin).m_lp_sensor->getName().string());
+            }
         }
     }
 }
@@ -419,6 +415,11 @@ int main(int argc, char** argv)
     int count;
 
     int incalibrate = 0;
+
+    if (argc < 2) {
+        DisplaySensorParameterName();
+        return -1;
+    }
 
     if (queue == NULL) {
         printf("createEventQueue returned NULL\n");
@@ -497,7 +498,7 @@ int main(int argc, char** argv)
     } else if ((strcmp(action, "measure") == 0)
              || (strcmp(action, "calibrate") == 0)) {
 		/* just open 1 sensor for easy test */
-        int type;
+        /*int type;*/
         int numSkipSensors = 0;
         Sensor const *sensor = NULL;
 
@@ -520,6 +521,9 @@ int main(int argc, char** argv)
             sensor_name_list.push_back(argv[optind]);
         }
 
+        /*
+          Select the sensor which request by parameters
+         */
         if (!SelectRequestSensor(AllSensor,
                                  sensor_name_list)) {
             printf("No Sensor want to been enable.\n");
@@ -610,11 +614,6 @@ int main(int argc, char** argv)
         }
         
         DisableSelectedSensor(AllSensor, queue);
-        if (err != NO_ERROR) {
-            printf("disableSensor() for '%s'failed (%d)\n",
-                   getSensorName(type), err);
-            return 0;
-        }
     } else {
         printf("unknown action %s\n", action);
         return 0;
