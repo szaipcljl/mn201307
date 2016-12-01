@@ -30,9 +30,17 @@ void Quat2Matrix(const Quat& q, Matrix& m)
 {
 	double length2 = q.length2();
 	if (fabs(length2) <= std::numeric_limits<double>::min()) {
-		m._mat[0][0] = 0.0; m._mat[1][0] = 0.0; m._mat[2][0] = 0.0;
-		m._mat[0][1] = 0.0; m._mat[1][1] = 0.0; m._mat[2][1] = 0.0;
-		m._mat[0][2] = 0.0; m._mat[1][2] = 0.0; m._mat[2][2] = 0.0;
+		m._mat[0][0] = 0.0;
+		m._mat[1][0] = 0.0;
+		m._mat[2][0] = 0.0;
+
+		m._mat[0][1] = 0.0;
+		m._mat[1][1] = 0.0;
+		m._mat[2][1] = 0.0;
+
+		m._mat[0][2] = 0.0;
+		m._mat[1][2] = 0.0;
+		m._mat[2][2] = 0.0;
 	} else {
 		double rlength2;
 		// normalize quat if required.
