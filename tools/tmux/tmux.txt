@@ -1,2 +1,33 @@
 tmux
 管理终端窗口
+sudo apt-get install tmux
+
+Tmux 快捷键前缀 Ctrl-b
+
+--------------------------------------------------------------------------------
+1.窗格（Pane）:
+	创建竖直窗格: Ctrl-b %
+	水平分割: Ctrl-b "
+
+	窗格间移动光标: ctrl-b 方向键
+
+2.窗口（Window）:
+	窗口是个窗格容器,现有的窗口将会列在屏幕下方
+	创建窗口: Ctrl-b c
+	切换窗口: Ctrl-b 窗口对应数字
+
+3.会话（Session）:
+	创建会话(终端运行):
+		tmux new -s <name-of-my-session>
+	创建会话:
+		Ctrl-b : Shell
+		new -s <name-of-my-new-session>
+
+	创建了一个或多个会话，还没有运行 Tmux，接入已开启的会话:
+		tmux attach
+
+
+4.快速在文本间移动光标或复制文本
+
+5.结对编程
+将 Tmux 会话的地址分享给他人，通过 SSH 接入会话:
