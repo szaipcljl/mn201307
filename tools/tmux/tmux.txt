@@ -17,6 +17,8 @@ Tmux 快捷键前缀 Ctrl-b
 	切换窗口: Ctrl-b 窗口对应数字
 
 3.会话（Session）:
+	获取现有会话的列表: Ctrl-b s
+
 	创建会话(终端运行):
 		tmux new -s <name-of-my-session>
 	创建会话:
