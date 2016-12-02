@@ -220,7 +220,7 @@ bool SensorThread::threadLoop()
 #endif
 
 			default:
-				printf("value=<%9.4f,%9.4f,%9.4f>, time=%lld, sensor=%s\n",
+				ALOGD("value=<%9.4f,%9.4f,%9.4f>, time=%lld, sensor=%s\n",
 						event[i].data[0], event[i].data[1], event[i].data[2],
 						event[i].timestamp, getSensorName(event[i].type));
 				break;
@@ -363,12 +363,12 @@ static void DumpExistSensor(SensorCollection& AllSensor)
     SensorCollection::iterator IterEnd = AllSensor.end();
 
     if (AllSensor.empty()) {
-        printf("Not found any exist sensors.\n");
+        ALOGD("Not found any exist sensors.\n");
     }
 
     IterEnd = AllSensor.end();
     for (; IterBegin != IterEnd; ++IterBegin) {
-        printf("Name: %-32s| Vendor: %-28s | Handle: %10d | type: %5d | parameter name: %s\n",
+        ALOGD("Name: %-32s| Vendor: %-28s | Handle: %10d | type: %5d | parameter name: %s\n",
                (*IterBegin).m_lp_sensor->getName().string(),
                (*IterBegin).m_lp_sensor->getVendor().string(),
                (*IterBegin).m_lp_sensor->getHandle(),
@@ -412,7 +412,7 @@ static bool SelectRequestSensor(SensorCollection& AllSensor,
          */
         SensorType = getSensorType(RequestSensor[Loop_i].c_str());
         if (-1 == SensorType) {
-            printf("Unknow sensor name: %s, Ignored.\n",
+            ALOGD("Unknow sensor name: %s, Ignored.\n",
                    RequestSensor[Loop_i].c_str());
             continue;
         }
@@ -425,7 +425,7 @@ static bool SelectRequestSensor(SensorCollection& AllSensor,
         Begin = AllSensor.begin();
         End = AllSensor.end();
         for (; Begin != End; ++Begin) {
-            printf("gettype() = %d, iswakup = %d | Sensortype = %d, wakup = %d \n",
+            ALOGD("gettype() = %d, iswakup = %d | Sensortype = %d, wakup = %d \n",
                    (*Begin).m_lp_sensor->getType(),
                    (*Begin).m_lp_sensor->isWakeUpSensor(),
                    SensorType, IsWakeup);
@@ -439,7 +439,7 @@ static bool SelectRequestSensor(SensorCollection& AllSensor,
         }
     }
 
-    printf("RetValue = %d\n", RetValue);
+    ALOGD("RetValue = %d\n", RetValue);
     return RetValue;
 }
 
@@ -459,7 +459,7 @@ static void EnableSelectedSensor(SensorCollection& AllSensor,
             IsFiFo = (*Begin).m_IsRequestWakeUp ? SENSORS_BATCH_WAKE_UPON_FIFO_FULL : 0;
             SensorDataQueue->enableSensor((*Begin).m_lp_sensor->getHandle(),
                                          Delay, Batch, IsFiFo);
-            printf("Enabled Sensor: %s \n",
+            ALOGD("Enabled Sensor: %s \n",
                    (*Begin).m_lp_sensor->getName().string());
         }
     }
@@ -475,7 +475,7 @@ static void DisableSelectedSensor(SensorCollection& AllSensor,
     for(Begin = AllSensor.begin(); Begin != End; ++Begin) {
         if ((*Begin).m_IsEnable) {
             SensorDataQueue->disableSensor((*Begin).m_lp_sensor);
-            printf("Disable Sensor: %s \n",
+            ALOGD("Disable Sensor: %s \n",
                    (*Begin).m_lp_sensor->getName().string());
         }
     }
@@ -490,19 +490,19 @@ void *sensorAGM_read_data_loop(void *arg)
 
 	ret = myfifo_alloc(&acc_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
 	if (ret) {
-		printf("failed to alloc acc_fifo.ret = %d\n", ret);
+		ALOGD("failed to alloc acc_fifo.ret = %d\n", ret);
 		return NULL;
 	}
 
 	ret = myfifo_alloc(&gyr_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
 	if (ret) {
-		printf("failed to alloc gyr_fifo.ret = %d\n", ret);
+		ALOGD("failed to alloc gyr_fifo.ret = %d\n", ret);
 		return NULL;
 	}
 
 	ret = myfifo_alloc(&mag_fifo, FIFO_SIZE, sizeof(SENSOR_DATA_T));
 	if (ret) {
-		printf("failed to alloc mag_fifo.ret = %d\n", ret);
+		ALOGD("failed to alloc mag_fifo.ret = %d\n", ret);
 		return NULL;
 	}
 
@@ -519,7 +519,7 @@ void *sensorAGM_read_data_loop(void *arg)
     int incalibrate = 0;
 
     if (queue == NULL) {
-        printf("createEventQueue returned NULL\n");
+        ALOGD("createEventQueue returned NULL\n");
         return 0;
     } else {
         count = mgr.getSensorList(&list);
@@ -538,21 +538,21 @@ void *sensorAGM_read_data_loop(void *arg)
 #if DEBUG_USE_ADB
 	int i;
 	for (i = 0; i < 3 && reqSnr_g[i] != NULL; i++) {
-		printf("request Sensor type string name: (%s)\n", reqSnr_g[i]);
+		ALOGD("request Sensor type string name: (%s)\n", reqSnr_g[i]);
 		sensor_name_list.push_back(reqSnr_g[i]);
 	}
 #else
 	char* reqSnr[3] = {"Acc_raw", "Gyro_raw", "Comps_raw"};
 	int i;
 	for (i = 0; i < 3; i++) {
-		printf("request Sensor type string name: (%s)\n", reqSnr[i]);
+		ALOGD("request Sensor type string name: (%s)\n", reqSnr[i]);
 		sensor_name_list.push_back(reqSnr[i]);
 	}
 #endif
 
 	if (!SelectRequestSensor(AllSensor,
 				sensor_name_list)) {
-		printf("No Sensor want to been enable.\n");
+		ALOGD("No Sensor want to been enable.\n");
 		return NULL;
 	}
 
@@ -564,7 +564,7 @@ void *sensorAGM_read_data_loop(void *arg)
 
 	sensor_thread = new SensorThread(queue, sample, incalibrate);
 	if (sensor_thread == NULL) {
-		printf("failed to create sensor thread\n");
+		ALOGD("failed to create sensor thread\n");
 		return 0;
 	}
 
@@ -582,10 +582,14 @@ void *sensorAGM_read_data_loop(void *arg)
 	enable_finish = 1;
 	sensor_thread->join();
 	if (verbose) {
-		printf("sensor thread terminated\n");
+		ALOGD("sensor thread terminated\n");
 	}
 
 	DisableSelectedSensor(AllSensor, queue);
+
+	myfifo_free(&acc_fifo);
+	myfifo_free(&gyr_fifo);
+	myfifo_free(&mag_fifo);
 
 	return NULL;
 }

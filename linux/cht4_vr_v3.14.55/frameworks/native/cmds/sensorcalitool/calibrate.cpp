@@ -19,8 +19,10 @@ int print_mag_log = 1;
 int calc_gyr_integral = 1;
 char* reqSnr_g [3];
 #else
-#define AGM_SENSOR_BIN_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
-#define AGM_SENSOR_TXT_FILE_NAME	"/storage/emulated/0/setAGM_cal.txt"
+//#define AGM_SENSOR_BIN_FILE_NAME	"/storage/emulated/0/sensor_calibration_AGM.bin"
+//#define AGM_SENSOR_TXT_FILE_NAME	"/storage/emulated/0/setAGM_cal.txt"
+#define AGM_SENSOR_BIN_FILE_NAME	"/data/sensor_calibration_AGM.bin"
+#define AGM_SENSOR_TXT_FILE_NAME	"/data/setAGM_cal.txt"
 #endif
 
 #define TXT_BUF_SIZE 1024
@@ -232,9 +234,9 @@ int WriteDataToFileInTxt()
 			file_content.calibration.alscurve[18] , file_content.calibration.alscurve[19] ,\
 			file_content.calibration.als_multiplier, szCurTime);
 
-	printf("len = %d\n", len);
+	ALOGD("len = %d\n", len);
 	if (0 > len) {
-		printf("an output error for setAGM_cal.txt, len = %d\n.", len);
+		ALOGD("an output error for setAGM_cal.txt, len = %d\n.", len);
 		return -1;
 	}
 
@@ -243,7 +245,7 @@ int WriteDataToFileInTxt()
 		return -1;
 
 	ALOGD("open .txt file.\n");
-	fwrite(buf, 1, sizeof(buf), pFile);
+	fwrite(buf, 1, len, pFile);
 	fclose(pFile);
 
 	return 0;
@@ -759,7 +761,7 @@ int SetAGM_STEP_A()
 		return -1;
 	}
 
-	printf("enable_finish= %d\n",enable_finish);
+	ALOGD("enable_finish= %d\n",enable_finish);
 	while(!enable_finish)
 		usleep(10000);
 
