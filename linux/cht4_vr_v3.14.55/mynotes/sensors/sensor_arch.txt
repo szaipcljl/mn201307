@@ -35,6 +35,37 @@ sensorhub(stm32f411):
 2.sensor 系统架构
 	java -- jni -- HAL -- daemon -- ipc driver -- sensorhub
 
+3.hardware schematic diagram
+------------------------------
+AGM <--> sensorhub
+sensorhub: stm32f411(cortex m4)
+
+accelerometer & gyroscope (integrated in bmg160/bmi055?):
+	CSB1 <--CS_Accel--> stm32 B4(PB5/I2C1_SMBA/SPI1_MOSI/SPI3_MOSI/SDIO_D3)
+	CSB2 <--CS_Gyro --> stm32 D4(PB7/I2C1_SDA/USART1_RX/SDIO_D0)
+
+	SCx <--SPI1_SCK--> stm32 F5(PA5/SPI1_SCK)
+	SDx <--SPI1_MOSI--> stm32 F3(PA7/SPI1_MOSI)
+	SDO1 <--SPI1_MISO--> stm32 F4(PA6/SPI1_MISO/SDIO_CMD)
+
+	INT1 <--INT_Accel--> stm32 G5(PB0/SPI5_SCK)
+	INT3 <--INT_Gyro--> stm32 G4(PB1/SPI5_NSS)
+magnetometer(AK09916C):
+	i2c_addr(0x48)
+	SCL <--i2c1_scl--> stm32f4 C4(PB6/i2c_1scl/usart1_tx)
+	SDA <--i2c1_sda--> stm32f4 C5(PB9/i2c1_sda/spi2_nss/i2c2_sda/sdio_d5)
+------------------------------
+sensorhub <--> soc
+(a)fw update:
+D1(PA8/I2C3_SCL/USART1_CK/USB_FS_SOF/SDIO_D1) <--Sensor_HUB_SCL--> I2C3_CLK
+A4(PB4/JTRST/SPI1_MISO/SPI3_MISO/I2C3_SDA/SDIO_D0) <--Sensor_HUB_SDA--> I2C3_DATA
+(b) ipc driver
+G1(PB13/SPI2_SCK/SPI4_SCK/) <--SPI2_SCK_2SOC--> SPI1_CLK
+F1(PB14/SPI2_MISO/SDIO_D6) <--SPI2_MISO_2SOC--> SPI1_MISO
+E1(PB15/RTC_50HZ/SPI2_MOSI/SDIO_CK/RTC_REFIN) <--SPI2_MOSI_2SOC--> SPI1_MOSI
+E2(PB12/I2C2_SMBA/SPI2_NSS/SPI4_NSS/SPI3_SCK) : GND(10K)
+
+
 ================================================================================
 HAL		--		sensorhubd 		--	 driver
 
