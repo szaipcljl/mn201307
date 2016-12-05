@@ -56,9 +56,9 @@ struct sensor_name {
 };
 
 struct sensor_name sensor_type_to_name_str[SENSOR_MAX] = {
-	{"ACCEL"}, {"GYRO"}, {"COMPS"}, {"ROTM"} ,{"ACC_RAW"},{"GYRO_RAW"},{"COMPS_RAW"},{"BARO"}, {"ALS_P"}, {"PS_P"}, {"TERMC"}, {"LPE_P"},
+	{"ACCEL"}, {"GYRO"}, {"COMPS"}, {"ROTM"} ,{"ACC_RAW"},{"GYRO_RAW"},{"COMPS_RAW"},{"RVECT"},{"BARO"}, {"ALS_P"}, {"PS_P"}, {"TERMC"}, {"LPE_P"},
 	{"ACC1"}, {"GYRO1"}, {"COMP1"}, {"ALS1"}, {"PS1"}, {"BARO1"}, {"PHYAC"}, {"GSSPT"},
-	{"GSFLK"}, {"RVECT"}, {"GRAVI"}, {"LACCL"}, {"ORIEN"}, {"COMPC"}, {"GYROC"}, {"9DOF"},
+	{"GSFLK"},  {"GRAVI"}, {"LACCL"}, {"ORIEN"}, {"COMPC"}, {"GYROC"}, {"9DOF"},
 	{"PEDOM"}, {"MAGHD"}, {"SHAKI"}, {"MOVDT"}, {"STAP"}, {"PZOOM"}, {"LTVTL"}, {"DVPOS"},
 	{"SCOUN"}, {"SDET"}, {"SIGMT"}, {"6AGRV"}, {"6AMRV"}, {"6DOFG"}, {"6DOFM"}, {"LIFT"},
 	{"DTWGS"}, {"GSPX"}, {"GSETH"}, {"PDR"}, {"ISACT"}, {"DSHAK"}, {"GTILT"}, {"GSNAP"},

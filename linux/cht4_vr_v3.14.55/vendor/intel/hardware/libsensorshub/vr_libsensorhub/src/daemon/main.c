@@ -1345,6 +1345,7 @@ static ret_t handle_cmd(int fd, cmd_event* p_cmd, int parameter, int parameter1,
 		data_rate_calculated = recalculate_data_rate(p_sensor_state, parameter);
 		start_streaming(p_sensor_state, p_session_state,
 					data_rate_calculated, parameter1, parameter2);
+                ALOGI("%s: figo:CMD_START_STREAMING:  sensor=%d, cmd=%d", __func__, p_sensor_state->sensor_id, cmd);
 	} else if (cmd == CMD_FLUSH_STREAMING) {
 		flush_streaming(p_sensor_state, p_session_state, parameter);
 	} else if (cmd == CMD_STOP_STREAMING) {
@@ -2456,6 +2457,12 @@ static int fake_sensor_enumeration()
 			.freq_max = 400,
 			.name = "COMPS_RAW",
 		},
+               [7]={
+                       .id = 8,
+                       .freq_max = 400,
+                       .name = "RVECT",
+               },
+
 
 	};
 
