@@ -1,0 +1,10 @@
+
+arch/x86/include/asm/atomic64_64.h
+/**
+ * atomic64_set - set atomic64 variable
+ * @v: pointer to type atomic64_t
+ * @i: required value
+ *
+ * Atomically sets the value of @v to @i.
+ */
+static inline void atomic64_set(atomic64_t *v, long i)
