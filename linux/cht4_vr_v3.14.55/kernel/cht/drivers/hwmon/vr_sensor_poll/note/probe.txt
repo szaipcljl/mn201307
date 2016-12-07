@@ -1,77 +1,5 @@
 
 ================================================================================
-the file nodes:
-shell@cht_vr:/sys/class/hwmon/hwmon3 $ ls device/                              
-control
-counter
-data
-data_size
-debug
-driver
-fw_version
-hwmon
-modalias
-power
-profile_pull_control
-profile_pull_data
-status_mask
-status_trig
-trace
-uevent
-
-=>
-相关属性文件的建立:
-//hwmon/vr_sensor/psh_ia_common.c
-(1)每个hwmon 设备都会有自己独有的属性，被 SENSOR_DEVICE_ATTR 声明为struct attribute结构体。
-static SENSOR_DEVICE_ATTR(status_mask, S_IRUSR | S_IWUSR,
-                          ia_get_status_mask, ia_set_status_mask, 0);
-static SENSOR_DEVICE_ATTR(status_trig, S_IWUSR, NULL, ia_trig_get_status, 1);
-static SENSOR_DEVICE_ATTR(debug, S_IRUSR | S_IWUSR,
-                          ia_get_dbg_mask, ia_set_dbg_mask, 0);
-static SENSOR_DEVICE_ATTR(control, S_IWUSR, NULL, ia_start_control, 1);
-static SENSOR_DEVICE_ATTR(data_size, S_IRUSR, ia_read_data_size, NULL, 2);
-static SENSOR_DEVICE_ATTR(counter, S_IWUSR | S_IRUSR, ia_get_counter,
-                          ia_clear_counter, 0);
-
-
-static struct bin_attribute bin_attr = {
-	.attr = { .name = "data", .mode = S_IRUSR },
-	.read = ia_read_data
-};
-static struct bin_attribute dbg_attr = {
-	.attr = { .name = "trace", .mode = S_IRUSR },
-	.read = ia_read_debug_data
-};
-
-(2) sysfs_create_files() create sysfs attribute file
-
-static int create_sysfs_interface(struct device* dev)
-{
-    int ret_value;
-
-    /*text part*/
-	ret_value = sysfs_create_file(&dev->kobj,
-                            &sensor_dev_attr_status_mask.dev_attr.attr);
-   	ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_status_trig.dev_attr.attr);
-    ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_debug.dev_attr.attr);
-    ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_control.dev_attr.attr);
-    ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_data_size.dev_attr.attr);
-    ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_counter.dev_attr.attr);
-    ret_value += sysfs_create_file(&dev->kobj,
-                             &sensor_dev_attr_fw_version.dev_attr.attr);
-
-    /*binary part*/
-    ret_value += sysfs_create_bin_file(&dev->kobj, &bin_attr);
-    ret_value += sysfs_create_bin_file(&dev->kobj, &dbg_attr);
-
-    return ret_value;
-}
-================================================================================
 1.
 	module_spi_driver(psh_vr_driver);
 --  Helper macro for registering a SPI driver
@@ -88,6 +16,8 @@ static struct spi_driver psh_vr_driver = {
 };
 
 2. psh_probe 
+
+allocate and initialize struct psh_ext_if
 
 static int psh_probe(struct spi_device *client)
 (1) allocate memory for psh_ext_if
@@ -110,6 +40,11 @@ static int psh_probe(struct spi_device *client)
 
 (2) register w/ hwmon device
 |-- psh_if_info->hwmon_dev = hwmon_device_register(&client->dev);
+(3) initialize its members: 
+	<1> store struct psh_ext_if and struct spi_device pointer for future use
+|--	psh_if_info->pshc = client;//struct spi_device - Master side proxy for an SPI slave device
+|--	ia_data->platform_priv = psh_if_info;
+	<2> initialize some gpio pin: ctl, rst, int,
 |-- psh_if_info->gpio_psh_ctl = -1;
 |-- psh_if_info->gpio_psh_rst = GPIO_PSH_MCU_RESET;
 	rc = gpio_request(psh_if_info->gpio_psh_rst, "psh_rst");
@@ -121,7 +56,9 @@ static int psh_probe(struct spi_device *client)
 	rc = gpio_request(psh_if_info->gpio_psh_int, "psh_int");
 	gpio_export(psh_if_info->gpio_psh_int, 1);
 	gpio_direction_input(psh_if_info->gpio_psh_int);
+(4) initialize workqueue: allocate a workqueue
 |-- psh_if_info->wq = alloc_workqueue("%s", WQ_HIGHPRI, 0, "psh_work");
+(5) initialize its members about profiler
 |-- //just a profiler here
 	timestamp_init_with_name(&client->dev, 
 			&psh_if_info->io_profiler, "profile_pull");
@@ -130,6 +67,7 @@ static int psh_probe(struct spi_device *client)
     if (!IS_SUCCESS(poller_start(&client->dev,
                                  &psh_if_info->poller_worker)))
     ia_sync_timestamp_with_sensorhub_fw(psh_if_info->ia_data);
+(6) initialize work_struct and delayed_work structures
 |-- INIT_WORK(&psh_if_info->work, psh_work_func); //not used ?
 |-- INIT_DELAYED_WORK(&psh_if_info->dwork, poll_sensor_data);
 

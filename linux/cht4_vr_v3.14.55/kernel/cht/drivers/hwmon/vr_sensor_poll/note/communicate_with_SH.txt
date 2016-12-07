@@ -1,0 +1,108 @@
+driver communicate with sensorhub using SPI
+
+================================================================================
+closely related members:
+
+	struct workqueue_struct *wq;
+	struct delayed_work dwork;
+    struct mutex workitem_mutex;
+
+    int task_flag;
+
+    struct psh_ia_priv* ia_data;	
+
+
+
+in probe:
+	INIT_DELAYED_WORK(&psh_if_info->dwork, poll_sensor_data);
+	//initialize all of a work item in one go
+	initialize a work item's function pointer with poll_sensor_data
+
+
+================================================================================
+the work item's function:
+static void poll_sensor_data(struct work_struct *work)
+	(1) container_of - cast a member of a structure out to the containing structure
+	|-- struct psh_ext_if *psh_if_info = container_of(work, struct psh_ext_if, dwork.work);
+	|-- struct psh_ia_priv *ia_data = psh_if_info->ia_data;
+	(2) acquire the mutex
+	|-- mutex_lock(&psh_if_info->workitem_mutex);
+	(3) poll sensor data
+	|--	if (ia_data->is_in_debug)
+			poll_sensor_data_debug(psh_if_info);
+		else
+			poll_sensor_data_normal(psh_if_info);
+	(4) release the mutex
+	|-- mutex_unlock(&psh_if_info->workitem_mutex);
+	(5) continue polling if necessary
+	|-- if (TASK_FLAG_REQUEST_LOOP & psh_if_info->task_flag)
+			//queue work on a workqueue after delay(POLLING_HZ)
+			queue_delayed_work(psh_if_info->wq, &psh_if_info->dwork, POLLING_HZ);
+		else
+			dev_err(&psh_if_info->pshc->dev, "note: IO delay workered exited.\n");
+ 
+--------------------------------------------------------------------------------
+static void poll_sensor_data_normal(struct psh_ext_if *psh_if_info)
+	|-- struct psh_ia_priv *ia_data = psh_if_info->ia_data;
+		struct send_list_entry* lp_send_entry = NULL;
+	|-- lp_send_entry = remove_send_data_entry_from_list(psh_if_info);    
+		|-- mutex_lock(&lp_psh_if_info->send_data_list.lock);
+		|-- lp_removed_entry = NULL;
+		|--	if (!list_empty(&lp_psh_if_info->send_data_list.head)) {
+				lp_removed_entry = list_entry(lp_psh_if_info->send_data_list.head.next,
+											  struct send_list_entry, list_entry);
+				
+				list_del(lp_psh_if_info->send_data_list.head.next);
+			}
+		|-- mutex_unlock(&lp_psh_if_info->send_data_list.lock);
+	|-- if (lp_send_entry) {//will send real data
+			/*send data logic*/
+			
+			lp_send = lp_send_entry->data;
+			send_size = lp_send_entry->used_size;
+		} else {//Will end dummy data
+			lp_send = psh_if_info->zero_send_buffer;
+			send_size = sizeof(psh_if_info->zero_send_buffer);
+		}
+	|-- ret_value = do_transfer(psh_if_info, lp_send, send_size, &is_received_data);
+		/*let's run SPI!! */
+		|-- INIT_SPI_IO_CONTEXT(&psh_if_info->send_data_list.low_spi_io_context);
+			GET_TIMESTAMP_NANO(current_ts_ns);
+		|-- ret_value = do_io_transaction(psh_if_info->pshc, 
+								  &psh_if_info->send_data_list.low_spi_io_context,
+								  lp_send, send_size,
+								  psh_if_info->psh_frame, sizeof(psh_if_info->psh_frame),
+								  &received_size);
+		|-- lp_is_received_data ? *lp_is_received_data = FALSE : 0;
+			if (IS_SUCCESS(ret_value)) {
+				/*received something, let's check it*/
+				if (0 != received_size) {
+					process_received_data(psh_if_info,
+										  psh_if_info->psh_frame, received_size,
+										  current_ts_ns);
+
+					lp_is_received_data ? *lp_is_received_data = TRUE : 0;
+				}
+			}
+	|-- if (is_received_data)
+			timestamp_record_loop(&psh_if_info->io_profiler);
+	|-- /*finished, so clear resource*/
+		if (lp_send_entry)
+			kfree(lp_send_entry);
+
+
+--------------------------------------------------------------------------------
+int do_io_transaction(struct spi_device* lp_dev, 
+                      _IN_ struct spi_io_context* lp_io_context,
+                      _IN_ u8* const lp_send_buffer, int send_buffer_size,
+                      _OUT_ u8* lp_recv_buffer, int recv_buffer_size, 
+                      _OUT_ int* lp_recved_size )
+	|-- declare and initialize struct buffer:dummy_send_buffer/dummy_recv_buffer,
+		send_buffer/recv_buffer
+	|-- get send_buffer_size,and store it in the variable named total_trafster
+	|-- total_trafster = send_buffer_size;
+
+--------------------------------------------------------------------------------
+static void process_received_data(struct psh_ext_if *lp_psh_if_info,
+                                  u8* lp_buffer, int buffer_size,
+                                  u64 receive_ts_ns)
