@@ -97,10 +97,127 @@ int do_io_transaction(struct spi_device* lp_dev,
                       _IN_ u8* const lp_send_buffer, int send_buffer_size,
                       _OUT_ u8* lp_recv_buffer, int recv_buffer_size, 
                       _OUT_ int* lp_recved_size )
+{
 	|-- declare and initialize struct buffer:dummy_send_buffer/dummy_recv_buffer,
 		send_buffer/recv_buffer
 	|-- get send_buffer_size,and store it in the variable named total_trafster
-	|-- total_trafster = send_buffer_size;
+		total_trafster = send_buffer_size;
+	|-- while(total_trafster > 0) {
+			Step 1. try calc out transfer bye count
+			|-- if (0 != BUFFER_REMAIN_LENGTH(send_buffer)) {
+					lp_send_operator = &send_buffer;
+					send_buffer_is_dummy = FALSE;
+				} else {
+					lp_send_operator = &dummy_send_buffer;
+					send_buffer_is_dummy = TRUE;
+				}
+			|-- if (0 != remain_recv_count && is_recved_vaild_fh) {
+					lp_recv_operator = &recv_buffer;
+					recv_buffer_is_dummy = FALSE;
+				} else {
+					lp_recv_operator = &dummy_recv_buffer;
+					recv_buffer_is_dummy = TRUE;
+				}
+			|-- if (is_recved_vaild_fh) {
+					RESET_BUFFER(&dummy_send_buffer);
+					RESET_BUFFER(&dummy_recv_buffer);
+
+					if (send_buffer_is_dummy && recv_buffer_is_dummy)
+						one_time_transfer = 0;
+					else
+						one_time_transfer = MIN(BUFFER_REMAIN_LENGTH(*lp_send_operator),
+												BUFFER_REMAIN_LENGTH(*lp_recv_operator));
+				} else {
+				// can't reset dummy recv buffer because it contain last time received splited data
+					one_time_transfer = MIN(BUFFER_REMAIN_LENGTH(*lp_send_operator), 
+											BUFFER_REMAIN_LENGTH(dummy_recv_buffer));                      
+				}
+			Step 2. Prepare and do transfer
+			|-- ret_value = do_spi_io(lp_dev, BUFFER_PTR(*lp_send_operator), 
+                              BUFFER_PTR(*lp_recv_operator), one_time_transfer);
+				if (IS_FAILED(ret_value))
+					break;
+			|-- lp_send_operator->index += one_time_transfer;
+				lp_recv_operator->index += one_time_transfer;
+
+				remain_send_count = MAX(0, remain_send_count - one_time_transfer);
+				remain_recv_count = MAX(0, remain_recv_count - one_time_transfer);
+				total_trafster -= one_time_transfer;
+			Step 3. check if we received valid frame header
+			|-- if (!is_recved_vaild_fh) {
+					|-- is_valid_fh = verify_frame_head_and_get_payload_size(lp_recv_operator->lp_ptr, 
+												 BUFFER_USED_LENGTH(*lp_recv_operator),
+												 &total_payload_size,
+												 &contained_payload_size,
+												 &fh_start_index);
+					|--	if (IS_SUCCESS(is_valid_fh)) {
+							|-- int copy_size = contained_payload_size + SIZE_OF_FRAME_HEAD;
+								int need_recv_buffer_size = total_payload_size + SIZE_OF_FRAME_HEAD;
+								/*received new frame head!*/
+								remain_recv_count = total_payload_size - contained_payload_size;
+								/*received frame head, so we update total transfer count here*/
+								total_trafster = MAX(remain_recv_count, remain_send_count);
+							|-- copy all valid data to actual receive buffer head
+								if (need_recv_buffer_size > BUFFER_REMAIN_LENGTH(recv_buffer)) {
+									ret_value = ER_NO_ENOUGH_RECV_BUFFER;
+									break;
+								}
+								memcpy(BUFFER_PTR(recv_buffer), 
+									   lp_recv_operator->lp_ptr + fh_start_index, copy_size);
+							|-- //save total received size here to support receive mulit-frame
+								total_receive_size += need_recv_buffer_size;
+
+								recv_buffer.index += copy_size;
+								recv_buffer.length = total_receive_size;
+							|-- is_recved_vaild_fh = TRUE;}
+					|-- else {
+							|-- remain_recv_count = 0;
+							|-- //copy SIZE_OF_FRAME_HEAD bytes from tail to head
+								memcpy(dummy_recv_buffer.lp_ptr,
+										BUFFER_PTR_FROM_USED_TAIL(*lp_recv_operator, SIZE_OF_FRAME_HEAD),
+										SIZE_OF_FRAME_HEAD);
+								dummy_recv_buffer.index = SIZE_OF_FRAME_HEAD;
+							|-- //check if the last SIZE_OF_FRAME_HEAD bytes contained frame head prefix,
+								//we will read more data if it contained, to resovle slice case
+								is_recved_hf_prefix = verify_frame_head_prefix(BUFFER_PTR_FROM_USED_TAIL(*lp_recv_operator, SIZE_OF_FRAME_HEAD),
+                                                               SIZE_OF_FRAME_HEAD);
+								//check if the received data included frame head prefix 0x53
+								if (IS_SUCCESS(is_recved_hf_prefix))
+									total_trafster += BUFFER_REMAIN_LENGTH(dummy_recv_buffer);
+							|-- is_recved_vaild_fh = FALSE; }
+			|-- } else {
+              //if we already received one frame, but still has some data need
+              //send, we need change is_recved_vaild_fh = FALSE to prepare receive
+              //the next frame
+				if (remain_send_count > 0 && 0 == remain_recv_count) {
+					is_recved_vaild_fh = FALSE;
+					RESET_BUFFER(&dummy_recv_buffer);
+				}
+			}
+		}
+	|-- if (IS_FAILED(ret_value)) // dump recvied buffer
+			dump_buffer(lp_recv_operator->lp_ptr, BUFFER_USED_LENGTH(*lp_recv_operator));
+	|-- lp_recved_size ? *lp_recved_size = BUFFER_USED_LENGTH(recv_buffer) : 0;
+		return ret_value;
+}
+-----------------------------------------
+static int do_spi_io(struct spi_device* lp_dev, u8* lp_send_buffer, u8* lp_recv_buffer, 
+                     int buffer_size)
+{
+}
+-----------------------------------------
+static int verify_frame_head_and_get_payload_size(u8* lp_buffer, int buffer_size, 
+                                                  _OUT_ int* lp_total_payload_size,
+                                                  _OUT_ int* lp_contained_payload_size,
+                                                  _OUT_ int* lp_frame_head_start_index)
+{
+}
+-----------------------------------------
+static int verify_frame_head_prefix(u8* const lp_buffer, int buffer_size)
+{
+}
+
+
 
 --------------------------------------------------------------------------------
 static void process_received_data(struct psh_ext_if *lp_psh_if_info,
