@@ -1,0 +1,13 @@
+
+driver:
+
+device:
+	arch/x86/platform/intel-mid/device_libs/platform_vr_spi.c
+
+master:
+	drivers/spi/spi-pxa2xx.c
+
+On Intel Lynxpoint (the PCH used with Haswell) we have two SPI controllers
+that reside in the Low Power Subsystem of the PCH. The hardware is mostly
+compliant with PXA2xx SPI controller except that there are few additional
+registers. 
