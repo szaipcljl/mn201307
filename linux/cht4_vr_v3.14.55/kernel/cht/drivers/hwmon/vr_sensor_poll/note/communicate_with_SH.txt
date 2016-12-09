@@ -204,7 +204,35 @@ int do_io_transaction(struct spi_device* lp_dev,
 static int do_spi_io(struct spi_device* lp_dev, u8* lp_send_buffer, u8* lp_recv_buffer, 
                      int buffer_size)
 {
+|-- struct spi_message msg;//one multi-segment SPI transaction
+    struct spi_transfer xfer = //a read/write buffer pair
+        {
+            .len = buffer_size, 
+            .tx_buf = (void*)lp_send_buffer,
+            .rx_buf = (void*)lp_recv_buffer,
+            .speed_hz = 1000000,
+        };
+
+|-- spi_message_init(&msg);//initialize spi_message's transfer member(struct list_head),
+    spi_message_add_tail(&xfer, &msg);//add a new entry
+	spi_sync(lp_dev, &msg);//blocking/synchronous SPI data transfers
 }
+
+                                   struct list_head
+                                  +------------------------+
+                                  | struct list_head *next |              
+                                  +------------------------|     
+                                  | struct list_head *prev |               
+                                  +------------------------+
+                                                     
+
+
+                                   struct spi_message
+                                  +---------------------------+  +-prev---> 
+                                  | struct list_head transfer +--+               
+                                  +---------------------------+  +-next---> 
+                                  |                           |
+
 -----------------------------------------
 static int verify_frame_head_and_get_payload_size(u8* lp_buffer, int buffer_size, 
                                                   _OUT_ int* lp_total_payload_size,

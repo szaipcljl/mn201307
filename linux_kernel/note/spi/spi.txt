@@ -1,0 +1,33 @@
+spi.c
+
+/*
+ * spi_new_device - instantiate one new SPI device
+ * @master: Controller to which device is connected
+ * @chip: Describes the SPI device
+ * Context: can sleep
+ */
+struct spi_device *spi_new_device(struct spi_master *master,
+				  struct spi_board_info *chip)
+(1) spi_alloc_device - Allocate a new SPI device
+(2) use struct spi_board_info to initialize the remaining members of struct spi_device 
+
+--------------------------------------------------------------------------------
+slave device:
+how to get a spi device?
+arch/x86/platform/intel-mid/device_libs/platform_vr_spi.c
+define and initialize a struct spi_board_info, and then
+call spi_register_board_info()
+
+st_sensor_register_spi_dev() //platform_vr_spi.c
+|-- spi_register_board_info()
+	|-- spi_match_master_to_boardinfo()
+			|-- spi_new_device() //master->bus_num == bi->bus_num
+
+
+--------------------------------------------------------------------------------
+controller(master device):
+pxa2xx_spi_probe() //spi-pxa2xx.c
+|-- devm_spi_register_master //register managed SPI master controller
+	|-- spi_register_master() //register SPI master controller
+		|-- spi_match_master_to_boardinfo()
+				|-- spi_new_device() //master->bus_num == bi->bus_num

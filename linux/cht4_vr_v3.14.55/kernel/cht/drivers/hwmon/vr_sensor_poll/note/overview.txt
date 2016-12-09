@@ -11,3 +11,15 @@ On Intel Lynxpoint (the PCH used with Haswell) we have two SPI controllers
 that reside in the Low Power Subsystem of the PCH. The hardware is mostly
 compliant with PXA2xx SPI controller except that there are few additional
 registers. 
+
+Lynx Point
+Intel 8系芯片组的代号。(Intel’s Lynx Point 8-Series chipset models)
+代号为"Lynx Point"的Haswell配套主板芯片组
+因为现在的芯片组已经没有南北桥的概念了，芯片组中只有一个PCH芯片，所以就以
+PCH的代号来代表芯片组。
+
+现在的芯片组已经不能叫芯片组了，Intel的正式称呼是平台控制器(PCH)，只负责一些输入输出而已，相当于简化版的传统南桥。
+Intel这两年仍然会采用处理器＋芯片组的平台设计
+
+Lynx Point-LP
+Intel 8系芯片组下的一款节能型产品，低电压，低功耗。LP即Low-Power的意思
