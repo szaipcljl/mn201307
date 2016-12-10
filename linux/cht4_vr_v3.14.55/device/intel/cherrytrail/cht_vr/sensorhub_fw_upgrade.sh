@@ -66,11 +66,9 @@ do_upgrade $calidata $cali_start $cali_len
 let ret=$ret+$?
 echo "ret $ret"
 
-if [ ! -f "/data/sensor_calibrate_status" ];then
 	echo "store cali data" >> /data/sensorhub_log
 	sleep 1
 	stm32flash -a 0x39 -R -i 360,-341,341:-360,-341,341 -r	/data/sensor_calibrate_status -S $cali_start:$cali_len /dev/i2c-3
-fi
 
 echo "try to upgrade $fw_cp" >> /data/sensorhub_log
 sleep 1
