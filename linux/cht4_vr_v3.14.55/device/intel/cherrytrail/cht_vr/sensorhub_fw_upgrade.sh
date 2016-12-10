@@ -31,12 +31,7 @@ function do_upgrade {
         echo "$1 not exist" >> /data/sensorhub_log
 		return 1
     else
-        if [ $1 == $fw_cp ];then
-			check_fw_version
-			if [ $? -eq 1 ];then
-				echo "same fw version, exit" >> /data/sensorhub_log
-				return 1
-			fi
+        if [ $1 == $fw_cp ];then			
        		stm32flash -a 0x39 -R -i 360,-341,341:-360,-341,341 -w $1 -S $2:$3 /dev/i2c-3
 			sleep 1
 			echo "new fw version has been stored at /data/sh_fw_version" >> /data/sensorhub_log
@@ -85,6 +80,6 @@ echo "ret $ret"
 
 if [ $ret -ne 2 ];then
     echo "trigger reboot" >> /data/sensorhub_log
-	sleep 2
+	sleep 5
 	echo "b" > /proc/sysrq-trigger
 fi
