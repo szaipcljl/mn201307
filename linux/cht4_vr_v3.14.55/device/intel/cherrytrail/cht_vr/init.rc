@@ -516,6 +516,12 @@ service sensorhubd /system/bin/sensorhubd
     group root
     socket sensorhubd stream 600 system system
 
+service shfwupgrade /system/bin/sh /system/bin/sensorhub_fw_upgrade.sh
+    class late_start
+    user root
+    group root
+    oneshot
+
 on boot
     insmod ${ro.boot.moduleslocation}/heci.ko
     insmod ${ro.boot.moduleslocation}/heci-ish.ko

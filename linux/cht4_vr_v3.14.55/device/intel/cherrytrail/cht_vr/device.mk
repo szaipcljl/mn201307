@@ -34,8 +34,12 @@ PRODUCT_COPY_FILES += $(LOCAL_PATH)/init.atomisp.sh:system/etc/init.atomisp.sh
 
 PRODUCT_COPY_FILES += vendor/intel/hardware/ish-sensors/vr_sensors/sensor_hal_config_default.xml:system/etc/sensor_hal_config_default.xml
 
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/sensorhub_fw_upgrade.sh:system/bin/sensorhub_fw_upgrade.sh
+PRODUCT_COPY_FILES += vendor/intel/fw/sensorhub/stm32flash:system/bin/stm32flash
+PRODUCT_COPY_FILES += vendor/intel/fw/sensorhub/sensorhub.bin:system/etc/sensorhub.bin
 
 PRODUCT_COPY_FILES += device/intel/cherrytrail/cht_vr/sh_version.sh:system/bin/sh_version.sh
+
 # Audio package
 PRODUCT_PACKAGES += meta.package.audio
 
