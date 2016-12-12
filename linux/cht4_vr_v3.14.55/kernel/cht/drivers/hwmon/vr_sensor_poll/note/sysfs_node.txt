@@ -72,3 +72,154 @@ static int create_sysfs_interface(struct device* dev)
 
     return ret_value;
 }
+================================================================================
+control:
+
+ssize_t ia_start_control(struct device *dev,
+			struct device_attribute *attr,
+			const char *str, size_t count)
+{
+|-- struct psh_ia_priv *psh_ia_data =
+			(struct psh_ia_priv *)dev_get_drvdata(dev);
+|-- struct ia_cmd cmd_user = { 0 };
+	u8 *ptr = (u8 *)&cmd_user;
+	char *s;
+	long val;
+	int token = 0;
+	int ret;
+|-- while (*str && (token < sizeof(cmd_user))) {
+		val = trans_strtol(str, &s, 0);
+		if (str == s) {
+			str++;
+			continue;
+		}
+		str = s;
+		*ptr++ = (u8)val; //cmd_user
+		token++;
+	}
+
+|-- ret = ia_send_cmd(psh_ia_data, &cmd_user, token, SEND_ASYNC);
+}
+
+
+struct ia_cmd {
+	u8 tran_id;
+	u8 cmd_id;
+	u8 sensor_id;
+	char param[CMD_PARAM_MAX_SIZE];
+} __packed;
+
+                    ia_cmd(four bytes)                                  
+                    +--------------------------------+
+                    | u8 tran_id;                    |
+                    +--------------------------------+
+                    | u8 cmd_id;                     |
+                    +--------------------------------+
+                    | u8 sensor_id;                  |
+                    +--------------------------------+
+                    | char param[CMD_PARAM_MAX_SIZE];|
+                    +--------------------------------+
+
+--------------------------------------------------------------------------------
+int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
+                struct ia_cmd *cmd, int len,
+                int mode)
+{
+|-- mutex_lock(&psh_ia_data->cmd_mutex);
+|-- if (cmd->cmd_id == CMD_RESET) {
+		cmd->tran_id = 0;
+		ia_circ_reset_off(&psh_ia_data->circ);
+	}
+|-- if (CMD_CFG_STREAM == cmd->cmd_id) {
+        if (cmd->sensor_id < 256)
+            g_stream_sensor_array[cmd->sensor_id] = FALSE;
+    }
+|-- cmd_ack.cmd_id = cmd->cmd_id;
+	psh_ia_data->cmd_ack = &cmd_ack;
+
+	psh_ia_data->cmd_in_progress = cmd->cmd_id;
+|-- if (likely(SEND_ASYNC == mode)) {
+        ret = process_send_cmd(psh_ia_data, PSH2IA_CHANNEL0,
+                               cmd, len);
+    } else {
+        ret = process_send_cmd_sync(psh_ia_data, PSH2IA_CHANNEL0,
+                                    cmd, len);
+    }
+|-- psh_ia_data->cmd_in_progress = CMD_INVALID;
+|-- if (ret)
+		goto f_out;
+|-- f_out:
+		psh_ia_data->cmd_ack = NULL;
+		mutex_unlock(&psh_ia_data->cmd_mutex);
+		return ret;
+
+}
+----------------------------------------
+/* The len is actual cmd size include parameter sizes*/
+int process_send_cmd(struct psh_ia_priv *ia_data,
+			int ch, struct ia_cmd *cmd, int len)
+{
+|-- struct psh_ext_if *psh_if_info =
+			(struct psh_ext_if *)ia_data->platform_priv;
+    struct send_list_entry* lp_new_entry = NULL;
+
+|-- lp_new_entry = build_send_list_entry(cmd, len);
+|-- pm_runtime_get_sync(&psh_if_info->pshc->dev);
+|-- insert_send_data_entry_to_list(psh_if_info, lp_new_entry);
+|-- pm_runtime_mark_last_busy(&psh_if_info->pshc->dev);
+	pm_runtime_put_autosuspend(&psh_if_info->pshc->dev);
+
+}
+--------------------
+struct send_list_entry*  build_send_list_entry(void* lp_buffer, int buffer_size)
+{
+|-- struct send_list_entry* lp_new_entry = NULL;
+    int total_size = buffer_size + SIZE_OF_FRAME_HEAD;
+
+    if (!lp_buffer || total_size  > MAX_SEND_DATA_SIZE)
+        return NULL;
+
+|-- lp_new_entry = kzalloc(sizeof(struct send_list_entry), GFP_KERNEL);
+|-- if (lp_new_entry) {
+        build_transfer_buffer(lp_new_entry->data, lp_buffer, buffer_size);
+
+        lp_new_entry->used_size = total_size;
+        lp_new_entry->debug_index = 0;
+    }
+
+}
+----------
+static void build_transfer_buffer(void* lp_new_package_buffer, 
+                                  void* lp_buffer, int buffer_size)
+{
+|-- struct frame_head* lp_fh = (struct frame_head*)lp_new_package_buffer;
+    
+|-- INIT_FRAME_HEAD(lp_fh, buffer_size);
+    
+|-- memcpy(lp_fh + 1, lp_buffer, buffer_size);
+
+}
+
+--------------------
+void insert_send_data_entry_to_list(struct psh_ext_if* lp_psh_if_info,
+                                    struct send_list_entry* lp_new_entry)
+{
+|-- mutex_lock(&lp_psh_if_info->send_data_list.lock);
+
+|-- //add new to tail of the list
+    list_add(&lp_new_entry->list_entry, lp_psh_if_info->send_data_list.head.prev);
+
+|-- mutex_unlock(&lp_psh_if_info->send_data_list.lock);
+}
+
+
+================================================================================
+data_size:
+ssize_t ia_read_data_size(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+|--	struct psh_ia_priv *psh_ia_data = (struct psh_ia_priv *)dev_get_drvdata(dev);
+|-- int avail = CIRC_CNT(psh_ia_data->circ.head,
+				psh_ia_data->circ.tail, CIRC_SIZE);
+|-- return snprintf(buf, PAGE_SIZE, "%d\n", avail);
+}
