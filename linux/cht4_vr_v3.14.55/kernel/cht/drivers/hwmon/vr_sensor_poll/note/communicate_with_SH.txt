@@ -1,5 +1,7 @@
 driver communicate with sensorhub using SPI
 
+psh_cht_spi.c
+psh_cht_spi.h
 ================================================================================
 closely related members:
 

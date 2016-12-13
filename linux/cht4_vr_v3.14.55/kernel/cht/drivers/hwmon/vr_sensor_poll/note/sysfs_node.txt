@@ -1,4 +1,6 @@
 sensorhubd communicate with driver use sysfs
+psh_ia_common.c
+psh_ia_common.h
 ================================================================================
 [1] the file nodes:
 shell@cht_vr:/sys/class/hwmon/hwmon3 $ ls device/                              
@@ -102,23 +104,56 @@ ssize_t ia_start_control(struct device *dev,
 }
 
 
-struct ia_cmd {
-	u8 tran_id;
-	u8 cmd_id;
-	u8 sensor_id;
-	char param[CMD_PARAM_MAX_SIZE];
-} __packed;
 
-                    ia_cmd(four bytes)                                  
-                    +--------------------------------+
-                    | u8 tran_id;                    |
-                    +--------------------------------+
-                    | u8 cmd_id;                     |
-                    +--------------------------------+
-                    | u8 sensor_id;                  |
-                    +--------------------------------+
-                    | char param[CMD_PARAM_MAX_SIZE];|
-                    +--------------------------------+
+(1)parse the incoming --------> ia_cmd(four bytes)    ----------------+         
+	  parameter str             +--------------------------------+    |
+								| u8 tran_id;                    |    |
+								+--------------------------------+    |
+								| u8 cmd_id;                     |    |
+								+--------------------------------+    |
+								| u8 sensor_id;                  |    |
+								+--------------------------------+    |
+								| char param[CMD_PARAM_MAX_SIZE];|    |
+								+--------------------------------+    |
+																	  |
+																	  |
+																	  |
+				  +------------frame_ia_cmd                           |
+				  |           +-----------------------+               |
+				  |       +---+-struct frame_head fh; |               |store ia_cmd
+				  |       |   | struct ia_cmd data; <-+---------------+
+				  |       |   +-----------------------+ 
+				  |       |                           
+				  |       |
+				  |       +--> frame_head : initialize it with macro INIT_FRAME_HEAD
+				  |           +-------------+
+				  |           | u16 sign;   |
+				  |           | u16 length; |
+				  |           +-------------+
+				  |
+				  |
+				  |         send_list_entry --------------------------+
+				  |       +--------------------------------+          |
+				  |       | struct list_head list_entry;   |          |
+				  |       |                                |          |
+				  |       | #define MAX_SEND_DATA_SIZE 256 |          |
+				  +-------+>u8 data[MAX_SEND_DATA_SIZE];   |          |
+						  | int used_size;                 |          |
+						  | int debug_index;               |          |
+						  +--------------------------------+          |
+                                                                      v
+                                                            add new to tail of the list 
+                                                             psh_ext_if
+                                                           +----------------------------------+
+                                                           | ...                              |
+                                                           | struct send_list send_data_list; |
+                                                           | ...                              |
+                                                           +----------------------------------+
+
+
+
+
+
 
 --------------------------------------------------------------------------------
 int ia_send_cmd(struct psh_ia_priv *psh_ia_data,
@@ -220,6 +255,85 @@ ssize_t ia_read_data_size(struct device *dev,
 {
 |--	struct psh_ia_priv *psh_ia_data = (struct psh_ia_priv *)dev_get_drvdata(dev);
 |-- int avail = CIRC_CNT(psh_ia_data->circ.head,
-				psh_ia_data->circ.tail, CIRC_SIZE);
+				psh_ia_data->circ.tail, CIRC_SIZE); //Return count in buffer
 |-- return snprintf(buf, PAGE_SIZE, "%d\n", avail);
 }
+
+get count in circ_buf, and output it to parameter buf
+================================================================================
+
+
+            struct psh_ext_if
+           +-----------------------------+
+           | ...                         |
+           | struct psh_ia_priv* ia_data;+--+
+           |                             |  |
+           |                             |  |
+           +-----------------------------+  |
+                                            |
+                                            |
+                                            v
+                                     psh_ia_priv
+                                     +---------------------------------+
+                                     | struct loop_buffer *lbuf;       |
+                                     |                                 |
+                            data <---+-struct circ_buf circ, circ_dbg; |
+                                     |                                 |
+                                     | ...                             |
+                                     |                                 |
+                                     | struct resp_cmd_ack *cmd_ack;   |
+                                     | ...                             |
+                                     | struct list_head sensor_list;   |
+                                     | ...                             |
+                                     +---------------------------------+
+
+
+================================================================================
+
+
+
+
+             psh_ext_if
+            +----------------------------------+
+            |...                               |
+      +-----+-struct send_list send_data_list; |
+      |     |...                               |
+      |     +----------------------------------+
+      |
+      |
+	  +---> send_list
+           +-------------------------------------------+    
+           | struct mutex lock;                        |
+           |                                           |
+           | /*each one is a send_list_entry*/         |
+      +----+-struct list_head head;                    |
+      |    |                                           |
+      |    | struct spi_io_context low_spi_io_context; |
+      |    +-------------------------------------------+
+      |
+      |
+      +--> send_list_entry
+           +------------------------------+
+           | struct list_head list_entry; |
+           |                              |
+           | u8 data[MAX_SEND_DATA_SIZE]; |
+           | int used_size;               |
+           | int debug_index;             |
+           +------------------------------+
+
+================================================================================
+data:
+ssize_t ia_read_data(struct file *file, struct kobject *kobj,
+			struct bin_attribute *attr, char *buf,
+			loff_t off, size_t count)
+{
+	struct device *dev = container_of(kobj, struct device, kobj);
+	struct psh_ia_priv *psh_ia_data =
+			(struct psh_ia_priv *)dev_get_drvdata(dev);
+
+	return ia_circ_get_data(&psh_ia_data->circ, buf, count);
+}
+--------------------------------------------------------------------------------
+	copy to buf from psh_ia_data->circ
+int ia_circ_get_data(struct circ_buf *circ, char *buf, u32 size)
+
