@@ -157,6 +157,221 @@ char platform;
 
 static char flush_completion_frame[MAX_UNIT_SIZE];
 
+/////////////////////////////
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
+#include <errno.h>
+#include <sys/epoll.h>
+
+#define MAX_EVENTS 64
+
+pthread_t socket2w;
+
+static int socket2w_fd = -1;
+static int listenfd ;
+static bool has_disconnect = false;
+static int old_connfd = -1;
+
+static char *welcome = "welcome to connect sensor service";
+static char *socket2w_buff[100];
+//#define WITH_SENSOR_DATA_MAGIC 1
+#define package_head_magic 0xabcdcbadabcdcbad
+
+static int init_socket2w(void)
+{
+	struct sockaddr_in servaddr;
+	int n;
+
+	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+		ALOGE("%s: figo:init socket fail", __func__);
+		return -1;
+	}
+
+	memset(&servaddr, 0, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servaddr.sin_port = htons(9000);
+
+	    n = 1;
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n));
+
+	if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == -1) {
+		ALOGE("%s: figo:bind sock error\n", __func__);
+		return -1;
+	}
+
+	if (listen(listenfd, 10) == -1) {
+		ALOGE("%s:figo:listen sock error\n", __func__);
+		return -1;
+	}
+
+	ALOGE("%s:figo:listen sock ok\n", __func__);
+	return 0;
+}
+
+static int send_data_to_pc(char *data, int size)
+{
+	int len;
+	int package_size = size;
+	char * package = data;
+	if (socket2w_fd < 0)
+		return -1;
+
+#ifdef WITH_SENSOR_DATA_MAGIC
+	memset(socket2w_buff, 0, size+8);
+	*(int64_t *)socket2w_buff = package_head_magic;
+	memcpy((char *)socket2w_buff + 8, data, size);
+	package_size = size + 8;
+	package = socket2w_buff;	
+#endif
+	
+	if ((len = send(socket2w_fd,  package, package_size, 0)) < 0) {
+		ALOGE("figo:send data error, need clients re-connect to service, fd=%d\n", socket2w_fd);
+		has_disconnect = true;
+		old_connfd = socket2w_fd;
+		socket2w_fd = -1;
+		return -1;
+	}
+
+	return len;
+}
+
+static int recv_data_from_pc(void *data, int size)
+{
+	int len =0;
+
+	if (socket2w_fd < 0) {
+		//ALOGE("%s: socket disconnect\n", __func__);
+		return -1;
+	}
+	
+	if (len = recv(socket2w_fd, data, size, 0) < 0) {
+		ALOGE("recv data error, need clients re-connect to service\n");
+		has_disconnect = true;
+		old_connfd = socket2w_fd;
+		socket2w_fd = -1;
+		return -1;
+	}
+
+	return len;
+}
+
+int accept_client_connect()
+{
+	int sin_size;
+	struct sockaddr_in c_add;
+
+	sin_size = sizeof(struct sockaddr_in);
+
+	socket2w_fd = accept(listenfd, (struct sockaddr *)(&c_add), &sin_size);
+	if(-1 == socket2w_fd)
+	{
+		ALOGE("figo:accept fail !\r\n");
+		return -1;
+	}
+	ALOGE("figo:accept ok! Server start get connect from %#x : %#x, fd=%d\n",
+			ntohl(c_add.sin_addr.s_addr),ntohs(c_add.sin_port), socket2w_fd);
+
+	//send_data_to_pc(welcome, strlen(welcome)+1);
+	
+	return 0;
+}
+
+#if 1
+bool socket_to_windows_thread()
+{
+	struct epoll_event ev, events[MAX_EVENTS];
+	int nfds, epfd, fd, i;
+	int len;
+
+	init_socket2w();
+
+	epfd = epoll_create(MAX_EVENTS);
+	 ev.events = EPOLLIN | EPOLLOUT;
+    ev.data.fd = listenfd;
+
+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &ev) == -1) {
+		ALOGE("%s:figo:add listenfd %d error\n", __func__, listenfd);
+		return 0;
+	}
+
+	while(1){
+retry:
+		nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
+
+		for (i = 0; i < nfds; i++) {
+            		fd = events[i].data.fd;
+			if (fd == listenfd) {
+				if (has_disconnect && old_connfd >0) {
+					ALOGE("%s:figo:del fd %d due to disconnect\n", __func__, old_connfd);
+					epoll_ctl(epfd, EPOLL_CTL_DEL, old_connfd, &ev);
+					old_connfd = 0;
+					has_disconnect = false;
+				}
+				/*accept client connect*/
+					if (accept_client_connect())
+			                        goto retry;
+
+				/*add this to epoll fds*/
+				ev.events = EPOLLIN | EPOLLOUT;
+                          ev.data.fd = socket2w_fd;
+
+					if (epoll_ctl(epfd, EPOLL_CTL_ADD, socket2w_fd, &ev) == -1) {
+		        ALOGE("%s:figo:add fd %d error\n", __func__, socket2w_fd);
+		            goto retry;
+	                    }
+			}
+            			if (events[i].events & EPOLLIN) {
+							; //TBD
+            }else if (events[i].events & EPOLLOUT) {
+           //len =  send_data_to_pc("welcome", 24);
+		//   ALOGE("figo:send data len=%d\n", len);
+		//   sleep(1);
+            		;//TBD
+            	}
+        }
+	}
+
+	return true;
+}
+
+#else
+bool socket_to_windows_thread()
+{
+	int len; 
+	char buf[24];
+	*(int *)buf = 0x55667788;
+	init_socket2w();
+
+	while (1) {
+		if (accept_client_connect())
+			continue;
+
+		len = send_data_to_pc(buf, 24);
+		ALOGE("send data len=%d\n", len);
+	}
+	
+	return true;
+}
+#endif
+
+
+static int init_socket2w_thread()
+{
+	pthread_create(&socket2w,NULL,socket_to_windows_thread, NULL);
+
+	return 0;
+}
+
+static void join_socket2w_thread()
+{
+	pthread_join(socket2w,NULL);
+}
+//////////////////////////////////////////
+
+
+
 /* Daemonize the sensorhubd */
 static void daemonize()
 {
@@ -1964,6 +2179,14 @@ static void dispatch_streaming(struct cmd_resp *p_cmd_resp)
 
 	send_data_to_clients(p_sensor_state, p_cmd_resp->buf, p_cmd_resp->data_len);
 
+		/*dispatch rotation_vector_data to Windows PC*/
+	if (sensor_id == 8) {
+		struct rotation_vector_data * data;
+		send_data_to_pc(p_cmd_resp->buf, p_cmd_resp->data_len);
+		//data = (struct rotation_vector_data *)p_cmd_resp->buf;
+		//ALOGI("figo: timestamp=%ld, x=%d, y=%d, z=%d, w=%d\n", data->ts, data->x, data->y, data->z, data->w);
+	}
+
 	return;
 }
 
@@ -2638,6 +2861,8 @@ int main(int argc, char **argv)
     /* Ignore SIGPIPE */
     signal(SIGPIPE, SIG_IGN);
 
+	init_socket2w_thread();
+
 	while (1) {
 		reset_sensorhub();
 
@@ -2666,5 +2891,6 @@ int main(int argc, char **argv)
 //		reset_client_sessions();
 		start_sensorhubd();
 	}
+	join_socket2w_thread();
 	return 0;
 }
