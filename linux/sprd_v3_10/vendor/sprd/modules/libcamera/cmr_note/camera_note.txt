@@ -1,0 +1,154 @@
+camera
+
+================================================================================
+
+
+
+              app
+      ---------------------------------------
+                          java
+             framework  --------- jni
+                          cpp
+      ---------------------------------------
+                          hal3
+             hal        ---------
+                          oem
+      ---------------------------------------
+             kernel
+
+
+
+open camera:    init
+close camera
+
+(1) preview
+(2) capture
+(3) video
+
+
+================================================================================
+(1) preview
+                                                                                                                                     
+    framework                      |   hal3               oem         |        kernel                                               |
+                 mem addr          |                                  |                                                             |
+    request  ---> buffer addr      |   --->              --->         |                                                             |
+   (stream)                        |                                  |  +---------------------+              +---------------+     |
+                                   |                                  |  |  Dcam               |              |  sensor       |     |
+                                   |                                  |  |                     |     mipi     |               |     |
+                                   |                                  |  |                     |  <---------- |  full size    |     |
+                                   |                                  |  |                     |     raw data |  half size    |     |
+                                   |                                  |  |    soft irq         |              |               |     |
+                                   |                                  |  +------+--------------+              +---------------+     |
+                                   |                                  |         |                                                   |
+                                   |                   while(1)       |         |YUV                                                |
+               hand back           |                                  |  queue  |                                                   |
+                  <----------      |    <---            grab    <-----+---------+                                                   |
+                                   | +-------------+                  |                                                             |
+                                   | |buffer       |                  |                                                             |
+                                   | |+ other info |                  |                                                             |
+                                   | +-------------+                  |                                                             |
+                                                
+(3) video
+    preview + save to the memory card(or internal memory)                                                
+
+    request                        |                                  |        kernel                                               |
+    (another stream)--> buffer addr|   --->             --->          |                                                             |
+                        buffer addr|   --->             --->          |                                                             |
+                                   |                                  |  +---------------------+              +---------------+     |
+                                   |                                  |  |  Dcam               |              |  sensor       |     |
+                                   |                                  |  |                     |     mipi     |               |     |
+                                   |                                  |  |                     |  <---------- |  full size    |     |
+                                   |                                  |  |                     |     raw data |  half size    |     |
+                                   |                                  |  |    soft irq         |              |               |     |
+                                   |                                  |  +------+--------------+              +---------------+     |
+                                   |                   while(1)       |         |                                                   |
+                                   |                                  |         |YUV                                                |
+               preview   <---------+--buffer            grab   <------+--queue--+                                                   |
+  save to memory card    <---------+--buffer                   <------+---------+                                                   |
+                                   |                                  |  queue  |                                                   |
+                                   |                                  |         |                                                   |
+                                   |                                  |         |                                                   |
+                                   |                                  |         |                                                   |
+
+(2) capture
+    close preview -- open capture -- open preview
+                                   |                                  |
+    request                        |  channel2                        |
+    (stream)                       |  channel2                        |
+        |                          |                                  |   +--------------------------------------+
+        v                          |                                  |   |  Dcam (hardware)                     |
+     takepicture                   |                                  |   |                                      |
+                                   |                                  |   |                                      |
+                                   |                                  |   |                                      |
+                                   |                                  |   |                                      |
+                                   |                                  |   |  path0: raw data                     |
+                                   |                                  |   |                                      |
+                                   |                                  |   |  path1: preview                      |
+                                   |              jpeg                |   |                                      |
+    save to the memory card <------+----         <------ encoding <---+---+--path2: capture                      |
+                                   |                                  |   |                                      |
+                                   |                                  |   |                                      |
+                                   |                                  |   +--------------------------------------+
+
+
+
+================================================================================
+
+node:
+	mediaserver
+
+
+================================================================================
+(1) zsl(zero shutter lag)
+	preview --> path1 --> framework
+	capture --> path2 --> drop data in hal when no capture button pressed
+                 |                  jpeg
+                 +------> encoding -----> framework ---> save
+				 zsl queue
+				 timestamp
+
+(2) auto focus                                    +--------------+
+                      +--------------+            | sensor       |
+                      |              |            |              |
+            --------->|   ISP        | ---------> +--------------+
+                      |              |            | motor        |
+                      +--------------+            |              |
+                                                  |              |
+                                                  +--------------+
+
+(3) flash
+
+================================================================================
+
+(1) 3A problem determination, transfer to sprd
+    auto focus
+    auto white balance: black frame
+    auto exposure
+
+(2) dont't update the picture when recording a video
+ 录像定屏
+    a.determine
+        request ?
+        Dcam    ?
+    b.Dcam queue 
+    c. request  --> framework
+    d. request  --> buffer addr failed(graphic)
+     
+slot1 -+--> buffer
+       +--> A -- B?
+slot2 -+--> buffer
+       +--> A -- B? 
+slot3 -+--> buffer
+       +--> A -- B?
+slot4 -+--> buffer
+       +--> A -- B?
+        
+    
+
+
+
+
+
+
+
+
