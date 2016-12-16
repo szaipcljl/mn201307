@@ -11,7 +11,6 @@ extern struct my_fifo mag_fifo;
 #define FIFO_SIZE (1 << 4)
 
 extern int apk_exit;
-extern int agm_data[9];
 extern int enable_finish;
 #ifdef DEBUG_USE_ADB
 extern int print_acc_log;
@@ -67,9 +66,6 @@ bool SensorThread::threadLoop()
 				data_loop_acc.snr_time.acc_time = event[i].timestamp;
 				myfifo_in(&acc_fifo, (void*)&data_loop_acc, 1);
 
-				agm_data[0] = data_loop_acc.data.accelMilliG.accelX;
-				agm_data[1] = data_loop_acc.data.accelMilliG.accelY;
-				agm_data[2] = data_loop_acc.data.accelMilliG.accelZ;
 
 #ifdef DEBUG_USE_ADB
 				if (print_acc_log)
@@ -95,9 +91,6 @@ bool SensorThread::threadLoop()
 				data_loop_gyr.snr_time.gyr_time = event[i].timestamp;
 				myfifo_in(&gyr_fifo, (void*)&data_loop_gyr, 1);
 
-				agm_data[3] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX;
-				agm_data[4] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY;
-				agm_data[5] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ;
 
 #ifdef DEBUG_USE_ADB
 				if (!calc_gyr_integral)
@@ -166,9 +159,6 @@ bool SensorThread::threadLoop()
 				data_loop_mag.snr_time.mag_time = event[i].timestamp;
 				myfifo_in(&mag_fifo, (void *)&data_loop_mag, 1);
 
-				agm_data[6] = data_loop_mag.data.magFieldMilliGauss.magFieldX;
-				agm_data[7] = data_loop_mag.data.magFieldMilliGauss.magFieldY;
-				agm_data[8] = data_loop_mag.data.magFieldMilliGauss.magFieldZ;
 
 #ifdef DEBUG_USE_ADB
 				if (print_mag_log)

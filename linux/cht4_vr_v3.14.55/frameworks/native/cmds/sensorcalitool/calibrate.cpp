@@ -253,9 +253,15 @@ int WriteDataToFileInTxt()
 	return 0;
 }
 
+#define ANGULAR_VELOCITY_THRESHOLD 45000
+//#define APPLY_DATA_REASSIGN
+#ifdef APPLY_DATA_REASSIGN
 #define REASSIGN_ABS_VAL 46000
 void max_abs_val_reassign(int *x, int *y, int *z)
 {
+	if (NULL == x || NULL == y || NULL == z)
+		return -1;
+
 	int a = *x, b = *y, c = *z;
 	if (ABS_VAL(a) > ABS_VAL(b)) {
 		if (ABS_VAL(a) > ABS_VAL(c))
@@ -269,6 +275,30 @@ void max_abs_val_reassign(int *x, int *y, int *z)
 			c > 0 ? (*z = REASSIGN_ABS_VAL) : (*z = -1 * REASSIGN_ABS_VAL);
 	}
 }
+#else
+int max_abs_val_is_valid(int *x, int *y, int *z)
+{
+	int ret;
+
+	if (NULL == x || NULL == y || NULL == z)
+		return -1;
+
+	int a = *x, b = *y, c = *z;
+	if (ABS_VAL(a) > ABS_VAL(b)) {
+		if (ABS_VAL(a) > ABS_VAL(c))
+			ABS_VAL(a) > ANGULAR_VELOCITY_THRESHOLD ? (ret = 0) : (ret = -1);
+		else
+			ABS_VAL(c) > ANGULAR_VELOCITY_THRESHOLD ? (ret = 0) : (ret = -1);
+	} else {
+		if (ABS_VAL(b) > ABS_VAL(c))
+			ABS_VAL(b) > ANGULAR_VELOCITY_THRESHOLD ? (ret = 0) : (ret = -1);
+		else
+			ABS_VAL(c) > ANGULAR_VELOCITY_THRESHOLD ? (ret = 0) : (ret = -1);
+	}
+
+	return ret; //0 is valid
+}
+#endif
 
 void SwapData(SENSOR_DATA_T* a, SENSOR_DATA_T* b)
 {
@@ -384,6 +414,10 @@ int readAccSensor(SENSOR_DATA_T *data)
 	} while(read_again);
 #endif
 
+	agm_data[0] = data_loop_acc.data.accelMilliG.accelX;
+	agm_data[1] = data_loop_acc.data.accelMilliG.accelY;
+	agm_data[2] = data_loop_acc.data.accelMilliG.accelZ;
+
 	return 0;
 }
 
@@ -421,6 +455,9 @@ int readGyrSensor(SENSOR_DATA_T *data)
 		}
 	} while(read_again);
 #endif
+	agm_data[3] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroX;
+	agm_data[4] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroY;
+	agm_data[5] = data_loop_gyr.data.gyroMilliDegreesPerSecond.gyroZ;
 
 	return 0;
 }
@@ -461,6 +498,9 @@ int readMagSensor(SENSOR_DATA_T *data)
 	} while(read_again);
 #endif
 
+	agm_data[6] = data_loop_mag.data.magFieldMilliGauss.magFieldX;
+	agm_data[7] = data_loop_mag.data.magFieldMilliGauss.magFieldY;
+	agm_data[8] = data_loop_mag.data.magFieldMilliGauss.magFieldZ;
 	return 0;
 }
 
@@ -783,19 +823,19 @@ int SetAGM_STEP_A()
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.acclzx = temp[ACC_INDEX].data.accelMilliG.accelX;
-	file_content.calibration.acclzy = temp[ACC_INDEX].data.accelMilliG.accelY;
-	file_content.calibration.acclzz = temp[ACC_INDEX].data.accelMilliG.accelZ;
+	agm_data[0] = file_content.calibration.acclzx = temp[ACC_INDEX].data.accelMilliG.accelX;
+	agm_data[1] = file_content.calibration.acclzy = temp[ACC_INDEX].data.accelMilliG.accelY;
+	agm_data[2] = file_content.calibration.acclzz = temp[ACC_INDEX].data.accelMilliG.accelZ;
 	printAccData(1,&temp[ACC_INDEX],1,1,ACC_INDEX);
 
-	file_content.calibration.gyrox = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyroy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyroz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
+	agm_data[3] = file_content.calibration.gyrox = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	agm_data[4] = file_content.calibration.gyroy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	agm_data[5] = file_content.calibration.gyroz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 	printGyroData(1,&temp[GYR_INDEX],1,1,GYR_INDEX);
 
-	file_content.calibration.magnxnx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
-	file_content.calibration.magnxny = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
-	file_content.calibration.magnxnz = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldZ;
+	agm_data[6] = file_content.calibration.magnxnx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
+	agm_data[7] = file_content.calibration.magnxny = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
+	agm_data[8] = file_content.calibration.magnxnz = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldZ;
 	printMagnData(1,&temp[MAG_INDEX],1,1,MAG_INDEX);
 
 
@@ -823,8 +863,8 @@ int SetAGM_STEP_B()
 
 	get_single_snr_avg(calc_tool, temp, MAG_INDEX);
 
-	file_content.calibration.magnxsx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
-	file_content.calibration.magnxsy = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
+	agm_data[6] = file_content.calibration.magnxsx = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldX;
+	agm_data[7] = file_content.calibration.magnxsy = temp[MAG_INDEX].data.magFieldMilliGauss.magFieldY;
 
 	ALOGD("The 2nd step is completed\n");
 	return 0;
@@ -850,7 +890,7 @@ int SetAGM_STEP_C()
 
 	get_single_snr_avg(calc_tool, temp, MAG_INDEX);
 
-	file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
+	agm_data[8] = file_content.calibration.magnxsz = temp[2].data.magFieldMilliGauss.magFieldZ;
 
 
 	ALOGD("The 3rd step is completed\n");
@@ -878,16 +918,21 @@ int SetAGM_STEP_D()
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.gyrozx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyrozy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyrozz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
+	//agm_data[] here used to display gyro data in apk after the step end
+	agm_data[3] = file_content.calibration.gyrozx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	agm_data[4] = file_content.calibration.gyrozy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	agm_data[5] = file_content.calibration.gyrozz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 
+#ifdef APPLY_DATA_REASSIGN
 	max_abs_val_reassign(&file_content.calibration.gyrozx,&file_content.calibration.gyrozy,&file_content.calibration.gyrozz);
+#else
+	ret = max_abs_val_is_valid(&file_content.calibration.gyrozx,&file_content.calibration.gyrozy,&file_content.calibration.gyrozz);
+#endif
 
 
-	ALOGD("The 4th step is completed\n");
+	ALOGD("The 4th step is completed.ret = %d\n", ret);
 
-	return 0;
+	return ret;
 }
 
 int SetAGM_STEP_E()
@@ -903,7 +948,7 @@ int SetAGM_STEP_E()
 	ALOGD("[5/5]Hold the device vertical, rotate the device counter clockwise along the axis between bottom and top\n");
 	//ALOGD("[5/5]Hold the device vertical with the windows button on the bottom, rotate the device counter clockwise
 	//along the axis between the top of the screen and the windows button\n");
-	usleep(1000000);
+	usleep(2000000);
 
 	memset(calc_tool, 0, sizeof(calc_tool));
 
@@ -914,22 +959,26 @@ int SetAGM_STEP_E()
 
 	get_amg_snr_avg(calc_tool, temp);
 
-	file_content.calibration.gyroyx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
-	file_content.calibration.gyroyy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
-	file_content.calibration.gyroyz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
+	agm_data[3] = file_content.calibration.gyroyx = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX;
+	agm_data[4] = file_content.calibration.gyroyy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
+	agm_data[5] = file_content.calibration.gyroyz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 
-	file_content.calibration.acclyx = temp[ACC_INDEX].data.accelMilliG.accelX;
-	file_content.calibration.acclyy = temp[ACC_INDEX].data.accelMilliG.accelY;
-	file_content.calibration.acclyz = temp[ACC_INDEX].data.accelMilliG.accelZ;
+	agm_data[0] = file_content.calibration.acclyx = temp[ACC_INDEX].data.accelMilliG.accelX;
+	agm_data[1] = file_content.calibration.acclyy = temp[ACC_INDEX].data.accelMilliG.accelY;
+	agm_data[2] = file_content.calibration.acclyz = temp[ACC_INDEX].data.accelMilliG.accelZ;
 
+#ifdef APPLY_DATA_REASSIGN
 	max_abs_val_reassign(&file_content.calibration.gyroyx,&file_content.calibration.gyroyy,&file_content.calibration.gyroyz);
+#else
+	ret = max_abs_val_is_valid(&file_content.calibration.gyroyx,&file_content.calibration.gyroyy,&file_content.calibration.gyroyz);
+#endif
 
-	ALOGD("The 5th step is completed\n");
+	ALOGD("The 5th step is completed.ret = %d\n", ret);
 
 	Calibrated = 1;
 	file_content.config.calibrated = 1;
 
-	return 0;
+	return ret;
 }
 
 int SetAGM_STEP_F()
@@ -965,26 +1014,32 @@ int main(int argc, const char *argv[])
 		print_mag_log = 0;
 		calc_gyr_integral = 0;
 
+		usleep(5000000);
 		SetAGM_STEP_A();
 
 		if(1 == apk_exit)
 			return -1;
+		usleep(5000000);
 		SetAGM_STEP_B();
 
 		if(1 == apk_exit)
 			return -1;
+		usleep(5000000);
 		SetAGM_STEP_C();
 
 		if(1 == apk_exit)
 			return -1;
+		usleep(5000000);
 		SetAGM_STEP_D();
 
 		if(1 == apk_exit)
 			return -1;
+		usleep(5000000);
 		SetAGM_STEP_E();
 
 		if(1 == apk_exit)
 			return -1;
+		usleep(5000000);
 		SetAGM_STEP_F();
 
 		return 0;
