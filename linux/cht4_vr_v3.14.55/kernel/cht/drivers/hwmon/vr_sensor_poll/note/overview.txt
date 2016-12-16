@@ -1,3 +1,4 @@
+PSH: Platform Service Hub
 
 driver:
 
@@ -64,7 +65,7 @@ initialize struct in probe:
        +----------------------------+     
        |                            |     
        | struct device *hwmon_dev; -+---> hwmon_device_register(&client->dev);
-       | struct spi_device *pshc;   |     
+       | struct spi_device *pshc; --+---> psh_if_info->pshc = client;
        |                            |     
        |                            |     
        |                            |     
