@@ -73,7 +73,7 @@ close camera
 (2) capture
     close preview -- open capture -- open preview
                                    |                                  |
-    request                        |  channel2                        |
+    request                        |  channel1                        |
     (stream)                       |  channel2                        |
         |                          |                                  |   +--------------------------------------+
         v                          |                                  |   |  Dcam (hardware)                     |

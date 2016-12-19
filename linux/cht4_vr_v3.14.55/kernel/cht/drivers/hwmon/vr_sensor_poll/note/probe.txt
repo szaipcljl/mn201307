@@ -23,7 +23,7 @@ static int psh_probe(struct spi_device *client)
 (1) allocate memory for psh_ext_if
 	<1> allocate memory for "struct psh_ext_if" which psh_if_info point to
 |-- psh_if_info = kzalloc(sizeof(*psh_if_info), GFP_KERNEL);
-	<2> cllocate memory for psh_ia_priv, and initialize the structure
+	<2> allocate memory for psh_ia_priv, and initialize the structure
 |-- ret = psh_ia_common_init(&client->dev, &psh_if_info->ia_data);
 			|-- (a) allocate memory for psh_ia_priv, and store such a pointer to
 					psh_if_info->ia_data;
