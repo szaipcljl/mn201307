@@ -1,0 +1,97 @@
+v4l2
+
+
+kernel:
+
+(1) struct
+	struct video_device 代表一个视频设备
+	|--	const struct v4l2_file_operations *fops;  /* 设备操作合集 */  
+	|-- struct cdev *cdev;      /* 字符设备节点 */  
+
+	struct v4l2_subdev 子设备
+	|-- const struct v4l2_subdev_ops*ops;  /* subdev 操作合集 */ 
+
+v4l2 设备一般用 i2c 总线通信，所以注册函数需要提供 i2c_client:
+	v4l2_i2c_subdev_init
+	
+(2)ioctl cmd:
+在应用程序获取视频数据的流程中，都是通过 ioctl 命令与驱动程序进行交互.
+常见的 ioctl 命令：
+
+VIDIOC_QUERYCAP     /* 获取设备支持的操作 */  
+VIDIOC_G_FMT        /* 获取设置支持的视频格式 */  
+VIDIOC_S_FMT        /* 设置捕获视频的格式 */  
+VIDIOC_REQBUFS      /* 向驱动提出申请内存的请求 */  
+VIDIOC_QUERYBUF     /* 向驱动查询申请到的内存 */  
+VIDIOC_QBUF         /* 将空闲的内存加入可捕获视频的队列 */  
+VIDIOC_DQBUF        /* 将已经捕获好视频的内存拉出已捕获视频的队列 */  
+VIDIOC_STREAMON     /* 打开视频流 */  
+VIDIOC_STREAMOFF    /* 关闭视频流 */  
+VIDIOC_QUERYCTRL    /* 查询驱动是否支持该命令 */  
+VIDIOC_G_CTRL       /* 获取当前命令值 */  
+VIDIOC_S_CTRL       /* 设置新的命令值 */  
+VIDIOC_G_TUNER      /* 获取调谐器信息 */  
+VIDIOC_S_TUNER      /* 设置调谐器信息 */  
+VIDIOC_G_FREQUENCY  /* 获取调谐器频率 */  
+VIDIOC_S_FREQUENCY  /* 设置调谐器频率 */  
+
+(3)节点与接口
+	在Linux下,所有外设都被看成一种特殊的文件--“设备文件”，可以象访问普通文件一样对其进行读写。
+	a. 视频设备在 Linux 中作为字符设备出现，域 cdev 与 /dev/videox 节点关联，
+	打开节点就相当于执行cdev 的 open 函数，
+
+	b. cdev 的 ops 域即 file_operations 的接口最终调用video_device 的 fops 域,
+	即v4l2_file_operations的 成员，
+
+	c. 所以在编写驱动程序时, 需要实现 v4l2_file_operations 的接口:
+		open 打开视频设备， 
+		read 读取视频数据，
+		poll 视频流的同步，
+		mmap 将视频设备保存数据的内存空间的物理地址映射到用户空间，
+		ioctl 向视频设备发送命令并查询相关信息
+		（ioctl 一般设置为 v4l2 提供的 video_ioctl2 函数，并最终调用 video_device
+		的 ioctl_ops 域即 v4l2_ioctl_ops），
+
+(4)应用程序通过V4L2接口采集视频数据分为五个步骤：
+
+	1) 打开视频设备文件，进行视频采集的参数初始化，通过V4L2接口设置视频图像的
+	采集窗口、采集的点阵大小和格式;
+
+	2) 申请若干视频采集的帧缓冲区，并将这些帧缓冲区从内核空间映射到用户空间，便于
+	应用程序读取/处理视频数据;
+
+	3) 将申请到的帧缓冲区在视频采集输入队列排队，并启动视频采集;
+
+	4) 驱动开始视频数据的采集，应用程序从视频采集输出队列取出帧缓冲区，处理完后，
+	将帧缓冲区重新放入视频采集输入队列，循环往复采集连续的视频数据;
+
+	5) 停止视频采集。
+
+工作流程：
+	打开设备(open)－> 检查和设置设备属性－>设置帧格式－> 设置一种输入输出方法（缓冲区管理）
+	－> 循环获取数据－> 关闭设备(close)
+
+
+
+
+
+
+2.驱动怎么写？
+user space <--> kernel space
+kernel space <--> hardware
+
+v4l2:
+(1) 需要实现 v4l2_file_operations 的接口
+(2) 注册设备
+	注册一个 v4l2 设备
+	__video_register_device
+
+	该函数注册流程较简单：
+		a 根据设备类型确定在 /dev 目录下的节点名称以及从设备号的偏移和值，
+		b 为 cdev 申请内存空间并注册，将 vdev->cdev->ops 设置为内核提供的 v4l2_fops，
+		c 将 vdev->dev 注册到 sysfs 中。
+
+
+
+
+

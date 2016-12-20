@@ -1,0 +1,14 @@
+
+hardware:	
+
+	camera pin:
+		三个电压：iovdd, dvdd(vddcamecore), avdd
+		reset
+		CAM_CLK
+		mipi clk 和data
+		i2c  clk 和 data
+		power_down (camera 使能)
+		
+
+	hardware module and flow:
+
