@@ -25,6 +25,8 @@ char* reqSnr_g [3];
 #define AGM_SENSOR_TXT_FILE_NAME	"/data/setAGM_cal.txt"
 #endif
 
+#define ABS_VAL(x) (x > 0 ? x:(-x))
+
 #define TXT_BUF_SIZE 1024
 #define ct_size 20
 
@@ -249,6 +251,23 @@ int WriteDataToFileInTxt()
 	fclose(pFile);
 
 	return 0;
+}
+
+#define REASSIGN_ABS_VAL 46000
+void max_abs_val_reassign(int *x, int *y, int *z)
+{
+	int a = *x, b = *y, c = *z;
+	if (ABS_VAL(a) > ABS_VAL(b)) {
+		if (ABS_VAL(a) > ABS_VAL(c))
+			a > 0 ? (*x = REASSIGN_ABS_VAL) : (*x = -1 * REASSIGN_ABS_VAL);
+		else
+			c > 0 ? (*z = REASSIGN_ABS_VAL) : (*z = -1 * REASSIGN_ABS_VAL);
+	} else {
+		if (ABS_VAL(b) > ABS_VAL(c))
+			b > 0 ? (*y = REASSIGN_ABS_VAL) : (*y = -1 * REASSIGN_ABS_VAL);
+		else
+			c > 0 ? (*z = REASSIGN_ABS_VAL) : (*z = -1 * REASSIGN_ABS_VAL);
+	}
 }
 
 void SwapData(SENSOR_DATA_T* a, SENSOR_DATA_T* b)
@@ -656,7 +675,7 @@ int collect_rota_data_avg(int step, int size)
 	//static const int SAMPLES = 20 * 1000;
 	//SENSOR_DATA_T* buf = new SENSOR_DATA_T[SAMPLES*3];
 
-	for(i = 1; i < size;) {
+	for(i = 0; i < size;) {
 		if(1 == apk_exit)
 			return 0;
 
@@ -668,46 +687,27 @@ int collect_rota_data_avg(int step, int size)
 			return -1;
 
 
-		if (0 == ret_gyr) {
-			if(temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
-					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
-					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
-					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
-					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
-					temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ < -45000) {
-				ALOGD("[%d/5][if=>]\n",step);
-				calc_single_sum_avg(calc_tool,temp, i, GYR_INDEX);
-
-				ret_acc = readAccSensor(&temp[ACC_INDEX]);
-				printAccData(step,&temp[ACC_INDEX],i,size,ACC_INDEX);
-				if (0 == ret_acc) {
-					calc_single_sum_avg(calc_tool,temp, i, ACC_INDEX);
-				}
-
-				ret_mag = readMagSensor(&temp[MAG_INDEX]);
-				printMagnData(step,&temp[MAG_INDEX],i,size,MAG_INDEX);
-				if (0 == ret_mag){
-					calc_single_sum_avg(calc_tool,temp, i, MAG_INDEX);
-				}
-				i++;
-				ALOGD("data[%d/5][if=>] i = %d\n", step,i);
-			}
-		} else {
-			ALOGD("[%d/5][else=>]\n", step);
+		if(temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX > 45000 ||
+				temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroX < -45000 ||
+				temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY > 45000 ||
+				temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY < -45000 ||
+				temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ > 45000 ||
+				temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ < -45000) {
+			ALOGD("[%d/5][if=>]\n",step);
+			i++;
+			calc_single_sum_avg(calc_tool,temp, i, GYR_INDEX);
 
 			ret_acc = readAccSensor(&temp[ACC_INDEX]);
-			printAccData(step,&temp[ACC_INDEX],i, size,ACC_INDEX);
-			if (0 == ret_acc) {
+			printAccData(step,&temp[ACC_INDEX],i,size,ACC_INDEX);
+			if (0 == ret_acc)
 				calc_single_sum_avg(calc_tool,temp, i, ACC_INDEX);
-			}
 
 			ret_mag = readMagSensor(&temp[MAG_INDEX]);
-			printMagnData(step,&temp[MAG_INDEX],i, size,MAG_INDEX);
-			if (0 == ret_mag) {
+			printMagnData(step,&temp[MAG_INDEX],i,size,MAG_INDEX);
+			if (0 == ret_mag)
 				calc_single_sum_avg(calc_tool,temp, i, MAG_INDEX);
-			}
-			i++;
-			ALOGD("data[%d/5]else=> i = %d\n", step, i);
+
+			ALOGD("data[%d/5][if=>] i = %d\n", step,i);
 		}
 
 		point = i;
@@ -882,6 +882,7 @@ int SetAGM_STEP_D()
 	file_content.calibration.gyrozy = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroY;
 	file_content.calibration.gyrozz = temp[GYR_INDEX].data.gyroMilliDegreesPerSecond.gyroZ;
 
+	max_abs_val_reassign(&file_content.calibration.gyrozx,&file_content.calibration.gyrozy,&file_content.calibration.gyrozz);
 
 
 	ALOGD("The 4th step is completed\n");
@@ -921,6 +922,7 @@ int SetAGM_STEP_E()
 	file_content.calibration.acclyy = temp[ACC_INDEX].data.accelMilliG.accelY;
 	file_content.calibration.acclyz = temp[ACC_INDEX].data.accelMilliG.accelZ;
 
+	max_abs_val_reassign(&file_content.calibration.gyroyx,&file_content.calibration.gyroyy,&file_content.calibration.gyroyz);
 
 	ALOGD("The 5th step is completed\n");
 
