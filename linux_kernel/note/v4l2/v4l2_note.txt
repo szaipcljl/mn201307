@@ -80,6 +80,10 @@ VIDIOC_S_FREQUENCY  /* 设置调谐器频率 */
 user space <--> kernel space
 kernel space <--> hardware
 
+资源分配，地址空间映射（通过地址空间映射，驱动和设备联系起来，寄存器映射到地址空间？io映射?内存映射?）
+通过地址设置寄存器，初始化寄存器
+与设备通信，实现通信协议逻辑
+
 v4l2:
 (1) 需要实现 v4l2_file_operations 的接口
 (2) 注册设备
