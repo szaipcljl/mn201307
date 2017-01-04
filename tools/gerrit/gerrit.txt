@@ -1,0 +1,160 @@
+ gerrit使用总结
+2014-10-15 10:19 16807人阅读 评论(1) 收藏 举报
+分类：
+版本管理（5）
+gerrit还是轻易不要尝试引入，它的权限管理，真是复杂极了。对于小型团队，初期这将是个噩梦，但是对于像OpenStack，安卓这种大型team，又是一把利器。
+
+下面尝试测试了两个用户的简单情况，很多配置都是系统默认，没有进行啥复杂配置，即使这样也是错误百出，光一个commit就要折腾半天，而且还有些机制没搞清楚。
+
+首先要做的准备工作就是准备两个gerrit用户，user1和user2，并且分别把user1和user2的ssh pub-key通过gerrit setting添加好。
+
+1. 首先user1创建一个叫HelloWord的project。
+
+   如何创建project请参考前期博客或者官方文档。
+
+2. user1在自己的工作环境中把HelloWord clone下来
+
+[user1@jenkins ~]$ git clone ssh://user1@gerrit.example.com:29418/HelloWorld.git
+Initialized empty Git repository in /home/user1/HelloWorld/.git/
+remote: Counting objects: 2, done
+remote: Finding sources: 100% (2/2)
+remote: Total 2 (delta 0), reused 0 (delta 0)
+Receiving objects: 100% (2/2), done.
+加入user1没有添加ssh pubkey的话，这一步会出permission deny
+
+clone后，创建一个README文件并add，commit
+[user1@jenkins ~]$ cd HelloWorld
+[user1@jenkins HelloWorld]$ ls
+[user1@jenkins HelloWorld]$ touch README
+[penxiao@jenkins test]$ git add README 
+[penxiao@jenkins test]$ git commit -m add README
+这里注意一点，在下面要push之前，一定要配置好git config的 username和email
+可以通过命令行或者直接编辑 ~/.gitconfig文件实现，而且email一定要和gerrit里注册的email一致，否者push也会出错。
+[user1@jenkins HelloWorld]$ git push origin master
+Counting objects: 3, done.
+Writing objects: 100% (3/3), 213 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+remote: Processing changes: refs: 1, done    
+To ssh://user1@gerrit.example.com:29418/HelloWorld.git
+ * [new branch]      master -> master
+[user1@jenkins HelloWorld]$
+
+在gerrit的gitweb链接可以查看push的文件。
+
+3. user2加入
+
+[user2@jenkins ~]$ git clone ssh://user1@gerrit.example.com:29418/HelloWorld.git
+Initialized empty Git repository in /home/user2/HelloWorld/.git/
+remote: Counting objects: 3, done
+remote: Finding sources: 100% (3/3)
+remote: Total 3 (delta 0), reused 3 (delta 0)
+Receiving objects: 100% (3/3), done.
+[user2@jenkins ~]$ cd HelloWorld
+[user2@jenkins HelloWorld]$ ls
+README
+[user2@jenkins HelloWorld]$ 
+
+user2对README文件进行修改，然后要commit，push
+！！！也同样注意，user2的git config，username和email的配置，email要和gerrit setting里的一致。
+
+commit完以后可以看到
+
+[user2@jenkins HelloWorld]$ git log
+commit 7959fe47bc2d2f53539a1861aa6b0d71afe0a531
+Author: user2 <user2@gerrit.com>
+Date:   Thu Dec 12 00:24:53 2013 -0500
+
+    edit README
+
+commit 98099fc0de3ba889b18cf36f9a5af267b3ddb501
+Author: user1 <user@gerrit.com>
+Date:   Thu Dec 12 00:15:08 2013 -0500
+
+    add README
+[user2@jenkins HelloWorld]$
+
+现在user2要把这次的改变push到gerrit，可以么？
+不行的，可以看到
+[user2@jenkins HelloWorld]$ git push origin master
+Counting objects: 5, done.
+Writing objects: 100% (3/3), 249 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+remote: Branch refs/heads/master:
+remote: You are not allowed to perform this operation.
+remote: To push into this reference you need 'Push' rights.
+remote: User: user2
+remote: Please read the documentation and contact an administrator
+remote: if you feel the configuration is incorrect
+remote: Processing changes: refs: 1, done    
+To ssh://user2@gerrit.example.com:29418/HelloWorld.git
+ ! [remote rejected] master -> master (prohibited by Gerrit)
+error: failed to push some refs to 'ssh://user2@gerrit.example.com:29418/HelloWorld.git'
+[user2@jenkins HelloWorld]$ 
+
+这就是gerrit的精髓所在了。原因是gerrit不允许直接将本地修改同步到远程仓库。客户机必须先push到远程仓库的refs/for/*分支上，等待审核。这也是为什么我们需要使用gerrit的原因。gerrit本身就是个代码审核工具。
+
+接下来更该push的地址：  
+[user2@jenkins HelloWorld]$git config remote.origin.push refs/heads/*:refs/for/*  
+
+此命令实际是更改的是本地仓库test_project/.git/config文件。 
+再次push   
+[user2@jenkins HelloWorld]$git push origin  
+这次不要加master
+[user2@jenkins HelloWorld]$ git push origin
+Counting objects: 5, done.
+Writing objects: 100% (3/3), 249 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+remote: Processing changes: refs: 1, done    
+remote: ERROR: missing Change-Id in commit message footer
+remote: Suggestion for commit message:
+remote: edit README
+remote: 
+remote: Change-Id: I7959fe47bc2d2f53539a1861aa6b0d71afe0a531
+remote: 
+remote: Hint: To automatically insert Change-Id, install the hook:
+remote:   gitdir=$(git rev-parse --git-dir); scp -p -P 29418 user2@gerrit.example.com:hooks/commit-msg ${gitdir}/hooks/
+remote: 
+remote: 
+To ssh://user2@gerrit.example.com:29418/HelloWorld.git
+ ! [remote rejected] master -> refs/for/master (missing Change-Id in commit message footer)
+error: failed to push some refs to 'ssh://user2@gerrit.example.com:29418/HelloWorld.git'
+
+尼玛，还是不行，说缺change-Id，为了能让每次commit能自己insert 这个change-id，需要从gerrit server上下载一个脚本
+
+[user2@jenkins HelloWorld] scp -p 29418 user2@gerrit.example.com:hooks/commit-msg <local path to your git>/.git/hooks/
+
+然后重新commit
+[user2@jenkins HelloWorld]$ git commit --amend
+再次查看git log
+[user2@jenkins HelloWorld]$ git log
+commit f6b5919170875b5b4870fca2ab906c516c97006e
+Author: user2 <user2@gerrit.com>
+Date:   Thu Dec 12 00:24:53 2013 -0500
+
+    edit by user2
+    
+    Change-Id: Ieac68bebefee7c6d4237fa5c058386bf7c4f66b7
+
+commit 98099fc0de3ba889b18cf36f9a5af267b3ddb501
+Author: user1 <user1@gerrit.com>
+Date:   Thu Dec 12 00:15:08 2013 -0500
+
+    add README
+[user2@jenkins HelloWorld]$ 
+
+这次就有了change id
+然后再次push
+[user2@jenkins HelloWorld]$ git push origin
+Counting objects: 5, done.
+Writing objects: 100% (3/3), 289 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+remote: Processing changes: new: 1, refs: 1, done    
+remote: 
+remote: New Changes:
+remote:   http://gerrit.example.com:8080/1
+remote: 
+To ssh://user2@gerrit.example.com:29418/HelloWorld.git
+ * [new branch]      master -> refs/for/master
+[user2@jenkins HelloWorld]$ 
+
+终于尼玛成功了！！！

@@ -1,0 +1,60 @@
+Linux下Opengrok安装部署与使用
+时间 2014-05-12 21:50:37 CSDN博客
+原文
+  http://blog.csdn.net/hhcjb/article/details/25652895
+主题 Linux
+
+Opengrok 用于管理多项目的代码非常方便。本文以Opengrok 0.12.1来讲解在RedHat Enterprise Linux上的部署
+
+http://opengrok.github.io/OpenGrok/
+
+软件依赖准备:
+
+1 JAVA                           http://www.oracle.com/technetwork/java//
+
+2. Tomcat                     http://tomcat.apache.org/
+
+3.Exuberant Ctags     http://ctags.sourceforge.net/
+下载安装
+
+1. 上Opengrok官网下载安装包 OpenGrok-0.12.1.tar.gz
+
+2. root 用户登录 linux server
+
+3. 将OpenGrok-0.12.1.tar.gz 通过FTP上传到linux server
+
+4. 解压tar包到安装目录即完成安装 ，一般安装在/opt/opengrok-0.12.1
+
+tar -xvf OpenGrok-0.12.1.tar.gz   
+
+OpenGrok使用
+
+利用OpenGrok 建立源代码索引前需要启动tomcat。OpenGrok的配置文件为 /opt/opengrok-0.12.1/etc/configuration.xml
+
+配置准备:
+
+1. 配置必须的环境变量
+
+export JAVA_HOME=/opt/java
+export OPENGROK_TOMCAT_BASE=/opt/tomcat/
+export OPENGROK_APP_SERVER=Tomcat
+export OPENGROK_INSTANCE_BASE=/opt/opengrok-0.12.1
+export LANG=zh_CN.gb2312  (可选，但中文编码与源代码不一致会产生乱码)
+
+2.  配置源代码目录
+
+vi /opt/opengrok-0.12.1/bin/OpenGrok
+
+找到 SRC_ROOT 配置， 将值设为源代码目录
+
+建议索引:
+
+1. 源码opengrok网站发布
+
+./opt/opengrok-0.12.1/bin/OpenGrok deploy
+
+2. 索引源代码
+
+./opt/opengrok-0.12.1/bin/OpenGrok index
+
+完工～ 登录http://xxx.xxx.xxx.xxx:8080/source 即可查看源码
