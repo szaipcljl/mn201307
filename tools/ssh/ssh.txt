@@ -29,3 +29,22 @@ ssh -l 用户名 IP
 
 ssh username@ipaddress
 ssh username@hostname
+
+================================================================================
+ssh 不输入密码远程登录 ssh-keygen -t rsa
+
+目标机器的/home/admin下没有 .ssh目录
+HostA ----->HostB，guest在HostB拥有admin的sudo权限
+
+1 登录到HostB，在HostB的/home/admin目录下 执行 ssh-keygen -t rsa
+-t 表示加密类型，用rsa；
+执行完创建了隐藏文件夹.ssh
+
+2  生成两个文件id_rsa，id_rsa.pub，
+
+3 .ssh/目录下,创建一个文件，命名为 authorized_keys，内容是 HostA ~/.ssh/id_rsa.pub的文件内容
+
+4 保存，退出HostB，到HostA上执行 
+    ssh admin@HostB  
+
+就可以不输密码直接登陆了
