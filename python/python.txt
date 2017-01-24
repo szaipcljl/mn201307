@@ -1,0 +1,88 @@
+简明 Python 教程
+================================================================================
+
+--------------------------------------------------------------------------------
+第2章 安装Python
+
+2.1 test if python has been installed:
+	python -V
+
+--------------------------------------------------------------------------------
+第3章 最初的步骤
+
+3.1 运行Python的两种方式()
+	-- 使用交互式的带提示符的解释器
+	-- 使用源文件
+
+	(1) 使用交互式的带提示符的解释器
+	在命令行的shell提示符下键入python,启动解释器.
+	输入print 'Hello World'
+	Ctrl-d退出提示符
+
+	(2) 使用源文件 
+		挑选一个编辑器(VIM或者Emacs)
+
+	源文件:
+		#!/usr/bin/python
+		# Filename : helloworld.py
+		print 'Hello World'
+	保存为helloworld.py。
+
+	运行:
+	python helloworld.py
+
+注意
+	Python是大小写敏感的
+	确保在每一行的开始字符前没有空格或者制表符
+
+3.2 可执行的Python程序
+	通过chmod命令,给程序可执行的许可,然后运行程序(通过指定源文件的位置来执行程序)
+		$ chmod a+x helloworld.py
+		$ ./helloworld.py
+		Hello World
+
+	把文件名改成helloworld,然后运行./helloworld,仍然可以工作.
+	系统知道它必须用源文件第一行指定的解释器来运行程序.
+
+	只要知道程序的确切位置,就可以运行程序了.
+	如果希望程序能够从任何位置运行:
+		把程序保存在PATH环境变量中的目录之一,
+		每当运行程序,系统会查找列在PATH环境变量中的各个目录。
+		然后运行那个程序。
+
+	$ echo $PATH
+	/home/nma1x/bin:/home/nma1x/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bi
+	sudo cp 01-helloworld /usr/bin/
+	$ 01-helloworld 
+	Hello World
+
+	也可以选择的目录添加到PATH变量中去:
+		运行PATH=$PATH:/home/nma1x/mydir
+
+3.3 获取帮助
+	使用带提示符的命令行
+	help
+	Type help() for interactive help, or help(object) for help about object.
+	按q退出帮助
+
+--------------------------------------------------------------------------------
+第4章 基本概念
+
+4.1 字面意义上的常量
+	5、1.23、9.25e-3这样的数,
+	'This is a string'这样的字符串。它们被
+	具备字面的意义——你按照它们的字面意义使用它们的值
+
+4.2 数 
+	在Python中有4种类型的数: 
+		整数、长整数、浮点数和复数。
+
+4.3 字符串
+	如何在Python中使用字符串:
+
+
+
+
+
+
+
