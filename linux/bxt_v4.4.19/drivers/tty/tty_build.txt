@@ -1,0 +1,63 @@
+broxton
+
+out/target/product/bxtp_abl/obj/kernel/drivers/tty/
+├── built-in.o
+├── ipwireless
+│   ├── built-in.o
+│   ├── modules.builtin
+│   └── modules.order
+├── modules.builtin
+├── modules.order
+├── n_gsm.o
+├── n_tracerouter.o
+├── n_tracesink.o
+├── n_tty.o
+├── pty.o
+├── serial
+│   ├── 8250
+│   │   ├── 8250_base.o
+│   │   ├── 8250_core.o
+│   │   ├── 8250_dma.o
+│   │   ├── 8250_dw.ko
+│   │   ├── 8250_dw.mod.c
+│   │   ├── 8250_dw.mod.o
+│   │   ├── 8250_dw.o
+│   │   ├── 8250_early.o
+│   │   ├── 8250.o
+│   │   ├── 8250_pci.o
+│   │   ├── 8250_pnp.o
+│   │   ├── 8250_port.o
+│   │   ├── built-in.o
+│   │   ├── modules.builtin
+│   │   └── modules.order
+│   ├── built-in.o
+│   ├── earlycon.o
+│   ├── intel_max3110.o
+│   ├── modules.builtin
+│   ├── modules.order
+│   └── serial_core.o
+├── sysrq.o
+├── tty_audit.o
+├── tty_buffer.o
+├── tty_ioctl.o
+├── tty_io.o
+├── tty_ldisc.o
+├── tty_ldsem.o
+├── tty_mutex.o
+├── tty_port.o
+└── vt
+    ├── built-in.o
+    ├── consolemap_deftbl.c
+    ├── consolemap_deftbl.o
+    ├── consolemap.o
+    ├── defkeymap.c
+    ├── defkeymap.o
+    ├── keyboard.o
+    ├── modules.builtin
+    ├── modules.order
+    ├── selection.o
+    ├── vc_screen.o
+    ├── vt_ioctl.o
+    └── vt.o
+
+4 directories, 54 files
