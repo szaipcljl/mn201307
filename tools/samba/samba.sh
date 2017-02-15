@@ -45,3 +45,7 @@ service smbd restart
 # file explorer to cnnect to the share.
 
 # smbpasswd -a nma1x(username)
+
+# mount samba
+sudo mkdir /mnt/mserver
+sudo mount -o username=nma1x,password=123 //10.239.92.71/nma1x /mnt/mserver/
