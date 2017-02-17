@@ -1,0 +1,77 @@
+tty
+
+--------------------------------------------------------------------------------
+open consolo:
+static const struct file_operations console_fops = {
+	.open		= tty_open,
+	.write		= redirected_tty_write,
+
+redirected_tty_write
+
+
+
+--------------------------------------------------------------------------------
+open tty:
+
+(1)struct file_operations tty_fops: //tty_io.c
+	.open		= tty_open, // open a tty device
+	|-->retval = tty->ops->open(tty, filp); //where ops = uart_ops?
+(2)		|-- struct tty_operations uart_ops: //serial_core.c
+				.open		= uart_open,
+(3)				|-- retval = uart_startup(tty, state, 0); //Start up the serial port.
+					|-- retval = uart_port_startup(tty, state, init_hw);//Startup the port.  This will be called once per open.
+						|-- retval = uport->ops->startup(uport);
+(4)							|-- struct uart_ops serial8250_pops = { //8250_port.c
+									.startup	= serial8250_startup,
+(5)									|-- serial8250_do_startup(port);
+										|-- if (up->dma) {
+											retval = serial8250_request_dma(up);
+
+---------
+	tty_open -> uart_open -> uart_startup -> uart_port_startup -> serial8250_startup
+	-> serial8250_do_startup -> if (up->dma) -> serial8250_request_dma(up);
+
+--------------------------------------------------------------------------------
+pci driver
+module_pci_driver(serial_pci_driver); //8250_pci.c: Helper macro for registering a PCI driver
+							|
+							v
+static struct pci_driver serial_pci_driver = {
+	.name		= "serial", // /sys/bus/pci/drivers/serial/ ?
+	.probe		= pciserial_init_one, //Probe one serial board.
+	|
+	|-- quirk = find_quirk(dev);
+		if (quirk->probe) { // here quirk->probe is NULL
+			rc = quirk->probe(dev);
+			if (rc)
+				return rc;
+		}
+	|
+	|-- priv = pciserial_init_ports(dev, board);
+		|-- // Find an init and setup quirks.
+			quirk = find_quirk(dev);
+			if (quirk->init) {
+				rc = quirk->init(dev); // Run the new-style initialization function.
+
+
+
+
+
+
+
+find_quirk
+|-- for (quirk = pci_serial_quirks; ; quirk++)
+					|-- static struct pci_serial_quirk pci_serial_quirks[] __refdata = {
+							{
+								.vendor		= PCI_VENDOR_ID_INTEL,
+								.device		= PCI_DEVICE_ID_INTEL_BXT_B_UART0,//UART0~UART3
+								.subvendor	= PCI_ANY_ID,
+								.subdevice	= PCI_ANY_ID,
+								.init		= bxt_serial_init,
+								.setup		= bxt_serial_setup,
+							},  |
+								|--	bxt_serial_setup
+									|-- pci_default_setup
+										|-- setup_port(priv, port, bar, offset, board->reg_shift);
+--------------------------------------------------------------------------------
+uart_add_one_port

@@ -1,0 +1,10 @@
+
+loglevel:
+device/intel/broxton/bxtp_abl/mixins.spec
+
+[groups]
+kernel: gmin64(useprebuilt=false,src_path=kernel/bxt,loglevel=7, interactive_governor=false, relative_sleepstates=true, modules_in_bootimg=true, external_modules=marvell/wifi perftools-external/bxt/socperfdk/src perftools-external/bxt/socwatchdk/src perftools-external/bxt/vtunedk/src perftools-external/bxt/vtunedk/src/pax intel_ld/dev intel_fm iosm ../../vendor/intel/external/open-avb/kmod/igb, debug_modules=perftools-internal/bxt/sepdk/src perftools-internal/bxt/vtsspp, use_bcmdhd=false, extmod_platform=bxt, firmware_path=/vendor/firmware)
+
+build command:
+./device/intel/mixins/mixin-update
+		

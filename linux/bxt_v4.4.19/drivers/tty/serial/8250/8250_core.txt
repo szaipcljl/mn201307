@@ -1,0 +1,21 @@
+
+
+
+
+console:
+static struct console univ8250_console = {
+	.name		= "ttyS",
+	.write		= univ8250_console_write,
+	.device		= uart_console_device,
+	.setup		= univ8250_console_setup,
+	.match		= univ8250_console_match,
+	.flags		= CON_PRINTBUFFER | CON_ANYTIME,
+	.index		= -1,
+	.data		= &serial8250_reg,
+};
+
+//universal
+univ8250_console_setup 
+|-- serial8250_console_setup //8250_prot.c
+	|-- uart_set_options //baud, parity, bits, flow
+		//

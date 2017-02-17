@@ -1,0 +1,62 @@
+
+int serial8250_request_dma(struct uart_8250_port *p)
+
+(1) /* Default slave configuration parameters */
+	dma->rxconf:
+		.direction		
+		.src_addr_width	
+		.src_addr		
+                            
+	dma->txconf:
+		.direction		
+		.dst_addr_width	
+		.dst_addr		
+init dma
+(1) clear mask
+	dma_cap_zero(mask);
+
+(2) set mask, DMA transaction types/indexes
+	dma_cap_set(DMA_SLAVE, mask);
+(3) Get a channel for RX/TX
+	dma->rxchan = dma_request_slave_channel_compat(mask,
+						       dma->fn, dma->rx_param,
+						       p->port.dev, "rx");//tx: rx->tx
+	//set dma channel transaction parameters
+	dmaengine_slave_config(dma->rxchan, &dma->rxconf);
+
+(4)
+	一致性内存申请
+	RX buffer: allocate dma coherent mem
+	dma->rx_buf = dma_alloc_coherent(dma->rxchan->device->dev, dma->rx_size,
+					&dma->rx_addr, GFP_KERNEL);
+
+
+	流式内存映射
+	/* TX buffer */
+	dma->tx_addr = dma_map_single(dma->txchan->device->dev,
+					p->port.state->xmit.buf,
+					UART_XMIT_SIZE,
+					DMA_TO_DEVICE);
+
+
+start dma
+    serial8250_rx_dma
+
+(1)	获取desc添加回调函数
+	desc = dmaengine_prep_slave_single(dma->rxchan, dma->rx_addr,
+					   dma->rx_size, DMA_DEV_TO_MEM,
+					   DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+
+	desc->callback = __dma_rx_complete;
+	desc->callback_param = p;
+
+(2) 递交配置好的通道, 将desc提交到DMA驱动等待队列
+	dma->rx_cookie = dmaengine_submit(desc);
+
+(3) 开启通道，等待回调函数
+	激活挂起的等来队列，如果此时通道空闲则开始传输队列中的数据，传输结束后调用回调函数。
+	dma_async_issue_pending(dma->rxchan);
+
+callback:
+__dma_rx_complete
+
