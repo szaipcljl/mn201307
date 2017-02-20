@@ -38,6 +38,8 @@
 #include <asm/irq.h>
 #include <asm/uaccess.h>
 
+#define DMA_MEM_TEST
+
 /*
  * This is used to lock changes in serial line configuration.
  */
@@ -2598,6 +2600,18 @@ static ssize_t uart_get_attr_io_type(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%d\n", tmp.io_type);
 }
 
+#ifdef DMA_MEM_TEST
+static ssize_t uart_get_attr_dma_mem_test(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct serial_struct tmp;
+	struct tty_port *port = dev_get_drvdata(dev);
+
+	uart_get_info(port, &tmp);
+	return snprintf(buf, PAGE_SIZE, "%s\n", "mn##[from kernel] dma_mem_test"/*tmp.io_type*/);
+}
+#endif
+
 static ssize_t uart_get_attr_iomem_base(struct device *dev,
 	struct device_attribute *attr, char *buf)
 {
@@ -2629,6 +2643,9 @@ static DEVICE_ATTR(close_delay, S_IRUSR | S_IRGRP, uart_get_attr_close_delay, NU
 static DEVICE_ATTR(closing_wait, S_IRUSR | S_IRGRP, uart_get_attr_closing_wait, NULL);
 static DEVICE_ATTR(custom_divisor, S_IRUSR | S_IRGRP, uart_get_attr_custom_divisor, NULL);
 static DEVICE_ATTR(io_type, S_IRUSR | S_IRGRP, uart_get_attr_io_type, NULL);
+#ifdef DMA_MEM_TEST
+static DEVICE_ATTR(dma_mem_test, S_IRUSR | S_IRGRP, uart_get_attr_dma_mem_test, NULL);
+#endif
 static DEVICE_ATTR(iomem_base, S_IRUSR | S_IRGRP, uart_get_attr_iomem_base, NULL);
 static DEVICE_ATTR(iomem_reg_shift, S_IRUSR | S_IRGRP, uart_get_attr_iomem_reg_shift, NULL);
 
@@ -2644,6 +2661,9 @@ static struct attribute *tty_dev_attrs[] = {
 	&dev_attr_closing_wait.attr,
 	&dev_attr_custom_divisor.attr,
 	&dev_attr_io_type.attr,
+#ifdef DMA_MEM_TEST
+	&dev_attr_dma_mem_test.attr,
+#endif
 	&dev_attr_iomem_base.attr,
 	&dev_attr_iomem_reg_shift.attr,
 	NULL,
