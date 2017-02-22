@@ -12,6 +12,7 @@
  * */
 
 #include <stdio.h>
+#include <libgen.h> //basename
 
 #define DEBUG
 
@@ -25,7 +26,8 @@ void where_me();
 
 int main(int argc, const char *argv[])
 {
-	printf( "The date and time is %s %s.\n", __DATE__, __TIME__);
+	printf("The date and time is %s %s.\n", __DATE__, __TIME__);
+	printf("filename:%s\n", basename(__FILE__));
 
 	debug("hello linux\n");
 
