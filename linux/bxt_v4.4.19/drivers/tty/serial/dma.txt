@@ -1,0 +1,47 @@
+dma
+
+--------------------------------------------------------------------------------
+/*
+ * __dma_request_channel - try to allocate an exclusive channel
+ * @mask: capabilities that the channel must satisfy
+ * @fn: optional callback to disposition available channels
+ * @fn_param: opaque parameter to pass to dma_filter_fn
+ *
+ * Returns pointer to appropriate DMA channel on success or NULL.
+ */
+struct dma_chan *__dma_request_channel(const dma_cap_mask_t *mask,
+		dma_filter_fn fn, void *fn_param)
+
+	--------------------------------------------------------------------------------
+	dma_filter_fn:
+	/*1. Init rx channel */
+	dws->rxchan = dma_request_channel(mask, dma_chan_filter, params);
+	//主要就是申请DMA通道。
+	//dma_chan_filter  主要查找dma传输的设备的请求信号线，其具体是在注册时填写的。
+	//根据这个函数返回的真假来判断已经注册在总线上的dma slave。
+
+	当可选的‘filter_fn’参数置为NULL时，dma_request_channel简单的返回第一个满足有能力mask的通道。否则，当mask参数不足以区别必要的通道时候，filter_fn例程可以用来排列系统中可用的通道。filter_fn例程被系统中每个空闲的通道调用。当找到一个适合的通道的时候，filter_fn返回一个DMA_ACK，该标志和dma_request_channel的返回值相连。一个通道通过这个接口被分配，和调用者是异步的关系，直到dma_release_channel()被调用。
+
+	以下是两个实现驱动和消费者需要注意的地方：
+	1）一旦一个通道已经被私有的分配，它将不再被当做一般目的的分配器对待，即使在调用dma_release_channel()之后。
+	2）由于许可是在设备层标识，一个带有多通道的DMA设备的通道要么都是共有的，要么都是私有的。
+
+
+	--------------------------------------------------------------------------------
+/**
+ * struct dma_chan - devices supply DMA channels, clients use them
+ * @device: ptr to the dma device who supplies this channel, always !%NULL
+ * @cookie: last cookie value returned to client
+ * @completed_cookie: last completed cookie for this channel
+ * @chan_id: channel ID for sysfs
+ * @dev: class device for sysfs
+ * @device_node: used to add this to the device chan list
+ * @local: per-cpu pointer to a struct dma_chan_percpu
+ * @client_count: how many clients are using this channel
+ * @table_count: number of appearances in the mem-to-mem allocation table
+ * @router: pointer to the DMA router structure
+ * @route_data: channel specific data for the router
+ * @private: private data for certain client-channel associations
+ */
+struct dma_chan {
+	struct dma_device *device;

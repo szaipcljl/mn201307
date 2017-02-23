@@ -1,0 +1,32 @@
+
+[    6.283865] dump_stack start
+[    6.286771] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G     U  W       4.4.19-quilt-2e5dc0ac-g2599a68-dirty #30
+[    6.296599]  0000000000000000 ffff880276977ad0 ffffffff8138ebb5 ffffffff82666200
+[    6.304083]  ffffffff82666200 ffff880276977b28 ffffffff8148760d ffff880276977b38
+[    6.311585]  ffff880276977af0 ffffffff82666200 ffffffff81fd1f68 ffffffff82666200
+[    6.319070] Call Trace:
+[    6.321530]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    6.326679]  [<ffffffff8148760d>] serial8250_request_dma+0x4d/0x5f0
+[    6.332953]  [<ffffffff81486923>] serial8250_do_startup+0x663/0x6d0
+[    6.339223]  [<ffffffff814869ab>] serial8250_startup+0x1b/0x20
+[    6.345060]  [<ffffffff81480172>] uart_startup.part.16+0x82/0x1c0
+[    6.351158]  [<ffffffff814803ce>] uart_open+0x11e/0x170
+[    6.356388]  [<ffffffff81461ea7>] tty_open+0x107/0x670
+[    6.361531]  [<ffffffff811de4af>] chrdev_open+0x9f/0x1b0
+[    6.366848]  [<ffffffff811d7bbf>] do_dentry_open+0x1cf/0x2f0
+[    6.372512]  [<ffffffff811de410>] ? cdev_put+0x30/0x30
+[    6.377656]  [<ffffffff811d8f17>] vfs_open+0x57/0x80
+[    6.382627]  [<ffffffff811e3ef7>] ? may_open+0x57/0xe0
+[    6.387774]  [<ffffffff811e7cc3>] path_openat+0x1d3/0x1460
+[    6.393269]  [<ffffffff811e9fee>] do_filp_open+0x7e/0xe0
+[    6.398588]  [<ffffffff81a65268>] ? _raw_spin_unlock+0x18/0x30
+[    6.404429]  [<ffffffff811f706c>] ? __alloc_fd+0xbc/0x170
+[    6.409832]  [<ffffffff811d92ac>] do_sys_open+0x12c/0x210
+[    6.415236]  [<ffffffff814909aa>] ? random_int_secret_init+0x1a/0x20
+[    6.421595]  [<ffffffff811d93ae>] SyS_open+0x1e/0x20
+[    6.426568]  [<ffffffff823c4092>] kernel_init_freeable+0x1b9/0x22e
+[    6.432755]  [<ffffffff81a5d650>] ? rest_init+0x90/0x90
+[    6.437984]  [<ffffffff81a5d65e>] kernel_init+0xe/0xe0
+[    6.443128]  [<ffffffff81a65c6f>] ret_from_fork+0x3f/0x70
+[    6.448533]  [<ffffffff81a5d650>] ? rest_init+0x90/0x90
+[    6.453780] dump_stack over
