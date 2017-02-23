@@ -1,0 +1,10 @@
+out/target/product/bxtp_abl/obj/kernel/drivers/dma/
+├── acpi-dma.o
+├── dmaengine.o
+├── dw
+│   ├── core.o
+│   ├── dw_dmac_core.o
+│   ├── dw_dmac.o
+│   └── platform.o
+├── idma64.o
+└── virt-dma.o
