@@ -64,6 +64,18 @@ struct tty_ldisc_ops tty_ldisc_N_TTY = {
 									port->ops->start_tx(port);
 									<=> struct uart_ops serial8250_pops = {
 											.start_tx	= serial8250_start_tx,
+--------------------------------------------------------------------------------
+
+//8250_port.c
+void serial8250_set_defaults(struct uart_8250_port *up)
+|-- /* default dma handlers */
+	if (up->dma) {
+		if (!up->dma->tx_dma)
+			up->dma->tx_dma = serial8250_tx_dma; //defined in 8250_dma.c
+		if (!up->dma->rx_dma)
+			up->dma->rx_dma = serial8250_rx_dma;
+	}
+
 *********************************************************************************
 pci driver
 module_pci_driver(serial_pci_driver); //8250_pci.c: Helper macro for registering a PCI driver
@@ -124,10 +136,39 @@ static const struct serial8250_config uart_config[] = {
 }
 
 --------------------------------------------------------------------------------
-interrupt:
 
 serial8250_do_startup / serial8250_set_defaults / serial8250_config_port
 |-> set_io_from_upio
 	|-> p->handle_irq = serial8250_default_handle_irq;
 		|-> serial8250_default_handle_irq
 			|-> serial8250_handle_irq //This handles the interrupt from one port.
+
+
+// include/linux/serial_core.h
+struct uart_port {
+	int			(*handle_irq)(struct uart_port *);
+
+--------------------------------------------------------------------------------
+interrupt:
+// This is the serial driver's interrupt routine.
+
+static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
+
+
+//8250_core.c
+static const struct uart_8250_ops univ8250_driver_ops = {
+	.setup_irq	= univ8250_setup_irq,
+	|-> retval = serial_link_irq_chain(up);
+		|-> ret = request_irq(up->port.irq, serial8250_interrupt,
+
+********************************************************************************
+ 
+//This function is used to handle ports that do not have an interrupt. 
+static void serial8250_timeout(unsigned long data)
+{
+	struct uart_8250_port *up = (struct uart_8250_port *)data;
+
+	up->port.handle_irq(&up->port);
+	mod_timer(&up->timer, jiffies + uart_poll_timeout(&up->port));
+}
+
