@@ -52,7 +52,9 @@ struct file_operations tty_fops
 	.read		= tty_read,
 
 --------------------------------------------------------------------------------
-struct tty_ldisc_ops tty_ldisc_N_TTY = {
+write:
+
+struct tty_ldisc_ops tty_ldisc_N_TTY = { //n_tty.c
 	.write           = n_tty_write,
 	|-> if (tty->ops->flush_chars)
 			tty->ops->flush_chars(tty);
@@ -62,8 +64,29 @@ struct tty_ldisc_ops tty_ldisc_N_TTY = {
 						|-> __uart_start(tty);
 							|->	if (!uart_tx_stopped(port))
 									port->ops->start_tx(port);
+									//8250_port.c
 									<=> struct uart_ops serial8250_pops = {
 											.start_tx	= serial8250_start_tx,
+
+>>											
+
+static const struct tty_operations uart_ops = {
+	.start		= uart_start,
+	|-> uart_start(tty);
+		|-> __uart_start(tty);
+			|->	if (!uart_tx_stopped(port))
+					port->ops->start_tx(port);
+						//8250_port.c
+						<=> struct uart_ops serial8250_pops = {
+								.start_tx	= serial8250_start_tx,
+
+------
+//8250_port.c
+static void serial8250_start_tx(struct uart_port *port)
+|
+|-> if (up->dma && !up->dma->tx_dma(up))
+		return;
+
 --------------------------------------------------------------------------------
 
 //8250_port.c
@@ -141,7 +164,7 @@ serial8250_do_startup / serial8250_set_defaults / serial8250_config_port
 |-> set_io_from_upio
 	|-> p->handle_irq = serial8250_default_handle_irq;
 		|-> serial8250_default_handle_irq
-			|-> serial8250_handle_irq //This handles the interrupt from one port.
+			|-> serial8250_handle_irq //8250_port.c: This handles the interrupt from one port.
 
 
 // include/linux/serial_core.h
@@ -161,6 +184,11 @@ static const struct uart_8250_ops univ8250_driver_ops = {
 	|-> retval = serial_link_irq_chain(up);
 		|-> ret = request_irq(up->port.irq, serial8250_interrupt,
 
+
+----
+serial8250_interrupt
+|-> if (port->handle_irq(port)) {
+
 ********************************************************************************
  
 //This function is used to handle ports that do not have an interrupt. 
@@ -172,3 +200,51 @@ static void serial8250_timeout(unsigned long data)
 	mod_timer(&up->timer, jiffies + uart_poll_timeout(&up->port));
 }
 
+
+********************************************************************************
+console
+//8250_core.c
+static struct console univ8250_console = {
+	.name		= "ttyS",
+	.write		= univ8250_console_write,
+	.device		= uart_console_device,
+	.setup		= univ8250_console_setup,
+	.match		= univ8250_console_match,
+	.flags		= CON_PRINTBUFFER | CON_ANYTIME,
+	.index		= -1,
+	.data		= &serial8250_reg,
+};
+
+static void univ8250_console_write(struct console *co, const char *s,
+|-> // Print a string to the serial port trying not to disturb
+	// any possible real use of the port...
+	serial8250_console_write(up, s, count);
+	|-> uart_console_write(port, s, count, serial8250_console_putchar);
+		|-> serial8250_console_putchar
+			|-> serial_port_out(port, UART_TX, ch);
+				|-> up->serial_out(up, offset, value);
+
+----
+//?
+set_io_from_upio
+|-> p->serial_out = io_serial_out;
+					|-> outb(value, p->iobase + offset);
+
+********************************************************************************
+obj/kernel/.config
+CONFIG_SERIAL_8250_RSA=y
+----
+8250_core.c
+univ8250_request_port
+|-> serial8250_request_rsa_resource
+
+----
+
+univ8250_config_port
+|-> serial8250_request_rsa_resource
+
+----
+univ8250_rsa_support
+{   ops->config_port  = univ8250_config_port;
+	ops->request_port = univ8250_request_port;
+}

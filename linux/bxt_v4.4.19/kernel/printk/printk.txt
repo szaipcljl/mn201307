@@ -1,0 +1,16 @@
+printk
+
+
+
+
+********************************************************************************
+console
+
+vprintk_emit / console_start
+|
+|
+V
+console_unlock
+|-> // Call the console drivers, asking them to write out
+	// log_buf[start] to log_buf[end - 1].
+	call_console_drivers
