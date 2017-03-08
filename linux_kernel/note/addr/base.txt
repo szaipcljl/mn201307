@@ -1,0 +1,9 @@
+iobase membase mapbase的区别
+
+2010-12-22
+
+iobase 是IO端口基地址，使用in/out[bwl] 来访问
+
+membase是IO端口的内存地址（映射过的逻辑地址），使用read/write[bwl]访问
+
+mapbase描述的是IO端口的物理地址，是硬件定义好的，可以通过ioremap获得对应的逻辑地址

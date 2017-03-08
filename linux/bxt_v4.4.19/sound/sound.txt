@@ -1,0 +1,26 @@
+
+
+ALSA (Advanced Linux Sound Architecture)
+-- Linux系统下的高级音频架构，
+
+主要为声卡提供的驱动组件，以替代原先的 OSS。
+
+在内核设备驱动层，ALSA提供了alsa-driver，
+在应用层，ALSA提供了alsa-lib，
+应用程序调用alsa-lib所提供的API，完成对底层音频硬件的控制：
+
+alsa-soc其实是对alsa-driver的进一步封装
+
+/dev/snd/
+
+android的音频系统非常庞大复杂, 涉及到:
+
+java应用程序，
+java框架层，
+
+JNI，
+本地服务(AudioFlinger和AudioPolicyService)，
+
+硬件抽象层HAL，
+ALSA-LIB,
+ALSA-DRIVER。

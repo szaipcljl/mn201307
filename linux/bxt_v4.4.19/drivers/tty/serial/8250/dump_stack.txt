@@ -30,3 +30,88 @@
 [    6.443128]  [<ffffffff81a65c6f>] ret_from_fork+0x3f/0x70
 [    6.448533]  [<ffffffff81a5d650>] ? rest_init+0x90/0x90
 [    6.453780] dump_stack over
+
+
+
+********************************************************************************
+[    0.614365] m### pciserial_init_one start : 4420
+
+[    0.614515] dump_stack start
+[    0.614636] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #43
+[    0.615145]  0000000000000000 ffff880276977d00 ffffffff8138ebb5 ffff8802762460a8
+[    0.615431]  ffff880276246000 ffff880276977d48 ffffffff8148ad97 0000000000000001
+[    0.615712]  ffff880276977d48 ffffffff815e23fd ffff8802762460a8 ffffffff822bf5a8
+[    0.616017] Call Trace:
+[    0.616113]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.616287]  [<ffffffff8148ad97>] pciserial_init_one+0x47/0x1d0
+[    0.616481]  [<ffffffff815e23fd>] ? __pm_runtime_resume+0x4d/0x60
+[    0.616681]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    0.616882]  [<ffffffff815d75d4>] driver_probe_device+0x224/0x4a0
+[    0.617075]  [<ffffffff815d78d4>] __driver_attach+0x84/0x90
+[    0.617257]  [<ffffffff815d7850>] ? driver_probe_device+0x4a0/0x4a0
+[    0.617461]  [<ffffffff815d52d4>] bus_for_each_dev+0x64/0xa0
+[    0.617644]  [<ffffffff815d6f5e>] driver_attach+0x1e/0x20
+[    0.617822]  [<ffffffff815d6ae1>] bus_add_driver+0x1f1/0x290
+[    0.618007]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    0.618210]  [<ffffffff815d8320>] driver_register+0x60/0xe0
+[    0.618396]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    0.618593]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    0.618782]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    0.618971]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    0.619172]  [<ffffffff81a5d980>] ? rest_init+0x90/0x90
+[    0.619343]  [<ffffffff81a5d98e>] kernel_init+0xe/0xe0
+[    0.619513]  [<ffffffff81a65faf>] ret_from_fork+0x3f/0x70
+[    0.619687]  [<ffffffff81a5d980>] ? rest_init+0x90/0x90
+[    0.619919] dump_stack over
+[
+
+********************************************************************************
+[   10.989314] #### dump_stack start
+[   10.989318] CPU: 1 PID: 2371 Comm: ioc_slcand Tainted: G     U  W  O    4.4.19-quilt-2e5dc0ac-g2599a68-dirty #45
+[   10.989323]  0000000000000000 ffff880270e97b68 ffffffff8138ebb5 ffffffff82665fe0
+[   10.989325]  0000000000000000 ffff880270e97b88 ffffffff81486f22 ffffffff82665fe0
+[   10.989327]  0000000000000000 ffff880270e97ba0 ffffffff8147f8fa 0000000000000019
+[   10.989328] Call Trace:
+[   10.989338]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[   10.989342]  [<ffffffff81486f22>] serial8250_start_tx+0x22/0x120
+[   10.989345]  [<ffffffff8147f8fa>] __uart_start.isra.7+0x5a/0x60
+[   10.989347]  [<ffffffff8147fa3c>] uart_write+0xdc/0x120
+[   10.989351]  [<ffffffff81672edb>] slc_xmit+0x18b/0x210
+[   10.989355]  [<ffffffff818e8c6f>] dev_hard_start_xmit+0x25f/0x420
+[   10.989358]  [<ffffffff8190a66e>] sch_direct_xmit+0xde/0x220
+[   10.989360]  [<ffffffff818e917d>] __dev_queue_xmit+0x20d/0x570
+[   10.989362]  [<ffffffff818e94f0>] dev_queue_xmit+0x10/0x20
+[   10.989365]  [<ffffffff81a06f4c>] can_send+0xbc/0x210
+[   10.989368]  [<ffffffff81a08d68>] raw_sendmsg+0x188/0x1e0
+[   10.989371]  [<ffffffff818cb608>] sock_sendmsg+0x38/0x50
+[   10.989373]  [<ffffffff818cb69b>] sock_write_iter+0x7b/0xd0
+[   10.989377]  [<ffffffff811d9ada>] __vfs_write+0xaa/0xe0
+[   10.989379]  [<ffffffff811da139>] vfs_write+0xa9/0x190
+[   10.989381]  [<ffffffff811dae39>] SyS_write+0x49/0xa0
+[   10.989384]  [<ffffffff81a65c57>] entry_SYSCALL_64_fastpath+0x12/0x6a
+[   10.989385] #### dump_stack over
+[   10.989418] #### dump_stack start
+[   10.989421] CPU: 0 PID: 3 Comm: ksoftirqd/0 Tainted: G     U  W  O    4.4.19-quilt-2e5dc0ac-g2599a68-dirty #45
+[   10.989424]  0000000000000000 ffff880276a27bd0 ffffffff8138ebb5 ffffffff82665fe0
+[   10.989426]  0000000000000000 ffff880276a27bf0 ffffffff81486f22 ffffffff82665fe0
+[   10.989428]  0000000000000000 ffff880276a27c08 ffffffff8147f8fa 0000000000000019
+[   10.989428] Call Trace:
+[   10.989432]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[   10.989434]  [<ffffffff81486f22>] serial8250_start_tx+0x22/0x120
+[   10.989436]  [<ffffffff8147f8fa>] __uart_start.isra.7+0x5a/0x60
+[   10.989438]  [<ffffffff8147fa3c>] uart_write+0xdc/0x120
+[   10.989440]  [<ffffffff81672edb>] slc_xmit+0x18b/0x210
+[   10.989443]  [<ffffffff818e8c6f>] dev_hard_start_xmit+0x25f/0x420
+[   10.989445]  [<ffffffff8190a66e>] sch_direct_xmit+0xde/0x220
+[   10.989447]  [<ffffffff8190a843>] __qdisc_run+0x93/0x1b0
+[   10.989449]  [<ffffffff818e4713>] net_tx_action+0x123/0x280
+[   10.989452]  [<ffffffff8109ec40>] __do_softirq+0x130/0x350
+[   10.989454]  [<ffffffff8109ee7f>] run_ksoftirqd+0x1f/0x40
+[   10.989458]  [<ffffffff810ba61b>] smpboot_thread_fn+0x19b/0x270
+[   10.989460]  [<ffffffff810ba480>] ? sort_range+0x30/0x30
+[   10.989462]  [<ffffffff810b732d>] kthread+0xed/0x110
+[   10.989464]  [<ffffffff810b7240>] ? kthread_create_on_node+0x190/0x190
+[   10.989467]  [<ffffffff81a65faf>] ret_from_fork+0x3f/0x70
+[   10.989468]  [<ffffffff810b7240>] ? kthread_create_on_node+0x190/0x190
+[   10.989469] #### dump_stack over
+

@@ -1,0 +1,1584 @@
+GOT reboot
+Rebooting ...
+SENT OKAY
+
+
+abl-APL: rel.1705-Android
+CPU: APL-B0 [4C @ 1900MHz: premium SKU], ucode rev.24; power-on reset
+CSE: FW 3.0.20.1139
+CSE: boot dev #2: SPI
+IPC config: R.<28 bytes> (11ms)
+NVRAM: <8 bytes>
+PCB #B00F: GR MRB (BMP fab.D, 4x16Gb), F:7; BM:0->0
+MRC: [v0.56.22/89.10] FB OK(0): 8GB
+CSE: send DID  UMA @10000000, 34MB
+OTG init timeout
+Android
+
+GPT FOUND
+auto-boot ...
+image#0 - mmc4:@0: 
+GPT FOUND
+SB: Disabled
+
+GPT FOUND
+android boot path taken
+Green
+Android preloaded
+==> jump to image @12200020 (setup @0) ...
+Loader: Launch VMM
+VT-d: SKIP_DMAR0 is on
+VMM: Launch first Guest
+VMM: Launch Android
+[    0.000000] Initializing cgroup subsys cpuset
+[    0.000000] Initializing cgroup subsys cpu
+[    0.000000] Initializing cgroup subsys cpuacct
+[    0.000000] Linux version 4.4.19-quilt-2e5dc0ac-g2599a68-dirty (nma1x@Mserver) (gcc version 4.9.2 (GCC) ) #63 SMP PREEMPT Fri Mar 3 17:03:45 CST 2017
+[    0.000000] Command line: no_timer_check noxsaves reboot_panic=p,w cpu_init_udelay=10 i915.hpd_sense_invert=0x7 drm.debug=0xe intel_iommu=off loglevel=7 androidboot.hardware=bxtp_abl firmware_class.path=/vendor/firmware relative_sleep_states=1 drm.atomic=1 i915.nuclear_pageflip=1 i915.enable_rc6=1 i915.enable_fbc=1 vga=current i915.modeset=1 drm.vblankoffdelay=1 i915.fastboot=1 thermal.off=1 console=ttyS2,115200n8 pstore.backend=ramoops memmap=0x400000$0x50000000 ramoops.mem_address=0x50000000 ramoops.mem_size=0x400000 ramoops.record_size=0x4000 ramoops.console_size=0x200000 ramoops.ftrace_size=0x2000 ramoops.dump_oops=1 androidboot.brand=intel androidboot.name=broxton_p androidboot.model=gr_mrb androidboot.device=gr_mrb ABL.bdev=mmc4:@0 ABL.boot=0 ABL.csever=3.0.20.1139 ABL.bpdt1=0x000055aa,0x00000000 ABL.bpdt2=0x000055aa,0x00000000 ABL.hwver=51,4,1900,b00f,0,8192 ABL.mrcthreshold=0,0 ABL.memser=0x00000001 ABL.reset=power-on ABL.seed=0,0 ABL.oemkm=398@c13e4 ABL.timestamps=64@0xc0000 AB[    0.000000] x86/fpu: xstate_offset[3]:  960, xstate_sizes[3]:   64
+[    0.000000] x86/fpu: xstate_offset[4]: 1024, xstate_sizes[4]:   64
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x01: 'x87 floating point registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x02: 'SSE registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x08: 'MPX bounds registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x10: 'MPX CSR'
+[    0.000000] x86/fpu: Enabled xstate features 0x1b, context size is 1088 bytes, using 'standard' format.
+[    0.000000] x86/fpu: Using 'eager' FPU context switches.
+[    0.000000] e820: BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000096fff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000000097000-0x000000000009ffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000000c0000-0x00000000000fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000000fffffff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000010000000-0x00000000121fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000012200000-0x00000000773fffff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000077400000-0x00000000787fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000078800000-0x000000007afd5fff] usable
+[    0.000000] BIOS-e820: [mem 0x000000007afd6000-0x000000007afdcfff] ACPI data
+[    0.000000] BIOS-e820: [mem 0x000000007afdd000-0x000000007afdffff] ACPI NVS
+[    0.000000] BIOS-e820: [mem 0x000000007afe0000-0x000000007fffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000e0000000-0x00000000efffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000fed00000-0x00000000fedfffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000ff800000-0x00000000ffffffff] unusable
+[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000027fffffff] usable
+[    0.000000] NX (Execute Disable) protection: active
+[    0.000000] e820: user-defined physical RAM map:
+[    0.000000] user: [mem 0x0000000000000000-0x0000000000096fff] usable
+[    0.000000] user: [mem 0x0000000000097000-0x000000000009ffff] reserved
+[    0.000000] user: [mem 0x00000000000c0000-0x00000000000fffff] reserved
+[    0.000000] user: [mem 0x0000000000100000-0x000000000fffffff] usable
+[    0.000000] user: [mem 0x0000000010000000-0x00000000121fffff] reserved
+[    0.000000] user: [mem 0x0000000012200000-0x000000004fffffff] usable
+[    0.000000] user: [mem 0x0000000050000000-0x00000000503fffff] reserved
+[    0.000000] user: [mem 0x0000000050400000-0x00000000773fffff] usable
+[    0.000000] user: [mem 0x0000000077400000-0x00000000787fffff] reserved
+[    0.000000] user: [mem 0x0000000078800000-0x000000007afd5fff] usable
+[    0.000000] user: [mem 0x000000007afd6000-0x000000007afdcfff] ACPI data
+[    0.000000] user: [mem 0x000000007afdd000-0x000000007afdffff] ACPI NVS
+[    0.000000] user: [mem 0x000000007afe0000-0x000000007fffffff] reserved
+[    0.000000] user: [mem 0x00000000e0000000-0x00000000efffffff] reserved
+[    0.000000] user: [mem 0x00000000fed00000-0x00000000fedfffff] reserved
+[    0.000000] user: [mem 0x00000000ff800000-0x00000000ffffffff] unusable
+[    0.000000] user: [mem 0x0000000100000000-0x000000027fffffff] usable
+[    0.000000] DMI not present or invalid.
+[    0.000000] e820: last_pfn = 0x280000 max_arch_pfn = 0x400000000
+[    0.000000] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WC  UC- WT  
+[    0.000000] e820: last_pfn = 0x7afd6 max_arch_pfn = 0x400000000
+[    0.000000] found SMP MP-table at [mem 0x0009fc00-0x0009fc0f] mapped at [ffff88000009fc00]
+[    0.000000] Scanning 1 areas for low memory corruption
+[    0.000000] Using GB pages for direct mapping
+[    0.000000] RAMDISK: [mem 0x76bc1000-0x77398fff]
+[    0.000000] ACPI: Early table checksum verification disabled
+[    0.000000] ACPI: RSDP 0x00000000000FFEC0 000024 (v02 INTEL )
+[    0.000000] ACPI: XSDT 0x000000007AFDCF30 00005C (v01 INTEL  EDK2     00000005 INTL 0100000D)
+[    0.000000] ACPI: FACP 0x000000007AFD6C00 00010C (v05 INTEL  EDK2     00000005 INTL 0100000D)
+[    0.000000] ACPI: DSDT 0x000000007AFD6D10 0061DA (v02 INTEL  BXT-SOC  00000000 INTL 20150619)
+[    0.000000] ACPI: FACS 0x000000007AFDCEF0 000040
+[    0.000000] ACPI: APIC 0x000000007AFD6B70 000084 (v03 INTEL  EDK2     00000000 INTL 0100000D)
+[    0.000000] ACPI: MCFG 0x000000007AFD6B30 00003C (v01 INTEL  EDK2     00000001 INTL 0100000D)
+[    0.000000] ACPI: HPET 0x000000007AFD6AF0 000038 (v01 INTEL  EDK2     00000005 INTL 0100000D)
+[    0.000000] ACPI: NHLT 0x000000007AFD65C0 00052B (v00 INTEL  NHLT-GPA 00000003 NTET 00000002)
+[    0.000000] ACPI:      0x000000007AFD6510 000000 (v00                 00000000      00000000)
+[    0.000000] ACPI: TPM2 0x000000007AFD64D0 000034 (v03                 00000000      00000000)
+[    0.000000] Zone ranges:
+[    0.000000]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+[    0.000000]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+[    0.000000]   Normal   [mem 0x0000000100000000-0x000000027fffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000001000-0x0000000000096fff]
+[    0.000000]   node   0: [mem 0x0000000000100000-0x000000000fffffff]
+[    0.000000]   node   0: [mem 0x0000000012200000-0x000000004fffffff]
+[    0.000000]   node   0: [mem 0x0000000050400000-0x00000000773fffff]
+[    0.000000]   node   0: [mem 0x0000000078800000-0x000000007afd5fff]
+[    0.000000]   node   0: [mem 0x0000000100000000-0x000000027fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000000001000-0x000000027fffffff]
+[    0.000000] x86/hpet: Will disable the HPET for this platform because it's not reliable
+[    0.000000] Reserving Intel graphics stolen memory at 0x7c000000-0x7fffffff
+[    0.000000] ACPI: PM-Timer IO Port: 0x408
+[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x01] high level lint[0x1])
+[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x02] high level lint[0x1])
+[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x03] high level lint[0x1])
+[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x04] high level lint[0x1])
+[    0.000000] IOAPIC[0]: apic_id 8, version 32, address 0xfec00000, GSI 0-119
+[    0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+[    0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 low level)
+[    0.000000] Using ACPI (MADT) for SMP configuration information
+[    0.000000] ACPI: HPET id: 0x8086a701 base: 0xfed00000
+[    0.000000] smpboot: Allowing 4 CPUs, 0 hotplug CPUs
+[    0.000000] e820: [mem 0x80000000-0xdfffffff] available for PCI devices
+[    0.000000] clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1910969940391419 ns
+[    0.000000] setup_percpu: NR_CPUS:32 nr_cpumask_bits:32 nr_cpu_ids:4 nr_node_ids:1
+[    0.000000] PERCPU: Embedded 32 pages/cpu @ffff88027fc00000 s93864 r8192 d29016 u524288
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 2029432
+[    0.000000] Kernel command line: no_timer_check noxsaves reboot_panic=p,w cpu_init_udelay=10 i915.hpd_sense_invert=0x7 drm.debug=0xe intel_iommu=off loglevel=7 androidboot.hardware=bxtp_abl firmware_class.path=/vendor/firmware relative_sleep_states=1 drm.atomic=1 i915.nuclear_pageflip=1 i915.enable_rc6=1 i915.enable_fbc=1 vga=current i915.modeset=1 drm.vblankoffdelay=1 i915.fastboot=1 thermal.off=1 console=ttyS2,115200n8 pstore.backend=ramoops memmap=0x400000$0x50000000 ramoops.mem_address=0x50000000 ramoops.mem_size=0x400000 ramoops.record_size=0x4000 ramoops.console_size=0x200000 ramoops.ftrace_size=0x2000 ramoops.dump_oops=1 androidboot.brand=intel androidboot.name=broxton_p androidboot.model=gr_mrb androidboot.device=gr_mrb ABL.bdev=mmc4:@0 ABL.boot=0 ABL.csever=3.0.20.1139 ABL.bpdt1=0x000055aa,0x00000000 ABL.bpdt2=0x000055aa,0x00000000 ABL.hwver=51,4,1900,b00f,0,8192 ABL.mrcthreshold=0,0 ABL.memser=0x00000001 ABL.reset=power-on ABL.seed=0,0 ABL.oemkm=398@c13e4 ABL.timestamps=64@0xc[    0.000000] Setting dangerous option i915.hpd_sense_invert - tainting kernel
+[    0.000000] DMAR: IOMMU disabled
+[    0.000000] Setting dangerous option i915.nuclear_pageflip - tainting kernel
+[    0.000000] Setting dangerous option i915.enable_rc6 - tainting kernel
+[    0.000000] Setting dangerous option i915.enable_fbc - tainting kernel
+[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.000000] Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes)
+[    0.000000] Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes)
+[    0.000000] Memory: 8005092K/8246704K available (10668K kernel code, 1706K rwdata, 5152K rodata, 1976K init, 1080K bss, 241612K reserved, 0K cma-reserved)
+[    0.000000] Preemptible hierarchical RCU implementation.
+[    0.000000] 	Build-time adjustment of leaf fanout to 64.
+[    0.000000] 	RCU restricting CPUs from NR_CPUS=32 to nr_cpu_ids=4.
+[    0.000000] RCU: Adjusting geometry for rcu_fanout_leaf=64, nr_cpu_ids=4
+[    0.000000] NR_IRQS:4352 nr_irqs:1024 16
+[    0.000000] Console: colour dummy device 80x25
+[    0.000000] m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.000000] m### set_io_from_upio start:412
+[    0.000000] m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.000000] m### set_io_from_upio start:412
+[    0.000000] m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.000000] m### set_io_from_upio start:412
+[    0.000000] m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.000000] m### set_io_from_upio start:412
+[    0.000000] console [ttyS2] enabled
+[    0.000000] kmemleak: Kernel memory leak detector disabled
+[    0.000000] tsc: PIT calibration matches PMTIMER. 1 loops
+[    0.000000] tsc: Detected 1881.636 MHz processor
+[    0.000213] Calibrating delay loop (skipped), value calculated using timer frequency.. 3763.20 BogoMIPS (lpj=1881600)
+[    0.000543] pid_max: default: 32768 minimum: 301
+[    0.000703] ACPI: Core revision 20150930
+[    0.006788] ACPI: 1 ACPI AML tables successfully acquired and loaded
+[    0.007054] Security Framework initialized
+[    0.007188] SELinux:  Initializing.
+[    0.007346] Mount-cache hash table entries: 16384 (order: 5, 131072 bytes)
+[    0.007564] Mountpoint-cache hash table entries: 16384 (order: 5, 131072 bytes)
+[    0.008192] Initializing cgroup subsys memory
+[    0.008349] Initializing cgroup subsys freezer
+[    0.008671] CPU: Physical Processor ID: 0
+[    0.008800] CPU: Processor Core ID: 0
+[    0.015202] mce: CPU supports 7 MCE banks
+[    0.015399] CPU0: Thermal monitoring enabled (TM1)
+[    0.015601] Last level iTLB entries: 4KB 48, 2MB 0, 4MB 0
+[    0.015768] Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
+[    0.024525] Freeing SMP alternatives memory: 32K (ffffffff8259a000 - ffffffff825a2000)
+[    0.024773] ftrace: allocating 38551 entries in 151 pages
+[    0.187657] ..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
+[    0.289167] smpboot: CPU0: Intel(R) Atom(TM) Processor E3900 @ 1.90GHz (family: 0x6, model: 0x5c, stepping: 0x9)
+[    0.289539] Performance Events: PEBS fmt3+, 32-deep LBR, Silvermont events, full-width counters, Intel PMU driver.
+[    0.289925] ... version:                4
+[    0.290050] ... bit width:              48
+[    0.290195] ... generic registers:      4
+[    0.290318] ... value mask:             0000ffffffffffff
+[    0.290484] ... max period:             0000ffffffffffff
+[    0.290648] ... fixed-purpose events:   3
+[    0.290772] ... event mask:             000000070000000f
+[    0.296765] EM:OEM0 table not found!!
+[    0.296891] bxt_charging_algo_init: failed to get oem0 table
+[    0.300230] x86: Booting SMP configuration:
+[    0.300365] .... node  #0, CPUs:      #1
+[    0.310347] NMI watchdog: enabled on all CPUs, permanently consumes one hw-PMU counter.
+[    0.313215]  #2 #3
+[    0.334859] x86: Booted up 1 node, 4 CPUs
+[    0.334998] smpboot: Total of 4 processors activated (15052.80 BogoMIPS)
+[    0.339255] PM: Registering ACPI NVS region [mem 0x7afdd000-0x7afdffff] (12288 bytes)
+[    0.339887] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275000 ns
+[    0.340378] pinctrl core: initialized pinctrl subsystem
+[    0.341061] RTC time: 11:11:13, date: 11/11/11
+[    0.342955] NET: Registered protocol family 16
+[    0.343767] ramoops: using module parameters
+[    0.345961] console [pstore-1] enabled
+[    0.346279] pstore: Registered ramoops as persistent store backend
+[    0.346481] ramoops: attached 0x400000@0x50000000, ecc: 0/0
+[    0.350922] cpuidle: using governor menu
+[    0.351730] ACPI: bus type PCI registered
+[    0.351869] acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5
+[    0.352199] PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0xe0000000-0xefffffff] (base 0xe0000000)
+[    0.352498] PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved in E820
+[    0.352739] PCI: Using configuration type 1 for base access
+[    0.386226] ACPI: Added _OSI(Module Device)
+[    0.386376] ACPI: Added _OSI(Processor Device)
+[    0.386523] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    0.386676] ACPI: Added _OSI(Processor Aggregator Device)
+[    0.392127] ACPI: Executed 1 blocks of module-level executable AML code
+[    0.397654] ACPI: Interpreter enabled
+[    0.397787] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State [\_S1_] (20150930/hwxface-580)
+[    0.398127] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State [\_S2_] (20150930/hwxface-580)
+[    0.398465] ACPI: (supports S0 S3 S5)
+[    0.398593] ACPI: Using IOAPIC for interrupt routing
+[    0.398874] PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+[    0.415226] ACPI: Power Resource [FN00] (on)
+[    0.416421] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+[    0.416635] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI]
+[    0.418057] acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug PME AER PCIeCapability]
+[    0.419153] PCI host bridge to bus 0000:00
+[    0.419300] pci_bus 0000:00: root bus resource [io  0x0070-0x0077]
+[    0.419502] pci_bus 0000:00: root bus resource [io  0x0000-0x006f window]
+[    0.419723] pci_bus 0000:00: root bus resource [io  0x0078-0x0cf7 window]
+[    0.419942] pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+[    0.420161] pci_bus 0000:00: root bus resource [mem 0x7c000001-0x7fffffff window]
+[    0.420402] pci_bus 0000:00: root bus resource [mem 0x7b800001-0x7bffffff window]
+[    0.420644] pci_bus 0000:00: root bus resource [mem 0x80000000-0xcfffffff window]
+[    0.420882] pci_bus 0000:00: root bus resource [mem 0xe0000000-0xefffffff window]
+[    0.421122] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.424467] pci 0000:00:0e.0: System wakeup disabled by ACPI
+[    0.428390] pci 0000:00:13.0: System wakeup disabled by ACPI
+[    0.429092] pci 0000:00:13.2: System wakeup disabled by ACPI
+[    0.429766] pci 0000:00:13.3: System wakeup disabled by ACPI
+[    0.430449] pci 0000:00:14.0: System wakeup disabled by ACPI
+[    0.431251] pci 0000:00:15.0: System wakeup disabled by ACPI
+[    0.432107] pci 0000:00:15.1: System wakeup disabled by ACPI
+[    0.444667] pci 0000:00:13.0: PCI bridge to [bus 01]
+[    0.445361] pci 0000:02:00.0: System wakeup disabled by ACPI
+[    0.447790] pci 0000:00:13.2: PCI bridge to [bus 02]
+[    0.448463] pci 0000:03:00.0: System wakeup disabled by ACPI
+[    0.450790] pci 0000:00:13.3: PCI bridge to [bus 03]
+[    0.451114] pci 0000:00:14.0: PCI bridge to [bus 04]
+[    0.451866] ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.452401] ACPI: PCI Interrupt Link [LNKB] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.452929] ACPI: PCI Interrupt Link [LNKC] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.453454] ACPI: PCI Interrupt Link [LNKD] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.453989] ACPI: PCI Interrupt Link [LNKE] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.454523] ACPI: PCI Interrupt Link [LNKF] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.455244] ACPI: PCI Interrupt Link [LNKG] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.455780] ACPI: PCI Interrupt Link [LNKH] (IRQs 3 4 5 6 10 11 12 14 *15), disabled.
+[    0.459656] ACPI: Enabled 4 GPEs in block 00 to 7F
+[    0.460541] vgaarb: setting as boot device: PCI:0000:00:02.0
+[    0.460865] vgaarb: device added: PCI:0000:00:02.0,decodes=io+mem,owns=io+mem,locks=none
+[    0.461150] vgaarb: loaded
+[    0.461243] vgaarb: bridge control possible 0000:00:02.0
+[    0.461763] SCSI subsystem initialized
+[    0.462579] ACPI: bus type USB registered
+[    0.462901] usbcore: registered new interface driver usbfs
+[    0.463177] usbcore: registered new interface driver hub
+[    0.463453] usbcore: registered new device driver usb
+[    0.464117] media: Linux media interface: v0.10
+[    0.464344] Linux video capture interface: v2.00
+[    0.464618] pps_core: LinuxPPS API ver. 1 registered
+[    0.464783] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[    0.465147] PTP clock support registered
+[    0.465687] dmi: Firmware registration failed.
+[    0.466263] Advanced Linux Sound Architecture Driver Initialized.
+[    0.466468] PCI: Using ACPI for IRQ routing
+[    0.484548] pci 0000:00:15.1: can't claim BAR 0 [mem 0xfe600000-0xfe7fffff 64bit]: no compatible bridge window
+[    0.485016] pci 0000:00:18.2: can't claim BAR 0 [mem 0xfc000000-0xfc000fff 64bit]: no compatible bridge window
+[    0.486301] cfg80211: World regulatory domain updated:
+[    0.486472] cfg80211:  DFS Master region: unset
+[    0.486614] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[    0.486928] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (N/A, 2000 mBm), (N/A)
+[    0.487185] cfg80211:   (2457000 KHz - 2482000 KHz @ 20000 KHz, 92000 KHz AUTO), (N/A, 2000 mBm), (N/A)
+[    0.487483] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (N/A, 2000 mBm), (N/A)
+[    0.487740] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (N/A)
+[    0.488041] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (0 s)
+[    0.488335] cfg80211:   (5490000 KHz - 5730000 KHz @ 160000 KHz), (N/A, 2000 mBm), (0 s)
+[    0.488586] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz), (N/A, 2000 mBm), (N/A)
+[    0.488831] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000 KHz), (N/A, 0 mBm), (N/A)
+[    0.489958] amd_nb: Cannot enumerate AMD northbridges
+[    0.490043] Trying to unpack rootfs image as initramfs...
+[    0.490326] clocksource: Switched to clocksource refined-jiffies
+[    0.514499] Initialise system trusted keyring
+[    0.514807] Key type asymmetric registered
+[    0.514946] Asymmetric key parser 'x509' registered
+[    0.515452] pnp: PnP ACPI init
+[    0.515853] system 00:00: [io  0x0680-0x069f] has been reserved
+[    0.516059] system 00:00: [io  0x0400-0x047f] has been reserved
+[    0.516249] system 00:00: [io  0x0500-0x05fe] has been reserved
+[    0.516430] system 00:00: [io  0x0600-0x061f] has been reserved
+[    0.516606] system 00:00: [io  0x164e-0x164f] has been reserved
+[    0.517280] system 00:01: [mem 0xe0000000-0xefffffff] has been reserved
+[    0.517491] system 00:01: [mem 0xfea00000-0xfeafffff] has been reserved
+[    0.517705] system 00:01: [mem 0xfed01000-0xfed01fff] has been reserved
+[    0.517925] system 00:01: [mem 0xfed03000-0xfed03fff] has been reserved
+[    0.518146] system 00:01: [mem 0xfed06000-0xfed06fff] has been reserved
+[    0.518363] system 00:01: [mem 0xfed08000-0xfed09fff] has been reserved
+[    0.518578] system 00:01: [mem 0xfed80000-0xfedbffff] has been reserved
+[    0.518790] system 00:01: [mem 0xfed1c000-0xfed1cfff] has been reserved
+[    0.519012] system 00:01: [mem 0xfee00000-0xfeefffff] has been reserved
+[    0.519739] pnp: PnP ACPI: found 3 devices
+[    0.571734] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+[    0.572061] clocksource: Switched to clocksource acpi_pm
+[    0.572467] pmc-ipc-plat INT34D2:00: io res: 400 80
+[    0.572622] pmc-ipc-plat INT34D2:00: punit data res: fed17080 4
+[    0.572813] pmc-ipc-plat INT34D2:00: punit interface res: fed17084 4
+[    0.573047] pmc-ipc-plat INT34D2:00: ipc res: fe042000 2000
+[    0.573950] pci 0000:00:15.1: BAR 0: assigned [mem 0x80000000-0x801fffff 64bit]
+[    0.574207] pci 0000:00:13.0: BAR 8: assigned [mem 0x80200000-0x803fffff]
+[    0.574429] pci 0000:00:13.0: BAR 9: assigned [mem 0x80400000-0x805fffff 64bit pref]
+[    0.574676] pci 0000:00:13.2: BAR 9: assigned [mem 0x80600000-0x807fffff 64bit pref]
+[    0.574924] pci 0000:00:13.3: BAR 8: assigned [mem 0x80800000-0x80bfffff]
+[    0.575151] pci 0000:00:13.0: BAR 7: assigned [io  0x4000-0x4fff]
+[    0.575350] pci 0000:00:13.3: BAR 7: assigned [io  0x5000-0x5fff]
+[    0.575552] pci 0000:00:18.2: BAR 0: assigned [mem 0x80c00000-0x80c00fff 64bit]
+[    0.575804] pci 0000:00:13.0: PCI bridge to [bus 01]
+[    0.575964] pci 0000:00:13.0:   bridge window [io  0x4000-0x4fff]
+[    0.576171] pci 0000:00:13.0:   bridge window [mem 0x80200000-0x803fffff]
+[    0.576391] pci 0000:00:13.0:   bridge window [mem 0x80400000-0x805fffff 64bit pref]
+[    0.576638] pci 0000:00:13.2: PCI bridge to [bus 02]
+[    0.576802] pci 0000:00:13.2:   bridge window [io  0x2000-0x2fff]
+[    0.577004] pci 0000:00:13.2:   bridge window [mem 0xb3c00000-0xb3cfffff]
+[    0.577231] pci 0000:00:13.2:   bridge window [mem 0x80600000-0x807fffff 64bit pref]
+[    0.577482] pci 0000:00:13.3: PCI bridge to [bus 03]
+[    0.577644] pci 0000:00:13.3:   bridge window [io  0x5000-0x5fff]
+[    0.577840] pci 0000:00:13.3:   bridge window [mem 0x80800000-0x80bfffff]
+[    0.578058] pci 0000:00:13.3:   bridge window [mem 0xb3a00000-0xb3bfffff 64bit pref]
+[    0.578311] pci 0000:00:14.0: PCI bridge to [bus 04]
+[    0.578963] NET: Registered protocol family 2
+[    0.579382] TCP established hash table entries: 65536 (order: 7, 524288 bytes)
+[    0.579859] TCP bind hash table entries: 65536 (order: 9, 2097152 bytes)
+[    0.580828] TCP: Hash tables configured (established 65536 bind 65536)
+[    0.581137] UDP hash table entries: 4096 (order: 6, 393216 bytes)
+[    0.581466] UDP-Lite hash table entries: 4096 (order: 6, 393216 bytes)
+[    0.581938] NET: Registered protocol family 1
+[    0.582210] pci 0000:00:15.0: enabling device (0000 -> 0002)
+[    0.582969] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+[    0.583183] software IO TLB [mem 0x72bc1000-0x76bc1000] (64MB) mapped at [ffff880072bc1000-ffff880076bc0fff]
+[    0.583537] intel_punit_ipc intel_punit_ipc: No irq
+[    0.585680] Scanning for low memory corruption every 60 seconds
+[    0.587356] CPU feature 'AVX registers' is not supported.
+[    0.588742] futex hash table entries: 1024 (order: 4, 65536 bytes)
+[    0.589012] audit: initializing netlink subsys (disabled)
+[    0.589235] audit: type=2000 audit(1321009872.295:1): initialized
+[    0.590412] Loading compiled-in X.509 certificates
+[    0.592117] Loaded X.509 cert 'Build time autogenerated kernel key: 1af4c79f3f4d61ebc1856c00b2731277fd35cd6b'
+[    0.593675] HugeTLB registered 2 MB page size, pre-allocated 0 pages
+[    0.594160] VFS: Disk quotas dquot_6.6.0
+[    0.594327] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[    0.594737] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.596113] fuse init (API version 7.23)
+[    0.596486] Key type big_key registered
+[    0.599774] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
+[    0.600019] io scheduler noop registered
+[    0.600165] io scheduler deadline registered
+[    0.600323] io scheduler cfq registered (default)
+[    0.601021] pwm-lpss 0000:00:1a.0: can't derive routing for PCI INT A
+[    0.601236] pwm-lpss 0000:00:1a.0: PCI INT A: no GSI
+[    0.601908] pcieport 0000:00:13.0: enabling device (0000 -> 0003)
+[    0.602817] pcieport 0000:00:13.3: enabling device (0006 -> 0007)
+[    0.603972] pcieport 0000:00:13.0: Signaling PME through PCIe PME interrupt
+[    0.604242] pcieport 0000:00:13.2: Signaling PME through PCIe PME interrupt
+[    0.604667] pci 0000:02:00.0: Signaling PME through PCIe PME interrupt
+[    0.604912] pcieport 0000:00:13.3: Signaling PME through PCIe PME interrupt
+[    0.605159] pci 0000:03:00.0: Signaling PME through PCIe PME interrupt
+[    0.605421] pcieport 0000:00:14.0: Signaling PME through PCIe PME interrupt
+[    0.605724] pci_hotplug: PCI Hot Plug PCI Core version: 0.5
+[    0.605928] pciehp 0000:00:13.0:pcie04: Slot #0 AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+ LLActRep+
+[    0.606464] pciehp 0000:00:13.2:pcie04: Slot #4 AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+ LLActRep+
+[    0.606962] pciehp 0000:00:13.3:pcie04: Slot #5 AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+ LLActRep+
+[    0.607552] pciehp: PCI Express Hot Plug Controller Driver version: 0.4
+[    0.608286] input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+[    0.608525] ACPI: Power Button [PWRF]
+[    0.610351] ACPI: thermal control disabled
+[    0.611160] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    0.611623] m### serial8250_config_port start:2685
+[    0.612008] m### serial8250_config_port start:2685
+[    0.612416] m### serial8250_config_port start:2685
+[    0.612791] m### serial8250_config_port start:2685
+[    0.613477] m### pciserial_init_one start : 4420
+[    0.613628] dump_stack start
+[    0.613749] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #63
+[    0.614054]  0000000000000000 ffff880276977d00 ffffffff8138ebb5 ffff88027611a8a8
+[    0.614353]  ffff88027611a800 ffff880276977d48 ffffffff8148ad57 0000000000000001
+[    0.614646]  ffff880276977d48 ffffffff815e23bd ffff88027611a8a8 ffffffff822bf5a8
+[    0.614942] Call Trace:
+[    0.615038]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.615205]  [<ffffffff8148ad57>] pciserial_init_one+0x47/0x1d0
+[    0.615391]  [<ffffffff815e23bd>] ? __pm_runtime_resume+0x4d/0x60
+[    0.615592]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    0.615782]  [<ffffffff815d7594>] driver_probe_device+0x224/0x4a0
+[    0.615973]  [<ffffffff815d7894>] __driver_attach+0x84/0x90
+[    0.616162]  [<ffffffff815d7810>] ? driver_probe_device+0x4a0/0x4a0
+[    0.616362]  [<ffffffff815d5294>] bus_for_each_dev+0x64/0xa0
+[    0.616546]  [<ffffffff815d6f1e>] driver_attach+0x1e/0x20
+[    0.616719]  [<ffffffff815d6aa1>] bus_add_driver+0x1f1/0x290
+[    0.616900]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    0.617112]  [<ffffffff815d82e0>] driver_register+0x60/0xe0
+[    0.617295]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    0.617691]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    0.617894]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    0.618115]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    0.618317]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.618490]  [<ffffffff81a5d94e>] kernel_init+0xe/0xe0
+[    0.618654]  [<ffffffff81a65f6f>] ret_from_fork+0x3f/0x70
+[    0.618825]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.619030] dump_stack over
+[    0.619424] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_init]:line:[1990]
+[    0.619802] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_setup]:line:[2016]
+[    0.620200] ##mn## DMA_ENABLE_TEST enter
+[    0.620331] mn##(dma==NULL? N) DMA_ENABLE_TEST enter
+[    0.620492] mn##(tx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.620669] mn##(rx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.620839] mn##(kkk;pdev->device)
+[    0.620953] mn##(pdev->device = 5abc)
+[    0.621073] mn##(aaa;case BXTP )
+[    0.621187] mn##(dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.621357] mn##(rx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.621553] mn##(tx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.621745] mn## here?m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.622336] m### set_io_from_upio start:412
+[    0.622479] m### serial8250_config_port start:2685
+[    0.622641] 0000:00:18.0: ttyS0 at MMIO 0xb3f40000 (irq = 4, base_baud = 2764800) is a 16550A
+[    0.623335] m### pciserial_init_one start : 4420
+[    0.623499] dump_stack start
+[    0.623698] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #63
+[    0.624002]  0000000000000000 ffff880276977d00 ffffffff8138ebb5 ffff88027611a0a8
+[    0.624304]  ffff88027611a000 ffff880276977d48 ffffffff8148ad57 0000000000000001
+[    0.624595]  ffff880276977d48 ffffffff815e23bd ffff88027611a0a8 ffffffff822bf5a8
+[    0.624884] Call Trace:
+[    0.624981]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.625152]  [<ffffffff8148ad57>] pciserial_init_one+0x47/0x1d0
+[    0.625343]  [<ffffffff815e23bd>] ? __pm_runtime_resume+0x4d/0x60
+[    0.625534]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    0.625720]  [<ffffffff815d7594>] driver_probe_device+0x224/0x4a0
+[    0.625912]  [<ffffffff815d7894>] __driver_attach+0x84/0x90
+[    0.626123]  [<ffffffff815d7810>] ? driver_probe_device+0x4a0/0x4a0
+[    0.626310]  [<ffffffff815d5294>] bus_for_each_dev+0x64/0xa0
+[    0.626484]  [<ffffffff815d6f1e>] driver_attach+0x1e/0x20
+[    0.626645]  [<ffffffff815d6aa1>] bus_add_driver+0x1f1/0x290
+[    0.626822]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    0.627014]  [<ffffffff815d82e0>] driver_register+0x60/0xe0
+[    0.627194]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    0.627380]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    0.627584]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    0.627766]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    0.627957]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.628140]  [<ffffffff81a5d94e>] kernel_init+0xe/0xe0
+[    0.628303]  [<ffffffff81a65f6f>] ret_from_fork+0x3f/0x70
+[    0.628461]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.628633] dump_stack over
+[    0.629005] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_init]:line:[1990]
+[    0.629373] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_setup]:line:[2016]
+[    0.629704] ##mn## DMA_ENABLE_TEST enter
+[    0.629833] mn##(dma==NULL? N) DMA_ENABLE_TEST enter
+[    0.629991] mn##(tx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.630168] mn##(rx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.630344] mn##(kkk;pdev->device)
+[    0.630454] mn##(pdev->device = 5abe)
+[    0.630576] mn##(aaa;case BXTP )
+[    0.630690] mn##(dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.630854] mn##(rx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.631051] mn##(tx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.631248] mn## here?m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.631902] m### set_io_from_upio start:412
+[    0.632040] m### serial8250_config_port start:2685
+[    0.632238] 0000:00:18.1: ttyS1 at MMIO 0xb3f3e000 (irq = 5, base_baud = 2764800) is a 16550A
+[    0.632926] m### pciserial_init_one start : 4420
+[    0.633102] dump_stack start
+[    0.633230] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #63
+[    0.633533]  0000000000000000 ffff880276977d00 ffffffff8138ebb5 ffff8802760918a8
+[    0.633821]  ffff880276091800 ffff880276977d48 ffffffff8148ad57 0000000000000001
+[    0.634162]  ffff880276977d48 ffffffff815e23bd ffff8802760918a8 ffffffff822bf5a8
+[    0.634445] Call Trace:
+[    0.634545]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.634713]  [<ffffffff8148ad57>] pciserial_init_one+0x47/0x1d0
+[    0.634902]  [<ffffffff815e23bd>] ? __pm_runtime_resume+0x4d/0x60
+[    0.635123]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    0.635307]  [<ffffffff815d7594>] driver_probe_device+0x224/0x4a0
+[    0.635505]  [<ffffffff815d7894>] __driver_attach+0x84/0x90
+[    0.635682]  [<ffffffff815d7810>] ? driver_probe_device+0x4a0/0x4a0
+[    0.635881]  [<ffffffff815d5294>] bus_for_each_dev+0x64/0xa0
+[    0.636058]  [<ffffffff815d6f1e>] driver_attach+0x1e/0x20
+[    0.636218]  [<ffffffff815d6aa1>] bus_add_driver+0x1f1/0x290
+[    0.636402]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    0.636602]  [<ffffffff815d82e0>] driver_register+0x60/0xe0
+[    0.636786]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    0.636984]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    0.637180]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    0.637351]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    0.637551]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.637713]  [<ffffffff81a5d94e>] kernel_init+0xe/0xe0
+[    0.637872]  [<ffffffff81a65f6f>] ret_from_fork+0x3f/0x70
+[    0.638046]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    0.638230] dump_stack over
+[    0.638610] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_init]:line:[1990]
+[    0.638965] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_setup]:line:[2016]
+[    0.639307] ##mn## DMA_ENABLE_TEST enter
+[    0.639432] mn##(dma==NULL? N) DMA_ENABLE_TEST enter
+[    0.639580] mn##(tx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.639738] mn##(rx_param==NULL? N) DMA_ENABLE_TEST enter
+[    0.639893] mn##(kkk;pdev->device)
+[    0.639999] mn##(pdev->device = 5ac0)
+[    0.640128] mn##(aaa;case BXTP )
+[    0.640234] mn##(dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.640395] mn##(rx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.640579] mn##(tx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    0.640765] mn## here?
+[    0.641126] console [ttyS2] disabled
+[    0.641310] m###(set_io_from_upio) serial8250_set_defaults:2802
+[    0.641321] m### set_io_from_upio start:412
+[    0.641331] m### serial8250_config_port start:2685
+[    0.641347] 0000:00:18.2: ttyS2 at MMIO 0x80c00000 (irq = 6, base_baud = 2764800) is a 16550A
+[    0.757353] Freeing initrd memory: 8032K (ffff880076bc1000 - ffff880077399000)
+[    0.993502] lib2600psys_mod_bxtB0: Unknown symbol intel_ipu4_psys_abi_cleanup_ext (err 0)
+[    0.993505] lib2600psys_mod_bxtB0: Unknown symbol intel_ipu4_psys_abi_init_ext (err 0)
+[    1.057222] lib2600_mod_bxtB0: Unknown symbol intel_ipu4_isys_unregister_ext_library (err 0)
+[    1.057227] lib2600_mod_bxtB0: Unknown symbol intel_ipu4_isys_register_ext_library (err 0)
+[    1.057230] lib2600_mod_bxtB0: Unknown symbol intel_ipu4_put_fw_mgs_buffer (err 0)
+[    1.256288] 
+[    1.256290] **********************************************************
+[    1.256291] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+[    1.256291] **                                                      **
+[    1.256292] ** trace_printk() being used. Allocating extra memory.  **
+[    1.256292] **                                                      **
+[    1.256293] ** This means that this is a DEBUG kernel and it is     **
+[    1.256293] ** unsafe for production use.                           **
+[    1.256294] **                                                      **
+[    1.256294] ** If you see this message and you are not debugging    **
+[    1.256295] ** the kernel, report this immediately to your vendor!  **
+[    1.256295] **                                                      **
+[    1.256296] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+[    1.256297] **********************************************************
+[    1.586171] tsc: Refined TSC clocksource calibration: 1881.600 MHz
+[    1.586175] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x363e8c91135, max_idle_ns: 881590568389 ns
+[    2.589832] clocksource: Switched to clocksource tsc
+[    3.922006] console [ttyS2] enabled
+[    3.926043] m### pciserial_init_one start : 4420
+[    3.930600] dump_stack start
+[    3.933695] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #63
+[    3.943532]  0000000000000000 ffff880276977d00 ffffffff8138ebb5 ffff8802760910a8
+[    3.951018]  ffff880276091000 ffff880276977d48 ffffffff8148ad57 0000000000000001
+[    3.958501]  ffff880276977d48 ffffffff815e23bd ffff8802760910a8 ffffffff822bf5a8
+[    3.965986] Call Trace:
+[    3.968447]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    3.973595]  [<ffffffff8148ad57>] pciserial_init_one+0x47/0x1d0
+[    3.979526]  [<ffffffff815e23bd>] ? __pm_runtime_resume+0x4d/0x60
+[    3.985628]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    3.991385]  [<ffffffff815d7594>] driver_probe_device+0x224/0x4a0
+[    3.997486]  [<ffffffff815d7894>] __driver_attach+0x84/0x90
+[    4.003066]  [<ffffffff815d7810>] ? driver_probe_device+0x4a0/0x4a0
+[    4.009342]  [<ffffffff815d5294>] bus_for_each_dev+0x64/0xa0
+[    4.015008]  [<ffffffff815d6f1e>] driver_attach+0x1e/0x20
+[    4.020413]  [<ffffffff815d6aa1>] bus_add_driver+0x1f1/0x290
+[    4.026140]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    4.032328]  [<ffffffff815d82e0>] driver_register+0x60/0xe0
+[    4.037911]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    4.044013]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    4.050202]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    4.055871]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    4.062060]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    4.067291]  [<ffffffff81a5d94e>] kernel_init+0xe/0xe0
+[    4.072438]  [<ffffffff81a65f6f>] ret_from_fork+0x3f/0x70
+[    4.077842]  [<ffffffff81a5d940>] ? rest_init+0x90/0x90
+[    4.083223] dump_stack over
+[    4.086321] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_init]:line:[1990]
+[    4.097263] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_pci.c]:func[bxt_serial_setup]:line:[2016]
+[    4.108237] ##mn## DMA_ENABLE_TEST enter
+[    4.112173] mn##(dma==NULL? N) DMA_ENABLE_TEST enter
+[    4.117151] mn##(tx_param==NULL? N) DMA_ENABLE_TEST enter
+[    4.122561] mn##(rx_param==NULL? N) DMA_ENABLE_TEST enter
+[    4.127970] mn##(kkk;pdev->device)
+[    4.131382] mn##(pdev->device = 5aee)
+[    4.135055] mn##(aaa;case BXTP )
+[    4.138297] mn##(dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    4.143618] mn##(rx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    4.149811] mn##(tx_param->dma_dev==NULL? N) DMA_ENABLE_TEST enter
+[    4.156001] mn## here?m###(set_io_from_upio) serial8250_set_defaults:2802
+[    4.163270] m### set_io_from_upio start:412
+[    4.167471] m### serial8250_config_port start:2685
+[    4.172284] 0000:00:18.3: ttyS3 at MMIO 0xb3f3a000 (irq = 7, base_baud = 2764800) is a 16550A
+[    4.181434] intel-ipu4 0000:00:03.0: Device 0x5a88 (rev: 0xa)
+[    4.181585] Non-volatile memory driver v1.3
+[    4.181993] Linux agpgart interface v0.103
+[    4.182593] [drm] Initialized drm 1.1.0 20060810
+[    4.200240] intel-ipu4 0000:00:03.0: physical base address 0xb1000000
+[    4.206701] intel-ipu4 0000:00:03.0: mapped as: 0xffffc90002000000
+[    4.213233] intel-ipu4 0000:00:03.0: IPU4 in secure mode
+[    4.219999] intel-ipu4 0000:00:03.0: cpd file name: ipu4_cpd_b0.bin
+[    4.228725] intel-ipu4 0000:00:03.0: CSS release: 20170209
+[    4.249285] [drm] Memory usable by graphics device = 4096M
+[    4.255235] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[    4.260286] intel-ipu4-mmu intel-ipu4-mmu0: MMU: 1, allocated page for trash: 0xffffea0009d8e340
+[    4.270659] [drm] Driver supports precise vblank timestamp query.
+[    4.276849] i915 0000:00:02.0: Invalid ROM contents
+[    4.281741] [drm] failed to find VBIOS tables
+[    4.282335] intel-ipu4-mmu intel-ipu4-mmu0: mmu is not ready yet. skipping.
+[    4.282379] intel-ipu4-mmu intel-ipu4-mmu1: MMU: 0, allocated page for trash: 0xffffea0009d8e300
+[    4.302016] Could not create tracefs 'ipu4_pg_kcmd' directory
+[    4.307853] Could not create tracefs 'ipu4_perf_reg' directory
+[    4.308728] vgaarb: device changed decodes: PCI:0000:00:02.0,olddecodes=io+mem,decodes=io+mem:owns=io+mem
+[    4.309223] [drm] Finished loading i915/bxt_dmc_ver1.bin (v1.7)
+[    4.329732] Could not create tracefs 'ipu4_sof_seqid' directory
+[    4.347412] intel-ipu4-mmu intel-ipu4-mmu0: mmu is not ready yet. skipping.
+[    4.354506] intel-ipu4-mmu intel-ipu4-mmu1: mmu is not ready yet. skipping.
+[    4.362017] intel-ipu4-mmu intel-ipu4-mmu1: iova trash buffer for MMUID: 0 is 0x4286578688
+[    4.370305] iommu: Adding device intel-ipu4-psys0 to group 0
+[    4.377736] intel-ipu4-psys intel-ipu4-psys0: pkg_dir entry count:16
+[    4.384112] intel-ipu4 0000:00:03.0: Sending BOOT_LOAD to CSE
+[    4.409510] intel-ipu4 0000:00:03.0: Sending AUTHENTICATE_RUN to CSE
+[    4.534732] intel-ipu4-psys intel-ipu4-psys0: psys probe minor: 0
+[    4.546765] Could not create tracefs 'ipu4_pg_kcmd' directory
+[    4.552574] Could not create tracefs 'ipu4_perf_reg' directory
+[    4.558428] Could not create tracefs 'ipu4_sof_seqid' directory
+[    4.575404] intel-ipu4-mmu intel-ipu4-mmu0: mmu is not ready yet. skipping.
+[    4.582925] intel-ipu4-mmu intel-ipu4-mmu0: iova trash buffer for MMUID: 1 is 0x4286578688
+[    4.591211] iommu: Adding device intel-ipu4-isys0 to group 1
+[    4.596961] intel-ipu4-isys intel-ipu4-isys0: isys probe ffff880273d16c00 ffff880273d16c00
+[    4.620177] intel-ipu4-isys intel-ipu4-isys0: creating new i2c subdev for crlmodule (address e0, bus 0)
+[    4.629593] intel-ipu4-isys intel-ipu4-isys0: sensor device on CSI port: 0
+[    4.636493] intel-ipu4-isys intel-ipu4-isys0: creating new i2c subdev for crlmodule (address e1, bus 0)
+[    4.645898] intel-ipu4-isys intel-ipu4-isys0: sensor device on CSI port: 4
+[    4.652788] intel-ipu4-isys intel-ipu4-isys0: creating new i2c subdev for crlmodule (address e0, bus 0)
+[    4.662192] intel-ipu4-isys intel-ipu4-isys0: sensor device on CSI port: 0
+[    4.669115] intel-ipu4-isys intel-ipu4-isys0: i2c device not found in ACPI table
+[    4.676526] ------------[ cut here ]------------
+[    4.681182] WARNING: CPU: 0 PID: 6 at ../../../../../../kernel/bxt/kernel/kmod.c:140 __request_module+0x1e9/0x2d0()
+[    4.691627] Modules linked in: intel_ipu4_isys_mod_bxtB0(+) intel_ipu4_psys_mod_bxtB0 intel_ipu4_mmu_bxtB0 intel_ipu4_mod_bxtB0 intel_ipu4_wrapper_bxtB0 intel_ipu4_acpi videobuf2_dma_contig as3638 dw9714 lm3643 crlmodule smiapp smiapp_pll
+[    4.713095] CPU: 0 PID: 6 Comm: kworker/u8:0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g2599a68-dirty #63
+[    4.723192] Workqueue: events_unbound async_run_entry_fn
+[    4.728532]  0000000000000000 ffff880276a4b7a8 ffffffff8138ebb5 0000000000000000
+[    4.736018]  ffffffff81f89ed0 ffff880276a4b7e0 ffffffff81099f46 ffffffff8206df3c
+[    4.743499]  0000000000000001 0000000000000000 ffff880275819918 0000000000000000
+[    4.750982] Call Trace:
+[    4.753442]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    4.758589]  [<ffffffff81099f46>] warn_slowpath_common+0x86/0xc0
+[    4.764605]  [<ffffffff8109a03a>] warn_slowpath_null+0x1a/0x20
+[    4.770443]  [<ffffffff810ae619>] __request_module+0x1e9/0x2d0
+[    4.776284]  [<ffffffff815d5770>] ? bus_uevent_store+0x50/0x50
+[    4.782125]  [<ffffffff815d33b6>] ? __dev_printk+0x46/0x90
+[    4.787618]  [<ffffffff817aa328>] v4l2_i2c_new_subdev_board+0x38/0xf0
+[    4.794079]  [<ffffffffa00eb194>] isys_register_ext_subdev+0x3c4/0x420 [intel_ipu4_isys_mod_bxtB0]
+[    4.803050]  [<ffffffffa00ecac7>] isys_probe+0xb17/0xeb0 [intel_ipu4_isys_mod_bxtB0]
+[    4.810806]  [<ffffffffa00d575f>] intel_ipu4_bus_probe+0xcf/0x320 [intel_ipu4_mod_bxtB0]
+[    4.818907]  [<ffffffff815d7594>] driver_probe_device+0x224/0x4a0
+[    4.825010]  [<ffffffff815d7894>] __driver_attach+0x84/0x90
+[    4.830589]  [<ffffffff815d7810>] ? driver_probe_device+0x4a0/0x4a0
+[    4.836862]  [<ffffffff815d5294>] bus_for_each_dev+0x64/0xa0
+[    4.842529]  [<ffffffff815d6f1e>] driver_attach+0x1e/0x20
+[    4.847936]  [<ffffffff815d6aa1>] bus_add_driver+0x1f1/0x290
+[    4.853605]  [<ffffffffa00be000>] ? 0xffffffffa00be000
+[    4.858753]  [<ffffffff815d82e0>] driver_register+0x60/0xe0
+[    4.864336]  [<ffffffffa00d5136>] intel_ipu4_bus_register_driver+0x16/0x20 [intel_ipu4_mod_bxtB0]
+[    4.873222]  [<ffffffffa00be010>] isys_driver_init+0x10/0x12 [intel_ipu4_isys_mod_bxtB0]
+[    4.881322]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    4.886993]  [<ffffffff811782c9>] do_init_module+0x60/0x1ce
+[    4.892579]  [<ffffffff81112574>] load_module+0x1f94/0x24c0
+[    4.898162]  [<ffffffff8110eb60>] ? __symbol_put+0x70/0x70
+[    4.903656]  [<ffffffff81112c7e>] SYSC_finit_module+0x7e/0xa0
+[    4.909414]  [<ffffffff81112cbe>] SyS_finit_module+0xe/0x10
+[    4.914996]  [<ffffffff823c68f4>] async_populate_rootfs+0x27b/0x2b0
+[    4.921269]  [<ffffffff810b9c0a>] async_run_entry_fn+0x4a/0x140
+[    4.927233]  [<ffffffff810b1c3a>] process_one_work+0x14a/0x450
+[    4.933076]  [<ffffffff810b2276>] worker_thread+0x66/0x450
+[    4.938569]  [<ffffffff810b2210>] ? rescuer_thread+0x2d0/0x2d0
+[    4.944409]  [<ffffffff810b732d>] kthread+0xed/0x110
+[    4.949379]  [<ffffffff810b7240>] ? kthread_create_on_node+0x190/0x190
+[    4.955915]  [<ffffffff81a65f6f>] ret_from_fork+0x3f/0x70
+[    4.961322]  [<ffffffff810b7240>] ? kthread_create_on_node+0x190/0x190
+[    4.967882] ---[ end trace 1f40c732e8adc257 ]---
+[    4.973378] crlmodule 0-a0e0: crlmodule_populate_ds adv7481_hdmi selected
+[    4.980200] crlmodule 0-a0e0: No msrlists associated with sensor
+[    5.019538] intel-ipu4-isys intel-ipu4-isys0: creating new i2c subdev for crlmodule (address e1, bus 0)
+[    5.028959] intel-ipu4-isys intel-ipu4-isys0: sensor device on CSI port: 4
+[    5.035856] intel-ipu4-isys intel-ipu4-isys0: i2c device not found in ACPI table
+[    5.044016] crlmodule 0-a0e1: crlmodule_populate_ds adv7481_cvbs selected
+[    5.050828] crlmodule 0-a0e1: No msrlists associated with sensor
+[    5.174302] [drm] failed to retrieve link info, disabling eDP
+[    5.341185] [drm] Initialized i915 1.6.0 20151218 for 0000:00:02.0 on minor 0
+[    5.354774] brd: module loaded
+[    5.361271] loop: module loaded
+[    5.364969] zram: Added device: zram0
+[    5.379228] idma64_platform_probe startm### idma64_probe:570
+[    5.385002] m### vchan_init start:108
+[    5.388866] m### idma64_probe:570
+[    5.392199] m### vchan_init start:108
+[    5.396455] idma64 idma64.0: Found Intel integrated DMA 64-bit
+[    5.402638] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.416368] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.432482] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.442933] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.453033] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.466606] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.480180] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.492366] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    5.507569] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    5.507577] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    5.507579] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.507579] 
+[    5.507581] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.507610] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.507611] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.507612] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.507613] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.507615] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[    5.507616] mn##(chan ==NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.507616] 
+[    5.519782] idma64_platform_probe startm### idma64_probe:570
+[    5.519783] m### vchan_init start:108
+[    5.519784] m### idma64_probe:570
+[    5.519785] m### vchan_init start:108
+[    5.519971] idma64 idma64.1: Found Intel integrated DMA 64-bit
+[    5.520107] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.520149] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.520151] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.520153] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.520154] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520155] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520156] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.520158] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.520159] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.520160] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.520161] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.520162] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.520163] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520164] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520165] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.520166] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    5.520167] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    5.520174] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    5.520176] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.520176] 
+[    5.520177] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.520195] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.520196] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.520197] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.520198] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520199] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520200] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.520201] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.520202] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.520203] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.520204] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.520205] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.520206] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.520207] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[    5.520209] mn##(chan ==NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.520209] 
+[    5.520930] idma64_platform_probe startm### idma64_probe:570
+[    5.520931] m### vchan_init start:108
+[    5.520932] m### idma64_probe:570
+[    5.520933] m### vchan_init start:108
+[    5.521128] idma64 idma64.2: Found Intel integrated DMA 64-bit
+[    5.521252] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.521280] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.521281] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.521283] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521284] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521285] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521286] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521288] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521289] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521290] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521291] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.521292] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521293] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521294] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521295] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521296] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521297] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521298] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521299] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.521300] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521301] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521302] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521303] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521304] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    5.521305] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    5.521311] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    5.521313] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.521313] 
+[    5.521314] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    5.521332] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    5.521333] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    5.521334] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521335] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521336] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521337] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521338] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521339] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521340] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521341] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.521342] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521343] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521344] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521345] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521346] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521347] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    5.521348] mn##(filter said false) func[private_candidate]:line:[545]
+[    5.521349] mn##(NULL, end of private_candidate) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[554]
+[    5.521350] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    5.521351] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    5.521352] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[    5.521353] mn##(chan ==NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    5.521353] 
+[    5.533097] ahci 0000:00:12.0: AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl SATA mode
+[    5.533101] ahci 0000:00:12.0: flags: 64bit ncq sntf pm clo only pmp pio slum part deso sadm sds apst 
+[    5.534060] scsi host0: ahci
+[    5.534365] scsi host1: ahci
+[    5.534571] ata1: SATA max UDMA/133 abar m2048@0xb3f52000 port 0xb3f52100 irq 372
+[    5.534574] ata2: SATA max UDMA/133 abar m2048@0xb3f52000 port 0xb3f52180 irq 372
+[    5.535367] tun: Universal TUN/TAP device driver, 1.6
+[    5.535368] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+[    5.535466] slcan: serial line CAN interface driver
+[    5.535467] slcan: 10 dynamic interface channels.
+[    5.535470] PPP generic driver version 2.4.2
+[    5.535620] PPP BSD Compression module registered
+[    5.535623] PPP Deflate Compression module registered
+[    5.535640] PPP MPPE Compression module registered
+[    5.535643] NET: Registered protocol family 24
+[    5.535740] usbcore: registered new interface driver catc
+[    5.535809] usbcore: registered new interface driver kaweth
+[    5.535813] pegasus: v0.9.3 (2013/04/25), Pegasus/Pegasus II USB Ethernet driver
+[    5.535879] usbcore: registered new interface driver pegasus
+[    5.535947] usbcore: registered new interface driver rtl8150
+[    5.536019] usbcore: registered new interface driver asix
+[    5.536102] usbcore: registered new interface driver ax88179_178a
+[    5.536173] usbcore: registered new interface driver cdc_ether
+[    5.536234] usbcore: registered new interface driver cdc_eem
+[    5.536300] usbcore: registered new interface driver dm9601
+[    5.536373] usbcore: registered new interface driver smsc75xx
+[    5.536446] usbcore: registered new interface driver smsc95xx
+[    5.536512] usbcore: registered new interface driver net1080
+[    5.536579] usbcore: registered new interface driver cdc_subset
+[    5.536642] usbcore: registered new interface driver zaurus
+[    5.536710] usbcore: registered new interface driver MOSCHIP usb-ethernet driver
+[    5.536787] usbcore: registered new interface driver ipheth
+[    5.536853] usbcore: registered new interface driver sierra_net
+[    5.536925] usbcore: registered new interface driver cdc_ncm
+[    5.738321] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[    5.738329] ehci-pci: EHCI PCI platform driver
+[    5.738606] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+[    5.738614] uhci_hcd: USB Universal Host Controller Interface driver
+[    5.739090] xhci_hcd 0000:00:15.0: xHCI Host Controller
+[    5.739221] xhci_hcd 0000:00:15.0: new USB bus registered, assigned bus number 1
+[    5.740351] xhci_hcd 0000:00:15.0: hcc params 0x200077c1 hci version 0x100 quirks 0x00009810
+[    5.740360] intel-cht-otg intel-cht-otg.0: No extcon device, OTG support stubbed
+[    5.740542] usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
+[    5.740544] usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[    5.740546] usb usb1: Product: xHCI Host Controller
+[    5.740548] usb usb1: Manufacturer: Linux 4.4.19-quilt-2e5dc0ac-g2599a68-dirty xhci-hcd
+[    5.740550] usb usb1: SerialNumber: 0000:00:15.0
+[    5.740886] hub 1-0:1.0: USB hub found
+[    5.740908] hub 1-0:1.0: 8 ports detected
+[    5.742390] xhci_hcd 0000:00:15.0: xHCI Host Controller
+[    5.742504] xhci_hcd 0000:00:15.0: new USB bus registered, assigned bus number 2
+[    5.742581] usb usb2: New USB device found, idVendor=1d6b, idProduct=0003
+[    5.742583] usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[    5.742585] usb usb2: Product: xHCI Host Controller
+[    5.742586] usb usb2: Manufacturer: Linux 4.4.19-quilt-2e5dc0ac-g2599a68-dirty xhci-hcd
+[    5.742588] usb usb2: SerialNumber: 0000:00:15.0
+[    5.742903] hub 2-0:1.0: USB hub found
+[    5.742922] hub 2-0:1.0: 7 ports detected
+[    5.744751] usbcore: registered new interface driver cdc_acm
+[    5.744753] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[    5.744833] usbcore: registered new interface driver usb-storage
+[    5.744901] usbcore: registered new interface driver ums-realtek
+[    5.745039] usbcore: registered new interface driver usbserial
+[    5.745110] usbcore: registered new interface driver usbserial_generic
+[    5.745166] usbserial: USB Serial support registered for generic
+[    5.745231] usbcore: registered new interface driver ark3116
+[    5.745290] usbserial: USB Serial support registered for ark3116
+[    5.745351] usbcore: registered new interface driver belkin_sa
+[    5.745409] usbserial: USB Serial support registered for Belkin / Peracom / GoHubs USB Serial Adapter
+[    5.745473] usbcore: registered new interface driver ch341
+[    5.745524] usbserial: USB Serial support registered for ch341-uart
+[    5.745593] usbcore: registered new interface driver cp210x
+[    5.745654] usbserial: USB Serial support registered for cp210x
+[    5.745723] usbcore: registered new interface driver digi_acceleport
+[    5.745779] usbserial: USB Serial support registered for Digi 2 port USB adapter
+[    5.745837] usbserial: USB Serial support registered for Digi 4 port USB adapter
+[    5.745901] usbcore: registered new interface driver f81232
+[    5.745960] usbserial: USB Serial support registered for f81232
+[    5.746022] usbcore: registered new interface driver ftdi_sio
+[    5.746090] usbserial: USB Serial support registered for FTDI USB Serial Device
+[    5.746174] usbcore: registered new interface driver mct_u232
+[    5.746234] usbserial: USB Serial support registered for MCT U232
+[    5.746297] usbcore: registered new interface driver mos7720
+[    5.746355] usbserial: USB Serial support registered for Moschip 2 port adapter
+[    5.746419] usbcore: registered new interface driver mos7840
+[    5.746481] usbserial: USB Serial support registered for Moschip 7840/7820 USB Serial Driver
+[    5.746543] usbcore: registered new interface driver option
+[    5.746597] usbserial: USB Serial support registered for GSM modem (1-port)
+[    5.746690] usbcore: registered new interface driver oti6858
+[    5.746749] usbserial: USB Serial support registered for oti6858
+[    5.746811] usbcore: registered new interface driver pl2303
+[    5.746870] usbserial: USB Serial support registered for pl2303
+[    5.746933] usbcore: registered new interface driver spcp8x5
+[    5.746992] usbserial: USB Serial support registered for SPCP8x5
+[    5.747058] usbcore: registered new interface driver ssu100
+[    5.747125] usbserial: USB Serial support registered for Quatech SSU-100 USB to Serial Driver
+[    5.747187] usbcore: registered new interface driver ti_usb_3410_5052
+[    5.747244] usbserial: USB Serial support registered for TI USB 3410 1 port adapter
+[    5.747299] usbserial: USB Serial support registered for TI USB 5052 2 port adapter
+[    5.747364] usbcore: registered new interface driver whiteheat
+[    5.747422] usbserial: USB Serial support registered for Connect Tech - WhiteHEAT - (prerenumeration)
+[    5.747484] usbserial: USB Serial support registered for Connect Tech - WhiteHEAT
+[    5.747546] usbcore: registered new interface driver keyspan_pda
+[    5.747605] usbserial: USB Serial support registered for Keyspan PDA
+[    5.747663] usbserial: USB Serial support registered for Xircom / Entrega PGS - (prerenumeration)
+[    5.747988] mousedev: PS/2 mouse device common for all mice
+[    5.749066] rtc_cmos 00:02: rtc core: registered rtc_cmos as rtc0
+[    5.749144] rtc_cmos 00:02: alarms up to one month, y3k, 242 bytes nvram
+[    5.749293] i2c /dev entries driver
+[    5.751111] i801_smbus 0000:00:1f.1: Enabling SMBus device
+[    5.751155] i801_smbus 0000:00:1f.1: SMBus using PCI interrupt
+[    5.752340] usbcore: registered new interface driver uvcvideo
+[    5.752341] USB Video Class driver (1.1.1)
+[    5.755413] intel_powerclamp: Intel powerclamp does not run on family 6 model 92
+[    5.796849] iTCO_wdt: Intel TCO WatchDog Timer Driver v1.11
+[    5.796958] iTCO_wdt: Found a Apollo Lake SoC TCO device (Version=3, TCOBASE=0x0460)
+[    5.797190] iTCO_wdt: initialized. heartbeat=30 sec (nowayout=0)
+[    5.808497] device-mapper: uevent: version 1.0.3
+[    5.822298] device-mapper: ioctl: 4.34.0-ioctl (2015-10-28) initialised: dm-devel@redhat.com
+[    5.822603] sdhci: Secure Digital Host Controller Interface driver
+[    5.822604] sdhci: Copyright(c) Pierre Ossman
+[    5.822660] sdhci-pci 0000:00:1b.0: SDHCI controller found [8086:5aca] (rev a)
+[    5.823056] sdhci-pci 0000:00:1b.0: No vmmc regulator found
+[    5.823058] sdhci-pci 0000:00:1b.0: No vqmmc regulator found
+[    5.825241] mmc0: SDHCI controller on PCI [0000:00:1b.0] using ADMA 64-bit
+[    5.825282] sdhci-pci 0000:00:1c.0: SDHCI controller found [8086:5acc] (rev a)
+[    5.825564] sdhci-pci 0000:00:1c.0: No vmmc regulator found
+[    5.825565] sdhci-pci 0000:00:1c.0: No vqmmc regulator found
+[    5.827080] mmc1: SDHCI controller on PCI [0000:00:1c.0] using ADMA 64-bit
+[    5.840212] ata1: SATA link down (SStatus 0 SControl 300)
+[    5.842218] ata2: SATA link down (SStatus 0 SControl 300)
+[    5.860927] sdhci-pci 0000:00:1e.0: SDHCI controller found [8086:5ad0] (rev a)
+[    5.861243] sdhci-pci 0000:00:1e.0: No vmmc regulator found
+[    5.861244] sdhci-pci 0000:00:1e.0: No vqmmc regulator found
+[    5.863083] mmc2: SDHCI controller on PCI [0000:00:1e.0] using ADMA 64-bit
+[    5.863536] dmi-sysfs: dmi entry is absent.
+[    5.863945] dcdbas dcdbas: Dell Systems Management Base Driver (version 5.6.0-3.2)
+[    5.864094] hidraw: raw HID events driver (C) Jiri Kosina
+[    5.865235] usbcore: registered new interface driver usbhid
+[    5.865236] usbhid: USB HID core driver
+[    5.865354] ashmem: initialized
+[    5.865702] intel_tasks_dumper: intel_tasks_dumper_init: Register tasks dumper
+[    5.873613] intel_rapl: Found RAPL domain package
+[    5.873620] intel_rapl: Found RAPL domain core
+[    5.873628] intel_rapl: Found RAPL domain uncore
+[    5.873631] intel_rapl: Found RAPL domain dram
+[    5.919828] usbcore: registered new interface driver snd-usb-audio
+[    5.920235] Netfilter messages via NETLINK v0.30.
+[    5.920258] nf_conntrack version 0.5.0 (65536 buckets, 262144 max)
+[    5.928376] ctnetlink v0.93: registering with nfnetlink.
+[    5.965746] ip_tables: (C) 2000-2006 Netfilter Core Team
+[    5.965814] Initializing XFRM netlink socket
+[    5.984559] NET: Registered protocol family 10
+[    5.996847] ip6_tables: (C) 2000-2006 Netfilter Core Team
+[    6.087795] sit: IPv6 over IPv4 tunneling driver
+[    6.088551] NET: Registered protocol family 17
+[    6.088564] NET: Registered protocol family 15
+[    6.088567] can: controller area network core (rev 20120528 abi 9)
+[    6.088590] NET: Registered protocol family 29
+[    6.088595] can: raw protocol (rev 20120528)
+[    6.088599] can: broadcast manager protocol (rev 20120528 t)
+[    6.088604] can: netlink gateway (rev 20130117) max_hops=1
+[    6.101364] l2tp_core: L2TP core driver, V2.0
+[    6.101372] l2tp_ppp: PPPoL2TP kernel driver, V2.0
+[    6.101375] 8021q: 802.1Q VLAN Support v1.8
+[    6.101416] Key type dns_resolver registered
+[    6.105125] usb 1-2: new low-speed USB device number 2 using xhci_hcd
+[    6.116869] microcode: CPU0 sig=0x506c9, pf=0x1, revision=0x24
+[    6.116919] microcode: CPU1 sig=0x506c9, pf=0x1, revision=0x24
+[    6.116943] microcode: CPU2 sig=0x506c9, pf=0x1, revision=0x24
+[    6.116961] microcode: CPU3 sig=0x506c9, pf=0x1, revision=0x24
+[    6.117090] microcode: Microcode Update Driver: v2.01 <tigran@aivazian.fsnet.co.uk>, Peter Oruba
+[    6.117109] [TELEM]::Init
+[    6.117129] SSE version of gcm_enc/dec engaged.
+[    6.118947] registered taskstats version 1
+[    6.120096] BERT: Table is not found!
+[    6.120273]   Magic number: 3:638:175
+[    6.120279] misc network_throughput: hash matches
+[    6.120427] acpi device:38: hash matches
+[    6.120441] acpi device:0b: hash matches
+[    6.137574] mmc1: MAN_BKOPS_EN bit is not set
+[    6.238203] dwc3 dwc3.0.auto: dwc3_suspend_common
+[    6.349592] usb 1-2: New USB device found, idVendor=1bcf, idProduct=0007
+[    6.349596] usb 1-2: New USB device strings: Mfr=0, Product=2, SerialNumber=0
+[    6.349598] usb 1-2: Product: USB Optical Mouse
+[    6.349957] usb 1-2: ep 0x81 - rounding interval to 64 microframes, ep desc says 80 microframes
+[    6.405374] input: USB Optical Mouse as /devices/pci0000:00/0000:00:15.0/usb1/1-2/1-2:1.0/0003:1BCF:0007.0001/input/input1
+[    6.406091] hid-generic 0003:1BCF:0007.0001: input,hiddev0,hidraw0: USB HID v1.10 Mouse [USB Optical Mouse] on usb-0000:00:15.0-2/input0
+[    6.683721] mmc1: new HS400 MMC card at address 0001
+[    6.684625] mmcblk0: mmc1:0001 R1J56L 14.7 GiB 
+[    6.684867] mmcblk0boot0: mmc1:0001 R1J56L partition 1 4.00 MiB
+[    6.685041] mmcblk0boot1: mmc1:0001 R1J56L partition 2 4.00 MiB
+[    6.685210] mmcblk0rpmb: mmc1:0001 R1J56L partition 3 4.00 MiB
+[    6.734791]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12
+[    6.996400] [drm] RC6 on
+[    7.814717] i915 0000:00:02.0: fb0: inteldrmfb frame buffer device
+[    7.820964] console [netcon0] enabled
+[    7.824640] netconsole: network logging started
+[    7.829779] rtc_cmos 00:02: setting system clock to 2011-11-11 11:11:20 UTC (1321009880)
+[    7.839549] BIOS EDD facility v0.16 2004-Jun-25, 0 devices found
+[    7.845570] EDD information not available.
+[    7.850259] ALSA device list:
+[    7.853239]   No soundcards found.
+[    7.856786] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[1809]
+[    7.868323] m### request_irq ok serial_link_irq_chain:222
+[    7.873737] mn##(up->dma != NULL) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2028]
+[    7.886702] mn##(request_dma start) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_dma.c]:func[serial8250_request_dma]:line:[186]
+[    7.899756] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    7.913454] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    7.928938] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    7.939385] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    7.949489] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    7.963061] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    7.976635] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    7.988827] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    8.003705] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    8.015036] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    8.028093] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    8.028093] 
+[    8.042625] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    8.056299] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    8.071781] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    8.082232] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    8.092332] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    8.105904] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[    8.118524] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    8.128623] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    8.142192] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    8.155764] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    8.167952] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    8.182823] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    8.194143] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    8.207193] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    8.207193] 
+[    8.221725] #### (request_dma end: got both dma channels) func[serial8250_request_dma]:line:[249]
+[    8.230612] mn##(ttyS2: dma_request:!!! up->dma == NULL? N) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2036]
+[    8.248315] Freeing unused kernel memory: 1976K (ffffffff823ac000 - ffffffff8259a000)
+[    8.256197] Write protecting the kernel read-only data: 18432k
+[    8.263319] Freeing unused kernel memory: 1608K (ffff880001a6e000 - ffff880001c00000)
+[    8.274984] Freeing unused kernel memory: 992K (ffff880002108000 - ffff880002200000)
+[    8.284491] init: init started!
+[    8.289582] SELinux:  Android master kernel running Android M policy in compatibility mode.
+[    8.300130] SELinux:  Permission audit_read in class capability2 not defined in policy.
+[    8.308166] SELinux: the above unknown classes and permissions will be denied
+[    8.337196] audit: type=1403 audit(1321009881.006:2): policy loaded auid=4294967295 ses=4294967295
+[    8.346467] audit: type=1404 audit(1321009881.015:3): enforcing=1 old_enforcing=0 auid=4294967295 ses=4294967295
+[    8.366596] init: (Initializing SELinux enforcing took 0.08s.)
+[    8.378317] init: init second stage started!
+[    8.447401] init: waitpid failed: No child processes
+[    8.452554] init: (Loading properties from /default.prop took 0.00s.)
+[    8.459795] init: (Parsing /init.environ.rc took 0.00s.)
+[    8.465265] init: (Parsing /init.usb.rc took 0.00s.)
+[    8.470629] init: /init.bxtp_abl.rc: 531: invalid command 'mkidr'
+[    8.476991] init: (Parsing /init.logs.rc took 0.00s.)
+[    8.482132] init: (Parsing /init.npk.rc took 0.00s.)
+[    8.487151] init: (Parsing /init.crashlogd.rc took 0.00s.)
+[    8.492696] init: (Parsing /init.coredump.rc took 0.00s.)
+[    8.498175] init: (Parsing /init.dvc_desc.rc took 0.00s.)
+[    8.503650] init: (Parsing /init.log-watch.rc took 0.00s.)
+[    8.509199] init: (Parsing /init.kernel.rc took 0.00s.)
+[    8.514442] init: (Parsing /init.bxtp_abl.rc took 0.04s.)
+[    8.520034] init: (Parsing /init.usb.configfs.rc took 0.00s.)
+[    8.525845] init: (Parsing /init.zygote64_32.rc took 0.00s.)
+[    8.531562] init: (Parsing /init.trace.rc took 0.00s.)
+[    8.536741] init: (Parsing /init.rc took 0.08s.)
+[    8.541546] init: Starting service 'ueventd'...
+[    8.546881] init: Starting service 'rvc'...
+[    8.547662] ueventd: ueventd started!
+[    8.555237] init: Waiting for /dev/.coldboot_done...
+[    8.769370] drm_initialize end
+[    8.797910] #rvc# show static splash
+[    8.812169] #rvc# staticSplashShowTimeMs=256.112793
+[    8.875767] ueventd: Coldboot took 0.33s.
+[    8.879301] init: Waiting for /dev/.coldboot_done took 0.32s.
+[    8.879385] init: Failed to read from /dev/hw_random: No such device
+[    8.879434] keychord: using input dev Power Button for fevent
+[    8.897937] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[1809]
+[    8.909507] m### request_irq ok serial_link_irq_chain:222
+[    8.914927] mn##(up->dma != NULL) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2028]
+[    8.927922] mn##(request_dma start) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_dma.c]:func[serial8250_request_dma]:line:[186]
+[    8.940982] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    8.954703] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    8.970269] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    8.980715] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    8.990884] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    9.004462] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    9.018032] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    9.030237] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    9.045149] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    9.056490] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    9.069604] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    9.069604] 
+[    9.084149] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[    9.097928] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[    9.113414] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[    9.123893] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    9.134006] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    9.147576] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[    9.160218] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[    9.170321] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    9.183902] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[    9.197530] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[    9.209713] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[    9.224640] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[    9.235969] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[    9.249028] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[    9.249028] 
+[    9.263578] #### (request_dma end: got both dma channels) func[serial8250_request_dma]:line:[249]
+[    9.272470] mn##(ttyS2: dma_request:!!! up->dma == NULL? N) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2036]
+[    9.292255] init: write_file: Unable to open '/proc/cpu/alignment': No such file or directory
+[    9.300887] init: write_file: Unable to open '/proc/sys/kernel/sched_compat_yield': No such file or directory
+[    9.311546] init: write_file: Unable to write to '/dev/cpuctl/cpu.shares': Invalid argument
+[    9.319992] init: write_file: Unable to open '/dev/cpuctl/cpu.rt_runtime_us': Permission denied
+[    9.328841] init: write_file: Unable to open '/dev/cpuctl/cpu.rt_period_us': Permission denied
+[    9.337714] init: write_file: Unable to open '/dev/cpuctl/bg_non_interactive/cpu.rt_runtime_us': Permission denied
+[    9.348137] init: write_file: Unable to open '/dev/cpuctl/bg_non_interactive/cpu.rt_period_us': Permission denied
+[    9.362450] init: write_file: Unable to open '/proc/sys/abi/swp': No such file or directory
+[    9.385842] init: Failed to read from /dev/hw_random: No such device
+[    9.402377] fs_mgr: Enabling dm-verity for system (mode 2)
+[    9.415467] EXT4-fs (dm-0): mounted filesystem with ordered data mode. Opts: (null)
+[    9.423302] fs_mgr: __mount(source=/dev/block/dm-0,target=/system,type=ext4)=0
+[    9.431271] EXT4-fs (mmcblk0p9): Ignoring removed nomblk_io_submit option
+[    9.443189] EXT4-fs (mmcblk0p9): mounted filesystem with ordered data mode. Opts: nomblk_io_submit,errors=remount-ro
+[    9.453834] fs_mgr: check_fs(): mount(/dev/block/by-name/android_cache,/cache,ext4)=0: Success
+[    9.470287] fs_mgr: check_fs(): unmount(/cache) succeeded
+[    9.479558] fs_mgr: Running /system/bin/e2fsck on /dev/block/by-name/android_cache
+[    9.552166] e2fsck: e2fsck 1.42.9 (28-Dec-2013)
+[    9.552166] 
+[    9.558260] e2fsck: /dev/block/by-name/android_cache: clean, 17/6400 files, 1445/25600 blocks (check in 5 mounts)
+[    9.558260] 
+[    9.575396] EXT4-fs (mmcblk0p9): mounted filesystem with ordered data mode. Opts: errors=panic
+[    9.584195] fs_mgr: __mount(source=/dev/block/by-name/android_cache,target=/cache,type=ext4)=0
+[    9.593584] EXT4-fs (mmcblk0p10): VFS: Can't find ext4 filesystem
+[    9.599912] fs_mgr: check_fs(): mount(/dev/block/by-name/android_data,/data,ext4)=-1: Invalid argument
+[    9.609257] fs_mgr: Running /system/bin/e2fsck on /dev/block/by-name/android_data
+[    9.626997] e2fsck: e2fsck 1.42.9 (28-Dec-2013)
+[    9.626997] 
+[    9.633059] e2fsck: ext2fs_open2: Bad magic number in super-block
+[    9.633059] 
+[    9.640689] e2fsck: /system/bin/e2fsck: Superblock invalid, trying backup blocks...
+[    9.640689] 
+[    9.649849] e2fsck: /system/bin/e2fsck: Bad magic number in super-block while trying to open /dev/block/by-name/android_data
+[    9.649849] 
+[    9.662613] e2fsck: 
+[    9.662613] 
+[    9.666317] e2fsck: 
+[    9.666317] 
+[    9.669994] e2fsck: The superblock could not be read or does not describe a correct ext2
+[    9.669994] 
+[    9.679581] e2fsck: filesystem.  If the device is valid and it really contains an ext2
+[    9.679581] 
+[    9.688995] e2fsck: filesystem (and not swap or ufs or something else), then the superblock
+[    9.688995] 
+[    9.698890] e2fsck: is corrupt, and you might try running e2fsck with an alternate superblock:
+[    9.698890] 
+[    9.708991] e2fsck:     e2fsck -b 8193 <device>
+[    9.708991] 
+[    9.715011] e2fsck: 
+[    9.715011] 
+[    9.718697] e2fsck: e2fsck terminated by exit(8)
+[    9.718697] 
+[    9.730408] EXT4-fs (mmcblk0p10): VFS: Can't find ext4 filesystem
+[    9.736577] fs_mgr: __mount(source=/dev/block/by-name/android_data,target=/data,type=ext4)=-1
+[    9.745709] fs_mgr: fs_mgr_mount_all(): possibly an encryptable blkdev /dev/block/by-name/android_data for mount /data type ext4 )
+[    9.764873] fs_mgr: Enabling dm-verity for vendor (mode 2)
+[    9.777958] EXT4-fs (dm-1): mounted filesystem with ordered data mode. Opts: (null)
+[    9.785715] fs_mgr: __mount(source=/dev/block/dm-1,target=/vendor,type=ext4)=0
+[    9.793777] EXT4-fs (mmcblk0p12): Ignoring removed nomblk_io_submit option
+[    9.805839] EXT4-fs (mmcblk0p12): mounted filesystem with ordered data mode. Opts: nomblk_io_submit,errors=remount-ro
+[    9.816618] fs_mgr: check_fs(): mount(/dev/block/by-name/android_config,/config,ext4)=0: Success
+[    9.832794] fs_mgr: check_fs(): unmount(/config) succeeded
+[    9.838361] fs_mgr: Running /system/bin/e2fsck on /dev/block/by-name/android_config
+[    9.854099] audit: type=1400 audit(1321009882.522:4): avc:  denied  { getattr } for  pid=2149 comm="e2fsck" path="/dev/block/mmcblk0p12" dev="tmpfs" ino=1401 scontext=u:r:fsck:s0 tcontext=u:object_r:block_device:s0 tclass=blk_file permissive=0
+[    9.875862] audit: type=1400 audit(1321009882.544:5): avc:  denied  { getattr } for  pid=2149 comm="e2fsck" path="/dev/block/mmcblk0p12" dev="tmpfs" ino=1401 scontext=u:r:fsck:s0 tcontext=u:object_r:block_device:s0 tclass=blk_file permissive=0
+[    9.897491] audit: type=1400 audit(1321009882.566:6): avc:  denied  { read write } for  pid=2149 comm="e2fsck" name="mmcblk0p12" dev="tmpfs" ino=1401 scontext=u:r:fsck:s0 tcontext=u:object_r:block_device:s0 tclass=blk_file permissive=0
+[    9.919430] e2fsck: e2fsck 1.42.9 (28-Dec-2013)
+[    9.919430] 
+[    9.925472] e2fsck: /system/bin/e2fsck: Permission denied while trying to open /dev/block/by-name/android_config
+[    9.925472] 
+[    9.937219] e2fsck: 
+[    9.937219] 
+[    9.940905] e2fsck: You must have r/w access to the filesystem or be root
+[    9.940905] 
+[    9.949247] e2fsck: e2fsck terminated by exit(8)
+[    9.949247] 
+[    9.963577] EXT4-fs (mmcblk0p12): mounted filesystem with ordered data mode. Opts: errors=panic
+[    9.972410] fs_mgr: __mount(source=/dev/block/by-name/android_config,target=/config,type=ext4)=0
+[    9.992288] trusty trusty: trusty version: 16:18:45 Feb 17 2017
+[    9.998418] trusty trusty: selected api version: 2 (requested 2)
+[   10.007170] trusty-irq trusty-irq: irq from lk = 49
+[   10.014259] trusty trusty: LK OS proxy timer works
+[   10.024347] trusty-virtio trusty-virtio: initializing
+[   10.030255] trusty_ipc virtio0: vring0: va(pa)  ffff880271c50000(0) qsz 32 notifyid 1
+[   10.039049] trusty_ipc virtio0: vring1: va(pa)  ffff880271c52000(0) qsz 32 notifyid 2
+[   10.047785] trusty-virtio trusty-virtio: initializing done
+[   10.048128] trusty_ipc virtio0: is online
+[   10.064159] trusty: 
+[   10.066366] trusty: welcome to lk
+[   10.069685] trusty: 
+[   10.071877] trusty: boot args 0x0 0x0 0x0 0x0
+[   10.076238] trusty: initializing trusty (16:18:45 Feb 17 2017)
+[   10.082137] trusty: Initializing Trusted OS SMC handler
+[   10.087364] trusty: hwcrypto_srv: 231: Initializing
+[   10.092245] trusty: hwcrypto_srv: 237: enter main event loop
+[   10.116395] rpmb_sim rpmb_sim: registered RPMB capacity = 131072 of 512 blocks
+[   10.124763] init: Starting service 'logd'...
+[   10.156991] snd_soc_skl 0000:00:0e.0: enabling device (0000 -> 0002)
+[   10.169940] logd.auditd: start
+[   10.173045] logd.klogd: 9879968873
+[   10.204126] broxton_audio_probe registering gpmrb_machine
+[   10.213356] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.220193] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.227063] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.233880] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.240739] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.247551] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.254358] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.261255] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.268132] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.274934] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.281747] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.288557] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.295488] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.302306] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.309142] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.315948] snd_soc_skl 0000:00:0e.0: Control load not supported 64:64:64
+[   10.322898] snd_soc_skl 0000:00:0e.0: ASoC: Parent card not yet available,Do not add new widgets now
+[   10.397375] snd_soc_skl 0000:00:0e.0: ROM loaded, continue FW loading
+[   10.429888] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Speaker Pin mapping ok
+[   10.438052] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Dirana Cp Pin mapping ok
+[   10.446207] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Dirana Pb Pin mapping ok
+[   10.454346] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> TestPin Cp Pin mapping ok
+[   10.462609] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> TestPin Pb Pin mapping ok
+[   10.470839] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> BtHfp Cp Pin mapping ok
+[   10.478922] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> BtHfp Pb Pin mapping ok
+[   10.487104] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Modem Cp Pin mapping ok
+[   10.495285] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Modem Pb Pin mapping ok
+[   10.503448] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> HDMI Cp Pin mapping ok
+[   10.511394] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Dirana Aux Cp Pin mapping ok
+[   10.519892] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Dirana Tuner Cp Pin mapping ok
+[   10.528516] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> SSP0 Pin mapping ok
+[   10.536382] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> SSP1 Pin mapping ok
+[   10.544056] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> SSP2 Pin mapping ok
+[   10.551722] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> SSP3 Pin mapping ok
+[   10.559351] gpmrb_machine gpmrb_machine: tdf8532-hifi <-> SSP4 Pin mapping ok
+[   10.566753] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> SSP5 Pin mapping ok
+[   10.582709] init: Starting service 'earlyaudioalsa'...
+[   10.588227] Disabling lock debugging due to kernel taint
+[   10.600894] init: (Loading properties from /system/build.prop took 0.00s.)
+[   10.608507] init: (Loading properties from /vendor/build.prop took 0.00s.)
+[   10.615517] init: (Loading properties from /factory/factory.prop took 0.00s.)
+[   10.624517] init: Starting service 'vold'...
+[   10.629389] init: Not bootcharting.
+[   10.641275] init: Starting service 'exec 0 (/system/bin/tzdatacheck)'...
+[   10.654839] init: Service 'exec 0 (/system/bin/tzdatacheck)' (pid 2230) exited with status 0
+[   10.659824] snd_soc_skl 0000:00:0e.0: Querying NHLT blob from Debugfs!!!!
+[   10.672834] init: (Loading properties from /data/local.prop took 0.00s.)
+[   10.679848] init: Starting service 'logd-reinit'...
+[   10.685517] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/console/masters': No such file or directory
+[   10.698277] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/console/channels': No such file or directory
+[   10.703888] logd.daemon: reinit
+[   10.713693] init: Service 'logd-reinit' (pid 2231) exited with status 0
+[   10.720542] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/user/masters': No such file or directory
+[   10.732385] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/user/channels': No such file or directory
+[   10.744622] init: write_file: Unable to open '/proc/sys/vm/min_free_order_shift': No such file or directory
+[   10.755281] init: Starting service 'healthd'...
+[   10.760255] init: Starting service 'lmkd'...
+[   10.761301] binder: 2283:2283 transaction failed 29189, size 0-0
+[   10.771010] init: Starting service 'servicemanager'...
+[   10.776488] init: Starting service 'surfaceflinger'...
+[   10.782032] init: Starting service 'media'...
+[   10.786782] init: Starting service 'reset_usb'...
+[   10.791716] init: Starting service 'watchdogd'...
+[   10.796857] init: Starting service 'intel_prop'...
+[   10.797896] watchdogd: watchdogd started (interval 10, margin 30)!
+[   10.808391] init: Starting service 'earlylogs'...
+[   10.813559] init: Starting service 'dvc_desc'...
+[   10.818578] init: write_file: Unable to open '/sys/devices/platform/INT33BB:00/power/control': No such file or directory
+[   10.830005] init: write_file: Unable to open '/sys/kernel/debug/pstate_snb/setpoint': No such file or directory
+[   10.840307] init: Service 'intel_prop' (pid 2291) exited with status 0
+[   10.846974] init: Service 'earlylogs' (pid 2292) exited with status 0
+[   10.853556] init: Service 'dvc_desc' (pid 2293) exited with status 0
+[   10.866687] #rvc# animationShowTimeMs=2310.643799
+[   10.866998] Intel(R) Gigabit Ethernet Network Driver - version 5.3.2_AVB
+[   10.866999] Copyright (c) 2007-2015 Intel Corporation.
+[   10.918797] pps pps0: new PPS source ptp0
+[   10.923355] igb_avb 0000:02:00.0: added PHC on eth0
+[   10.928291] igb_avb 0000:02:00.0: Intel(R) Gigabit Ethernet Network Connection
+[   10.935584] igb_avb 0000:02:00.0: eth0: (PCIe:2.5GT/s:Width x1) 
+[   10.941642] igb_avb 0000:02:00.0 eth0: MAC: 98:4f:ee:0c:cf:73
+[   10.947699] igb_avb 0000:02:00.0: eth0: PBA No: 000300-000
+[   10.953284] igb_avb 0000:02:00.0: LRO is disabled
+[   10.958048] igb_avb 0000:02:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
+[   10.969846] init: Starting service 'rfkill-init'...
+[   10.975171] random: init: uninitialized urandom read (40 bytes read, 76 bits of entropy available)
+[   10.984573] init: Service 'rfkill-init' (pid 2338) exited with status 0
+[   10.992555] file system registered
+[   11.001713] using random self ethernet address
+[   11.006249] using random host ethernet address
+[   11.012888] init: Starting service 'ioc_slcand'...
+[   11.018489] init: Starting service 'console'...
+[   11.021348] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[1809]
+[   11.021391] m### request_irq ok serial_link_irq_chain:222
+[   11.021397] ### serial_index != 2
+[   11.021399] mn##(ttyS1: dma_request:!!! up->dma == NULL? Y) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2036]
+[   11.059134] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[1809]
+[   11.059327] init: Starting service 'gfxd'...
+[   11.059750] init: Starting service 'defaultcrypto'...
+[   11.071184] type=1400 audit(1321009883.740:7): avc: denied { dac_override } for pid=2361 comm="gfxd" capability=1 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=capability permissive=1
+[   11.083632] type=1400 audit(1321009883.740:8): avc: denied { execute } for pid=2362 comm="gfxd" name="sh" dev="dm-0" ino=517 scontext=u:r:gfxd:s0 tcontext=u:object_r:shell_exec:s0 tclass=file permissive=1
+[   11.083835] type=1400 audit(1321009883.740:9): avc: denied { read open } for pid=2362 comm="gfxd" path="/system/bin/sh" dev="dm-0" ino=517 scontext=u:r:gfxd:s0 tcontext=u:object_r:shell_exec:s0 tclass=file permissive=1
+[   11.083875] type=1400 audit(1321009883.741:10): avc: denied { execute_no_trans } for pid=2362 comm="gfxd" path="/system/bin/sh" dev="dm-0" ino=517 scontext=u:r:gfxd:s0 tcontext=u:object_r:shell_exec:s0 tclass=file permissive=1
+[   11.104583] type=1400 audit(1321009883.761:11): avc: denied { write } for pid=2362 comm="mkdir" name="/" dev="tmpfs" ino=2852 scontext=u:r:gfxd:s0 tcontext=u:object_r:system_data_file:s0 tclass=dir permissive=1
+[   11.104646] type=1400 audit(1321009883.761:12): avc: denied { add_name } for pid=2362 comm="mkdir" name="gfx_logs" scontext=u:r:gfxd:s0 tcontext=u:object_r:system_data_file:s0 tclass=dir permissive=1
+[   11.104674] type=1400 audit(1321009883.761:13): avc: denied { create } for pid=2362 comm="mkdir" name="gfx_logs" scontext=u:r:gfxd:s0 tcontext=u:object_r:system_data_file:s0 tclass=dir permissive=1
+[   11.120016] type=1400 audit(1321009883.779:14): avc: denied { execute_no_trans } for pid=2367 comm="sh" path="/vendor/bin/init_ftrace.sh" dev="dm-1" ino=49 scontext=u:r:gfxd:s0 tcontext=u:object_r:system_file:s0 tclass=file permissive=1
+[   11.230221] m### request_irq ok serial_link_irq_chain:222
+[   11.235727] mn##(up->dma != NULL) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2028]
+[   11.251913] mn##(request_dma start) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_dma.c]:func[serial8250_request_dma]:line:[186]
+[   11.265898] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[   11.280360] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[   11.297875] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[   11.309028] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[   11.319807] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[   11.333603] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[   11.347358] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[   11.359666] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[   11.374632] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[   11.386183] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[   11.395947] init: Starting service 'adbd'...
+[   11.397975] read descriptors
+[   11.397980] read strings
+[   11.400273] dwc3 dwc3.0.auto: dwc3_resume_common
+[   11.404026] intel-cht-otg intel-cht-otg.0: No extcon device, OTG support stubbed
+[   11.421064] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[   11.421064] 
+[   11.437283] mn##(channel_compat start) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1329]
+[   11.451263] mn##(_compat: after if(chan),here chan == NULL) file[../../../../../../kernel/bxt/include/linux/dmaengine.h]:func[__dma_request_slave_channel_compat]:line:[1337]
+[   11.466882] mn##(__dma_request_channel start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[636]
+[   11.468945] random: nonblocking pool is initialized
+[   11.482338] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[   11.492524] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[   11.506157] mn##(chan->client_count  ret NULL) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[531]
+[   11.518872] mn##(private_candidate start) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:line:[515]
+[   11.529110] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[   11.542792] mn##(list_for_each_entry in if(dev->chancnt)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[528]
+[   11.556454] mn##(in list_for_each_entry ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[537]
+[   11.568721] mn##(list_for_each_entry(chan, &dev->channels, device_node)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[private_candidate]:line:[550]
+[   11.583670] mn##(if (chan)) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[646]
+[   11.595063] mn##(grab satisfied channel, break) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[664]
+[   11.608188] mn##(chan !=NULL, end then return ) file[../../../../../../kernel/bxt/drivers/dma/dmaengine.c]:func[__dma_request_channel]:line:[679]
+[   11.608188] 
+[   11.622797] #### (request_dma end: got both dma channels) func[serial8250_request_dma]:line:[249]
+[   11.631740] mn##(ttyS2: dma_request:!!! up->dma == NULL? N) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2036]
+[   11.742259] init: Starting service 'bootanim'...
+[   11.761854] healthd: No charger supplies found
+[   11.766851] healthd: No battery devices found
+[   11.849577] init: Service 'bootanim' (pid 2416) exited with status 0
+[   11.873501] type=1400 audit(1321009884.542:15): avc: denied { read } for pid=2433 comm=47465844204C6F674743 name="gfx_logs" dev="tmpfs" ino=280 scontext=u:r:gfxd:s0 tcontext=u:object_r:system_data_file:s0 tclass=dir permissive=1
+[   11.894129] type=1400 audit(1321009884.542:16): avc: denied { open } for pid=2433 comm=47465844204C6F674743 path="/data/gfx_logs" dev="tmpfs" ino=280 scontext=u:r:gfxd:s0 tcontext=u:object_r:system_data_file:s0 tclass=dir permissive=1
+[   11.914938] dwc3 dwc3.0.auto: dwc3_suspend_common
+[   11.915774] type=1400 audit(1321009884.542:17): avc: denied { create } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   11.916015] type=1400 audit(1321009884.542:18): avc: denied { setopt } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   11.916047] type=1400 audit(1321009884.542:19): avc: denied { net_admin } for pid=2436 comm=47465844204D6F6E69746F72 capability=12 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=capability permissive=1
+[   11.916120] type=1400 audit(1321009884.542:20): avc: denied { bind } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   11.916166] type=1400 audit(1321009884.542:21): avc: denied { read } for pid=2435 comm=47465844204B6D7367204465746563 name="kmsg" dev="tmpfs" ino=1412 scontext=u:r:gfxd:s0 tcontext=u:object_r:kmsg_device:s0 tclass=chr_file permissive=1
+[   11.916309] type=1400 audit(1321009884.542:22): avc: denied { open } for pid=2435 comm=47465844204B6D7367204465746563 path="/dev/kmsg" dev="tmpfs" ino=1412 scontext=u:r:gfxd:s0 tcontext=u:object_r:kmsg_device:s0 tclass=chr_file permissive=1
+[   11.916338] type=1400 audit(1321009884.542:23): avc: denied { syslog_read } for pid=2435 comm=47465844204B6D7367204465746563 scontext=u:r:gfxd:s0 tcontext=u:r:kernel:s0 tclass=system permissive=1
+[   11.916367] type=1400 audit(1321009884.542:24): avc: denied { write } for pid=2434 comm=47465844204C6F6763617420446574 name="logdr" dev="tmpfs" ino=11634 scontext=u:r:gfxd:s0 tcontext=u:object_r:logdr_socket:s0 tclass=sock_file permissive=1
+[   11.916478] type=1400 audit(1321009884.542:25): avc: denied { connectto } for pid=2434 comm=47465844204C6F6763617420446574 path="/dev/socket/logdr" scontext=u:r:gfxd:s0 tcontext=u:r:logd:s0 tclass=unix_stream_socket permissive=1
+[   12.888808] type=1400 audit(1321009885.557:26): avc: denied { read } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   13.156458] EXT4-fs (dm-2): Ignoring removed nomblk_io_submit option
+[   13.170954] EXT4-fs (dm-2): 1 orphan inode deleted
+[   13.175780] EXT4-fs (dm-2): recovery complete
+[   13.188858] EXT4-fs (dm-2): mounted filesystem with ordered data mode. Opts: nomblk_io_submit,errors=remount-ro
+[   13.199200] fs_mgr: check_fs(): mount(/dev/block/dm-2,/data,ext4)=0: Success
+[   13.218169] fs_mgr: check_fs(): unmount(/data) succeeded
+[   13.223558] fs_mgr: Running /system/bin/e2fsck on /dev/block/dm-2
+[   13.244858] e2fsck: e2fsck 1.42.9 (28-Dec-2013)
+[   13.244858] 
+[   13.250992] e2fsck: /dev/block/dm-2: clean, 1497/655360 files, 140464/2619392 blocks (check in 3 mounts)
+[   13.250992] 
+[   13.267700] EXT4-fs (dm-2): mounted filesystem with ordered data mode. Opts: discard,noauto_da_alloc,errors=panic
+[   13.278156] fs_mgr: __mount(source=/dev/block/dm-2,target=/data,type=ext4)=0
+[   13.286380] init: (Loading properties from /data/local.prop took 0.00s.)
+[   13.348170] init: Starting service 'logd-reinit'...
+[   13.359236] init: Starting service 'ap_log_srv'...
+[   13.366375] init: Not bootcharting.
+[   13.366907] logd.daemon: reinit
+[   13.373224] init: Service 'logd-reinit' (pid 2468) exited with status 0
+[   13.390754] init: Starting service 'apk_logfs'...
+[   13.396008] init: Service 'ap_log_srv' (pid 2469) exited with status 0
+[   13.411832] init: Starting service 'exec 1 (/system/bin/tzdatacheck)'...
+[   13.424224] init: Service 'exec 1 (/system/bin/tzdatacheck)' (pid 2478) exited with status 0
+[   13.454472] init: Starting service 'netd'...
+[   13.459222] init: Starting service 'debuggerd'...
+[   13.464325] init: Starting service 'debuggerd64'...
+[   13.469478] init: cannot find '/system/bin/rild', disabling 'ril-daemon'
+[   13.476434] init: Starting service 'drm'...
+[   13.481062] init: Starting service 'installd'...
+[   13.486241] init: Starting service 'flash_recovery'...
+[   13.491872] init: Starting service 'keystore'...
+[   13.497033] init: Starting service 'load_mwifiex'...
+[   13.502534] init: Starting service 'msync'...
+[   13.507392] init: Starting service 'coreu'...
+[   13.512268] init: Starting service 'esif_ufd'...
+[   13.517452] init: Starting service 'hdcpd'...
+[   13.522349] init: Starting service 'zygote'...
+[   13.527362] init: Starting service 'zygote_secondary'...
+[   13.533291] init: Starting service 'gatekeeperd'...
+[   13.540430] init: Starting service 'perfprofd'...
+[   13.546718] init: Starting service 'dirana_config'...
+[   13.556504] init: Starting service 'pstore-clean'...
+[   13.562414] init: Starting service 'storageproxyd'...
+[   13.568704] init: Starting service 'init_npk'...
+[   13.573951] init: Starting service 'crashlogd'...
+[   13.579341] init: Starting service 'log-watch'...
+[   13.595508] mlan: module license 'Marvell Proprietary' taints kernel.
+[   13.604451] init: Service 'pstore-clean' (pid 2507) exited with status 0
+[   13.630739] wlan: Loading MWLAN driver
+[   13.632018] trusty: ss: get_device_info ret is 0, deviceLocked is 0. state is 0x80000255, manuf_mode is 1.
+[   13.637953] rpmb_sim rpmb_sim: not programmed
+[   13.640298] trusty: read counter: Bad result, 0x7
+[   13.640689] trusty: ss: block_device_tipc_init: start to rpmb_program_key.
+[   13.661522] rx_work=1 cpu_num=4
+[   13.663531] trusty: read data: Addr failure, 0
+[   13.672547] trusty: read data: Addr failure, 0
+[   13.679961] trusty: read data: Addr failure, 0
+[   13.686812] trusty: read data: Addr failure, 0
+[   13.690424] Request firmware: mrvl/pcieuart8897_combo.bin
+[   13.699542] trusty: read data: Addr failure, 0
+[   13.706560] trusty: read data: Addr failure, 0
+[   13.713469] trusty: read data: Addr failure, 0
+[   13.722999] trusty: read data: Addr failure, 0
+[   13.733001] trusty: super_block_valid:155: bad magic, 0x5da06de29d042f2e
+[   13.746118] trusty: super_block_valid:155: bad magic, 0x5da06de29d042f2e
+[   13.753991] trusty: fs_init_from_super:315: no valid super-block found, create empty
+[   13.771003] trusty: super_block_valid:155: bad magic, 0x5da06de29d042f2e
+[   13.783636] trusty: super_block_valid:155: bad magic, 0x5da06de29d042f2e
+[   13.790357] trusty: fs_init_from_super:313: clear requested, create empty
+[   13.804008] init: Service 'init_npk' (pid 2510) exited with status 0
+[   13.992781] init: Service 'flash_recovery' (pid 2488) exited with status 0
+[   14.093786] init: Service 'earlyaudioalsa' (pid 2225) exited with status 0
+[   14.454999] init: Service 'defaultcrypto' (pid 2356) exited with status 0
+[   15.067978] #rvc# enter splash
+[   15.525513] WLAN FW is active
+[   15.558034] type=1400 audit(1321009888.226:27): avc: denied { create } for pid=2481 comm="netd" scontext=u:r:netd:s0 tcontext=u:r:netd:s0 tclass=netlink_netfilter_socket permissive=0
+[   15.582628] fw_cap_info=0x78ffa3, dev_cap_mask=0xffffffff
+[   15.606124] wlan_pcie 0000:03:00.0: Direct firmware load for txpower_US.bin failed with error -2
+[   15.614931] wlan_pcie 0000:03:00.0: Falling back to user helper
+[   15.625115] country txpwrlimit config file request_firmware() failed
+[   15.631507] Download power table to firmware failed
+[   15.636570] cfg80211: Regulatory domain changed to country: US
+[   15.642594] cfg80211:  DFS Master region: FCC
+[   15.646840] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[   15.647404] capability: warning: `main' uses 32-bit capabilities (legacy support in use)
+[   15.664741] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (N/A, 3000 mBm), (N/A)
+[   15.673015] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2300 mBm), (N/A)
+[   15.682599] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2300 mBm), (0 s)
+[   15.692244] cfg80211:   (5490000 KHz - 5730000 KHz @ 160000 KHz), (N/A, 2300 mBm), (0 s)
+[   15.700427] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz), (N/A, 3000 mBm), (N/A)
+[   15.708480] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000 KHz), (N/A, 4000 mBm), (N/A)
+[   15.734809] wlan: version = PCIE8897-15.44.7.p100-C3X15C216-GPL-(FP44) 
+[   15.741830] wlan: Driver loaded successfully
+[   15.748208] init: Service 'load_mwifiex' (pid 2491) exited with status 0
+[   16.132784] zram: 2941 (system_server) Attribute mem_used_total (and others) will be removed. See zram documentation.
+[   16.259713] type=1400 audit(1321009888.928:28): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[752]" dev="sockfs" ino=752 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   16.282572] type=1400 audit(1321009888.928:29): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[752]" dev="sockfs" ino=752 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   16.956470] init: Service 'dirana_config' (pid 2506) exited with status 0
+[   18.944594] healthd: battery none chg= 2011-11-11 11:11:31.614571999 UTC
+[   19.053620] type=1400 audit(1321009891.722:30): avc: denied { ioctl } for pid=2295 comm="Binder_1" path="socket:[846]" dev="sockfs" ino=846 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   19.076792] type=1400 audit(1321009891.722:31): avc: denied { ioctl } for pid=2295 comm="Binder_1" path="socket:[846]" dev="sockfs" ino=846 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   19.171973] lowmemorykiller: lowmem_shrink: convert oom_adj to oom_score_adj:
+[   19.179213] lowmemorykiller: oom_adj 0 => oom_score_adj 0
+[   19.184765] lowmemorykiller: oom_adj 1 => oom_score_adj 58
+[   19.190376] lowmemorykiller: oom_adj 2 => oom_score_adj 117
+[   19.196007] lowmemorykiller: oom_adj 3 => oom_score_adj 176
+[   19.201648] lowmemorykiller: oom_adj 9 => oom_score_adj 529
+[   19.207301] lowmemorykiller: oom_adj 15 => oom_score_adj 1000
+[   19.589525] acc_open
+[   19.591750] acc_release
+[   20.168634] type=1400 audit(1321009892.837:32): avc: denied { read } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   20.172929] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+[   20.172932] 8021q: adding VLAN 0 to HW filter on device eth0
+[   20.217455] init: Starting service 'p2p_supplicant'...
+[   20.264169] get_channel when STA is not connected
+[   20.272863] get_channel when STA is not connected
+[   20.279668] get_channel when STA is not connected
+[   20.285062] IPv6: ADDRCONF(NETDEV_UP): wfd0: link is not ready
+[   20.314847] type=1400 audit(1321009892.981:33): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[14502]" dev="sockfs" ino=14502 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   20.338059] type=1400 audit(1321009892.981:34): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[14502]" dev="sockfs" ino=14502 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   20.362262] get_channel when STA is not connected
+[   20.366511] type=1400 audit(1321009893.035:35): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[887]" dev="sockfs" ino=887 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   20.366571] type=1400 audit(1321009893.035:36): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[887]" dev="sockfs" ino=887 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   20.415716] get_channel when STA is not connected
+[   20.423910] get_channel when STA is not connected
+[   20.573230] wlan: wlan0 START SCAN
+[   21.195403] type=1400 audit(1321009893.864:37): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[16532]" dev="sockfs" ino=16532 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   21.219986] type=1400 audit(1321009893.864:38): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[16532]" dev="sockfs" ino=16532 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   21.461365] #rvc# exit early_rvc
+[   21.465564] early_rvc process exit !!!,staticSplashShowTimeMs=256.112793,animationShowTimeMs=2310.643799,firstCameraFrame=0.000000
+[   21.492314] init: Service 'rvc' (pid 1529) exited with status 0
+[   21.592205] type=1400 audit(1321009894.260:39): avc: denied { ioctl } for pid=3539 comm="Binder_3" path="socket:[14816]" dev="sockfs" ino=14816 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   21.629872] type=1400 audit(1321009894.261:40): avc: denied { ioctl } for pid=3539 comm="Binder_3" path="socket:[14816]" dev="sockfs" ino=14816 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   21.654411] type=1400 audit(1321009894.288:41): avc: denied { ioctl } for pid=3571 comm="Binder_7" path="socket:[17629]" dev="sockfs" ino=17629 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.677467] type=1400 audit(1321009894.288:42): avc: denied { ioctl } for pid=3571 comm="Binder_7" path="socket:[17629]" dev="sockfs" ino=17629 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.700354] type=1400 audit(1321009894.323:43): avc: denied { ioctl } for pid=3480 comm="Binder_5" path="socket:[16687]" dev="sockfs" ino=16687 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.725279] type=1400 audit(1321009894.346:44): avc: denied { ioctl } for pid=3480 comm="Binder_5" path="socket:[16687]" dev="sockfs" ino=16687 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.748974] type=1400 audit(1321009894.346:45): avc: denied { ioctl } for pid=3480 comm="Binder_5" path="socket:[16691]" dev="sockfs" ino=16691 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.771868] type=1400 audit(1321009894.346:46): avc: denied { ioctl } for pid=3480 comm="Binder_5" path="socket:[16691]" dev="sockfs" ino=16691 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.893992] type=1400 audit(1321009894.562:47): avc: denied { write } for pid=3614 comm="RenderThread" name="property_service" dev="tmpfs" ino=11542 scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:property_socket:s0 tclass=sock_file permissive=0
+[   21.942234] type=1400 audit(1321009894.609:48): avc: denied { ioctl } for pid=3482 comm="Binder_6" path="socket:[16006]" dev="sockfs" ino=16006 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   21.965374] type=1400 audit(1321009894.609:49): avc: denied { ioctl } for pid=3482 comm="Binder_6" path="socket:[16006]" dev="sockfs" ino=16006 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.082234] type=1400 audit(1321009894.750:50): avc: denied { ioctl } for pid=2941 comm="system_server" path="socket:[16032]" dev="sockfs" ino=16032 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.105954] type=1400 audit(1321009894.750:51): avc: denied { ioctl } for pid=2941 comm="system_server" path="socket:[16032]" dev="sockfs" ino=16032 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.241778] type=1400 audit(1321009894.909:52): avc: denied { ioctl } for pid=3196 comm="Binder_4" path="socket:[16037]" dev="sockfs" ino=16037 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.265548] type=1400 audit(1321009894.909:53): avc: denied { ioctl } for pid=3196 comm="Binder_4" path="socket:[16037]" dev="sockfs" ino=16037 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.324772] type=1400 audit(1321009894.993:54): avc: denied { write } for pid=3149 comm="ndroid.systemui" name="property_service" dev="tmpfs" ino=11542 scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:property_socket:s0 tclass=sock_file permissive=0
+[   22.531394] wlan: SCAN COMPLETED: scanned AP count=24
+[   22.734288] type=1400 audit(1321009895.402:55): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[17860]" dev="sockfs" ino=17860 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   22.758854] type=1400 audit(1321009895.402:56): avc: denied { ioctl } for pid=2297 comm="Binder_2" path="socket:[17860]" dev="sockfs" ino=17860 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   22.783744] type=1400 audit(1321009895.403:57): avc: denied { ioctl } for pid=3539 comm="Binder_3" path="socket:[14994]" dev="sockfs" ino=14994 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   22.806820] type=1400 audit(1321009895.403:58): avc: denied { ioctl } for pid=3539 comm="Binder_3" path="socket:[14994]" dev="sockfs" ino=14994 ioctlcmd=7704 scontext=u:r:surfaceflinger:s0 tcontext=u:r:surfaceflinger:s0 tclass=unix_stream_socket permissive=0
+[   22.830775] type=1400 audit(1321009895.403:59): avc: denied { ioctl } for pid=3624 comm="Binder_8" path="socket:[16871]" dev="sockfs" ino=16871 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.853896] type=1400 audit(1321009895.403:60): avc: denied { ioctl } for pid=3624 comm="Binder_8" path="socket:[16871]" dev="sockfs" ino=16871 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.876892] type=1400 audit(1321009895.475:61): avc: denied { ioctl } for pid=3482 comm="Binder_6" path="socket:[16097]" dev="sockfs" ino=16097 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.899780] type=1400 audit(1321009895.475:62): avc: denied { ioctl } for pid=3482 comm="Binder_6" path="socket:[16097]" dev="sockfs" ino=16097 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   22.960795] type=1400 audit(1321009895.629:63): avc: denied { write } for pid=3819 comm="RenderThread" name="property_service" dev="tmpfs" ino=11542 scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:object_r:property_socket:s0 tclass=sock_file permissive=0
+[   23.143293] type=1400 audit(1321009895.811:64): avc: denied { ioctl } for pid=2959 comm="Binder_2" path="socket:[15046]" dev="sockfs" ino=15046 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   23.166594] init: Starting service 'gptp'...
+[   23.171811] init: Starting service 'avbstreamhandler'...
+[   23.176248] type=1400 audit(1321009895.811:65): avc: denied { ioctl } for pid=2959 comm="Binder_2" path="socket:[15046]" dev="sockfs" ino=15046 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   23.176293] type=1400 audit(1321009895.813:66): avc: denied { ioctl } for pid=3700 comm="Binder_A" path="socket:[15045]" dev="sockfs" ino=15045 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   23.176446] type=1400 audit(1321009895.813:67): avc: denied { ioctl } for pid=3700 comm="Binder_A" path="socket:[15045]" dev="sockfs" ino=15045 ioctlcmd=7704 scontext=u:r:system_server:s0 tcontext=u:r:system_server:s0 tclass=unix_stream_socket permissive=0
+[   23.340452] bind to iface 0000:02:00.0
+[   23.346116] checking against adapter name 0000:02:00.0
+[   23.668170] init: Starting service 'btcfg'...
+[   23.694165] type=1400 audit(1321009896.362:68): avc: denied { read } for pid=2436 comm=47465844204D6F6E69746F72 scontext=u:r:gfxd:s0 tcontext=u:r:gfxd:s0 tclass=netlink_kobject_uevent_socket permissive=1
+[   23.712447] Bluetooth: Core ver 2.21
+[   23.721334] NET: Registered protocol family 31
+[   23.726339] Bluetooth: HCI device and connection manager initialized
+[   23.733732] Bluetooth: HCI socket layer initialized
+[   23.739383] Bluetooth: L2CAP socket layer initialized
+[   23.745954] Bluetooth: SCO socket layer initialized
+[   23.762745] mn## file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[1809]
+[   23.776296] m### request_irq ok serial_link_irq_chain:222
+[   23.782248] ### serial_index != 2
+[   23.786740] mn##(ttyS0: dma_request:!!! up->dma == NULL? Y) file[../../../../../../kernel/bxt/drivers/tty/serial/8250/8250_port.c]:func[serial8250_do_startup]:line:[2036]
+[   23.821220] Bluetooth: HCI UART driver ver 2.3
+[   23.827962] Bluetooth: HCI UART protocol H4 registered
+[   23.833423] Bluetooth: HCI UART protocol Three-wire (H5) registered
+[   23.840815] Bluetooth: HCI UART protocol Marvell registered
+[   23.852378] Bluetooth: CTS is low
+[   23.853495] init: Service 'btcfg' (pid 3919) exited with status 0
+[   23.861912] Bluetooth: fw is running
+[   25.808147] intel-cht-otg intel-cht-otg.0: VBUS = 1
+[   25.814636] intel-cht-otg intel-cht-otg.0: USB_EVENT_VBUS vbus valid
+[   25.822097] dwc3 dwc3.0.auto: DWC3 OTG Notify USB_EVENT_VBUS
+[   25.828447] init: Service 'reset_usb' (pid 2288) exited with status 0
+[   25.838482] dwc3 dwc3.0.auto: dwc3_resume_common
+[   25.849754] dwc3 dwc3.0.auto: otg_set_power: 2 mA
+[   25.854475] intel-cht-otg intel-cht-otg.0: unknown notification
+[   25.860401] intel-cht-otg intel-cht-otg.0: Draw 2 mA
+[   26.186085] android_work: sent uevent USB_STATE=CONNECTED
+[   26.192219] android_work: sent uevent USB_STATE=DISCONNECTED
+[   26.275124] android_work: sent uevent USB_STATE=CONNECTED
+[   26.281143] configfs-gadget gadget: high-speed config #1: b
+[   26.286762] dwc3 dwc3.0.auto: otg_set_power: 500 mA
+[   26.291648] intel-cht-otg intel-cht-otg.0: unknown notification
+[   26.297573] intel-cht-otg intel-cht-otg.0: Draw 500 mA
+[   26.303826] android_work: sent uevent USB_STATE=CONFIGURED
+[   27.016294] mtp_open
+[   33.440032] device eth0 entered promiscuous mode
