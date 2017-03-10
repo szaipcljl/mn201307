@@ -20,6 +20,7 @@
 *.so
 *.so.dbg
 *.mod.c
+*.log
 #*.i
 *.lst
 *.symtypes
