@@ -1,13 +1,20 @@
 broxton
 
+some of used by uart:
+
+serial/:
+	serial_core.c	
+
+8250/:
+	8250_pci.c
+	8250_core.c
+	8250_port.c
+	8250_dma.c
+
+--------------------------------------------------------------------------------
+build output
+
 out/target/product/bxtp_abl/obj/kernel/drivers/tty/
-├── built-in.o
-├── ipwireless
-│   ├── built-in.o
-│   ├── modules.builtin
-│   └── modules.order
-├── modules.builtin
-├── modules.order
 ├── n_gsm.o
 ├── n_tracerouter.o
 ├── n_tracesink.o
@@ -27,14 +34,8 @@ out/target/product/bxtp_abl/obj/kernel/drivers/tty/
 │   │   ├── 8250_pci.o
 │   │   ├── 8250_pnp.o
 │   │   ├── 8250_port.o
-│   │   ├── built-in.o
-│   │   ├── modules.builtin
-│   │   └── modules.order
-│   ├── built-in.o
 │   ├── earlycon.o
-│   ├── intel_max3110.o
-│   ├── modules.builtin
-│   ├── modules.order
+│   ├── intel_max3110.o //not use
 │   └── serial_core.o
 ├── sysrq.o
 ├── tty_audit.o
@@ -46,15 +47,12 @@ out/target/product/bxtp_abl/obj/kernel/drivers/tty/
 ├── tty_mutex.o
 ├── tty_port.o
 └── vt
-    ├── built-in.o
     ├── consolemap_deftbl.c
     ├── consolemap_deftbl.o
     ├── consolemap.o
     ├── defkeymap.c
     ├── defkeymap.o
     ├── keyboard.o
-    ├── modules.builtin
-    ├── modules.order
     ├── selection.o
     ├── vc_screen.o
     ├── vt_ioctl.o

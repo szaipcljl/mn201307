@@ -1,0 +1,11 @@
+uart_8250_port
+
+********************************************************************************
+
+  
+art_8250_port
+-> struct uart_port	port;
+	-> struct uart_state	*state;	/* pointer to parent state */
+		-> struct circ_buf		xmit;
+			-> char *buf;
+  

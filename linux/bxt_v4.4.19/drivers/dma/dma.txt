@@ -1,0 +1,14 @@
+dma
+
+3.Linux下如何处理DMA与Cache的问题
+当一块内存同时开始DMA和Cache时，会出现内存一致性问题：
+1).在DMA操作前，假如CPU对内存进行了操作但是结果只是保持在Cache中，没有被更新到内存，DMA操作的内存数据就会是错误的。
+2).DMA操作后，内存数据已经更新，假如Cache中仍然保持的旧数据，CPU操作会出错。
+对于情况(1)调用Cache的Flush操作：
+dma_sync_single_for_device(port->dev,
+        pdc->dma_addr,
+        pdc->dma_size,
+        DMA_TO_DEVICE);
+对于情况(2)调用Cache的Invalidate操作：
+dma_sync_single_for_cpu(port->dev, pdc->dma_addr,
+     pdc->dma_size, DMA_FROM_DEVICE);

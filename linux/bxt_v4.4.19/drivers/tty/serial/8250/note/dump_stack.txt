@@ -115,3 +115,88 @@
 [   10.989468]  [<ffffffff810b7240>] ? kthread_create_on_node+0x190/0x190
 [   10.989469] #### dump_stack over
 
+
+*************************************************************
+
+static void set_io_from_upio(struct uart_port *P) *p)
+{...
+  switch (p->iotype) {
+
+    case UPIO_MEM:
+
+        printk("###10 UPIO_MEM\n");
+#ifdef USE_DUMP_STACK
+    printk(KERN_ALERT "### dump_stack start\n");
+    dump_stack();
+    printk(KERN_ALERT "### dump_stack over\n");
+#endif
+        p->serial_in = mem_serial_in;
+        p->serial_out = mem_serial_out;
+        break;
+
+    default:
+        printk("###10 default\n");
+#ifdef USE_DUMP_STACK
+    printk(KERN_ALERT "### dump_stack start\n");
+    dump_stack();
+    printk(KERN_ALERT "### dump_stack over\n");
+#endif
+        p->serial_in = io_serial_in;
+        p->serial_out = io_serial_out;
+        break;
+    }
+} 
+-----
+[    0.000000] m### set_io_from_upio start:419
+[    0.000000] ###10 default
+[    0.000000] ### dump_stack start
+[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g1e9f2f4-dirty #90
+[    0.000000]  0000000000000000 ffffffff82203f00 ffffffff8138ebb5 ffffffff82665dc0
+[    0.000000]  ffffffff81c78b80 ffffffff82203f18 ffffffff81484221 ffffffff82665dc0
+[    0.000000]  ffffffff82203f30 ffffffff81484314 ffffffff82665dc0 ffffffff82203f60
+[    0.000000] Call Trace:
+[    0.000000]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.000000]  [<ffffffff81484221>] set_io_from_upio+0xf1/0x160
+[    0.000000]  [<ffffffff81484314>] serial8250_set_defaults+0x84/0xd0
+[    0.000000]  [<ffffffff823ffab4>] serial8250_isa_init_ports+0x1bd/0x1fb
+[    0.000000]  [<ffffffff823ffb09>] univ8250_console_init+0x17/0x27
+[    0.000000]  [<ffffffff823fe91a>] console_init+0x1c/0x25
+[    0.000000]  [<ffffffff823c3d9c>] start_kernel+0x314/0x451
+[    0.000000]  [<ffffffff823c3495>] x86_64_start_reservations+0x2a/0x2c
+[    0.000000]  [<ffffffff823c3582>] x86_64_start_kernel+0xeb/0xee
+[    0.000000] ### dump_stack over
+___________________________________________________________________
+[    0.616216] ###10 UPIO_MEM
+[    0.616310] ### dump_stack start
+[    0.616421] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G     U          4.4.19-quilt-2e5dc0ac-g1e9f2f4-dirty #90
+[    0.616728]  0000000000000000 ffff880276977a38 ffffffff8138ebb5 ffffffff82665dc0
+[    0.617016]  0000000000000004 ffff880276977a50 ffffffff81484265 ffffffff82665dc0
+[    0.617307]  ffff880276977a68 ffffffff81484314 ffffffff82665dc0 ffff880276977a90
+[    0.617599] Call Trace:
+[    0.617694]  [<ffffffff8138ebb5>] dump_stack+0x67/0x92
+[    0.617857]  [<ffffffff81484265>] set_io_from_upio+0x135/0x160
+[    0.618244]  [<ffffffff81484314>] serial8250_set_defaults+0x84/0xd0
+[    0.618445]  [<ffffffff814830d2>] serial8250_register_8250_port+0x232/0x430
+[    0.618667]  [<ffffffff8148ad60>] pciserial_init_ports+0x100/0x210
+[    0.618866]  [<ffffffff8148a370>] ? pciserial_remove_one+0x30/0x30
+[    0.619064]  [<ffffffff8148afb3>] pciserial_init_one+0x143/0x1d0
+[    0.619258]  [<ffffffff813e15bc>] pci_device_probe+0x8c/0x100
+[    0.619446]  [<ffffffff815d76f4>] driver_probe_device+0x224/0x4a0
+[    0.619639]  [<ffffffff815d79f4>] __driver_attach+0x84/0x90
+[    0.619820]  [<ffffffff815d7970>] ? driver_probe_device+0x4a0/0x4a0
+[    0.620022]  [<ffffffff815d53f4>] bus_for_each_dev+0x64/0xa0
+[    0.620204]  [<ffffffff815d707e>] driver_attach+0x1e/0x20
+[    0.620382]  [<ffffffff815d6c01>] bus_add_driver+0x1f1/0x290
+[    0.620570]  [<ffffffff823ffdbe>] ? early_serial_setup+0x13b/0x13b
+[    0.620771]  [<ffffffff815d8440>] driver_register+0x60/0xe0
+[    0.620952]  [<ffffffff813e02ed>] __pci_register_driver+0x5d/0x60
+[    0.621158]  [<ffffffff823ffdd7>] serial_pci_driver_init+0x19/0x1b
+[    0.621361]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    0.621546]  [<ffffffff823c4073>] kernel_init_freeable+0x19a/0x22e
+[    0.621748]  [<ffffffff81a5daa0>] ? rest_init+0x90/0x90
+[    0.621915]  [<ffffffff81a5daae>] kernel_init+0xe/0xe0
+[    0.622106]  [<ffffffff81a660af>] ret_from_fork+0x3f/0x70
+[    0.622279]  [<ffffffff81a5daa0>] ? rest_init+0x90/0x90
+[    0.622461] ### dump_stack over
+
+

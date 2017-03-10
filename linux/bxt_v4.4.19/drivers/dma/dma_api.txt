@@ -1,0 +1,84 @@
+dma api
+
+********************************************************************************
+int serial8250_request_dma(struct uart_8250_port *p):
+
+/* Default slave configuration parameters */
+dma->rxconf.direction		= DMA_DEV_TO_MEM;
+dma->rxconf.src_addr_width	= DMA_SLAVE_BUSWIDTH_1_BYTE;
+dma->rxconf.src_addr		= p->port.mapbase + UART_RX;
+
+dma->txconf.direction		= DMA_MEM_TO_DEV;
+dma->txconf.dst_addr_width	= DMA_SLAVE_BUSWIDTH_1_BYTE;
+dma->txconf.dst_addr		= p->port.mapbase + UART_TX;
+
+(1) dma_cap_zero(mask);
+	dma_cap_set(DMA_SLAVE, mask);
+
+(2) /* Get a channel for RX */
+	dma->rxchan = dma_request_slave_channel_compat(mask,
+						       dma->fn, dma->rx_param,
+						       p->port.dev, "rx");
+	dmaengine_slave_config(dma->rxchan, &dma->rxconf);
+
+(3) /* Get a channel for TX */
+	dma->txchan = dma_request_slave_channel_compat(mask,
+						       dma->fn, dma->tx_param,
+						       p->port.dev, "tx");
+	dmaengine_slave_config(dma->txchan, &dma->txconf);
+
+(4) dma->rx_buf = dma_alloc_coherent(dma->rxchan->device->dev, dma->rx_size,
+					&dma->rx_addr, GFP_KERNEL);
+函数的返回值为申请到的DMA缓冲区的虚拟地址。此外，该函数还通过参数handle返回DMA缓冲区的总线地址。
+(5) /* TX buffer */
+	dma->tx_addr = dma_map_single(dma->txchan->device->dev,
+					p->port.state->xmit.buf,
+					UART_XMIT_SIZE,
+					DMA_TO_DEVICE);
+对于单个已经分配的缓冲区而言，使用dma_map_single()可实现流式DMA映射：
+如果映射成功，返回的是总线地址，否则返回NULL.最后一个参数DMA的方向，可能取DMA_TO_DEVICE, DMA_FORM_DEVICE, DMA_BIDIRECTIONAL和DMA_NONE;
+
+	if (dma_mapping_error(dma->txchan->device->dev, dma->tx_addr)) {
+********************************************************************************
+int serial8250_tx_dma(struct uart_8250_port *p)
+:
+
+(1) 获取BD描述符
+dmaengine_prep_slave_single(struct dma_chan *chan, dma_addr_t buf, size_t len,
+		                    enum dma_transfer_direction dir, unsigned long
+获取desc添加回调函数
+    在驱动函数中，将发送数据个数，通道方向，数据缓存的总线地址等参数赋值给scatterlist结构体，调用dmaengine_prep_slave_sg或dmaengine_prep_dma_cyclic获取desc，再将回调函数指针传给desc->callback，在DMA的API中，回调函数总是以DMA任务上下文的方式调用的，而与中断上下文无关。
+4.递交配置好的通道						flags)
+
+(2) dma->tx_cookie = dmaengine_submit(desc);
+将desc提交到DMA驱动等待队列
+
+
+(3) 驱动访问完DMA缓冲区后，应该将其所有权还给设备
+	dma_sync_single_for_device(dma->txchan->device->dev, dma->tx_addr,
+				   UART_XMIT_SIZE, DMA_TO_DEVICE);
+1).在DMA操作前，假如CPU对内存进行了操作但是结果只是保持在Cache中，没有被更新到内存，DMA操作的内存数据就会是错误的。
+对于情况(1)调用Cache的Flush操作
+
+(4) 开启通道，等待回调函数
+dma_async_issue_pending(dma->txchan);
+激活挂起的等来队列，如果此时通道空闲则开始传输队列中的数据，传输结束后调用回调函数。
+dmaengine_submit() will not start the DMA operation, it merely adds
+it to the pending queue.  If the queue is no longer running, it won't be
+restarted until dma_async_issue_pending() is called.
+Call dma_async_issue_pending when transaction completes
+
+
+********************************************************************************
+static void __dma_tx_complete(void *param):
+
+(1) 通常要读一些状态位信息，让CPU在取消映射前，就可以访问DMA缓冲区中的内容。获得DMA缓冲区的拥有权:
+	dma_sync_single_for_cpu(dma->txchan->device->dev, dma->tx_addr,
+				UART_XMIT_SIZE, DMA_TO_DEVICE);
+(2) 返回环形缓冲区剩余的字符数
+/* 如果环形缓冲区中剩余的字符少于WAKEUP_CHARS，唤醒上层 */
+
+	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+		uart_write_wakeup(&p->port);
+(3) 
+	ret = serial8250_tx_dma(p);
