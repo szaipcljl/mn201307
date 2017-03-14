@@ -1,0 +1,17 @@
+dma
+
+********************************************************************************
+
+static struct platform_driver idma64_platform_driver = {
+	.probe		= idma64_platform_probe,
+	.remove		= idma64_platform_remove,
+	.driver = {
+		.name	= DRV_NAME, // "idma64"
+		.pm	= &idma64_dev_pm_ops,
+	},
+};
+
+
+module_platform_driver(idma64_platform_driver);
+
+********************************************************************************

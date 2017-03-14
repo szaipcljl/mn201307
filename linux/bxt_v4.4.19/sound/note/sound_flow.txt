@@ -1,0 +1,43 @@
+
+
+
+********************************************************************************
+
+module_platform_driver(broxton_audio) //sound/soc/intel/boards/bxt_gpmrb.c
+|-> broxton_audio_probe //bxt_gpmrb.c
+	<=> static struct platform_driver broxton_audio = {
+				.probe = broxton_audio_probe,
+				.remove = broxton_audio_remove,
+				.driver = {
+						.name = "gpmrb_machine",
+				},
+		};
+	|-> snd_soc_register_card //sound/soc/soc-core.c
+		//Register a card with the ASoC core
+		|-> snd_soc_instantiate_card //soc-core.c
+			|-> soc_probe_link_dais //sound/soc/soc-core.c
+				|-> soc_new_pcm // sound/soc/soc-pcm.c
+					//create a new pcm 
+					|-> ret = platform->driver->pcm_new(rtd); //sound/soc/soc-pcm.c
+						<=> static struct snd_soc_platform_driver skl_platform_drv  = {//sound/soc/intel/skylake/skl_pcm.c
+								.probe		= skl_platform_soc_probe,
+								.ops		= &skl_platform_ops,
+								.pcm_new	= skl_pcm_new,
+								.pcm_free	= skl_pcm_free,
+							};
+						|-> skl_pcm_new //sound/soc/intel/skylake/skl_pcm.c
+							|-> snd_pcm_lib_preallocate_pages_for_all
+								//pre-allocation for continuous memory type (all substreams)
+								|-> |-> snd_pcm_lib_preallocate_pages //sound/core/pcm_memory.c
+										//pre-allocation for the given DMA type
+										|-> // pre-allocate the buffer and create a proc file for the substream
+											snd_pcm_lib_preallocate_pages1 //pcm_memory.c
+											|-> preallocate_pcm_pages(substream, size);
+												 //sound/core/pcm_memory.c
+												 //try to allocate as the large pages as possible.
+												|-> snd_dma_alloc_pages 
+													//sound/core/memalloc.c
+													//allocate the buffer area according to the given type
+
+
+
