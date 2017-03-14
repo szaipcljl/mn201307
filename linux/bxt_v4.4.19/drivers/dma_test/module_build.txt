@@ -1,0 +1,47 @@
+module build
+
+(1) 进入kernel/drivers目录，新建hello目录：
+
+	在hello目录中增加hello.c文件，这是驱动程序的实现部分。
+	驱动程序的功能主要是向上层提供访问设备的寄存器的值，包括读和写。
+
+	三种访问设备寄存器的方法:
+		<1> 通过proc文件系统来访问，
+		<2> 通过传统的设备文件的方法来访问，
+		<3> 通过devfs文件系统来访问
+
+	在hello目录中增加hello.h文件
+
+(2) 在hello目录中新增Kconfig和Makefile两个文件.
+	其中Kconfig是在编译前执行配置命令make menuconfig时用到的，
+	而Makefile是执行编译命令make时用到的：
+
+	Kconfig文件的内容:
+		config HELLO
+		tristate "First Android Driver"
+		default n
+		help
+		This is the first android driver.
+	在Kconfig文件中，tristate表示编译选项HELLO支持在编译内核时，
+	hello模块支持以模块、内建和不编译三种编译方法，默认是不编译，
+	因此，在编译内核前，我们还需要执行make menuconfig命令来配置编译选项，
+	使得 hello 以模块或者内建的方法进行编译。
+
+	Makefile文件的内容
+		obj-$(CONFIG_HELLO) += hello.o
+	//obj-y += hello.o 表示内建编译
+	//obj-m += hello.o 表示模块编译
+	在Makefile文件中，根据选项HELLO的值，执行不同的编译方法。
+
+(3) 修改arch/arm/Kconfig和drivers/Kconfig两个文件，
+	在menu "Device Drivers"和endmenu之间添加一行：
+		source "drivers/hello/Kconfig"
+
+	这样，执行make menuconfig时，就可以配置hello模块的编译选项了。
+
+(4) 修改drivers/Makefile文件，添加一行：
+		obj-$(CONFIG_HELLO) += hello/
+
+(5) 配置编译选项：
+	arch/x86/configs/x86_64_defconfig
+

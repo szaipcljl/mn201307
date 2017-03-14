@@ -1,0 +1,5 @@
+config DMA_TEST
+	tristate "dma access mem test"
+	default n
+	help
+	This is the dma access mem test driver.
