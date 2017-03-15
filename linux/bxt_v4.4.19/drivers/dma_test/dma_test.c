@@ -3,8 +3,14 @@
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 #include <linux/string.h>
+#include <linux/cdev.h>			/* Char device regiseter / deregister */
+#include <linux/device.h>		/* dynamic device creating */
+#include <linux/fs.h>
+#include <linux/slab.h>			/* kmalloc etc.. */
 
 MODULE_LICENSE("GPL");
+
+#define TRUSTY_VMCALL_SMC 0x74727500
 
 #define SYSFS_ATTR_CREATE
 #ifdef SYSFS_ATTR_CREATE
@@ -36,9 +42,6 @@ static struct kobject *dmatest_kobj;
 
 #define CREATE_CHAR_DEV
 #ifdef CREATE_CHAR_DEV
-#include <linux/cdev.h>			/* Char device regiseter / deregister */
-#include <linux/device.h>		/* dynamic device creating */
-#include <linux/fs.h>
 
 #define DEVICE_NAME "dmatest_drv"
 static int device_open(struct inode *inode, struct file *filep);
@@ -68,6 +71,7 @@ static struct file_operations fops = {
 static ssize_t device_read(struct file *filp, char __user * buffer,
 						   size_t length, loff_t * offset)
 {
+	printk("###%s:%d\n", __func__, __LINE__);
 	return 0;
 }
 static ssize_t device_write(struct file *filp, const char __user * buff,
@@ -125,7 +129,7 @@ static int create_device(void)
 		unregister_chrdev_region(dmatest_drv_dev, 1);
 		return -1;
 	}
-	printk("\n### driver installed\n");
+	printk("\ndmatest### driver installed\n");
 	return 0;
 }
 
@@ -141,35 +145,48 @@ static void delete_device(void)
 
 #endif
 
-#if 1
+
+#if 0
 void make_vmcall(void)
 {
 	printk("dma_test###14 %s start\n", __func__);
 }
 #else
-extern make_vmcall(void);
+
+static inline ulong make_vmcall(ulong r0, ulong r1)
+{
+	printk("dma_test###15 %s start\n", __func__);
+	__asm__ __volatile__(
+			"vmcall; \n"
+			: "=D"(r0)
+			: "a"(TRUSTY_VMCALL_SMC), "D"(r0), "S"(r1));
+	return r0;
+}
+
 #endif
 
-
+#define DEBUG_BUF_SIZE (16 * 4096)
 static void dma_debug_buffer_alloc(void)
 {
 	printk("dma_test###14 %s start\n", __func__);
-#if 0
+
 	unsigned long debug_gpa;
-	int vmcall_id = TRUSTY_VMCALL_DEBUG_BUFFER;
+	unsigned long g_sg_debug_gva;
+	ulong dma_debug_addr;
+
 	g_sg_debug_gva = (unsigned long)kmalloc(DEBUG_BUF_SIZE, GFP_KERNEL);
 	if (!g_sg_debug_gva) {
-		printk("Failed to allocate memory for debug_buf");
+		printk("dmatest###15 Failed to allocate memory for debug_buf");
 		return;
 	}
 	memset((char *)g_sg_debug_gva, 0, DEBUG_BUF_SIZE);
-	/* The end addres of the debug buffer */
-	g_sg_debug_gva_end = g_sg_debug_gva + DEBUG_BUF_SIZE;
+
 	debug_gpa = virt_to_phys((void *)g_sg_debug_gva);
-	printk("SG Debug Buffer: GVA=%lx, GPA=%lx, Size=%d\n", g_sg_debug_gva,
-		   debug_gpa, DEBUG_BUF_SIZE);
-#endif
-	make_vmcall();
+
+	dma_debug_addr = make_vmcall(debug_gpa, DEBUG_BUF_SIZE);
+
+	printk("dmatest###15 SG Debug Buffer: GVA=%lx, GPA=%lx, Size=%d; dma_debug_addr=%lx\n",
+			g_sg_debug_gva, debug_gpa, DEBUG_BUF_SIZE, dma_debug_addr);
 }
 
 static void dmatest_dev_init(void)
