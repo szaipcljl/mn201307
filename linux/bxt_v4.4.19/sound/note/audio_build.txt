@@ -1,0 +1,198 @@
+out/target/product/bxtp_abl/obj/kernel/sound/
+├── core
+│   ├── control.o
+│   ├── ctljack.o
+│   ├── device.o
+│   ├── hrtimer.o
+│   ├── hwdep.o
+│   ├── info.o
+│   ├── info_oss.o
+│   ├── init.o
+│   ├── isadma.o
+│   ├── jack.o
+│   ├── memalloc.o
+│   ├── memory.o
+│   ├── misc.o
+│   ├── oss
+│   │   ├── copy.o
+│   │   ├── io.o
+│   │   ├── linear.o
+│   │   ├── mixer_oss.o
+│   │   ├── mulaw.o
+│   │   ├── pcm_oss.o
+│   │   ├── pcm_plugin.o
+│   │   ├── rate.o
+│   │   ├── route.o
+│   │   ├── snd-mixer-oss.ko
+│   │   ├── snd-mixer-oss.mod.c
+│   │   ├── snd-mixer-oss.mod.o
+│   │   ├── snd-mixer-oss.o
+│   │   ├── snd-pcm-oss.ko
+│   │   ├── snd-pcm-oss.mod.c
+│   │   ├── snd-pcm-oss.mod.o
+│   │   └── snd-pcm-oss.o
+│   ├── pcm_lib.o
+│   ├── pcm_memory.o
+│   ├── pcm_misc.o
+│   ├── pcm_native.o
+│   ├── pcm.o
+│   ├── pcm_timer.o
+│   ├── rawmidi.o
+│   ├── seq
+│   │   ├── seq_clientmgr.o
+│   │   ├── seq_device.o
+│   │   ├── seq_fifo.o
+│   │   ├── seq_info.o
+│   │   ├── seq_lock.o
+│   │   ├── seq_memory.o
+│   │   ├── seq_midi_event.o
+│   │   ├── seq_midi.o
+│   │   ├── seq.o
+│   │   ├── seq_ports.o
+│   │   ├── seq_prioq.o
+│   │   ├── seq_queue.o
+│   │   ├── seq_system.o
+│   │   ├── seq_timer.o
+│   │   ├── snd-seq-device.ko
+│   │   ├── snd-seq-device.mod.c
+│   │   ├── snd-seq-device.mod.o
+│   │   ├── snd-seq-device.o
+│   │   ├── snd-seq.ko
+│   │   ├── snd-seq-midi-event.ko
+│   │   ├── snd-seq-midi-event.mod.c
+│   │   ├── snd-seq-midi-event.mod.o
+│   │   ├── snd-seq-midi-event.o
+│   │   ├── snd-seq-midi.ko
+│   │   ├── snd-seq-midi.mod.c
+│   │   ├── snd-seq-midi.mod.o
+│   │   ├── snd-seq-midi.o
+│   │   ├── snd-seq.mod.c
+│   │   ├── snd-seq.mod.o
+│   │   └── snd-seq.o
+│   ├── sgbuf.o
+│   ├── snd-hrtimer.o
+│   ├── snd-hwdep.o
+│   ├── snd.o
+│   ├── snd-pcm.o
+│   ├── snd-rawmidi.o
+│   ├── snd-timer.o
+│   ├── sound.o
+│   ├── sound_oss.o
+│   └── timer.o
+├── drivers
+│   ├── dummy.o
+├── hda
+│   ├── array.o
+│   ├── ext
+│   │   ├── hdac_ext_bus.o
+│   │   ├── hdac_ext_controller.o
+│   │   ├── hdac_ext_stream.o
+│   │   └── snd-hda-ext-core.o
+│   ├── hda_bus_type.o
+│   ├── hdac_bus.o
+│   ├── hdac_controller.o
+│   ├── hdac_device.o
+│   ├── hdac_i915.o
+│   ├── hdac_regmap.o
+│   ├── hdac_stream.o
+│   ├── hdac_sysfs.o
+│   ├── hdmi_chmap.o
+│   ├── snd-hda-core.ko
+│   ├── snd-hda-core.mod.c
+│   ├── snd-hda-core.mod.o
+│   ├── snd-hda-core.o
+│   └── trace.o
+├── last.o
+├── pci
+│   ├── codecs
+│   │   ├── snd-soc-tdf8532.ko
+│   │   ├── snd-soc-tdf8532.mod.c
+│   │   ├── snd-soc-tdf8532.mod.o
+│   │   ├── snd-soc-tdf8532.o
+│   │   └── tdf8532.o
+│   ├── intel
+│   │   ├── boards
+│   │   │   ├── bxt_gpmrb.o
+│   │   │   ├── snd-soc-bxt_gpmrb.ko
+│   │   │   ├── snd-soc-bxt_gpmrb.mod.c
+│   │   │   ├── snd-soc-bxt_gpmrb.mod.o
+│   │   │   └── snd-soc-bxt_gpmrb.o
+│   │   ├── common
+│   │   │   ├── snd-soc-sst-acpi.ko
+│   │   │   ├── snd-soc-sst-acpi.mod.c
+│   │   │   ├── snd-soc-sst-acpi.mod.o
+│   │   │   ├── snd-soc-sst-acpi.o
+│   │   │   ├── snd-soc-sst-dsp.ko
+│   │   │   ├── snd-soc-sst-dsp.mod.c
+│   │   │   ├── snd-soc-sst-dsp.mod.o
+│   │   │   ├── snd-soc-sst-dsp.o
+│   │   │   ├── snd-soc-sst-ipc.ko
+│   │   │   ├── snd-soc-sst-ipc.mod.c
+│   │   │   ├── snd-soc-sst-ipc.mod.o
+│   │   │   ├── snd-soc-sst-ipc.o
+│   │   │   ├── snd-soc-sst-match.ko
+│   │   │   ├── snd-soc-sst-match.mod.c
+│   │   │   ├── snd-soc-sst-match.mod.o
+│   │   │   ├── snd-soc-sst-match.o
+│   │   │   ├── sst-acpi.o
+│   │   │   ├── sst-dsp.o
+│   │   │   ├── sst-ipc.o
+│   │   │   └── sst-match-acpi.o
+│   │   └── skylake
+│   │       ├── bxt-sst.o
+│   │       ├── skl-debug.o
+│   │       ├── skl-messages.o
+│   │       ├── skl-nhlt.o
+│   │       ├── skl.o
+│   │       ├── skl-pcm.o
+│   │       ├── skl-sst-cldma.o
+│   │       ├── skl-sst-dsp.o
+│   │       ├── skl-sst-ipc.o
+│   │       ├── skl-sst.o
+│   │       ├── skl-sst-utils.o
+│   │       ├── skl-topology.o
+│   │       ├── snd-soc-skl-ipc.ko
+│   │       ├── snd-soc-skl-ipc.mod.c
+│   │       ├── snd-soc-skl-ipc.mod.o
+│   │       ├── snd-soc-skl-ipc.o
+│   │       ├── snd-soc-skl.ko
+│   │       ├── snd-soc-skl.mod.c
+│   │       ├── snd-soc-skl.mod.o
+│   │       └── snd-soc-skl.o
+│   ├── snd-soc-core.o
+│   ├── soc-cache.o
+│   ├── soc-core.o
+│   ├── soc-dapm.o
+│   ├── soc-devres.o
+│   ├── soc-io.o
+│   ├── soc-jack.o
+│   ├── soc-ops.o
+│   ├── soc-pcm.o
+│   ├── soc-topology.o
+│   ├── soc-utils.o
+├── sound_core.o
+├── soundcore.o
+└── usb
+    ├── card.o
+    ├── clock.o
+    ├── endpoint.o
+    ├── format.o
+    ├── helper.o
+    ├── hiface
+    │   ├── chip.o
+    │   ├── pcm.o
+    │   ├── snd-usb-hiface.ko
+    │   ├── snd-usb-hiface.mod.c
+    │   ├── snd-usb-hiface.mod.o
+    │   └── snd-usb-hiface.o
+    ├── midi.o
+    ├── mixer.o
+    ├── mixer_quirks.o
+    ├── mixer_scarlett.o
+    ├── pcm.o
+    ├── proc.o
+    ├── quirks.o
+    ├── snd-usb-audio.o
+    ├── snd-usbmidi-lib.o
+    ├── stream.o
+

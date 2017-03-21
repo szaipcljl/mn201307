@@ -1,0 +1,167 @@
+Audio struct
+
+********************************************************************************
+platform_driver:
+
+static struct platform_driver broxton_audio = {
+		.probe = broxton_audio_probe,
+		.remove = broxton_audio_remove,
+		.driver = {
+				.name = "gpmrb_machine",
+		},
+};
+
+********************************************************************************
+static int broxton_audio_probe(struct platform_device *pdev)
+??
+struct platform_device *pdev
+
+********************************************************************************
+return snd_soc_register_card(&broxton_gpmrb);
+
+/* broxton audio machine driver for SPT + RT298S */
+static struct snd_soc_card broxton_gpmrb = {
+		.name = "broxton-gpmrb",
+		.owner = THIS_MODULE,
+		.dai_link = broxton_gpmrb_dais,
+		.num_links = ARRAY_SIZE(broxton_gpmrb_dais),
+		.controls = broxton_controls,
+		.num_controls = ARRAY_SIZE(broxton_controls),
+		.dapm_widgets = broxton_widgets,
+		.num_dapm_widgets = ARRAY_SIZE(broxton_widgets),
+		.dapm_routes = broxton_gpmrb_map,
+		.num_dapm_routes = ARRAY_SIZE(broxton_gpmrb_map),
+		.fully_routed = true,
+};
+
+
+//include/sound/pcm.h
+struct snd_pcm_substream {
+	struct snd_pcm *pcm;
+	struct snd_pcm_str *pstr;
+	void *private_data;		/* copied from pcm->private_data */
+	int number;
+	char name[32];			/* substream name */
+	int stream;			/* stream (direction) */
+	struct pm_qos_request latency_pm_qos_req; /* pm_qos request */
+	size_t buffer_bytes_max;	/* limit ring buffer size */
+	struct snd_dma_buffer dma_buffer;
+	size_t dma_max;
+	/* -- hardware operations -- */
+	const struct snd_pcm_ops *ops;
+	/* -- runtime information -- */
+	struct snd_pcm_runtime *runtime;
+        /* -- timer section -- */
+	struct snd_timer *timer;		/* timer */
+	unsigned timer_running: 1;	/* time is running */
+	/* -- next substream -- */
+	struct snd_pcm_substream *next;
+	/* -- linked substreams -- */
+	struct list_head link_list;	/* linked list member */
+	struct snd_pcm_group self_group;	/* fake group for non linked substream (with substream lock inside) */
+	struct snd_pcm_group *group;		/* pointer to current group */
+	/* -- assigned files -- */
+	void *file;
+	int ref_count;
+	atomic_t mmap_count;
+	unsigned int f_flags;
+	void (*pcm_release)(struct snd_pcm_substream *);
+	struct pid *pid;
+#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
+	/* -- OSS things -- */
+	struct snd_pcm_oss_substream oss;
+#endif
+#ifdef CONFIG_SND_VERBOSE_PROCFS
+	struct snd_info_entry *proc_root;
+	struct snd_info_entry *proc_info_entry;
+	struct snd_info_entry *proc_hw_params_entry;
+	struct snd_info_entry *proc_sw_params_entry;
+	struct snd_info_entry *proc_status_entry;
+	struct snd_info_entry *proc_prealloc_entry;
+	struct snd_info_entry *proc_prealloc_max_entry;
+#ifdef CONFIG_SND_PCM_XRUN_DEBUG
+	struct snd_info_entry *proc_xrun_injection_entry;
+#endif
+#endif /* CONFIG_SND_VERBOSE_PROCFS */
+	/* misc flags */
+	unsigned int hw_opened: 1;
+};
+
+********************************************************************************
+static struct snd_soc_platform_driver skl_platform_drv  = {//sound/soc/intel/skylake/skl_pcm.c
+	.probe		= skl_platform_soc_probe,
+	.ops		= &skl_platform_ops,
+	.pcm_new	= skl_pcm_new,
+	.pcm_free	= skl_pcm_free,
+}
+
+
+static struct snd_pcm_ops skl_platform_ops = {
+	.open = skl_platform_open,
+	.ioctl = snd_pcm_lib_ioctl,
+	.trigger = skl_platform_pcm_trigger,
+	.pointer = skl_platform_pcm_pointer,
+	.get_time_info =  skl_get_time_info,
+	.mmap = snd_pcm_lib_default_mmap,
+	.page = snd_pcm_sgbuf_ops_page,
+};
+
+
+
+int skl_platform_register(struct device *dev)
+	|
+	V
+static struct snd_soc_dai_driver skl_platform_dai[] = {
+{
+	.name = "Speaker Pin",
+	.ops = &skl_pcm_dai_ops,
+	.playback = {
+		.stream_name = "Speaker Playback",
+		.channels_min = HDA_QUAD,
+		.channels_max = HDA_QUAD,
+		.rates = SNDRV_PCM_RATE_48000,
+		.formats = SNDRV_PCM_FMTBIT_S32_LE,
+	}
+},
+{
+	.name = "Dirana Cp Pin",
+	.ops = &skl_pcm_dai_ops,
+	.capture = {
+		.stream_name = "Dirana Capture",
+		.channels_min = HDA_MONO,
+		.channels_max = HDA_8_CH,
+		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+			SNDRV_PCM_RATE_22050  | SNDRV_PCM_RATE_32000 |
+			SNDRV_PCM_RATE_44100  | SNDRV_PCM_RATE_48000 |
+			SNDRV_PCM_RATE_88200  | SNDRV_PCM_RATE_96000 |
+			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
+			SNDRV_PCM_FMTBIT_S32_LE,
+	}
+},
+	//...
+}
+
+static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+	.startup = skl_pcm_open,
+	.shutdown = skl_pcm_close,
+	.prepare = skl_pcm_prepare,
+	.hw_params = skl_pcm_hw_params,
+	.hw_free = skl_pcm_hw_free,
+	.trigger = skl_pcm_trigger,
+}
+
+********************************************************************************
+//include/sound/memalloc.h
+/*
+ * info for buffer allocation
+ */
+struct snd_dma_buffer {
+	struct snd_dma_device dev;	/* device type */
+	unsigned char *area;	/* virtual pointer */
+	dma_addr_t addr;	/* physical address */
+	size_t bytes;		/* buffer size in bytes */
+	void *private_data;	/* private for allocator; don't touch */
+};
+
+snd_pcm_substream -> snd_dma_buffer

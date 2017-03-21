@@ -39,3 +39,110 @@
 [   11.888749]  [<ffffffff81a65e17>] entry_SYSCALL_64_fastpath+0x12/0x6a
 [   11.895228] ### dump_stack over ###
 
+
+
+**************************************************************
+
+[    7.149062] ###16 [dump_stack] start ###
+[    7.153041] CPU: 2 PID: 1 Comm: init Tainted: G     U  W       4.4.19-quilt-2e5dc0ac-g05da29e-dirty #3
+[    7.162352]  0000000000000000 ffff880276973ab0 ffffffff8138e945 ffff880272695a00
+[    7.169865]  ffff880272691028 ffff880276973ae8 ffffffffa0128254 0000000000000000
+[    7.177360]  0000000000000007 0000000000000000 0000000000000001 ffff880272691028
+[    7.184678] 
+[    7.186369] Call Trace:
+[    7.188830]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[    7.193984]  [<ffffffffa0128254>] snd_hdac_stream_init+0x34/0xc0 [snd_hda_core]
+[    7.201303]  [<ffffffffa0141acb>] snd_hdac_ext_stream_init+0x9b/0xa0 [snd_hda_ext_core]
+[    7.209313]  [<ffffffffa01420d2>] snd_hdac_ext_stream_init_all+0x42/0xf70 [snd_hda_ext_core]
+[    7.217766]  [<ffffffffa01719b4>] skl_probe+0x214/0x790 [snd_soc_skl]
+[    7.224227]  [<ffffffff813e12cc>] pci_device_probe+0x8c/0x100
+[    7.229989]  [<ffffffff815c9144>] driver_probe_device+0x224/0x4a0
+[    7.236086]  [<ffffffff815c9444>] __driver_attach+0x84/0x90
+[    7.241669]  [<ffffffff815c93c0>] ? driver_probe_device+0x4a0/0x4a0
+[    7.247973]  [<ffffffff815c6e44>] bus_for_each_dev+0x64/0xa0
+[    7.253677]  [<ffffffff815c8ace>] driver_attach+0x1e/0x20
+[    7.259080]  [<ffffffff815c8651>] bus_add_driver+0x1f1/0x290
+[    7.264744]  [<ffffffffa0185000>] ? 0xffffffffa0185000
+[    7.269887]  [<ffffffff815c9e90>] driver_register+0x60/0xe0
+[    7.275532]  [<ffffffff813dfffd>] __pci_register_driver+0x5d/0x60
+[    7.281645]  [<ffffffffa018501e>] skl_driver_init+0x1e/0x1000 [snd_soc_skl]
+[    7.288655]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[    7.294320]  [<ffffffff81178019>] do_init_module+0x60/0x1ce
+[    7.299898]  [<ffffffff811122a4>] load_module+0x1f94/0x24c0
+[    7.305536]  [<ffffffff8110e890>] ? __symbol_put+0x70/0x70
+[    7.311027]  [<ffffffff811128e9>] SYSC_init_module+0x119/0x160
+[    7.316864]  [<ffffffff811129de>] SyS_init_module+0xe/0x10
+[    7.322365]  [<ffffffff81a57017>] entry_SYSCALL_64_fastpath+0x12/0x6a
+[    7.328853] ###16 [dump_stack] over ###
+**************************************************************
+[   12.412175] ###16 [dump_stack] start ###
+[   12.412178] CPU: 2 PID: 1 Comm: init Tainted: G     U  W       4.4.19-quilt-2e5dc0ac-g05da29e-dirty #3
+[   12.412183]  0000000000000000 ffff880276973960 ffffffff8138e945 000000000000001e
+[   12.412185]  ffffc90000968160 ffff880276973980 ffffffffa0142114 ffffc90000968160
+[   12.412187]  ffff880272100c00 ffff8802769739b0 ffffffffa012933b 0000000000000001
+[   12.412188] Call Trace:
+[   12.412198]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[   12.412203]  [<ffffffffa0142114>] hdac_ext_writeb+0x24/0x40 [snd_hda_ext_core]
+[   12.412210]  [<ffffffffa012933b>] snd_hdac_stream_start+0x9b/0x110 [snd_hda_core]
+[   12.412216]  [<ffffffffa012948f>] snd_hdac_dsp_trigger+0x1f/0x30 [snd_hda_core]
+[   12.412221]  [<ffffffffa0178d0f>] skl_dsp_trigger+0x2f/0x50 [snd_soc_skl]
+[   12.412225]  [<ffffffffa01689fc>] bxt_load_base_firmware+0xac/0x370 [snd_soc_skl_ipc]
+[   12.412229]  [<ffffffff815ccbbf>] ? devres_add+0x3f/0x50
+[   12.412233]  [<ffffffffa0168875>] bxt_sst_init_fw+0x25/0xa0 [snd_soc_skl_ipc]
+[   12.412237]  [<ffffffffa0177b28>] skl_platform_soc_probe+0x88/0x1d0 [snd_soc_skl]
+[   12.412241]  [<ffffffff8189ea33>] snd_soc_platform_drv_probe+0x13/0x20
+[   12.412243]  [<ffffffff818a1610>] soc_probe_component+0x250/0x3b0
+[   12.412245]  [<ffffffff818a4675>] snd_soc_register_card+0x785/0xfb0
+[   12.412248]  [<ffffffff81177d8f>] ? printk+0x48/0x50
+[   12.412253]  [<ffffffffa019105c>] broxton_audio_probe+0x3c/0x3f [snd_soc_bxt_gpmrb]
+[   12.412255]  [<ffffffff815cb29b>] platform_drv_probe+0x3b/0xa0
+[   12.412257]  [<ffffffff815c5520>] ? devices_kset_move_last+0x60/0xa0
+[   12.412259]  [<ffffffff815c9144>] driver_probe_device+0x224/0x4a0
+[   12.412260]  [<ffffffff815c9444>] __driver_attach+0x84/0x90
+[   12.412262]  [<ffffffff815c93c0>] ? driver_probe_device+0x4a0/0x4a0
+[   12.412264]  [<ffffffff815c6e44>] bus_for_each_dev+0x64/0xa0
+[   12.412265]  [<ffffffff815c8ace>] driver_attach+0x1e/0x20
+[   12.412267]  [<ffffffff815c8651>] bus_add_driver+0x1f1/0x290
+[   12.412269]  [<ffffffffa008e000>] ? 0xffffffffa008e000
+[   12.412271]  [<ffffffff815c9e90>] driver_register+0x60/0xe0
+[   12.412273]  [<ffffffff815cb1d6>] __platform_driver_register+0x36/0x40
+[   12.412275]  [<ffffffffa008e017>] broxton_audio_init+0x17/0x1000 [snd_soc_bxt_gpmrb]
+[   12.412279]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[   12.412281]  [<ffffffff81178019>] do_init_module+0x60/0x1ce
+[   12.412284]  [<ffffffff811122a4>] load_module+0x1f94/0x24c0
+[   12.412287]  [<ffffffff8110e890>] ? __symbol_put+0x70/0x70
+[   12.412290]  [<ffffffff811128e9>] SYSC_init_module+0x119/0x160
+[   12.412292]  [<ffffffff811129de>] SyS_init_module+0xe/0x10
+[   12.412295]  [<ffffffff81a57017>] entry_SYSCALL_64_fastpath+0x12/0x6a
+
+
+**************************************************************
+[   13.924513] ###16 [dump_stack] start ###
+[   13.924517] CPU: 2 PID: 2127 Comm: alsa_aplay Tainted: G     U  W  O    4.4.19-quilt-2e5dc0ac-g05da29e-dirty #3
+[   13.924522]  0000000000000000 ffff880271177c08 ffffffff8138e945 000000000000001e
+[   13.924524]  ffffc90000968160 ffff880271177c28 ffffffffa0142114 ffffc90000968160
+[   13.924526]  ffff880272100c00 ffff880271177c58 ffffffffa012933b ffff880272103498
+[   13.924527] Call Trace:
+[   13.924537]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[   13.924543]  [<ffffffffa0142114>] hdac_ext_writeb+0x24/0x40 [snd_hda_ext_core]
+[   13.924551]  [<ffffffffa012933b>] snd_hdac_stream_start+0x9b/0x110 [snd_hda_core]
+[   13.924557]  [<ffffffffa01774fe>] skl_decoupled_trigger+0xae/0xd0 [snd_soc_skl]
+[   13.924560]  [<ffffffffa0177f1a>] skl_pcm_trigger+0xda/0x1f0 [snd_soc_skl]
+[   13.924565]  [<ffffffff818abff7>] soc_pcm_trigger+0xd7/0x120
+[   13.924568]  [<ffffffff818ad575>] dpcm_fe_dai_do_trigger+0x155/0x210
+[   13.924570]  [<ffffffff818ad668>] dpcm_fe_dai_trigger+0x38/0x40
+[   13.924574]  [<ffffffff8187cecd>] snd_pcm_do_start+0x2d/0x30
+[   13.924576]  [<ffffffff8187ccbf>] snd_pcm_action_single+0x2f/0x70
+[   13.924578]  [<ffffffff8187ce74>] snd_pcm_action+0x104/0x110
+[   13.924580]  [<ffffffff8187fe70>] snd_pcm_common_ioctl1+0x2c0/0xc60
+[   13.924584]  [<ffffffff8132cbb7>] ? inode_has_perm.isra.33+0x27/0x30
+[   13.924585]  [<ffffffff8188092d>] snd_pcm_playback_ioctl1+0x11d/0x230
+[   13.924587]  [<ffffffff81880a70>] snd_pcm_playback_ioctl+0x30/0x40
+[   13.924591]  [<ffffffff811eccba>] do_vfs_ioctl+0x2ba/0x490
+[   13.924594]  [<ffffffff81326a13>] ? security_file_ioctl+0x43/0x60
+[   13.924596]  [<ffffffff811ecf09>] SyS_ioctl+0x79/0x90
+[   13.924600]  [<ffffffff81a57017>] entry_SYSCALL_64_fastpath+0x12/0x6a
+[   13.924601] ###16 [dump_stack] over ###
+
+******************************************************************8
+
