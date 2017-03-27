@@ -40,7 +40,100 @@ module_platform_driver(broxton_audio) //sound/soc/intel/boards/bxt_gpmrb.c
 												|-> snd_dma_alloc_pages 
 													//sound/core/memalloc.c
 													//allocate the buffer area according to the given type
+********************************************************************************
+//sound/core/pcm_native.c
+const struct file_operations snd_pcm_f_ops[2] = {
+	{
+		.owner =		THIS_MODULE,
+		.write =		snd_pcm_write,
+		.write_iter =		snd_pcm_writev,
+		.open =			snd_pcm_playback_open,
+		.release =		snd_pcm_release,
+		.llseek =		no_llseek,
+		.poll =			snd_pcm_playback_poll,
+		.unlocked_ioctl =	snd_pcm_playback_ioctl,
+		.compat_ioctl = 	snd_pcm_ioctl_compat,
+		.mmap =			snd_pcm_mmap,
+		.fasync =		snd_pcm_fasync,
+		.get_unmapped_area =	snd_pcm_get_unmapped_area,
+	},
+	{
+		.owner =		THIS_MODULE,
+		.read =			snd_pcm_read,
+		.read_iter =		snd_pcm_readv,
+		.open =			snd_pcm_capture_open,
+		.release =		snd_pcm_release,
+		.llseek =		no_llseek,
+		.poll =			snd_pcm_capture_poll,
+		.unlocked_ioctl =	snd_pcm_capture_ioctl,
+		.compat_ioctl = 	snd_pcm_ioctl_compat,
+		.mmap =			snd_pcm_mmap,
+		.fasync =		snd_pcm_fasync,
+		.get_unmapped_area =	snd_pcm_get_unmapped_area,
+	}
+}
+//sound/core/pcm.c
+static int snd_pcm_dev_register(struct snd_device *device)
+{
+	...
+	/* register pcm */
+	err = snd_register_device(devtype, pcm->card, pcm->device,
+				  &snd_pcm_f_ops[cidx], pcm,
+				  &pcm->streams[cidx].dev);
+}
+********************************************************************************
 
+hdac_ext_writeb [snd_hda_ext_core]
+snd_hdac_stream_start [snd_hda_core]
+skl_decoupled_trigger [snd_soc_skl]
+skl_pcm_trigger [snd_soc_skl]
+soc_pcm_trigger
+dpcm_fe_dai_do_trigger
+dpcm_fe_dai_trigger
+snd_pcm_do_start
+snd_pcm_action_single
+snd_pcm_action
+snd_pcm_common_ioctl1
+? inode_has_perm.isra.33
+snd_pcm_playback_ioctl1
+snd_pcm_playback_ioctl
+do_vfs_ioctl
+? security_file_ioctl
+SyS_ioctl
+entry_SYSCALL_64_fastpath
+
+***********************************************************************
+hdac_ext_writeb [snd_hda_ext_core]
+snd_hdac_stream_start [snd_hda_core]
+snd_hdac_dsp_trigger [snd_hda_core]
+skl_dsp_trigger [snd_soc_skl]
+bxt_load_base_firmware [snd_soc_skl_ipc]
+? devres_add
+bxt_sst_init_fw [snd_soc_skl_ipc]
+skl_platform_soc_probe [snd_soc_skl]
+snd_soc_platform_drv_probe
+soc_probe_component
+snd_soc_register_card
+? printk+0x48/0x50
+broxton_audio_probe [snd_soc_bxt_gpmrb]
+platform_drv_probe
+? devices_kset_move_last
+driver_probe_device
+__driver_attach
+? driver_probe_device
+bus_for_each_dev
+driver_attach
+bus_add_driver
+driver_register
+__platform_driver_register
+broxton_audio_init [snd_soc_bxt_gpmrb]
+do_one_initcall
+do_init_module
+load_module
+? __symbol_put
+SYSC_init_module
+SyS_init_module
+entry_SYSCALL_64_fastpath
 
 ********************************************************************************
 void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)

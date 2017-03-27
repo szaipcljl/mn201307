@@ -1,0 +1,49 @@
+
+
+
+struct pci_dev {
+	|- struct pci_bus {
+		|-	struct resource *resource[PCI_BRIDGE_RESOURCE_NUM];
+
+
+********************************************************************************
+include/linux/pci.h
+static inline int pci_read_config_byte(const struct pci_dev *dev, int where, u8 *val)
+{
+	return pci_bus_read_config_byte(dev->bus, dev->devfn, where, val);
+}
+
+********************************************************************************
+//drivers/pci/access.c
+#define PCI_OP_READ(size,type,len) \
+int pci_bus_read_config_##size \
+	(struct pci_bus *bus, unsigned int devfn, int pos, type *value)	\
+{									\
+	int res;							\
+	unsigned long flags;						\
+	u32 data = 0;							\
+	if (PCI_##size##_BAD) return PCIBIOS_BAD_REGISTER_NUMBER;	\
+	raw_spin_lock_irqsave(&pci_lock, flags);			\
+	res = bus->ops->read(bus, devfn, pos, len, &data);		\
+	*value = (type)data;						\
+	raw_spin_unlock_irqrestore(&pci_lock, flags);		\
+	return res;							\
+}
+
+
+PCI_OP_READ(byte, u8, 1)
+PCI_OP_READ(word, u16, 2)
+PCI_OP_READ(dword, u32, 4)
+********************************************************************************
+arch/x86/pci/common.c
+
+struct pci_ops pci_root_ops = {
+	.read = pci_read,
+	.write = pci_write,
+};
+
+static int pci_read(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 *value)
+{
+	return raw_pci_read(pci_domain_nr(bus), bus->number,
+				 devfn, where, size, value);
+}

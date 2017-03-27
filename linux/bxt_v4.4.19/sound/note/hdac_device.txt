@@ -1,0 +1,3 @@
+
+
+/sys/bus/hdaudio/devices/ehdaudio0D2
