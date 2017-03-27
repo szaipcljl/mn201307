@@ -1,0 +1,42 @@
+
+[1470173.953457] helloworld: module verification failed: signature and/or required key missing - tainting kernel
+[1470173.958692] BUG: unable to handle kernel NULL pointer dereference at           (null)
+[1470173.959712] IP: [<ffffffffc072200d>] hello_init+0xd/0x30 [helloworld]
+[1470173.960698] PGD 0 
+[1470173.961682] Oops: 0002 [#1] SMP 
+[1470173.962699] Modules linked in: helloworld(OE+) hid_generic usbhid hid md4 nls_utf8 cifs fscache nls_iso8859_1 intel_rapl x86_pkg_temp_thermal intel_powerclamp arc4 coretemp iwldvm kvm_intel mac80211 kvm irqbypass crct10dif_pclmul snd_hda_codec_hdmi crc32_pclmul dell_wmi ftdi_sio snd_hda_codec_idt ghash_clmulni_intel sparse_keymap dell_rbtn usbserial snd_hda_codec_generic aesni_intel snd_hda_intel aes_x86_64 snd_hda_codec dell_laptop lrw snd_hda_core gf128mul snd_hwdep dcdbas glue_helper dell_smm_hwmon iwlwifi snd_pcm ablk_helper snd_seq_midi cryptd snd_seq_midi_event snd_rawmidi input_leds joydev snd_seq serio_raw snd_seq_device cfg80211 snd_timer lpc_ich snd soundcore shpchp dell_smo8800 8250_fintek mei_me mei mac_hid parport_pc ppdev lp parport autofs4 i915 i2c_algo_bit drm_kms_helper syscopyarea
+[1470173.968733]  psmouse pata_acpi sysfillrect sysimgblt fb_sys_fops firewire_ohci sdhci_pci sdhci firewire_core crc_itu_t e1000e drm ptp pps_core wmi fjes video
+[1470173.972150] CPU: 0 PID: 21588 Comm: insmod Tainted: G           OE   4.4.0-66-generic #87-Ubuntu
+[1470173.973982] Hardware name: Dell Inc. Latitude E6520/0P1YR1, BIOS A05 05/24/2011
+[1470173.975863] task: ffff880064bfd400 ti: ffff88000cbdc000 task.ti: ffff88000cbdc000
+[1470173.977792] RIP: 0010:[<ffffffffc072200d>]  [<ffffffffc072200d>] hello_init+0xd/0x30 [helloworld]
+[1470173.979798] RSP: 0018:ffff88000cbdfc88  EFLAGS: 00010246
+[1470173.981827] RAX: ffff8800c0a43701 RBX: ffffffff81e11080 RCX: 000000001cd21709
+[1470173.983922] RDX: 000000001cd21708 RSI: ffff88012921a060 RDI: ffffffffc0723024
+[1470173.986052] RBP: ffff88000cbdfd08 R08: 000000000001a060 R09: ffffffff81002113
+[1470173.988209] R10: ffffea00030290c0 R11: ffffffffc0018000 R12: ffff8800c0a43f80
+[1470173.990397] R13: 0000000000000000 R14: ffffffffc0722000 R15: ffff8800c82fe900
+[1470173.992616] FS:  00007f7355edf700(0000) GS:ffff880129200000(0000) knlGS:0000000000000000
+[1470173.994893] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[1470173.997173] CR2: 0000000000000000 CR3: 000000000cad9000 CR4: 00000000000406f0
+[1470173.999501] Stack:
+[1470174.001830]  ffff88000cbdfd08 ffffffff81002123 00000000c8f60599 ffff8800258e0980
+[1470174.004281]  ffff8800258e0980 ffffffff811d0f31 ffffffffc0724000 ffffffff811ed0f3
+[1470174.006762]  ffff88000cbdfcf0 ffffffff811edeea 0000000000000018 00000000c8f60599
+[1470174.009269] Call Trace:
+[1470174.011771]  [<ffffffff81002123>] ? do_one_initcall+0xb3/0x200
+[1470174.014332]  [<ffffffff811d0f31>] ? __vunmap+0x91/0xe0
+[1470174.016912]  [<ffffffff811ed0f3>] ? kmem_cache_alloc_trace+0x183/0x1f0
+[1470174.019534]  [<ffffffff811edeea>] ? kfree+0x13a/0x150
+[1470174.022168]  [<ffffffff8118dae3>] do_init_module+0x5f/0x1cf
+[1470174.024828]  [<ffffffff8110a94f>] load_module+0x166f/0x1c10
+[1470174.027509]  [<ffffffff81106ef0>] ? __symbol_put+0x60/0x60
+[1470174.030207]  [<ffffffff81214cf0>] ? kernel_read+0x50/0x80
+[1470174.032923]  [<ffffffff8110b134>] SYSC_finit_module+0xb4/0xe0
+[1470174.035663]  [<ffffffff8110b17e>] SyS_finit_module+0xe/0x10
+[1470174.038416]  [<ffffffff8183c5f2>] entry_SYSCALL_64_fastpath+0x16/0x71
+[1470174.041202] Code: <c7> 04 25 00 00 00 00 74 65 73 74 48 89 e5 e8 17 b6 a6 c0 31 c0 5d 
+[1470174.044157] RIP  [<ffffffffc072200d>] hello_init+0xd/0x30 [helloworld]
+[1470174.047034]  RSP <ffff88000cbdfc88>
+[1470174.049915] CR2: 0000000000000000
+[1470174.066198] ---[ end trace c899e0edb9522034 ]---

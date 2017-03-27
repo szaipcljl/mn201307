@@ -1,0 +1,93 @@
+
+helloworld.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <init_module>:
+   0:	e8 00 00 00 00       	callq  5 <init_module+0x5>
+   5:	55                   	push   %rbp
+   6:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+   d:	c7 04 25 00 00 00 00 	movl   $0x74736574,0x0
+  14:	74 65 73 74 
+  18:	48 89 e5             	mov    %rsp,%rbp
+  1b:	e8 00 00 00 00       	callq  20 <init_module+0x20>
+  20:	31 c0                	xor    %eax,%eax
+  22:	5d                   	pop    %rbp
+  23:	c3                   	retq   
+  24:	66 90                	xchg   %ax,%ax
+  26:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  2d:	00 00 00 
+
+0000000000000030 <cleanup_module>:
+  30:	e8 00 00 00 00       	callq  35 <cleanup_module+0x5>
+  35:	55                   	push   %rbp
+  36:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+  3d:	48 89 e5             	mov    %rsp,%rbp
+  40:	e8 00 00 00 00       	callq  45 <cleanup_module+0x15>
+  45:	5d                   	pop    %rbp
+  46:	c3                   	retq   
+
+Disassembly of section .rodata.str1.1:
+
+0000000000000000 <.rodata.str1.1>:
+   0:	01 31                	add    %esi,(%rcx)
+   2:	48                   	rex.W
+   3:	65 6c                	gs insb (%dx),%es:(%rdi)
+   5:	6c                   	insb   (%dx),%es:(%rdi)
+   6:	6f                   	outsl  %ds:(%rsi),(%dx)
+   7:	2c 20                	sub    $0x20,%al
+   9:	77 6f                	ja     7a <cleanup_module+0x4a>
+   b:	72 6c                	jb     79 <cleanup_module+0x49>
+   d:	64 0a 00             	or     %fs:(%rax),%al
+  10:	01 31                	add    %esi,(%rcx)
+  12:	47 6f                	rex.RXB outsl %ds:(%rsi),(%dx)
+  14:	6f                   	outsl  %ds:(%rsi),(%dx)
+  15:	64 62                	fs (bad) 
+  17:	79 65                	jns    7e <cleanup_module+0x4e>
+  19:	2c 20                	sub    $0x20,%al
+  1b:	63 72 75             	movslq 0x75(%rdx),%esi
+  1e:	65 6c                	gs insb (%dx),%es:(%rdi)
+  20:	20 77 6f             	and    %dh,0x6f(%rdi)
+  23:	72 6c                	jb     91 <cleanup_module+0x61>
+  25:	64 0a 00             	or     %fs:(%rax),%al
+
+Disassembly of section .modinfo:
+
+0000000000000000 <__UNIQUE_ID_license0>:
+   0:	6c                   	insb   (%dx),%es:(%rdi)
+   1:	69 63 65 6e 73 65 3d 	imul   $0x3d65736e,0x65(%rbx),%esp
+   8:	44 75 61             	rex.R jne 6c <cleanup_module+0x3c>
+   b:	6c                   	insb   (%dx),%es:(%rdi)
+   c:	20 42 53             	and    %al,0x53(%rdx)
+   f:	44 2f                	rex.R (bad) 
+  11:	47 50                	rex.RXB push %r8
+  13:	4c                   	rex.WR
+	...
+
+Disassembly of section .comment:
+
+0000000000000000 <.comment>:
+   0:	00 47 43             	add    %al,0x43(%rdi)
+   3:	43 3a 20             	rex.XB cmp (%r8),%spl
+   6:	28 55 62             	sub    %dl,0x62(%rbp)
+   9:	75 6e                	jne    79 <cleanup_module+0x49>
+   b:	74 75                	je     82 <cleanup_module+0x52>
+   d:	20 35 2e 34 2e 30    	and    %dh,0x302e342e(%rip)        # 302e3441 <cleanup_module+0x302e3411>
+  13:	2d 36 75 62 75       	sub    $0x75627536,%eax
+  18:	6e                   	outsb  %ds:(%rsi),(%dx)
+  19:	74 75                	je     90 <cleanup_module+0x60>
+  1b:	31 7e 31             	xor    %edi,0x31(%rsi)
+  1e:	36 2e 30 34 2e       	ss xor %dh,%cs:(%rsi,%rbp,1)
+  23:	34 29                	xor    $0x29,%al
+  25:	20 35 2e 34 2e 30    	and    %dh,0x302e342e(%rip)        # 302e3459 <cleanup_module+0x302e3429>
+  2b:	20 32                	and    %dh,(%rdx)
+  2d:	30 31                	xor    %dh,(%rcx)
+  2f:	36 30 36             	xor    %dh,%ss:(%rsi)
+  32:	30 39                	xor    %bh,(%rcx)
+	...
+
+Disassembly of section __mcount_loc:
+
+0000000000000000 <__mcount_loc>:
+	...
