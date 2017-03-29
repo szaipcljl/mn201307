@@ -28,6 +28,7 @@ MODULE_LICENSE("GPL v2");
 static void hdac_ext_writel(u32 value, u32 __iomem *addr)
 {
 	writel(value, addr);
+	//printk("###-addr-wl addr=%p, value=%x, %s:%d\n", addr, value, __func__, __LINE__);
 }
 
 static u32 hdac_ext_readl(u32 __iomem *addr)
@@ -38,6 +39,7 @@ static u32 hdac_ext_readl(u32 __iomem *addr)
 static void hdac_ext_writew(u16 value, u16 __iomem *addr)
 {
 	writew(value, addr);
+	//printk("###-addr-ww addr=%p, value=%d, %s:%d\n", addr, value, __func__, __LINE__);
 }
 
 static u16 hdac_ext_readw(u16 __iomem *addr)
@@ -48,6 +50,7 @@ static u16 hdac_ext_readw(u16 __iomem *addr)
 static void hdac_ext_writeb(u8 value, u8 __iomem *addr)
 {
 	writeb(value, addr);
+	//printk("###-addr-wb addr=%p, value=%d, %s:%d\n", addr, value, __func__, __LINE__);
 }
 
 static u8 hdac_ext_readb(u8 __iomem *addr)

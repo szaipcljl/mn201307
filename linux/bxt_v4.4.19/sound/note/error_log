@@ -1,0 +1,68 @@
+
+
+modify the bdle in setup_bdle(), no sound output.
+compare the default and modified log, load base fw failed when modify bdle in
+setup_bdle(). so modify it in _stream_start()
+
+----------------------
+	failed Error/error
+***********************************************************************
+###error log
+*************
+[   11.540209] snd_soc_skl 0000:00:0e.0: Transfer firmware failed -62
+[   11.546481] snd_soc_skl 0000:00:0e.0: Error code=0x2f: FW status=0x80000007
+[   11.554509] snd_soc_skl 0000:00:0e.0: Load base fw failed: ffffffc2
+[   11.560791] snd_soc_skl 0000:00:0e.0: Failed to boot first fw: -62
+[   11.566982] snd_soc_skl 0000:00:0e.0: ASoC: failed to probe component -62
+[   11.573886] gpmrb_machine gpmrb_machine: ASoC: failed to instantiate card -62
+[   11.581220] gpmrb_machine: probe of gpmrb_machine failed with error -62
+[   11.589194] init: Starting service 'earlyaudioalsa'...
+[   11.594746] Disabling lock debugging due to kernel taint
+[   11.606229] init: (Loading properties from /system/build.prop took 0.00s.)
+[   11.613885] init: (Loading properties from /vendor/build.prop took 0.00s.)
+[   11.620873] init: (Loading properties from /factory/factory.prop took 0.00s.)
+[   11.629972] init: Starting service 'vold'...
+[   11.634907] init: Not bootcharting.
+[   11.646766] init: Starting service 'exec 0 (/system/bin/tzdatacheck)'...
+[   11.662773] init: Service 'exec 0 (/system/bin/tzdatacheck)' (pid 2059) exited with status 0
+[   11.673813] init: (Loading properties from /data/local.prop took 0.00s.)
+[   11.680807] init: Service 'earlyaudioalsa' (pid 2056) exited with status 1
+[   11.688038] init: Starting service 'logd-reinit'...
+[   11.693807] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/console/masters': No such file or directory
+[   11.706040] init: write_file: Unable to open '/sys/kernel/config/stp-policy/0-sth.default/console/channels': No such file or directory
+[   11.712487] logd.daemon: reinit
+[   11.721455] init: Service 'logd-reinit' (pid 2062) exited with status 0
+
+**********************************************************************
+normal log
+***********
+[    9.975933] ###28-s skl_interrupt:133
+[    9.979608] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[    9.987186] ###28-status = 0x80000000, skl_interrupt:146
+[    9.992508] ###28-e skl_interrupt:162
+[    9.996179] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[   10.003820] ###28 skl_threaded_handler:168
+[   10.003998] Blob + DMA Control Info:00000000: 00000000 ffff3210 ffff3210 ffff3210
+[   10.003999] Blob + DMA Control Info:00000010: ffff3210 ffff3210 ffff3210 ffff3210
+[   10.004001] Blob + DMA Control Info:00000020: ffff3210 c7d0017f c0700000 00000000
+[   10.004002] Blob + DMA Control Info:00000030: 00200000 000000ff 000000ff 00004002
+[   10.004004] Blob + DMA Control Info:00000040: 00000000 70700f00 00000020 00100000
+[   10.004005] Blob + DMA Control Info:00000050: 00000000 00000000 00000008 00000001
+[   10.004006] Blob + DMA Control Info:00000060: 00000001 00000002 00000018 0000bb80
+[   10.004008] Blob + DMA Control Info:00000070: 00000020 76543210 00000005 00000000
+[   10.004009] Blob + DMA Control Info:00000080: 00002008
+[   10.004215] ###28-s skl_interrupt:133
+[   10.004221] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[   10.004223] ###28-status = 0x80000000, skl_interrupt:146
+[   10.004225] ###28-e skl_interrupt:162
+[   10.004228] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[   10.004381] ###28-s skl_interrupt:133
+[   10.004383] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[   10.004386] ###28-status = 0x80000000, skl_interrupt:146
+[   10.004388] ###28-e skl_interrupt:162
+[   10.004391] ###29-readl addr=ffffc90000680024, value=0x80000000, hdac_ext_readl:36
+[   10.004646] ###22-malloc size=65536, snd_dma_alloc_pages:201
+[   10.004716] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Speaker Pin mapping ok
+[   10.004763] ###22-malloc size=65536, snd_dma_alloc_pages:201
+[   10.004784] gpmrb_machine gpmrb_machine: snd-soc-dummy-dai <-> Dirana Cp Pin mapping ok
+
