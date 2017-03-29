@@ -347,5 +347,80 @@
 [    8.701287]  [<ffffffff811129de>] SyS_init_module+0xe/0x10
 [    8.706781]  [<ffffffff81a57197>] entry_SYSCALL_64_fastpath+0x12/0x6a
 [    8.713264] ### [dump_stack] over ###
+**********************************************************************
+[   11.923100] ###28-start [dump_stack] start ###
+[   11.927588] CPU: 0 PID: 1 Comm: init Tainted: G     U  W       4.4.19-quilt-2e5dc0ac-g04f2823-dirty #15
+[   11.936987]  0000000000000000 ffff880276973988 ffffffff8138e945 0000000000000000
+[   11.944477]  ffff88027281fc00 ffff8802769739b0 ffffffffa012f9c4 0000000000000000
+[   11.951966]  ffff880079c9cc28 ffff880076fc4028 ffff8802769739c0 ffffffffa012fa93
+[   11.959458] Call Trace:
+[   11.961928]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[   11.967090]  [<ffffffffa012f9c4>] snd_hdac_stream_stop+0x24/0xe0 [snd_hda_core]
+[   11.974421]  [<ffffffffa012fa93>] snd_hdac_dsp_trigger+0x13/0x30 [snd_hda_core]
+[   11.981744]  [<ffffffffa017ce2f>] skl_dsp_trigger+0x2f/0x50 [snd_soc_skl]
+[   11.988548]  [<ffffffffa016ca39>] bxt_load_base_firmware+0xe9/0x370 [snd_soc_skl_ipc]
+[   11.996387]  [<ffffffff815cccff>] ? devres_add+0x3f/0x50
+[   12.001710]  [<ffffffffa016c875>] bxt_sst_init_fw+0x25/0xa0 [snd_soc_skl_ipc]
+[   12.008858]  [<ffffffffa017bc28>] skl_platform_soc_probe+0x88/0x1d0 [snd_soc_skl]
+[   12.016354]  [<ffffffff8189f1c3>] snd_soc_platform_drv_probe+0x13/0x20
+[   12.022902]  [<ffffffff818a1da0>] soc_probe_component+0x250/0x3b0
+[   12.029004]  [<ffffffff818a4e05>] snd_soc_register_card+0x785/0xfb0
+[   12.035281]  [<ffffffff81177d8f>] ? printk+0x48/0x50
+[   12.040259]  [<ffffffffa018e05c>] broxton_audio_probe+0x3c/0x3f [snd_soc_bxt_gpmrb]
+[   12.047928]  [<ffffffff815cb3db>] platform_drv_probe+0x3b/0xa0
+[   12.053772]  [<ffffffff815c5660>] ? devices_kset_move_last+0x60/0xa0
+[   12.060135]  [<ffffffff815c9284>] driver_probe_device+0x224/0x4a0
+[   12.066239]  [<ffffffff815c9584>] __driver_attach+0x84/0x90
+[   12.071820]  [<ffffffff815c9500>] ? driver_probe_device+0x4a0/0x4a0
+[   12.078097]  [<ffffffff815c6f84>] bus_for_each_dev+0x64/0xa0
+[   12.083765]  [<ffffffff815c8c0e>] driver_attach+0x1e/0x20
+[   12.089174]  [<ffffffff815c8791>] bus_add_driver+0x1f1/0x290
+[   12.094846]  [<ffffffffa008f000>] ? 0xffffffffa008f000
+[   12.099991]  [<ffffffff815c9fd0>] driver_register+0x60/0xe0
+[   12.105571]  [<ffffffff815cb316>] __platform_driver_register+0x36/0x40
+[   12.112108]  [<ffffffffa008f017>] broxton_audio_init+0x17/0x1000 [snd_soc_bxt_gpmrb]
+[   12.119863]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+[   12.125535]  [<ffffffff81178019>] do_init_module+0x60/0x1ce
+[   12.131119]  [<ffffffff811122a4>] load_module+0x1f94/0x24c0
+[   12.136703]  [<ffffffff8110e890>] ? __symbol_put+0x70/0x70
+[   12.142199]  [<ffffffff811128e9>] SYSC_init_module+0x119/0x160
+[   12.148040]  [<ffffffff811129de>] SyS_init_module+0xe/0x10
+[   12.153537]  [<ffffffff81a57797>] entry_SYSCALL_64_fastpath+0x12/0x6a
+[   12.160138] ###28-start [dump_stack] over ###
+********************************************************************
+[   13.312191] ###28-start [dump_stack] start ###
+[   13.312195] CPU: 2 PID: 2045 Comm: irq/25-snd_soc_ Tainted: G     U  W  O    4.4.19-quilt-2e5dc0ac-g04f2823-dirty #15
+[   13.312199]  0000000000000000 ffff88027259bb58 ffffffff8138e945 ffff8802724cd498
+[   13.312201]  ffff88027249ea00 ffff88027259bb80 ffffffffa012e9c4 ffff8802724cd498
+[   13.312203]  ffff88027249ea00 0000000000000282 ffff88027259bba8 ffffffffa017b5cb
+[   13.312204] Call Trace:
+[   13.312214]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[   13.312224]  [<ffffffffa012e9c4>] snd_hdac_stream_stop+0x24/0xe0 [snd_hda_core]
+[   13.312229]  [<ffffffffa017b5cb>] skl_decoupled_trigger+0x7b/0xd0 [snd_soc_skl]
+[   13.312233]  [<ffffffffa017c033>] skl_pcm_trigger+0xf3/0x210 [snd_soc_skl]
+[   13.312238]  [<ffffffff818ac787>] soc_pcm_trigger+0xd7/0x120
+[   13.312241]  [<ffffffff818add05>] dpcm_fe_dai_do_trigger+0x155/0x210
+[   13.312243]  [<ffffffff818addf8>] dpcm_fe_dai_trigger+0x38/0x40
+[   13.312246]  [<ffffffff8187d1c5>] snd_pcm_do_stop+0x45/0x50
+[   13.312248]  [<ffffffff8187cf0f>] snd_pcm_action_single+0x2f/0x70
+[   13.312250]  [<ffffffff81881cdb>] snd_pcm_drain_done+0x3b/0x40
+[   13.312252]  [<ffffffff81885110>] snd_pcm_update_state+0xc0/0xe0
+[   13.312254]  [<ffffffff818852e1>] snd_pcm_update_hw_ptr0+0x1b1/0x3d0
+[   13.312258]  [<ffffffff81a55392>] ? mutex_lock+0x12/0x30
+[   13.312260]  [<ffffffff81885575>] snd_pcm_period_elapsed+0x75/0xc0
+[   13.312263]  [<ffffffffa017a490>] skl_stream_update+0x30/0x40 [snd_soc_skl]
+[   13.312268]  [<ffffffffa012d42c>] snd_hdac_bus_handle_stream_irq+0xbc/0xe0 [snd_hda_core]
+[   13.312272]  [<ffffffffa017a460>] ? skl_threaded_handler+0x50/0x50 [snd_soc_skl]
+[   13.312275]  [<ffffffff810e6d80>] ? irq_finalize_oneshot+0xe0/0xe0
+[   13.312278]  [<ffffffffa017a457>] skl_threaded_handler+0x47/0x50 [snd_soc_skl]
+[   13.312280]  [<ffffffff810e6d9e>] irq_thread_fn+0x1e/0x40
+[   13.312281]  [<ffffffff810e7344>] irq_thread+0x134/0x1b0
+[   13.312283]  [<ffffffff810e6e50>] ? wake_threads_waitq+0x30/0x30
+[   13.312285]  [<ffffffff810e7210>] ? irq_thread_check_affinity+0x70/0x70
+[   13.312287]  [<ffffffff810b73ad>] kthread+0xed/0x110
+[   13.312289]  [<ffffffff810b72c0>] ? kthread_create_on_node+0x190/0x190
+[   13.312291]  [<ffffffff81a57aef>] ret_from_fork+0x3f/0x70
+[   13.312293]  [<ffffffff810b72c0>] ? kthread_create_on_node+0x190/0x190
+[   13.312294] ###28-start [dump_stack] over ###
 
 

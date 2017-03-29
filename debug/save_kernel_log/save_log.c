@@ -45,7 +45,7 @@ exit:
 
 static int test_init(void)
 {
-	write_to_file("hello world", sizeof("hello world"));
+	write_to_file("hello world", sizeof("hello world") - 1);
 	return 0;
 }
 
