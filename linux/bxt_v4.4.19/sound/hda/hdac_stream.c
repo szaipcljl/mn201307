@@ -21,7 +21,8 @@
 #include <asm/traps.h>
 #endif
 struct hdac_stream *g_azx_dev;
-static int g_test_count = 0;
+/*static int g_test_count = 0;*/
+int g_bdl_hack = 0;
 
 struct security_test_alloc {
     unsigned char *vir_addr;
@@ -143,8 +144,8 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
 
     }
 #endif
-    g_test_count++;
-    printk("chen-%s g_test_cout = %d\n", __func__, g_test_count);
+    /*g_test_count++;*/
+    printk("chen-%s g_bdl_hack = %d\n", __func__, g_bdl_hack);
 
 	/* enable SIE */
 	snd_hdac_chip_updatel(bus, INTCTL, 0, 1 << azx_dev->index);
@@ -420,7 +421,11 @@ static int setup_bdle(struct hdac_bus *bus,
 {
 	__le32 *bdl = *bdlp;
 
-	Fill_DMAArea_with_16kHz((u16 *)g_test_alloc->vir_addr, PAGE_4K_SIZE);
+	if (g_bdl_hack) {
+		Fill_DMAArea_with_16kHz((u16 *)g_test_alloc->vir_addr, PAGE_4K_SIZE);
+		is_noise = !is_noise;
+	}
+
 	while (size > 0) {
 		dma_addr_t addr;
 		int chunk;
@@ -429,21 +434,17 @@ static int setup_bdle(struct hdac_bus *bus,
 			return -EINVAL;
 
 		addr = snd_sgbuf_get_addr(dmab, ofs);
-		/*dmab->area = g_test_alloc->vir_addr;*/
-		/*dmab->phy*/
-        if(g_test_count > 2) {
+
+        if (g_bdl_hack) {
             if(is_noise) {
                 addr = g_test_alloc->phy_addr;
-            }
-            else
+            } else
                 addr = g_test_noise->phy_addr;
-            is_noise = !is_noise;
         }
 		printk("###24 addr=%p, g_test_alloc->phy_addr=%p\n", addr, g_test_alloc->phy_addr);
 		/* program the address field of the BDL entry */
 		bdl[0] = cpu_to_le32((u32)addr);
 		bdl[1] = cpu_to_le32(upper_32_bits(addr));
-		/*printk("###24-bdl bdl[0]=%p");*/
 		/* program the size field of the BDL entry */
 		chunk = snd_sgbuf_get_chunk_size(dmab, ofs, size);
 		/* one BDLE cannot cross 4K boundary on CTHDA chips */
@@ -455,7 +456,7 @@ static int setup_bdle(struct hdac_bus *bus,
 		}
 
 		bdl[2] = cpu_to_le32(chunk);
-        if(g_test_count > 2) {
+        if (g_bdl_hack) {
             bdl[2] = PAGE_4K_SIZE;
             chunk = PAGE_4K_SIZE;
         }
@@ -464,7 +465,8 @@ static int setup_bdle(struct hdac_bus *bus,
 		 */
 		size -= chunk;
 		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
-		printk("###24-bdl addr=0x%08x%08x, size=0x%x, ioc=0x%x, %s:%d\n", bdl[1], bdl[0], bdl[2], bdl[3],__func__, __LINE__);
+		printk("###24-bdl addr=0x%08x%08x, size=0x%x, ioc=0x%x, g_bdl_hack=0x%x, %s:%d\n",
+				bdl[1], bdl[0], bdl[2], bdl[3], g_bdl_hack,__func__, __LINE__);
 		bdl += 4;
 		azx_dev->frags++;
 		ofs += chunk;
@@ -534,7 +536,8 @@ int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev)
 					 period_bytes - pos_adj, 0);
 		}
 		else{
-			printk("###24-setup_bdle %s:%d\n", __func__, __LINE__);
+			printk("###24-setup_bdle periods=0x%x, bufsize=0x%x, period_bytes=0x%x, %s:%d\n",
+					periods, azx_dev->bufsize, period_bytes, __func__, __LINE__);
 			ofs = setup_bdle(bus, snd_pcm_get_dma_buf(substream),
 					 azx_dev, &bdl, ofs,
 					 period_bytes,
@@ -769,13 +772,13 @@ int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
 	if (err < 0)
 		goto err_alloc;
 
-	printk("###24 %s:%d\n", __func__, __LINE__);
 
 	azx_dev->substream = NULL;
 	azx_dev->bufsize = byte_size;
 	azx_dev->period_bytes = byte_size;
 	azx_dev->format_val = format;
 
+	printk("###24 bufsize=0x%0x, period_bytes=0x%x, %s:%d\n", byte_size, byte_size, __func__, __LINE__);
 	snd_hdac_stream_reset(azx_dev);
 
 	/* reset BDL address */

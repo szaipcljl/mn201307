@@ -19,6 +19,7 @@
 #endif
 
 extern struct hdac_stream *g_azx_dev;
+extern int g_bdl_hack;
 #define SIN_STEPS 1000
 /*#define SIN_STEPS 50*/
 void Fill_DMAArea_with_16kHz(u16 *vDMAArea, u32 Length)
@@ -148,6 +149,7 @@ struct security_test_alloc {
 };
 
 struct security_test_alloc *g_test_alloc;
+struct security_test_alloc *g_test_noise;
 static inline struct security_test_alloc * make_vmcall(struct security_test_alloc *r0, ulong r1)
 {
 	__asm__ __volatile__(
@@ -161,11 +163,11 @@ static inline struct security_test_alloc * make_vmcall(struct security_test_allo
 
 
 #define DEBUG_BUF_SIZE (16 * 4096)
-static struct security_test_alloc * dma_debug_buffer_alloc(void)
+static struct security_test_alloc * dma_debug_buffer_alloc(struct security_test_alloc * test_alloc)
 {
 	printk("dma_test###14 %s start\n", __func__);
 
-	struct security_test_alloc *test_alloc;
+	//struct security_test_alloc *test_alloc;
 
 	test_alloc = (struct security_test_alloc *)kmalloc(sizeof(struct security_test_alloc), GFP_KERNEL);
 	if (!test_alloc) {
@@ -182,21 +184,24 @@ static struct security_test_alloc * dma_debug_buffer_alloc(void)
 	return test_alloc;
 }
 
-/*static */void dma_debug_buffer_alloc_test(void)
+/*static */struct security_test_alloc * dma_debug_buffer_alloc_test(struct security_test_alloc *test_alloc)
 {
 
-	g_test_alloc = (struct security_test_alloc *)kmalloc(sizeof(struct security_test_alloc), GFP_KERNEL);
-	if (!g_test_alloc) {
+	test_alloc = (struct security_test_alloc *)kmalloc(sizeof(struct security_test_alloc), GFP_KERNEL);
+	if (!test_alloc) {
 		printk("### kmalloc failed. %s:%d\n", __func__, __LINE__);
 	}
 
-	g_test_alloc->vir_addr = (unsigned char *)kmalloc(/*128*/PAGE_4K_SIZE, GFP_KERNEL);
-	if (!g_test_alloc->vir_addr) {
+	test_alloc->vir_addr = (unsigned char *)kmalloc(/*128*/PAGE_4K_SIZE, GFP_KERNEL);
+	if (!test_alloc->vir_addr) {
 		printk("###24 kmalloc failed for size 0x%x. %s:%d\n", PAGE_4K_SIZE, __func__, __LINE__);
 		return -1;
 	}
-	g_test_alloc->phy_addr = virt_to_phys(g_test_alloc->vir_addr);
-	printk("###24 virt_to_phys %s;[virt=%p,\t phy_addr=%x] , \t%s:%d\n", g_test_alloc->phy_addr ? "ok" : "failed", g_test_alloc->vir_addr, g_test_alloc->phy_addr, __func__, __LINE__);
+    memset(test_alloc->vir_addr, 0, PAGE_4K_SIZE);
+	test_alloc->phy_addr = virt_to_phys(test_alloc->vir_addr);
+	printk("###24 virt_to_phys %s;[virt=%p,\t phy_addr=%x] , \t%s:%d\n", test_alloc->phy_addr ? "ok" : "failed", test_alloc->vir_addr, test_alloc->phy_addr, __func__, __LINE__);
+
+    return test_alloc;
 }
 EXPORT_SYMBOL(dma_debug_buffer_alloc_test);
 
@@ -308,7 +313,39 @@ struct device_attribute dev_attr_dma_test = {
 	.show	= dma_test_show,
 };
 
-/*DMATEST_ATTR(dma_test);*/
+static ssize_t bdl_hack_show(struct device *dev,
+			   struct device_attribute *attr,
+			   char *buf)
+{
+	return sprintf(buf, "g_bdl_hack=%d\n", g_bdl_hack);
+}
+
+static ssize_t bdl_hack_store(struct device *dev, struct device_attribute *attr,
+		 const char *buf, size_t count)
+{
+	switch (*buf) {
+	case '0':
+		g_bdl_hack = 0;
+		count = 1;
+		break;
+	case '1':
+		g_bdl_hack = 1;
+		count = 1;
+		break;
+
+	default:
+		/* sentence; */
+		break;
+	}
+
+	return count;
+}
+
+struct device_attribute dev_attr_bdl_hack = {
+	.attr	= { .name = "bdl_hack", .mode = S_IRUGO | S_IWUSR },
+	.show	= bdl_hack_show,
+	.store  = bdl_hack_store,
+};
 
 
 #endif
@@ -360,6 +397,7 @@ static struct attribute *hdac_dev_attrs[] = {
 	&dev_attr_vendor_id.attr,
 #ifdef DMA_TEST
 	&dev_attr_dma_test.attr,
+	&dev_attr_bdl_hack.attr,
 #endif
 	&dev_attr_subsystem_id.attr,
 	&dev_attr_revision_id.attr,

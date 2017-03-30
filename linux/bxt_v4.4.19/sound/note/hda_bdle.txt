@@ -1,0 +1,37 @@
+
+ //snd_hdac_dsp_prepare - prepare for DSP loading
+int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
+			 unsigned int byte_size, struct snd_dma_buffer *bufp)
+{
+	
+	err = setup_bdle(bus, bufp, azx_dev, &bdl, 0, byte_size, 0);
+}
+
+********************************************************************************
+when click
+
+ // snd_hdac_stream_setup_periods - set up BDL entries
+int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev)
+{
+	period_bytes = azx_dev->period_bytes;
+
+	if (!azx_dev->no_period_wakeup && pos_adj > 0) {
+
+	} else
+		pos_adj = 0;
+
+	for (i = 0; i < periods; i++) {
+		if (i == periods - 1 && pos_adj) {
+			...
+		} else{
+			printk("###24-setup_bdle %s:%d\n", __func__, __LINE__);
+			ofs = setup_bdle(bus, snd_pcm_get_dma_buf(substream),
+					 azx_dev, &bdl, ofs,
+					 period_bytes,
+					 !azx_dev->no_period_wakeup);
+		}
+		if (ofs < 0)
+			goto error;
+	}
+	...
+}
