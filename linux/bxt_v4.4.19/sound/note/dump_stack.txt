@@ -422,5 +422,37 @@
 [   13.312291]  [<ffffffff81a57aef>] ret_from_fork+0x3f/0x70
 [   13.312293]  [<ffffffff810b72c0>] ? kthread_create_on_node+0x190/0x190
 [   13.312294] ###28-start [dump_stack] over ###
+*****************************************************************
+when click
+-----------\
+###-addr-s[stream_start]  snd_hdac_stream_start:95
+[  104.538494] ###24 [dump_stack] start ###
+[  104.542448] CPU: 3 PID: 2904 Comm: FastMixer Tainted: P     U  W  O    4.4.19-quilt-2e5dc0ac-g34d5bd3-dirty #16
+[  104.552558]  0000000000000000 ffff880078d37b60 ffffffff8138e945 ffff880272906498
+[  104.560112]  ffff880273725a00 ffff880078d37ba8 ffffffffa0129354 ffff880272906498
+[  104.567605]  ffffffffa017b2d0 000000006a5f7524 ffff880272906498 ffff880273725a00
+[  104.575125] Call Trace:
+[  104.577591]  [<ffffffff8138e945>] dump_stack+0x67/0x92
+[  104.582755]  [<ffffffffa0129354>] snd_hdac_stream_start+0x54/0x310 [snd_hda_core]
+[  104.590271]  [<ffffffffa0174512>] skl_decoupled_trigger+0xc2/0xe0 [snd_soc_skl]
+[  104.597593]  [<ffffffffa0174f2f>] skl_pcm_trigger+0xbf/0x1d0 [snd_soc_skl]
+[  104.604482]  [<ffffffff818ac137>] soc_pcm_trigger+0xd7/0x120
+[  104.610150]  [<ffffffff818ad6b5>] dpcm_fe_dai_do_trigger+0x155/0x210
+[  104.616538]  [<ffffffff818ad7a8>] dpcm_fe_dai_trigger+0x38/0x40
+[  104.622469]  [<ffffffff8187d00d>] snd_pcm_do_start+0x2d/0x30
+[  104.628139]  [<ffffffff8187cdff>] snd_pcm_action_single+0x2f/0x70
+[  104.634280]  [<ffffffff8187cfb4>] snd_pcm_action+0x104/0x110
+[  104.639949]  [<ffffffff8188170d>] snd_pcm_start+0x1d/0x20
+[  104.645357]  [<ffffffff818854b4>] snd_pcm_lib_write1+0x314/0x370
+[  104.651391]  [<ffffffff81882ae0>] ? snd_pcm_hw_constraint_mask64+0x60/0x60
+[  104.658277]  [<ffffffff8188556c>] snd_pcm_lib_write+0x5c/0x70
+[  104.664080]  [<ffffffff8187cbca>] snd_pcm_ioctl_xferi_compat+0x7a/0xa0
+[  104.670613]  [<ffffffff8188158d>] snd_pcm_ioctl_compat+0x50d/0x670
+[  104.676802]  [<ffffffff81a54150>] ? __ww_mutex_lock_slowpath+0x60/0x6b0
+[  104.683425]  [<ffffffff8122bbd0>] compat_SyS_ioctl+0xc0/0x1140
+[  104.689275]  [<ffffffff81115630>] ? compat_SyS_nanosleep+0xc0/0x140
+[  104.695549]  [<ffffffff81001d9e>] do_syscall_32_irqs_off+0x5e/0x180
+[  104.701881]  [<ffffffff81a59812>] entry_INT80_compat+0x32/0x40
+[  104.707721] ###24 [dump_stack] over ###
 
 

@@ -21,13 +21,16 @@
 #include <asm/traps.h>
 #endif
 struct hdac_stream *g_azx_dev;
+static int g_test_count = 0;
 
 struct security_test_alloc {
     unsigned char *vir_addr;
     uint64_t phy_addr;
 };
 extern struct security_test_alloc *g_test_alloc;
-extern void dma_debug_buffer_alloc_test(void);
+extern struct security_test_alloc *g_test_noise;
+extern struct security_test_alloc * dma_debug_buffer_alloc_test(struct security_test_alloc *test_alloc);
+//extern void dma_debug_buffer_alloc_test(void);
 extern void Fill_DMAArea_with_16kHz(u16 *vDMAArea, u32 Length);
 /**
  * snd_hdac_stream_init - initialize each stream (aka device)
@@ -63,7 +66,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_init);
 void BDLSetup(uint32_t* BDL_vAddr, uint64_t DmaPhyAddr, uint64_t NoisePhyAddr, uint8_t* BdlSeq, uint32_t BdlSize)
 {
     uint16_t i;
-    uint32_t Len;
 
     for (i=0; i < BdlSize; i++)
     {
@@ -78,11 +80,11 @@ void BDLSetup(uint32_t* BDL_vAddr, uint64_t DmaPhyAddr, uint64_t NoisePhyAddr, u
             BDL_vAddr[4*i+1] = (uint32_t)(NoisePhyAddr >> 32);
         }
         BDL_vAddr[4*i+2] = PAGE_4K_SIZE;
-        BDL_vAddr[4*i+3] = 0;
+        BDL_vAddr[4*i+3] = 1;
     }
 }
 
-static int g_test_count = 0;
+void *BdlVirAddr = NULL;
 /**
  * snd_hdac_stream_start - start a stream
  * @azx_dev: HD-audio core stream to start
@@ -106,23 +108,32 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
 	azx_dev->start_wallclk = snd_hdac_chip_readl(bus, WALLCLK);
 	if (!fresh_start)
 		azx_dev->start_wallclk -= azx_dev->period_wallclk;
-
+#if 0
     if (g_test_count > 2) {
-        void *BdlVirAddr = NULL;
         uint64_t BdlPhyAddr;
-        uint8_t BdlOutputSeq[] = {1,1,0,0,1,1,0,0,1,0,1,0,1,0,1,0};
+        //uint8_t BdlOutputSeq[] = {1,1,0,0,1,1,0,0,1,0,1,0,1,0,1,0};
+        //uint8_t BdlOutputSeq[] = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0};
+        //uint8_t BdlOutputSeq[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        //uint8_t BdlOutputSeq[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+        //uint8_t BdlOutputSeq[] = {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0};
+        uint8_t BdlOutputSeq[] = {1};
+        //uint8_t BdlOutputSeq[] = {0};
+        //uint8_t BdlOutputSeq[] = {1,0};
+        //uint8_t BdlOutputSeq[] = {1,0,1,0};
         uint32_t BdlOutPutSeqSize = sizeof(BdlOutputSeq);
-        BdlVirAddr = kmalloc(PAGE_4K_SIZE, GFP_KERNEL);
-        if (BdlVirAddr==NULL){
-            printk( "chen-Allocate for BDL Area failed\r\n");
-            dump_stack();
+        if (!BdlVirAddr){
+            BdlVirAddr = kmalloc(PAGE_4K_SIZE, GFP_KERNEL);
+            if (BdlVirAddr==NULL){
+                printk( "chen-Allocate for BDL Area failed\r\n");
+                dump_stack();
+            }
         }
 
         memset(BdlVirAddr, 0, PAGE_4K_SIZE);
         BdlPhyAddr = virt_to_phys(BdlVirAddr);
-        printk("chen-%s-phyBDL = %p\n",__func__, BdlPhyAddr);
+        printk("chen-%s-phyBDL = %p,\n alloc = %p,\n noise = %p\n",__func__, BdlPhyAddr, g_test_alloc->phy_addr, g_test_noise->phy_addr);
         Fill_DMAArea_with_16kHz((u16 *)g_test_alloc->vir_addr, PAGE_4K_SIZE);
-        BDLSetup((uint32_t *) BdlVirAddr, g_test_alloc->phy_addr, g_test_alloc->phy_addr, &BdlOutputSeq[0], BdlOutPutSeqSize);
+        BDLSetup((uint32_t *) BdlVirAddr, g_test_alloc->phy_addr, g_test_noise->phy_addr, &BdlOutputSeq[0], BdlOutPutSeqSize);
 
         /* lower BDL address */
         snd_hdac_stream_writel(azx_dev, SD_BDLPL, (u32)BdlPhyAddr);
@@ -131,6 +142,7 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
                        upper_32_bits(BdlPhyAddr));
 
     }
+#endif
     g_test_count++;
     printk("chen-%s g_test_cout = %d\n", __func__, g_test_count);
 
@@ -142,7 +154,7 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
 	azx_dev->running = true;
 	printk("###-addr-e[stream_end] %s:%d\n", __func__, __LINE__);
 }
-EXPORT_SYMBOL_GPL(snd_hdac_stream_start);
+EXPORT_SYMBOL(snd_hdac_stream_start);
 
 /**
  * snd_hdac_stream_clear - stop a stream DMA
@@ -218,7 +230,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_reset);
  */
 int snd_hdac_stream_setup(struct hdac_stream *azx_dev)
 {
-	printk("### %s start:%d\n", __func__, __LINE__);
+	printk("### %s:%d\n", __func__, __LINE__);
 	struct hdac_bus *bus = azx_dev->bus;
 	struct snd_pcm_runtime *runtime;
 	unsigned int val;
@@ -299,6 +311,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_setup);
  */
 void snd_hdac_stream_cleanup(struct hdac_stream *azx_dev)
 {
+    printk("chen-%s\n", __func__);
+    //dump_stack();
 	snd_hdac_stream_writel(azx_dev, SD_BDLPL, 0);
 	snd_hdac_stream_writel(azx_dev, SD_BDLPU, 0);
 	snd_hdac_stream_writel(azx_dev, SD_CTL, 0);
@@ -394,6 +408,8 @@ struct hdac_stream *snd_hdac_get_stream(struct hdac_bus *bus,
 EXPORT_SYMBOL_GPL(snd_hdac_get_stream);
 
 #define BDLE_HACK 1
+
+static bool is_noise = false;
 /*
  * set up a BDL entry
  */
@@ -404,24 +420,26 @@ static int setup_bdle(struct hdac_bus *bus,
 {
 	__le32 *bdl = *bdlp;
 
-	//Fill_DMAArea_with_16kHz((u16 *)g_test_alloc->vir_addr, PAGE_4K_SIZE);
+	Fill_DMAArea_with_16kHz((u16 *)g_test_alloc->vir_addr, PAGE_4K_SIZE);
 	while (size > 0) {
-		printk("###24 size=0x%x, %s:%d\n", size, __func__, __LINE__);
 		dma_addr_t addr;
 		int chunk;
 
 		if (azx_dev->frags >= AZX_MAX_BDL_ENTRIES)
 			return -EINVAL;
 
-#if BDLE_HACK
 		addr = snd_sgbuf_get_addr(dmab, ofs);
-#else
 		/*dmab->area = g_test_alloc->vir_addr;*/
 		/*dmab->phy*/
-		addr = g_test_alloc->phy_addr;
+        if(g_test_count > 2) {
+            if(is_noise) {
+                addr = g_test_alloc->phy_addr;
+            }
+            else
+                addr = g_test_noise->phy_addr;
+            is_noise = !is_noise;
+        }
 		printk("###24 addr=%p, g_test_alloc->phy_addr=%p\n", addr, g_test_alloc->phy_addr);
-#endif
-		printk("###24 %s:%d\n", __func__, __LINE__);
 		/* program the address field of the BDL entry */
 		bdl[0] = cpu_to_le32((u32)addr);
 		bdl[1] = cpu_to_le32(upper_32_bits(addr));
@@ -436,17 +454,17 @@ static int setup_bdle(struct hdac_bus *bus,
 				chunk = remain;
 		}
 
-#if BDLE_HACK
 		bdl[2] = cpu_to_le32(chunk);
-#else
-		bdl[2] = size;
-#endif
+        if(g_test_count > 2) {
+            bdl[2] = PAGE_4K_SIZE;
+            chunk = PAGE_4K_SIZE;
+        }
 		/* program the IOC to enable interrupt
 		 * only when the whole fragment is processed
 		 */
 		size -= chunk;
 		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
-		printk("###24-bdl addr=0x%08x%08x, %s:%d\n", bdl[1], bdl[0], __func__, __LINE__);
+		printk("###24-bdl addr=0x%08x%08x, size=0x%x, ioc=0x%x, %s:%d\n", bdl[1], bdl[0], bdl[2], bdl[3],__func__, __LINE__);
 		bdl += 4;
 		azx_dev->frags++;
 		ofs += chunk;
@@ -742,7 +760,8 @@ int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
 	azx_dev->locked = true;
 	spin_unlock_irq(&bus->reg_lock);
 
-	dma_debug_buffer_alloc_test();
+	g_test_alloc = dma_debug_buffer_alloc_test(g_test_alloc);
+	g_test_noise = dma_debug_buffer_alloc_test(g_test_noise);
 	printk("###24-s %s:%d\n", __func__, __LINE__);
 	err = bus->io_ops->dma_alloc_pages(bus, SNDRV_DMA_TYPE_DEV_SG,
 					   byte_size, bufp);

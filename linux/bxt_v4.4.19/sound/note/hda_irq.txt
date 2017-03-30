@@ -1,4 +1,6 @@
 
+//soc/intel/skylake/skl.c
+
 err = skl_first_init(ebus);
 |- if (skl_acquire_irq(ebus, 0) < 0)
 	|- ret = request_threaded_irq(skl->pci->irq, skl_interrupt,
