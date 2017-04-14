@@ -1,0 +1,76 @@
+syscall
+
+*********************************************************************
+------------------
+(git repo)trusty/lk/trusty/
+1) trusty/lk/trusty/lib/trusty/rules.mk
+@@ -5,12 +5,17 @@ MODULE := $(LOCAL_DIR)
+ MODULE_SRCS := \
+        $(LOCAL_DIR)/trusty.c \
+        $(LOCAL_DIR)/trusty_app.c \
++       $(LOCAL_DIR)/syscall.c \
+ 
+ GLOBAL_INCLUDES += \
+        $(LOCAL_DIR)/include \
+ 
+ MODULE_DEPS += \
+        lib/uthread \
++       lib/syscall \
++
++GLOBAL_DEFINES += \
++       WITH_SYSCALL_TABLE=1 \
+
+
+2) trusty/lk/trusty/lib/trusty/include/syscall_table.h
+/* DEF_SYSCALL(syscall_nr, syscall_name, return type, nr_args, [argument list])
++ *
++ * Please keep this table sorted by syscall number
++ */
+
++DEF_SYSCALL(0x1, write, long, 3, uint32_t fd, void* msg, uint32_t size)
+
+
+3) trusty/lk/trusty/lib/trusty/syscall.c
++long sys_write(uint32_t fd, void *msg, uint32_t size)
++{
++       /* check buffer is in task's address space */
++       if (valid_address((vaddr_t)msg, size) == false) {
++               return ERR_INVALID_ARGS;
++       }
++
++       if ((fd == 1) || (fd == 2)) {
++               u_int i;
++               /* handle stdout/stderr */
++               for (i = 0; i < size; i++) {
++                       dprintf(SPEW, "%c", ((char *)msg)[i]);
++               }
++               return size;
++       }
++       return ERR_INVALID_ARGS;
++}
+
+-----------
+(git repo)trusty/lib
+4) trusty/lib/include/trusty_syscalls.h
+
+#define __NR_write      0x1
+
+long write (uint32_t fd, void* msg, uint32_t size); 
+
+5)
+trusty/lib/lib/libc-trusty/arch/x86/trusty_syscall.S:
+		FUNCTION(write)
+		    mov $__NR_write, %eax
+
+trusty/lib/lib/libc-trusty/arch/x86-64/trusty_syscall.S:
+		FUNCTION(write)
+		    movq $__NR_write, %rax
+=>:
+FUNCTION(write)                                                  
+     PROLOG
+     movq $__NR_write, %rax
+     MOV_PARAMS
+     sysenter
+     EPILOG
+     ret
+
