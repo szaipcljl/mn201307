@@ -324,3 +324,13 @@ long sys_get_device_info(user_addr_t * info, bool need_seed)
 	return NO_ERROR;
 }
 
+paddr_t sys_virt_to_phys(void *ptr)
+{
+	paddr_t phys_addr = NULL;
+
+	phys_addr = kvaddr_to_paddr(ptr);
+	if (!phys_addr)
+		panic("### failed to convert virtual address to physical address\n");
+
+	return phys_addr;
+}

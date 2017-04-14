@@ -236,3 +236,11 @@ FUNCTION(send_msg)
     sysenter
     EPILOG
     ret
+
+FUNCTION(virt_to_phys)
+    PROLOG
+    movq $__NR_virt_to_phys, %rax
+    MOV_PARAMS
+    sysenter
+    EPILOG
+    ret

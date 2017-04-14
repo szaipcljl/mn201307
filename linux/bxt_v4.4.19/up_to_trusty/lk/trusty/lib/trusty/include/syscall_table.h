@@ -55,3 +55,5 @@ DEF_SYSCALL(0x20, get_msg, long, 2, uint32_t handle, ipc_msg_info_t *msg_info)
 DEF_SYSCALL(0x21, read_msg, long, 4, uint32_t handle, uint32_t msg_id, uint32_t offset, ipc_msg_t *msg)
 DEF_SYSCALL(0x22, put_msg, long, 2, uint32_t handle, uint32_t msg_id)
 DEF_SYSCALL(0x23, send_msg, long, 2, uint32_t handle, ipc_msg_t *msg)
+
+DEF_SYSCALL(0x24, virt_to_phys, paddr_t, 1, void *ptr)
