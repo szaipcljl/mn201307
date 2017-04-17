@@ -39,6 +39,10 @@ static const char *closer2_name = "com.android.ipc-unittest.srv.closer2";
 static const char *closer3_name = "com.android.ipc-unittest.srv.closer3";
 static const char *main_ctrl_name = "com.android.ipc-unittest.ctrl";
 
+static const char *security_test_name = "com.android.ipc-unittest.srv.security_test";
+static const char *security_test_check_name = "com.android.ipc-unittest.srv.security_test_check";
+static const char *security_test_free_name = "com.android.ipc-unittest.srv.security_test_free";
+
 static const char *_sopts = "hsvD:t:r:m:b:";
 static const struct option _lopts[] =  {
 	{"help",    no_argument,       0, 'h'},
@@ -79,6 +83,9 @@ static const char *usage_long =
 "   closer3      - connection closed by remote (test3)\n"
 "   ta2ta-ipc    - execute TA to TA unittest\n"
 "   dev-uuid     - print device uuid\n"
+"   security-test	- security-test\n"
+"   security-test-check	- security-test-check\n"
+"   security-test-free	- security-test-free\n"
 "   ta-access    - test ta-access flags\n"
 "\n"
 ;
@@ -661,6 +668,99 @@ static int dev_uuid_test(void)
 	return 0;
 }
 
+typedef struct security_test_mem {
+    uint64_t addr;
+    uint32_t size;
+} security_test_mem_t;
+
+static int security_test(void)
+{
+	int fd;
+	ssize_t rc;
+	security_test_mem_t lk_security_alloc;
+
+	fd = tipc_connect(dev_name, security_test_name);
+	if (fd < 0) {
+		fprintf(stderr, "Failed to connect to '%s' service\n",
+			"security_test");
+		return fd;
+	}
+
+	/* wait for test to complete */
+	rc = read(fd, &lk_security_alloc.addr, sizeof(lk_security_alloc.addr));
+	if (rc < 0) {
+		perror("security_test: read");
+	} else if (rc != sizeof(lk_security_alloc.addr)) {
+		fprintf(stderr, "unexpected lk_security_alloc.addr size (%d vs. %d)\n",
+			(int)rc, (int)sizeof(lk_security_alloc.addr));
+	} else {
+		printf("%s:addr: %x\n", dev_name, lk_security_alloc.addr);
+	}
+
+	tipc_close(fd);
+
+	return 0;
+}
+
+static int security_test_check(void)
+{
+	int fd;
+	ssize_t rc;
+	int cmp_flag = 0;
+
+	fd = tipc_connect(dev_name, security_test_check_name);
+	if (fd < 0) {
+		fprintf(stderr, "failed to connect to '%s' service\n",
+			"security_test_check");
+		return fd;
+	}
+
+	/* wait for test to complete */
+	rc = read(fd, &cmp_flag, sizeof(cmp_flag));
+	if (rc < 0) {
+		perror("security_test_check: read");
+	} else if (rc != sizeof(cmp_flag)) {
+		fprintf(stderr, "unexpected cmp_flag size (%d vs. %d)\n",
+			(int)rc, (int)sizeof(cmp_flag));
+	} else {
+		printf("%s: %s (cmp_flag=%d)\n", dev_name,
+				cmp_flag ? "not equal" : "equal", cmp_flag);
+	}
+
+	tipc_close(fd);
+
+	return 0;
+}
+
+static int security_test_free(void)
+{
+	int fd;
+	ssize_t rc;
+	int free_flag = 0;
+
+	fd = tipc_connect(dev_name, security_test_free_name);
+	if (fd < 0) {
+		fprintf(stderr, "failed to connect to '%s' service\n",
+			"security_test_free");
+		return fd;
+	}
+
+	/* wait for test to complete */
+	rc = read(fd, &free_flag, sizeof(free_flag));
+	if (rc < 0) {
+		perror("dev_uuid_test: read");
+	} else if (rc != sizeof(free_flag)) {
+		fprintf(stderr, "unexpected free_flag size (%d vs. %d)\n",
+			(int)rc, (int)sizeof(free_flag));
+	} else {
+		printf("%s: free_flag=%d\n", dev_name, free_flag);
+	}
+
+	tipc_close(fd);
+
+	return 0;
+}
+
 static int ta_access_test(void)
 {
 	int fd;
@@ -735,6 +835,12 @@ int main(int argc, char **argv)
 		rc = dev_uuid_test();
 	} else if (strcmp(test_name, "ta-access") == 0) {
 		rc = ta_access_test();
+	} else if (strcmp(test_name, "security-test") == 0) {
+		rc = security_test();
+	} else if (strcmp(test_name, "security-test-check") == 0) {
+		rc = security_test_check();
+	} else if (strcmp(test_name, "security-test-free") == 0) {
+		rc = security_test_free();
 	} else {
 		fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
 		print_usage_and_exit(argv[0], EXIT_FAILURE, true);
