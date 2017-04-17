@@ -51,6 +51,7 @@ syscall
 
 -----------
 (git repo)trusty/lib
+user space interface
 4) trusty/lib/include/trusty_syscalls.h
 
 #define __NR_write      0x1
