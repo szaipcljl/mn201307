@@ -1198,7 +1198,7 @@ static void security_test_check_handle_port(const uevent_t *ev)
 		u16 *v_dma_area_refer = (u16 *) g_refer_alloc->vir_addr;
 
 		TLOGI("### print dmaarea\n");
-		for (i = 0; i < PAGE_4K_SIZE/2; i++)
+		for (i = 0; i < PAGE_4K_SIZE/20; i++)
 			fprintf(stderr, "%d: 0x%x/0x%x\n ", i, v_dma_area_test[i], v_dma_area_refer[i]);
 
 

@@ -21,6 +21,8 @@
 
 extern struct hdac_stream *g_azx_dev;
 extern int g_bdl_hack;
+
+uint64_t lk_heap_phy_addr = 0;
 #define SIN_STEPS 1000
 /*#define SIN_STEPS 50*/
 void fill_dmaarea_with_16khz(u16 *v_dma_area, u32 length)
@@ -393,10 +395,11 @@ static void trigger_dmatest(struct hdac_bus *bus, struct hdac_stream *azx_dev)
 }
 
 /*#define DMATEST_ATTR(type)					\*/
-static ssize_t dma_test_show(struct device *dev,
+static ssize_t lk_phys_addr_show(struct device *dev,
 			     struct device_attribute *attr,
 			     char *buf)
 {
+#if 0
 	struct hdac_device *codec = dev_to_hdac_dev(dev);
 	struct hdac_bus *bus = codec->bus;
 	void __iomem *remap_addr = bus->remap_addr;
@@ -429,12 +432,24 @@ static ssize_t dma_test_show(struct device *dev,
 	pr_info("dma_test### %s:%d\n", __func__, __LINE__);
 
 	trigger_dmatest(bus, azx_dev);
-	return sprintf(buf, "hello form hdac_sysfs\n");
+#endif
+	return sprintf(buf, "hello form hdac_sysfs lk_heap_phy_addr=0x%x\n", lk_heap_phy_addr);
 }
 
-struct device_attribute dev_attr_dma_test = {
-	.attr	= { .name = "dma_test", .mode = S_IRUGO },
-	.show	= dma_test_show,
+static ssize_t lk_phys_addr_store(struct device *dev, struct device_attribute *attr,
+			      const char *buf, size_t count)
+{
+	sscanf(buf, "%d\n", &lk_heap_phy_addr);
+
+	pr_info("### lk_heap_phy_addr=0x%x", lk_heap_phy_addr);
+
+	return count;
+}
+
+struct device_attribute dev_attr_lk_phys_addr = {
+	.attr	= { .name = "lk_phys_addr", .mode = S_IRUGO | S_IWUSR},
+	.show	= lk_phys_addr_show,
+	.store	= lk_phys_addr_store,
 };
 
 
@@ -613,6 +628,14 @@ static ssize_t bdl_hack_store(struct device *dev, struct device_attribute *attr,
 		g_test_vmm_alloc = NULL;
 		break;
 
+	case '4':
+		bdl_entry_hack_test(lk_heap_phy_addr);
+		msleep(1000);
+
+		pr_info("### %s lk_heap_phy_addr: HPA=0x%lx\n",
+			__func__, lk_heap_phy_addr);
+		break;
+
 	default:
 		break;
 	}
@@ -623,7 +646,7 @@ static ssize_t bdl_hack_store(struct device *dev, struct device_attribute *attr,
 struct device_attribute dev_attr_bdl_hack = {
 	.attr	= { .name = "bdl_hack", .mode = S_IRUGO | S_IWUSR },
 	.show	= bdl_hack_show,
-	.store  = bdl_hack_store,
+	.store	= bdl_hack_store,
 };
 
 
@@ -635,25 +658,25 @@ struct hdac_widget_tree {
 };
 
 #define CODEC_ATTR(type)					\
-static ssize_t type##_show(struct device *dev,			\
-			   struct device_attribute *attr,	\
-			   char *buf)				\
-{								\
-	struct hdac_device *codec = dev_to_hdac_dev(dev);	\
-	return sprintf(buf, "0x%x\n", codec->type);		\
-} \
-static DEVICE_ATTR_RO(type)
+	static ssize_t type ## _show(struct device *dev,		  \
+				     struct device_attribute *attr,	  \
+				     char *buf)				  \
+	{								\
+		struct hdac_device *codec = dev_to_hdac_dev(dev);	\
+		return sprintf(buf, "0x%x\n", codec->type);		\
+	} \
+	static DEVICE_ATTR_RO(type)
 
 #define CODEC_ATTR_STR(type)					\
-static ssize_t type##_show(struct device *dev,			\
-			     struct device_attribute *attr,	\
-					char *buf)		\
-{								\
-	struct hdac_device *codec = dev_to_hdac_dev(dev);	\
-	return sprintf(buf, "%s\n",				\
-		       codec->type ? codec->type : "");		\
-} \
-static DEVICE_ATTR_RO(type)
+	static ssize_t type ## _show(struct device *dev,		  \
+				     struct device_attribute *attr,	\
+				     char *buf)		     \
+	{								\
+		struct hdac_device *codec = dev_to_hdac_dev(dev);	\
+		return sprintf(buf, "%s\n",				\
+			       codec->type ? codec->type : "");		\
+	} \
+	static DEVICE_ATTR_RO(type)
 
 CODEC_ATTR(type);
 CODEC_ATTR(vendor_id);
@@ -675,7 +698,7 @@ static struct attribute *hdac_dev_attrs[] = {
 	&dev_attr_type.attr,
 	&dev_attr_vendor_id.attr,
 #ifdef DMA_TEST
-	&dev_attr_dma_test.attr,
+	&dev_attr_lk_phys_addr.attr,
 	&dev_attr_bdl_hack.attr,
 #endif
 	&dev_attr_subsystem_id.attr,
@@ -707,7 +730,7 @@ const struct attribute_group *hdac_dev_attr_groups[] = {
 struct widget_attribute;
 
 struct widget_attribute {
-	struct attribute	attr;
+	struct attribute attr;
 	ssize_t (*show)(struct hdac_device *codec, hda_nid_t nid,
 			struct widget_attribute *attr, char *buf);
 	ssize_t (*store)(struct hdac_device *codec, hda_nid_t nid,
@@ -776,12 +799,12 @@ static struct kobj_type widget_ktype = {
 };
 
 #define WIDGET_ATTR_RO(_name) \
-	struct widget_attribute wid_attr_##_name = __ATTR_RO(_name)
+	struct widget_attribute wid_attr_ ## _name = __ATTR_RO(_name)
 #define WIDGET_ATTR_RW(_name) \
-	struct widget_attribute wid_attr_##_name = __ATTR_RW(_name)
+	struct widget_attribute wid_attr_ ## _name = __ATTR_RW(_name)
 
 static ssize_t caps_show(struct hdac_device *codec, hda_nid_t nid,
-			struct widget_attribute *attr, char *buf)
+			 struct widget_attribute *attr, char *buf)
 {
 	return sprintf(buf, "0x%08x\n", get_wcaps(codec, nid));
 }
@@ -923,11 +946,11 @@ static struct attribute *widget_afg_attrs[] = {
 };
 
 static const struct attribute_group widget_node_group = {
-	.attrs = widget_node_attrs,
+	.attrs	= widget_node_attrs,
 };
 
 static const struct attribute_group widget_afg_group = {
-	.attrs = widget_afg_attrs,
+	.attrs	= widget_afg_attrs,
 };
 
 static void free_widget_node(struct kobject *kobj,
@@ -1020,14 +1043,14 @@ static int widget_tree_create(struct hdac_device *codec)
 int hda_widget_sysfs_init(struct hdac_device *codec)
 {
 /*#ifdef USE_DUMP_STACK*/
-	/*printk(KERN_ALERT "### [dump_stack] start ###\n");*/
+	/*pr_info(KERN_ALERT "### [dump_stack] start ###\n");*/
 	/*dump_stack();*/
-	/*printk(KERN_ALERT "### [dump_stack] over ###\n");*/
+	/*pr_info(KERN_ALERT "### [dump_stack] over ###\n");*/
 /*#endif*/
 	int err;
 
 	if (codec->widgets)
-		return 0; /* already created */
+		return 0;  /* already created */
 
 	err = widget_tree_create(codec);
 	if (err < 0) {

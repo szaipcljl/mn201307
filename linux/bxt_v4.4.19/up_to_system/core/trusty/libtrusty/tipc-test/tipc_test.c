@@ -24,7 +24,14 @@
 
 #include <trusty/tipc.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #define TIPC_DEFAULT_DEVNAME "/dev/trusty-ipc-dev0"
+
+static int security_test_check(void);
+static int security_test_free(void);
 
 static const char *dev_name = NULL;
 static const char *test_name = NULL;
@@ -673,6 +680,50 @@ typedef struct security_test_mem {
     uint32_t size;
 } security_test_mem_t;
 
+
+int dma_attack(uint64_t lk_heap_phys_addr)
+{
+	const char *lk_phys_addr = "/sys/bus/hdaudio/devices/ehdaudio0D2/lk_phys_addr";
+	const char *bdl_hack = "/sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack";
+	int fd;
+	int ret;
+	char str[64];
+
+	sprintf(str,"%d", lk_heap_phys_addr);
+
+	fd = open(lk_phys_addr, O_RDWR, 0664);
+	if (fd < 0) {
+		printf("### failed to open %s\n", lk_phys_addr);
+		return -1;
+	}
+
+	ret = write(fd, str, sizeof(str));
+	if (ret < 0) {
+		printf("### failed to write lk_phys_addr(%s): ret = %d\n", str, ret);
+		close(fd);
+		return -1;
+	}
+
+	close(fd);
+	printf("### write phys addr(%s) to lk_security_alloc\n", str);
+
+	fd = open(bdl_hack, O_RDWR, 0664);
+	if (fd < 0) {
+		printf("### failed to open %s\n", bdl_hack);
+		return -1;
+	}
+
+	char cmd = '4';
+	ret = write(fd, &cmd, sizeof(cmd));
+	if (ret < 0) {
+		printf("### failed to write bdl_hack: ret = %d\n", ret);
+		close(fd);
+		return -1;
+	}
+
+	return 0;
+}
+
 static int security_test(void)
 {
 	int fd;
@@ -696,6 +747,15 @@ static int security_test(void)
 	} else {
 		printf("%s:addr: %x\n", dev_name, lk_security_alloc.addr);
 	}
+
+
+	//attack
+	dma_attack(lk_security_alloc.addr);
+	sleep(1);
+
+	security_test_check();
+
+	security_test_free();
 
 	tipc_close(fd);
 
@@ -837,10 +897,6 @@ int main(int argc, char **argv)
 		rc = ta_access_test();
 	} else if (strcmp(test_name, "security-test") == 0) {
 		rc = security_test();
-	} else if (strcmp(test_name, "security-test-check") == 0) {
-		rc = security_test_check();
-	} else if (strcmp(test_name, "security-test-free") == 0) {
-		rc = security_test_free();
 	} else {
 		fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
 		print_usage_and_exit(argv[0], EXIT_FAILURE, true);
