@@ -1,0 +1,21 @@
+dma attack
+
+1.测试读取lk 的一段内存（播放视频）
+    (1)关闭VT-d 保护，播放一段长视频的过程中，改变audio 的 bdl entry, 此时能听到填充的16Hz的吱吱音频
+	
+	(2)打开VT-d 保护，再测一遍，无法听到
+2.测试向lk 的内存中写入数据（录像/录音）
+	(1)关闭VT-d 保护， 点击录制视频， 改变audio 的 bdl entry, 提前分配填充的 lk heap 中的数据会被改变，check后改变
+	(2)打开VT-d 保护， 点击录制视频， 改变audio 的 bdl entry, 预期结果是未向lk heap 中写入数据
+	
+bdl entry中的物理地址可被改变
+
+
+修改的code :
+	kernel audio
+	上层app: android 端的CA 和 lk端的TA
+
+bug:
+	直接改变bdl entry的物理地址，会在开机时没有16kHz声音，对比改变前和改变后的log， 发现改变后会导致
+	audio 的FW不load，　所以应该在fw　被load后来改变bdl_entry。
+	每次播放，会调用setup_bdle，　并call stream_start函数来trigger dma
