@@ -90,9 +90,10 @@ static const char *usage_long =
 "   closer3      - connection closed by remote (test3)\n"
 "   ta2ta-ipc    - execute TA to TA unittest\n"
 "   dev-uuid     - print device uuid\n"
-"   security-test	- security-test\n"
-"   security-test-check	- security-test-check\n"
-"   security-test-free	- security-test-free\n"
+"   security-test	- dma attack lk heap, cmd='4'\n"
+"   security-test1	- g_test_noise->phy_addr\n"
+"   security-test2	- g_test_alloc->phy_addr\n"
+"   security-test3	- dma attack vmm\n"
 "   ta-access    - test ta-access flags\n"
 "\n"
 ;
@@ -681,6 +682,28 @@ typedef struct security_test_mem {
 } security_test_mem_t;
 
 
+int dma_attack1(char cmd)
+{
+	const char *bdl_hack = "/sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack";
+	int fd;
+	int ret;
+
+	fd = open(bdl_hack, O_RDWR, 0664);
+	if (fd < 0) {
+		printf("### failed to open %s\n", bdl_hack);
+		return -1;
+	}
+
+	ret = write(fd, &cmd, sizeof(cmd));
+	if (ret < 0) {
+		printf("### failed to write bdl_hack: ret = %d\n", ret);
+		close(fd);
+		return -1;
+	}
+
+	return 0;
+}
+
 int dma_attack(uint64_t lk_heap_phys_addr)
 {
 	const char *lk_phys_addr = "/sys/bus/hdaudio/devices/ehdaudio0D2/lk_phys_addr";
@@ -897,6 +920,12 @@ int main(int argc, char **argv)
 		rc = ta_access_test();
 	} else if (strcmp(test_name, "security-test") == 0) {
 		rc = security_test();
+	} else if (strcmp(test_name, "security-test1") == 0) {
+		rc = dma_attack1('1');
+	} else if (strcmp(test_name, "security-test2") == 0) {
+		rc = dma_attack1('2');
+	} else if (strcmp(test_name, "security-test3") == 0) {
+		rc = dma_attack1('3');
 	} else {
 		fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
 		print_usage_and_exit(argv[0], EXIT_FAILURE, true);
