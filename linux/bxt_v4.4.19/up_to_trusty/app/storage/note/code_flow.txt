@@ -1,0 +1,101 @@
+
+
+
+(1) daemon:
+device/intel/broxton/bxtp_abl/init.rc
+
+service storageproxyd /vendor/bin/intelstorageproxyd -d /dev/trusty-ipc-dev0 -p /data/misc/securestorage -r /dev/rpmb1
+    class late_start
+    user system
+    group system
+
+(2) search "intelstorageproxyd"
+vendor/intel/hardware/storage/proxy/Android.mk:21:LOCAL_MODULE := intelstorageproxyd
+...
+LOCAL_SRC_FILES := \
+	ipc.c \
+	rpmb.c \
+	rpmb-dev.c \
+	storage.c \
+	proxy.c
+
+
+proxy.c:
+    /* connect to Trusty secure storage server */
+    rc = ipc_connect(trusty_devname, ss_srv_name);
+
+
+	/* enter main message handling loop */
+    rc = proxy_loop();
+	|-- /* get incoming message */
+        rc = ipc_get_msg(&msg, req_buffer, REQ_BUFFER_SIZE);
+	|-- /* handle request */
+        req_buffer[rc] = 0; /* force zero termination */
+        rc = handle_req(&msg, req_buffer, rc);
+ 
+--------------------------------------------------------------------------------
+TA:
+trusty/app/storage/ 
+main.c
+	main()
+	|-- ipc_loop(); //ipc.c
+		|-- rc = wait_any(&event, -1);
+		|-- if (rc == NO_ERROR) /* got an event */
+				dispatch_event(&event); //ipc.c
+
+
+proxy.c
+	proxy_connect
+	|-- rc = hwkey_open();
+	|-- /* Generate encryption key */
+		rc = get_storage_encryption_key(hwkey_session,
+				session->key.byte, sizeof(session->key));
+	|-- /* Init RPMB key */
+		rc = get_rpmb_auth_key(hwkey_session, rpmb_key.byte, sizeof(rpmb_key.byte));
+	|-- rc = block_device_tipc_init(&session->block_device,
+			chan_handle, &session->key, &rpmb_key); //block_device_tipc.c
+
+
+
+--------------------------------------------------------------------------------
+gatekeeper:
+gatekeeperd
+system/core/gatekeeperd/
+	no trusty: use soft*
+	trusty: go HAL layer
+		system/core/trusty/gatekeeper/
+		deliver to TA: trusty/app/gatekeeper/
+		2 part, system/gatekeeper/, rewrite the interface, enable trusty, go memory
+
+--------------------------------------------------------------------------------
+selinux
+device/intel/sepolicy/trusty/
+device/intel/mixins/groups/trusty/true/product.mk
+device/intel/mixins/groups/trusty/true/init.rc
+
+================================================================================
+keymaster
+hw-km HAL:
+	vendor/intel/hardware/keymaster/keymaster1
+
+keystore sevice:
+	system/security/keystore/
+
+km soft HAL:
+	system/keymaster/
+--------------------------------------------------------------------------------
+km TA:
+	trusty/app/keymaster/
+
+android O:
+	bootloader:
+		hardware/intel/kernelflinger/libkernelflinger/security.c
+		hardware/intel/kernelflinger/libkernelflinger/trusty.c
+			start_tos_image()
+
+
+vendor/intel/fw/evmm/gsd/loader/pre_os/starter/run_xmon_loader.c
+
+
+
+
