@@ -1,0 +1,28 @@
+rpmb
+
+
+(1) 我输入5次错误密码，在倒计时时，reboot , 倒计时还存在，这个是在正常的吗？
+在用rpmb0 和rpmb1 有分别没？
+
+-- 正常的, 输错密码5次后直接重启还是要等, 你可以拿nexus试一下, 也是一样的.
+这个和rpmb0/1没有关系, 是framework层决定的.
+
+(2) 和  /data/misc/securestorage/0 有关系吗？  删掉 0 重启，倒计时也不受影响
+
+-- 是的,
+	rpmb1是内存虚拟的一个, 输错3次重启之后, 相当于输错0次, 还可以输5次错误才会等30秒;
+如果用rpmb0, 输错3次重启后再输错2次, 就要等30s了.
+rpmb里面存的是输错了多少次, 而每次是否需要等不是存在rpmb里, 存在系统的数据库里.
+这个重启了, 值还在, 所以你重启之后还是要重新等30s.
+
+(3) /data/misc/securestorage/0  里面存的是什么？做什么用的
+
+-- 存的是输错了几次, 通过rpmb才能找到这个值.
+rpmb存的是文件系统, 0里面存的是次数, 但是只有rpmb的fs才能找到0里面存的值.
+
+(4) /dev/block/mmcblk0rpmb 这个呢?
+-- 这个就是rpmb, 但是直接访问不了, 也mount不上去.
+你可以试一下 mount /dev/block/mmcblk0rpmb  /mnt
+
+(5) mmcblk0rpmb 和/dev/rpmb0 有什么关系？
+-- 可以理解为/dev/rpmb0 指向了 mmcblk0rpmb, 写rpmb0就是写mmcblk0rpmb.

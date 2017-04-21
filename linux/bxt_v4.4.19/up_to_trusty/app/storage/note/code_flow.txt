@@ -9,6 +9,12 @@ service storageproxyd /vendor/bin/intelstorageproxyd -d /dev/trusty-ipc-dev0 -p 
     user system
     group system
 
+
+>>
+trusty dev: /dev/trusty-ipc-dev0
+storage data root: /data/misc/securestorage
+rpmb dev: /dev/rpmb1 (use memory to simulate rpmb)
+
 (2) search "intelstorageproxyd"
 vendor/intel/hardware/storage/proxy/Android.mk:21:LOCAL_MODULE := intelstorageproxyd
 ...

@@ -1,0 +1,39 @@
+
+
+/dev/block/mmcblk0rpmb
+
+(1) read mmcblk0rpmb
+adb shell dd if=/dev/block/mmcblk0rpmb ibs=256 count=10
+dd: /dev/block/mmcblk0rpmb: I/O error
+0+0 records in
+0+0 records out
+0 bytes transferred in 0.001 secs (0 bytes/sec)
+
+
+(2) write mmcblk0rpmb
+adb shell dd if=/dev/block/mmcblk0 of=/dev/block/mmcblk0rpmb ibs=256 count=10
+dd: /dev/block/mmcblk0rpmb: I/O error
+2+0 records in
+0+0 records out
+0 bytes transferred in 0.001 secs (0 bytes/sec)
+
+(3) backup
+数据备份到指定路径的文件
+<1>
+adb shell dd if=/dev/block/mmcblk0 of=/data/mmcblk0_bak ibs=1024 count=10
+10+0 records in
+20+0 records out
+10240 bytes transferred in 0.001 secs (10240000 bytes/sec)
+
+<2>
+adb shell dd if=/dev/block/mmcblk0rpmb of=/data/mmcblk0_bak ibs=1024 count=10
+dd: /dev/block/mmcblk0rpmb: I/O error
+0+0 records in
+0+0 records out
+0 bytes transferred in 0.001 secs (0 bytes/sec)
+
+将备份文件恢复到指定盘
+adb shell dd if=/data/mmcblk0_bak of=/data/mmcblk0rpmb ibs=1024 count=10
+0+0 records in
+0+0 records out
+0 bytes transferred in 0.001 secs (0 bytes/sec)
