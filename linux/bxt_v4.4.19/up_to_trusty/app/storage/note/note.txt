@@ -102,3 +102,51 @@ SS
 (2) unittest
 	when sleep rm file, check error log
 	
+
+********************************************************************************
+vendor/intel/hardware/storage/proxy/proxy.c
+
+main()
+-- /* enter main loop */
+    rc = proxy_loop();
+	|-- /* handle request */
+        req_buffer[rc] = 0; /* force zero termination */
+        rc = handle_req(&msg, req_buffer, rc);
+		|-- switch (msg->cmd) {
+			|-- case STORAGE_RPMB_SEND:
+				if (rpmb_major == MMC_BLOCK_MAJOR)
+					rc = rpmb_send(msg, req, req_len);
+				else
+					rc = rpmb_dev_send(msg, req, req_len);
+				break;
+
+--------------------------------------------------------------------------------
+trusty/app/storage/tipc_ns.c
+rpmb_send
+ns_open_file
+ns_read_pos
+
+
+--------------------------------------------------------------------------------
+/data/misc/securestorage/0
+create:
+block_device_tipc_init
+|-- rpmb_init
+|-- rpmb_read_counter
+|-- rpmb_check/rpmb_search_size
+|-- block_device_tipc_init_dev_rpmb
+|-- fs_init
+|-- ret = client_create_port(&state->fs_rpmb.client_ctx,
+                             STORAGE_CLIENT_TP_PORT);
+    ret = client_create_port(&state->fs_rpmb_boot.client_ctx,
+                             STORAGE_CLIENT_TDEA_PORT);
+|-- list_initialize(&state->dev_ns.io_ops);
+|-- ret = ns_open_file(state->ipc_handle, "0", &state->ns_handle, true);
+|-- /* Request empty file system if file is empty */
+    ret = ns_read_pos(state->ipc_handle, state->ns_handle, 0,
+                      &dummy, sizeof(dummy));
+|-- block_device_tipc_init_dev_rpmb(&state->dev_ns_rpmb, state,
+                                    rpmb_part1_base, rpmb_part1_block_count);
+|-- fs_init
+|-- ret = client_create_port(&state->fs_ns.client_ctx, STORAGE_CLIENT_TD_PORT);
+
