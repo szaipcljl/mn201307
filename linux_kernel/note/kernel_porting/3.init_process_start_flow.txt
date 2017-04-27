@@ -1,0 +1,149 @@
+init process start flow
+
+
+********************************************************************************
+我们通常使用Busybox来构建根文件系统的必要的应用程序。
+Busybox通过传入的参数来决定执行何种操作。
+
+当init进程启动时，实际上调 用的是Busybox的init_main()函数，下面我们来分析这个函数，
+看init进程究竟是怎样一个流程。
+
+--------------------------------------------------------------------------------
+init进程的启动过程
+	1.初始化控制台
+	2.解释 inittab
+	3.执行 inittab 运行时机为 SYSINIT 的进程
+	4.执行 inittab 运行时机为 WAIT 的进程
+	5.执行 inittab 运行时机为 ONCE 的进程
+	6.执行 inittab 运行时机为 RESPAWN 和 ASKFRIST 的进程，有退出的则重新执行。
+
+
+
+********************************************************************************
+首先看init_main函数
+
+int init_main(int argc, char **argv)
+{
+	//………
+	//初始化控制台
+	console_init();
+	//………
+
+	if (argc > 1
+			&& (!strcmp(argv[1], "single") ||
+				!strcmp(argv[1], "-s") ||
+				LONE_CHAR(argv[1], '1'))
+	   ) {
+		new_init_action(RESPAWN, bb_default_login_shell, "");
+	} else {
+		//因为我们启动的init进程没有任何参数，所有argc==1，执行的是这一句
+		parse_inittab();
+	}
+
+	//……………
+
+	run_actions(SYSINIT);
+	//运行inittab配置文件中acthion为SYSINIT的进程
+
+	run_actions(WAIT);
+	//运行inittab配置文件中action为WAIT的进程
+
+	run_actions(ONCE);
+	//运行inittab配置文件中action为ONCE的进程
+
+	//………………
+
+	while (1) {
+		/*
+		 * 运行inittab配置文件中action为RESPAWN和ASKFIRST的进程，一旦退出则重新启动
+		 */
+		run_actions(RESPAWN);
+		run_actions(ASKFIRST);
+
+		wpid = wait(NULL);
+		while (wpid > 0) {
+				a->pid = 0;
+		}
+
+		wpid = waitpid(-1, NULL, WNOHANG);
+
+	}
+}
+
+
+
+parse_inittab实际上对/etc/inittab文件里面的配置进行解释，如果没有，则设置一些默认设置。
+先来看看这个inittab这个文件里面的配置格式，这个在busybox文件里面的inittab文件里面有说明:
+<id>:<runlevels>:<action>:<process>
+
+id表示输出输入设备，这个不需要设置，因为/etc/console已经设为标准输入输出了，如不设置，则从控制台输入输出。
+runlevels 这个参数完全忽略
+action 运行时机，它表示inittab解释后的运行顺序，它有sysinit, respawn, askfirst,
+	   wait, once,restart, ctrlaltdel, andshutdown.这个值可选择。
+process 就是要启动的进程。
+================================================================================
+下面来看prase_inittab这个函数
+
+static void parse_inittab(void)
+{
+	//……
+	//……
+
+	/*INITTAB是一个宏 #define INITTAB      "/etc/inittab"
+	  可以看得出来它打开了/etc/inittab这个文件*/
+
+	file = fopen(INITTAB, "r");
+
+	//如果没有这个文件，则调用new_init_action进行一些默认的操作
+	if (file == NULL) {
+		new_init_action(CTRLALTDEL, "reboot", "");
+		new_init_action(SHUTDOWN, "umount -a -r", "");
+
+		if (ENABLE_SWAPONOFF)
+			new_init_action(SHUTDOWN, "swapoff -a", "");
+
+		new_init_action(RESTART, "init", "");
+		new_init_action(ASKFIRST, bb_default_login_shell, "");
+		new_init_action(ASKFIRST, bb_default_login_shell, VC_2);
+		new_init_action(ASKFIRST, bb_default_login_shell, VC_3);
+		new_init_action(ASKFIRST, bb_default_login_shell, VC_4);
+		new_init_action(SYSINIT, INIT_SCRIPT, "");
+
+		return;
+	}
+
+	//……
+	//……
+
+	/*果inittab文件里面有内容就将里面的内容一行一行读出来，然后调用new_init_action进行操作*/
+	while (fgets(buf, INIT_BUFFS_SIZE, file) != NULL) {
+		/* Ok, now process it */
+		for (a = actions; a->name != 0; a++) {
+			if (strcmp(a->name, action) == 0) {
+				if (*id != '\0') {
+					if (strncmp(id, "/dev/", 5) == 0)
+						id += 5;
+					strcpy(tmpConsole, "/dev/");
+					safe_strncpy(tmpConsole + 5, id, sizeof(tmpConsole) - 5);
+					id = tmpConsole;
+				}
+				new_init_action(a->action, command, id);
+				break;
+			}
+		}
+
+		//……
+		//……
+	}
+
+	fclose(file);
+}
+
+这个new_init_action函数，它实际上是将inittab里面的action相同的操作串成一个链表。
+
+下面我们再来分析init_main执行prase_inittab之后执行的操作:
+init_main执行prase_initab对inittab文件里面的配置进行解释之后，会先执行运行时机为
+SYSINIT的进程，让执行WAIT时机的，接着是ONCE的，然后在一个while(1)函数里面运行
+RESPAWN和ASKFIRST时机的，一旦这两个时机里面的进程被杀死，就会把他们的pid赋为0，
+然后跳到while(1)函数的开始处又去启动他们。所有说运行时机为RESPAWN和 ASKFIRST的
+进程永远无法杀死，除非reboot或者shutdown。

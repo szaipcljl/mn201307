@@ -1,0 +1,241 @@
+kernel porting
+
+移植内核也叫构建BSP（boardsupprot packet）。
+BSP的作用有两个：
+	一是为内核运行提供底层支持，
+	二是屏蔽与板相关的细节。
+
+
+BSP的构建分三个层次
+1、体系结构层次
+	对一些体系结构提供linux内核支持，比如说ARM,X86等芯片。
+	这一类工作一般在arch/xxx/下面, 除了palt-xxx和mach-xxx目录的其他目录完成。
+
+2、SOC层次
+	对一些公司提供的SOC微处理器提供linux内核支持，比如说三星公司的 S3C2440。
+	这一类工作一般在arch/xxx/plat-xxxx , arch/xxx/mach-xxxx目录下完成。
+
+	在arch/arm/目录下同时有plat-s3c24xx和mach-s3c2440两个目录，
+	plat-s3c24xx 目录下存放了所有s3c24 系列相同的代码,mach-s3c2440则只存
+	放了与S3C2440有关的代码。
+
+2、板级层次
+	这是我们一般的菜鸟要做的，上面两个层次一般有芯片公司的大牛完成了，但是
+	不同的电路板的板级层次则需要由我们菜鸟完成的。
+	这一类工作主要在mach- xxxx/目录下面的板文件完成，
+	比如说mach-s3c2440/smdk-s3c2440.c这个S3C2440标准板文件。
+	很多文档很多书籍都都直接在这个文件里面进行修改，这样是不对的，对于不同
+	的电路板应该建立不同的板文件，比如说我的是mini2440,就应该建立一个
+	smdk-mini2440.c文件或者mach-mini2440.c文件在mach-s3c2440下面。
+	如果直接在里面修改是非常不规范的做法，这样不是在移植内核，这样是在破坏内核！
+	（这一句是宋宝华说的）。
+
+二、BSP构建
+平台：mini2440  交叉工具链：arm-linux-gcc-4.3.2
+
+   1.建立板文件支持
+		(1) 重新建立一个板文件, 直接拷贝过来命名为mach-mini2440.c:
+			cp arch/arm/mach-s3c2440/smdks3c2440.c arch/arm/mach-s3c2440/mach-mini2440.c
+
+		(2) 修改板文件mach-mini2440.c
+			<1> 将MACHINE_START宏括号里面的名字换成 MINI2440，
+				(这个ID 会被扩展为MACH_TYPE_MINI2440，到arch/arm/tools/mach_types里找对应的ID号)
+
+				MACHINE_START(MINI2440,"MINI2440")
+				/*Maintainer: Ben Dooks <ben@fluff.org> */
+					.phys_io   = S3C2410_PA_UART,
+					.io_pg_offst     = (((u32)S3C24XX_VA_UART) >> 18)& 0xfffc,
+					.boot_params = S3C2410_SDRAM_PA + 0x100,
+
+					.init_irq    = s3c24xx_init_irq,
+					.map_io             = smdk2440_map_io,
+					.init_machine  = smdk2440_machine_init,
+					.timer = &s3c24xx_timer,
+				MACHINE_END
+
+			<2>	在mach_types添加我们机器的ID:
+					mini2440        MACH_MINI2440             MINI2440       1999
+
+					 第一个表示机器名字，这个也随便取，
+					 第二个在Kconfig配置项里面定义的宏名称，下一步会定义，取名MACH_MINI2440，
+					 第三表示MACH_START第一个参数ID名字，
+					 第四个是ID号。ID号我们取为1999。
+
+
+			<3> 修改arch/arm/mach-s3c2440/目录下的Kconfig和Makefile，
+				以建立内核对板文件的支持使其可以被配置和编译进内核。
+					 首先修改Kconfig，在endmenu之前加入下面的内容：
+					  
+						 87 config MACH_MINI2440     // 开发板名称宏定义
+						 88  bool "mini2440"    // 开发板名称
+						 89  select CPU_S3C2440     // 开发板使用的处理器类型
+						 90  help
+						 91     Say Y here if you are using the mini2440. // 帮助信息
+						  	
+					再修改Makefile
+						obj-$(CONFIG_MACH_MINI2440)+= mach-mini2440.o
+
+						注意这一行要添加在obj-$(CONFIG_ARCH_S3C2440)+= smdk-s3c2440.o后面，否则会编译错误。
+						这样我们就可以通过 makemenuconfig 配置 mini2440 的板文件是否编译进内核。
+
+
+			再跳到linux-2.6.22目录，执行makemenuconfig
+			执行加载默认配置文件后，可以开始配置新增加的菜单。
+			进入System Types菜单项，打开S3C24XX Implementations菜单，出现一个目标开发板的列表：
+			 
+				[ ] Simtec ElectronicsBAST (EB2410ITX)
+				[ ] IPAQ H1940
+				[ ] Acer N30
+				[ ] SMDK2410/A9M2410
+				[ ] SMDK2440
+				[ ] AESOP2440
+				[ ] Thorcom VR1000
+				[ ] HP iPAQ rx3715
+				[ ] NexVision OTOM Board
+				[ ] NexVision NEXCODER2440 Light Board
+				[ ] mini2440
+
+	         选中mini2440选项
+	         然后执行makezImage，如果能够正常编译，已经能够将mini2440板文件编译进内核了。
+		
+	2.修改机器码
+		将编译在arch/arm/boot下面生成的zImage烧写到nand的kernel分区，然后启动。
+		     Copylinux kernel from 0x00060000 to 0x30008000, size = 0x00500000 ... done
+			 zImage magic = 0x016f2818
+			 Setup linux parameters at 0x30000100
+			 linux command line is: "console=ttySAC0
+			 root=/dev/nfsnfsroot=192.168.1.101:/home/work/shiyan/rootfsip=192.168.1.102:192.168.1.101:192.168.1.1:255.255.255.0:mini2440:eth0:off"
+			 MACH_TYPE = 362
+			 NOW, Booting Linux......
+			 UncompressingLinux.................................................................................................done, booting the kernel.
+			  
+			 Error: unrecognized/unsupported machine ID (r1 = 0x0000016a).
+
+			 内核提示不能识别的机器ID，于是修改bootloader的参数使其机器ID为1999,
+			 我用的是supervivi使用命令set parammach_type 1999
+
+	3.修改时钟源频率
+		启动内核，出现一系列的乱码，这是因为时钟源设置的不对，我的开发板用的是12M的晶振，
+		所以在arch/arm/mach-s3c2440.c的 s3c24xx_init_clocks(16934400);处, 
+		将16924400修改为12000000。
+		即改为 s3c24xx_init_clocks(12000000);
+
+	4.添加nand分区信息
+
+	再启动，发现还是不能启动，这是因为内核中填写的nand分区信息不对。
+	于是修改nand分区信息，很多人的做法是直接修改arch/arm/plat-s3c24xx/Common-smdk.c
+	文件里面的smdk_default_nand_part数据结构，这样是不提倡的做法，因为破坏了内核。
+
+	我们应该在arch/arm/mach-s3c2440/mach-mini2440.c文件中建立自己板文件的nand信息。
+
+	我们在mach-mini2440.c的staticstruct platform_device *smdk2440_devices[]前面添加:
+
+		static struct mtd_partition smdk_default_nand_part[] = {
+			/*这里面填的是我用的mini2440分区信息*/
+			[0] = {
+				.name       = "patition1 supervivi",
+				.size = 0x00040000,
+				.offset      = 0,
+			},
+			[1] = {
+				.name       = "patition2 param",
+				.offset =0x00040000,
+				.size =
+					0x00020000,
+			},
+			[2] = {
+				.name       = "patition3 kernel",
+				.offset =0x00060000,
+				.size =
+					0x00500000,
+			},
+			[3] = {
+				.name       = "patition4 root",
+				.offset      =
+					0x00560000,
+				.size
+					=
+					64*1024*1024,
+			},
+			[4] = {
+				.name       = "patition5
+					nand",
+				.offset = 0,
+				.size
+					=
+					64*1024*1024,
+			},
+
+		};
+
+		static struct s3c2410_nand_set smdk_nand_sets[] = {
+			[0] = {
+				.name                = "NAND",
+				.nr_chips = 1,
+				.nr_partitions  =
+					ARRAY_SIZE(smdk_default_nand_part),
+				.partitions
+					=
+					smdk_default_nand_part,
+			},
+		};
+
+	再修改mach-mini2440.c的smdk2440_machine_init函数，将我们的nand传给给nand设备:
+
+		static void __init smdk2440_machine_init(void)
+		{  
+			s3c24xx_fb_set_platdata(&smdk2440_lcd_cfg);
+
+			/*将我们的nand信息传给nand设备*/
+			s3c_device_nand.dev.platform_data= &smdk_nand_info;   //set nand
+			infoto nand
+
+				platform_add_devices(smdk2440_devices,ARRAY_SIZE(smdk2440_devices));
+
+			//smdk_machine_init();
+			//smdk_machine_init()函数屏蔽，因为他会将arch/arm/plat-s3c24xx/Common-smdk.c
+			//里面的分区信息传给nand，这样我们的自己的nand信息就被覆盖了
+
+			s3c2410_pm_init();//添加加这个函数是因为smdk_machine_init()里面调用了。
+		}
+
+	再修改mach-mini2440.c的smdk2440_devices
+		static struct platform_device *smdk2440_devices[] __initdata = {
+			&s3c_device_usb,
+			&s3c_device_lcd,
+			&s3c_device_nand,//向内核添加nand设备
+			&s3c_device_wdt,
+			&s3c_device_i2c,
+			&s3c_device_iis,
+		};
+	
+	6.添加YAFFS文件系统支持
+		完成上述步骤工作后，还是不能正常挂载根文件系统，因为内核还没对yaffs文件系统进行支持。
+		下载cvs-root-yaffs.tar.gz补丁包文件，解压，运行yaffs2文件夹里面的脚本文件patch-ker.sh来给内核打补丁，用法如下
+			Usage: ./patch-ker.sh  c/l kernelpath
+			if c/l is c,then copy, if l then link
+		如果是l则yaffs2源码被链接到内核，如果是c则复制
+
+		我们运行./patch-ker.sh c work/kernel_make/linux2.6.22
+		给内核打上yaffs2补丁，然后使用makemenuconfig配置内核使其支持yaffs2文件系统
+		File systems   --->
+		Miscellaneous filesystems --->
+			<*>YAFFS2 file system support
+
+	7.配置内核支持EABI接口
+		完成上面的步骤之后运行，内核会在输出
+		VFS: Mounted root (yaffs filesystem) on device 31:2.
+		Freeing init memory: 132K
+		之后卡住，这个打印反应出内核实际上已经挂接上了根文件系统，之所以卡在这里, 
+		是因为无法启动根文件系统上的init进程。 是由于内核和根文件系统的应用程序的接口不一致。
+		所以在内核中使用make menuconfig配置EABI支持
+
+		Kernel Features --->
+			Memory split...--->
+			[ ]preemptible Kernel...
+			[*]Use the ARM EABI to compile thekernel
+			[*]        Allow old ABI binaries to run......
+				Memory model(flatMemory)--->
+			[ ]Add lru list to
+			tarcknon-evictable pages
+

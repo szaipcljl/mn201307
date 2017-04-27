@@ -1,0 +1,192 @@
+根文件系统构建
+
+
+相关工具版本：
+busybox-1.7.0 arm-linux-4.3.2 linux-2.6.22
+
+1.配置busybox并安装。
+在我们的根文件系统中的/bin和/sbin目录下有各种命令的应用程序，而这些程序在嵌入式系统中都是通过busybox来构建的，每一个命令实际上都是一个指向busybox的链接,busybox通过传入的参数来决定进行何种命令操作。
+1）配置busybox
+解压busybox-1.7.0,然后进入该目录，使用makemenuconfig进行配置。这里我们这配置两项
+一是在编译选项选择动态库编译，当然你也可以选择静态，不过那样构建的根文件系统会比动态编译的的大。
+->Busybox Settings
+->BuildOptions
+->Buildshared libbusybox
+二是在性能微调选项选择tab键补全功能。
+->Busybox Settings
+->Busyboxlibrary Tuning
+->Commandline editing
+->Tabcompletion
+其他的都是一些命令配置，如果你想使你的根文件系统具备哪些命令就选择那个命令。我选择的是默认的配置，一般基本的命令都帮你选上了。
+2）编译busybox
+修改Makefile,修改”ARCH?=
+arm”
+和”CROSS_COMPILE?=
+arm-linux-“，然后使用make命令进行编译。我在编译的过程出现如下错误：
+../arm-none-linux-gnueabi/libc/usr/include/linux/netfilter.h:44:
+error: field ‘in’
+has incomplete
+type
+解决办法：
+修改arm-linux交叉编译工具链
+在usr/local/arm/4.3.2/arm-none-linux-gnueabi/libc/usr/include/linux/netfilter.h
+头文件的开头添加缺少的头文件：#include<netinet/in.h>
+3）安装busybox
+这里我们先新建一个root_fs来构建根文件系统，
+然后使用命令makeCONFIG_PREFIX=/home/y-kee/work/root_make/root_fs对busybox进行安装。于是在root_fs下面就出现了如下目录和文件，可以看出linuxrc是指向busybox的链接。
+[root@localhost
+root_fs]# ls -l
+total 12
+drwxr-xr-x 2 root
+root 4096 Oct 19
+05:41bin
+lrwxrwxrwx 1 root
+root   11 Oct 22
+11:17 linuxrc ->
+bin/busybox
+drwxr-xr-x 2 root
+root 4096 Oct 22
+18:43sbin
+drwxr-xr-x 4 root
+root 4096 Oct 22
+16:52usr
+进入bin目录，可以看出这些文件全部是指向busybox的链接（除了busybox本身）。
+[root@localhostroot_fs]#
+ls bin -l
+total 0
+lrwxrwxrwx 1
+root root 7 Oct
+22 11:17addgroup
+-> busybox
+lrwxrwxrwx 1
+root root 7 Oct
+22 11:17adduser
+-> busybox
+lrwxrwxrwx 1
+root root 7 Oct
+22 11:17ash ->
+busybox
+-rwxr-xr-x 1
+root root 0 Oct
+23 13:20busybox
+lrwxrwxrwx 1
+root root 7 Oct
+22 11:17cat ->
+busybox
+lrwxrwxrwx 1
+root root 7 Oct
+22 11:17catv ->
+busybox
+
+2.安装glibc库。
+在root_fs下新建lib目录，再把arm-linux-交叉编译链下的lib文件拷贝到我们root_fs下的lib目录下。我使用
+cp
+/usr/local/arm/4.3.2/arm-none-linux-gnueabi/libc/armv4t/lib/*root_fs/lib/*
+															 -df
+															 使用-d选项表示链接文件按照原来的链接方式拷贝，否则链接文件拷贝过来是一个副本。
+
+															 3.构建/etc，/dev，proc目录
+															 /etc和/dev是一个根文件系统必须的。/etc文件需包含init进程启动所需的配置文件inittab.dev目录下需包含init进程启
+															 动需要的两个设备文件console和null。proc目录要进来挂载内核的虚拟proc文件系统。这样对进程的一些命令如ps才会有效。
+															 1)
+															 在dev目录下执行mkdiretc
+															 dev
+															 proc
+															 2)
+															 在etc下新建文件inittab
+															 inittab内配置信息的格式我已经在我的上一篇文章《linux移植（三）》里解释了。我们在里面写入两行配置信息。
+															 ::sysinit:/etc/init.d/rcS
+															 ::askfirst:/bin/sh
+															 第一行是用来启动脚本文件rcS，之所以这样做，是因为我们可以利用这个文件来引导系统启动时为我们做一个工作比如说挂载文件系统或者启动一些其他的应用程序的。
+															 第二个是启动shell解释器sh
+															 3）配置脚本文件rcS
+															 在etc下新建init.d目录，然后在init.d目录下新建rcS文件，再给rcS文件加上可执行权限。
+															 在rcS目录下写入
+#!bin/sh
+mount –a
+在rcS里面执行mount –a命令，于是该命令就会根据etc下fstab文件来挂载相应的目录。
+4）配置fstab文件
+在etc目录下新建fstab文件，然后在该文件内写入
+# device     mount-point    type  options        dump  fsck order
+proc           /proc        proc  defaults        0     0
+第一个参数是设备，第二个是挂载点，第三个是设置。其余的写两个0。
+5）构建dev目录下的设备文件。
+由于console和null设备是init进程启动所必须的，所以要建立这两个设备文件，进入dev目录，然后执行
+mknod console c 5 1
+mknod null c 1 3
+如果这两个设备文件没有手工mknod创建就在内核启动时会出现错误：
+Warning: unable to open an initialconsole.
+注意一定是在dev下创建这两个设备文件。我因为一时糊涂在etc目录下创建了这两个文件，调了大半天才找到原因。还有在cdetc或者cddev
+时千万不要在etc和dev前面顺手打上了斜杠了，我就是手贱，顺手打了斜杠，结果进入的PC上的LINUX系统的etc目录删了一些文件，导致系统崩
+溃。
+完成了上述步骤，将根文件系统制作成yaffs2镜像烧到flash就能正常启动了。
+
+5.配置mdev来支持热插拔
+busybox使用sbin目录下的一个mdev来支持热插拔，什么叫做支持热插拔？就是你linux系统启动时插入一个设备，则mdev会在dev目录下自动给你创建设备文件。
+在/busybox源码中的mdev.txt有介绍。我截取部分如下
+Mdev has two primary uses: initialpopulation and dynamic updates.  Both
+require sysfs support in the kernel andhave it mounted at /sys.  For dynamic
+updates, you also need to havehotplugging enabled in your kernel.
+
+Here's a typical code snippet from theinit script:
+[1] mount -t sysfs sysfs /sys
+[2] echo /bin/mdev >/proc/sys/kernel/hotplug
+[3] mdev -s
+
+Of course, a more "full" setupwould entail executing this before the previous
+code snippet:
+[4] mount -t tmpfs mdev /dev
+[5] mkdir /dev/pts
+[6] mount -t devpts devpts /dev/pts
+
+The simple explanation here is that [1]you need to have /sys mounted before
+executing mdev.  Then you [2] instruct the kernel to execute/bin/mdev whenever
+a device is added or removed so that thedevice node can be created or
+destroyed.  Then you [3] seed /dev with all the devicenodes that were created
+while the system was booting.
+
+For the "full" setup, you wantto [4] make sure /dev is a tmpfs filesystem
+(assumingyou're running out of flash). Then you want to [5] create the
+/dev/pts mount point and finally [6]mount the devpts filesystem on it.
+当我们在flash中使用使，则只需要前面[1][2][3]步就行了。即
+[1] mount -t sysfs sysfs /sys
+[2] echo /bin/mdev >/proc/sys/kernel/hotplug
+[3] mdev -s
+于是我们在etc/init.d/rcS文件改为
+mount –a
+echo /bin/mdev
+>/proc/sys/kernel/hotplug
+mdev -s
+将ect/fstab文件改为
+# device     mount-point    type  options        dump  fsck order
+proc
+/proc
+proc   defaults
+0    0
+sysfs
+/sys
+sysfs
+defaults
+0     0
+再在root_fs下新建一个sys目录。
+于是我们再做成一个yaffs2镜像就可以支持自动创建设备文件了，注意上面说到的建立的console和null设备文件不能删除，因为它们在mdev工作之前就已经被使用了。
+
+6.完善根文件系统。
+1）将etc目录下的inittab加上
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount
+-a -r
+::restart:/sbin/init
+来指定系统执行特殊操作命令（shultdown、restart、ctrlaltdel）时做的附加工作。
+
+2）在root_fs下新建mnt、tmp、root目录
+
+注意：
+在制作根文件系统的过程中不要去移动root_fs目录下的由busybox创建的binsbin
+usr和linuxrc，因为这些目录和文件很多都是链接文件。移动可能会导致内核启动时出现如下错误：
+request_module:runaway
+loop
+modprobe
+binfmt-0000
+我就被这个问题搞了好久！后来我是从一个好的根文件系统把这些文件和目录拷贝过来才行。切记切记！
+
