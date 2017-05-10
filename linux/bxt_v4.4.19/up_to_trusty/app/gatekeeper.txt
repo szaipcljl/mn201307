@@ -7,3 +7,12 @@ input password every time will call GetSecureFailureRecord:
 // trusty/app/gatekeeper/trusty_gatekeeper.cpp
 bool TrustyGateKeeper::GetSecureFailureRecord(uint32_t uid, secure_id_t user_id,
         failure_record_t *record)
+
+--------------------------------------------------------------------------------
+gatekeeperd
+(intelstorageproxyd: for connection session)
+
+
+log:
+adb shell dmesg | tee log1
+adb shell logcat | tee log2

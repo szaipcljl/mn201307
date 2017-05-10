@@ -102,6 +102,11 @@ android O:
 
 vendor/intel/fw/evmm/gsd/loader/pre_os/starter/run_xmon_loader.c
 
+================================================================================
 
+CSE			  pass from boot
+HUK		--> 	seed		--> 	key
+				trusty
+				get_device_info
 
 
