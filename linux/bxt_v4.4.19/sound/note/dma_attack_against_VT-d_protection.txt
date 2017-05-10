@@ -1,0 +1,149 @@
+DMA attack againt VT-d protection
+			-- using audio dma
+			  2017/04/25
+
+
+1. test purpose
+	The test?s purpose is to verify that the VT-d protection is in effect. The method is hack audio dma bdl entry address to a segment of memory protected by VT-d.
+
+2. how to get patch
+Android m:
+https://android.intel.com:443/#/c/575193 #[debug] add sysfs node for audio dma test
+https://android.intel.com:443/#/c/577838 #[test][dma attack] Add security test
+https://android.intel.com:443/#/c/558714 #enable ipc-unittest
+https://android.intel.com:443/#/c/577834 #Add security test case
+https://android.intel.com:443/#/c/578326 #add new syscall virt_to_phys(part1)
+https://android.intel.com:443/#/c/578328 #add new syscall virt_to_phys (part2)
+
+Android o:
+https://android.intel.com/#/c/581979/  #[debug] add sysfs node for audio dma test
+https://android.intel.com/#/c/581974/   #[test][dma attack] Add security test 
+https://android.intel.com/#/c/581992/  #enable ipc-unittest
+https://android.intel.com/#/c/581988/  #Add security test case
+https://android.intel.com/#/c/581989/  #add new syscall virt_to_phys(part1)
+https://android.intel.com/#/c/581976/  #add new syscall virt_to_phys (part2)
+
+
+
+
+3. Build and flash
+	sound/hda: 
+		make bootimage -j12
+		
+
+	tipc-test(ca):
+		mmm system/core/trusty/libtrusty/tipc-test/
+
+tipc-unittest-srv(TA):
+	make multiboot -j12
+
+	Flash and push:
+		adb reboot bootloader && fastboot flash boot boot.img && fastboot flash multiboot multiboot.img && fastboot reboot
+		adb push out/target/product/bxtp_abl/system/xbin/tipc-test32 /data/
+		adb shell chmod +x /data/tipc-test32
+
+
+4. How to test
+For android M:
+(1)When the VT-d protection was closed:
+a.Test reading a segment of lk/vmm memory(play video)
+play a long video and use the follow command to change the bdl_entry:
+  	to attack lk heap, run:
+   		 adb shell /data/tipc-test32 -t security-test
+
+		to attack vmm, run:
+   		 adb shell /data/tipc-test32 -t security-test3
+(or: adb shell echo 3 > /sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack)
+
+
+You will hear the high frequency sound that replace the video sound.
+
+
+	b.Test writing data to a segment of lk/vmm memory(recording)
+		Open the camera and record video, run the following command more times:
+		to attack lk heap, run:
+   			 adb shell /data/tipc-test32 -t security-test
+
+		To attack vmm, run:
+    			adb shell /data/tipc-test32 -t security-test3
+
+	When you see the log ?equal (cmp_flag=0)?, it means that the lk memory has not been changed. But if you see the log ?not equsl(cmp_flag=xx)?, it means that the lk memory has been changed. You should run it more times , if log is ?equal? every time, it means we can not write data to lk memory. If the log ?not equal? appers, it means we can write data to lk memory. 
+
+	(2)open the VT-d protection, and do that again.
+	a.Test reading a segment of lk/vmm memory(play video)
+play a long video and use the following command to change the bdl_entry:
+  	to attack lk heap, run:
+   		 	adb shell /data/tipc-test32 -t security-test
+
+		to attack vmm, run:
+   		 	adb shell /data/tipc-test32 -t security-test3
+(or: adb shell echo 3 > /sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack)
+
+you can not hear the high frequency sound and hear nothing that means the VT-d in effect.
+
+	b.Test writing data to a segment of lk/vmm memory(recording)
+		Open the camera and record video, run the following command more times:
+		to attack lk heap, run:
+   			 adb shell /data/tipc-test32 -t security-test
+
+		To attack vmm, run:
+    			adb shell /data/tipc-test32 -t security-test3
+
+		When you see the log ?equal (cmp_flag=0)?, it means that the lk memory has not been changed. Try to run the command more than 5 times, if the result is equal every time, the VT-d protection is in effect.
+
+For android O:
+Android O use ?Local Media Player? to play local alarm instead of playing video. After running the test command, the expected result is that  there is nothing be heared.
+(1)When the VT-d protection was closed:
+a.Test reading a segment of lk/vmm memory(play local music)
+play a local music and use the follow command to change the bdl_entry:
+  	to attack lk heap, run:
+   		 adb shell /data/tipc-test32 -t security-test
+
+		to attack vmm, run:
+   		 adb shell /data/tipc-test32 -t security-test3
+(or: adb shell echo 3 > /sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack)
+
+
+You will hear the high frequency sound that replace the music.
+
+
+	b.Test writing data to a segment of lk/vmm memory(recording)
+		Open the camera and record video, run the following command more times:
+		to attack lk heap, run:
+   			 adb shell /data/tipc-test32 -t security-test
+
+		To attack vmm, run:
+    			adb shell /data/tipc-test32 -t security-test3
+
+	When you see the log ?equal (cmp_flag=0)?, it means that the lk memory has not been changed. But if you see the log ?not equsl(cmp_flag=xx)?, it means that the lk memory has been changed. You should run it more times , if log is ?equal? every time, it means we can not write data to lk memory. If the log ?not equal? appers, it means we can write data to lk memory. 
+
+	(2)open the VT-d protection, and do that again.
+	a.Test reading a segment of lk/vmm memory(play local music)
+play a local music and use the following command to change the bdl_entry:
+  	to attack lk heap, run:
+   		 	adb shell /data/tipc-test32 -t security-test
+
+		to attack vmm, run:
+   		 	adb shell /data/tipc-test32 -t security-test3
+(or: adb shell echo 3 > /sys/bus/hdaudio/devices/ehdaudio0D2/bdl_hack)
+
+you can not hear the high frequency sound and can hear nothing  that means the VT-d in effect.
+
+	b.Test writing data to a segment of lk/vmm memory(recording)
+		Open the camera and record video, run the following command more times:
+		to attack lk heap, run:
+   			 adb shell /data/tipc-test32 -t security-test
+
+		To attack vmm, run:
+    			adb shell /data/tipc-test32 -t security-test3
+
+		When you see the log ?equal (cmp_flag=0)?, it means that the lk memory has not been changed. Try to run the command more than 5 times, if the result is equal every time, the VT-d protection is in effect.
+
+
+
+The test was based on the following EB: 
+Android m:
+https://buildbot.sh.intel.com/absp/builders/bxtp_ivi_m-engineering/builds/6607
+Android O:
+https://buildbot.sh.intel.com/absp/builders/master-engineering/builds/44119
+
