@@ -21,10 +21,11 @@ USERKEY="$KEYS_DIR/userkey"
 WD=`pwd`
 
 function usage {
-    echo "usage: `basename $0` [-b <boot_or_recovery_image_path> | -s <system_image_path> | -c | -h]"
+    echo "usage: `basename $0` [-b <boot_or_recovery_image_path> | -s <system_image_path> | -s <multiboot_image_path> | -c | -h]"
     echo "       -c: clean everything"
     echo "       -b <image_path>: name of the boot/recovery image to split/sign"
     echo "       -s <image_path>: name of the system image to corrupt"
+    echo "       -m <image_path>: name of the multiboot image to corrupt"
     echo "       -h: print this message"
     echo "example:"
     echo "        $0 -b ~/boot.img"
@@ -108,6 +109,19 @@ function generate_corrupted_system_images {
     sed -i 's/SurfaceFlinger died/FlingerSurface died/' $IMG_DIR/system_corrupted_block.img
 }
 
+function generate_corrupted_multiboot_images {
+    # corrupt bootanimation binary
+    echo "Corrupting bootanimation binary..."
+    strings $TMP_DIR/$IMG.img | grep -m 1 "VMM: Launch Android" &>/dev/null
+    if [ $? -ne 0 ]
+    then
+        echo "'VMM: Launch Android' cannot be found in $TMP_DIR/$IMG.img, please find an other string to modify..."
+        exit 1
+    fi
+    cp $TMP_DIR/$IMG.img $IMG_DIR/multiboot_corrupted.img
+    sed -i 's/VMM: Launch Android/VMM: Android Launch/' $IMG_DIR/multiboot_corrupted.img
+}
+
 function generate_corrupted_boot_images {
     echo "Unsigning $IMG image."
     $UNSIGN_BOOT_TOOL $TMP_DIR/$IMG.img > $TMP_DIR/unsigned_$IMG.img
@@ -146,7 +160,7 @@ function generate_corrupted_boot_images {
     fi
 }
 
-while getopts "b:chs:" opt; do
+while getopts "b:chs:m:" opt; do
     case $opt in
         h)
             usage
@@ -165,6 +179,7 @@ while getopts "b:chs:" opt; do
             IMG=`echo $IMG | sed 's_/__'`
             create_dir $TMP_DIR
             cp $OPTARG $TMP_DIR/$IMG.img
+			echo "$OPTARG $TMP_DIR/$IMG.img"
             ;;
         s)
             IMG="system"
@@ -183,6 +198,14 @@ while getopts "b:chs:" opt; do
             echo "Copying $OPTARG..."
             create_dir $TMP_DIR
             cp $OPTARG $TMP_DIR/$IMG.img
+            ;;
+
+        m)
+            IMG="multiboot"
+            echo "Copying $OPTARG..."
+            create_dir $TMP_DIR
+            cp $OPTARG $TMP_DIR/$IMG.img
+			echo "$OPTARG $TMP_DIR/$IMG.img"
             ;;
         c)
             echo "Cleaning $TMP_DIR, $IMG_DIR, $KEYS_DIR..."
@@ -207,7 +230,7 @@ fi
 
 if [ ! -e $TMP_DIR/$IMG.img ]
 then
-    echo "Image $TMP_DIR/$IMG.img not found, did you forgot -b or -s option?"
+    echo "Image $TMP_DIR/$IMG.img not found, did you forgot -b or -s or -m option?"
     usage
 fi
 
@@ -217,6 +240,9 @@ create_dir $IMG_DIR
 if [ "$IMG" = "system" ]
 then
     generate_corrupted_system_images
+elif [ "$IMG" = "multiboot" ]
+then
+	generate_corrupted_multiboot_images
 else
     create_dir $KEYS_DIR
     generate_user_keys
