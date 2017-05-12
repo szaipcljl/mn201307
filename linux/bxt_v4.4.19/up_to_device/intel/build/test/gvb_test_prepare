@@ -119,7 +119,37 @@ function generate_corrupted_multiboot_images {
         exit 1
     fi
     cp $TMP_DIR/$IMG.img $IMG_DIR/multiboot_corrupted.img
-    sed -i 's/VMM: Launch Android/VMM: Android Launch/' $IMG_DIR/multiboot_corrupted.img
+
+	echo "input a char to select the pattern to replace the strings between a to c"
+	echo "    a: 'VMM: Launch Android' -> 'VMM: Android Launch'"
+	echo "    b: 'VMM: Launch Android' -> 'VMM: Launch android'"
+	echo "    c: 'VMM: Launch Android' -> '#VMM: Launch Android'"
+	echo -n "your input char is: "
+
+	read opt_num
+	case $opt_num in
+		"a")
+			sed -i 's/VMM: Launch Android/VMM: Android Launch/' $IMG_DIR/multiboot_corrupted.img
+			mv $IMG_DIR/multiboot_corrupted.img $IMG_DIR/multiboot_corrupted_a.img
+			echo "generate multiboot_corrupted_a.img[filename]"
+			;;
+		"b")
+			sed -i 's/VMM: Launch Android/VMM: Launch android/' $IMG_DIR/multiboot_corrupted.img
+			mv $IMG_DIR/multiboot_corrupted.img $IMG_DIR/multiboot_corrupted_b.img
+			echo "generate multiboot_corrupted_b.img[filename]"
+			;;
+
+		"c")
+			sed -i 's/VMM: Launch Android/#VMM: Launch Android/' $IMG_DIR/multiboot_corrupted.img
+			mv $IMG_DIR/multiboot_corrupted.img $IMG_DIR/multiboot_corrupted_c.img
+			echo "generate multiboot_corrupted_c.img[filename]"
+			;;
+		*)
+			echo "Aborted!"
+			exit 1
+			;;
+
+	esac
 }
 
 function generate_corrupted_boot_images {
