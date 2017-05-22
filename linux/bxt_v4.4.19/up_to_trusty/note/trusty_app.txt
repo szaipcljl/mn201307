@@ -1,0 +1,4 @@
+trusty app
+
+trusty/lk/trusty/lib/trusty/trusty_app.c
+load trusty app when boot
