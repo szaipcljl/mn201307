@@ -577,6 +577,27 @@ status_t trusty_app_setup_mmio(trusty_app_t *trusty_app, u_int mmio_id,
 	return ERR_NOT_FOUND;
 }
 
+void repeated_uuid_filter()
+{
+	int i, j;
+	trusty_app_t *ta;
+	trusty_app_t *ta_cmp;
+
+	dprintf(SPEW, "### to check the uuid.\n");
+	for (i = 0, ta = trusty_app_list; i < trusty_app_count; i++, ta++)
+		for (j = i+1, ta_cmp = ta+1; j < trusty_app_count; j++, ta_cmp++) {
+			if(!memcmp(&ta->props.uuid, &ta_cmp->props.uuid, sizeof(uuid_t))) {
+				//dprintf(SPEW, "### found the repeated uuid. i = %d, j = %d\n", i, j);
+				panic("found the repreated uuid\n");
+			}
+
+			//dprintf(SPEW, "i = %d, j= %d.\n", i, j);
+			//PRINT_TRUSTY_APP_UUID(ta - trusty_app_list, &ta->props.uuid);
+			//PRINT_TRUSTY_APP_UUID(ta - trusty_app_list, &ta_cmp->props.uuid);
+		}
+}
+
+
 void trusty_app_init(void)
 {
 	trusty_app_t *trusty_app;
@@ -591,6 +612,8 @@ void trusty_app_init(void)
 	finalize_registration();
 
 	trusty_app_bootloader();
+
+	repeated_uuid_filter();
 
 	for (i = 0, trusty_app = trusty_app_list; i < trusty_app_count; i++, trusty_app++) {
 		char name[32];
