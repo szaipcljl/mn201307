@@ -1,0 +1,6 @@
+Linux下的glic库的源码链接：
+http://ftp.gnu.org/gnu/glibc/
+
+下载最新版本的压缩文件 glibc-2.24.tar.gz
+解压:
+	tar -xzvf glibc-2.24.tar.gr

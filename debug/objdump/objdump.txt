@@ -1,0 +1,25 @@
+objdump
+
+********************************************************************************
+trust zone
+
+out/target/product/bxtp_abl/obj/trusty/build-sand-x86-64/lk.elf
+objdump -D lk.elf > asm.txt
+
+********************************************************************************
+kernel panic
+
+根据异常栈通常即可定位出代码出错的大概位置，但有时需要使用反汇编工具定位异常.
+
+反汇编工具存在于:
+arm:
+	prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/
+x86:
+	prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9/bin/
+
+1) 反汇编内核镜像，根据oops打印出的 PC 搜索在哪里出错:
+	prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-objdump -D vmlinux > asm.txt
+
+
+2) 根据地址指出在哪个文件的哪一行出错：
+	prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-addr2line -a  要查询的地址  -e vmlinux
