@@ -1,0 +1,58 @@
+
+
+--------------------------------------------------------------------------------
+ls out/target/product/bxtp_abl/obj/kernel/drivers/pci/
+
+access.o       hotplug          msi.o         pci-sysfs.o  search.o
+built-in.o     hotplug-pci.o    pci-acpi.o    probe.o      setup-bus.o
+bus.o          htirq.o          pci-driver.o  proc.o       setup-res.o
+bxt_pm.o       irq.o            pcie          quirks.o     slot.o
+host           modules.builtin  pci-label.o   remove.o     vc.o
+host-bridge.o  modules.order    pci.o         rom.o        vpd.o
+
+--------------------------------------------------------------------------------
+drivers/pci/pci-driver.c
+
+struct bus_type pci_bus_type = {
+}
+
+static int __init pci_driver_init(void)
+{
+	return bus_register(&pci_bus_type);
+}
+postcore_initcall(pci_driver_init);
+
+include/linux/init.h
+#define postcore_initcall(fn)		__define_initcall(fn, 2)
+
+
+--------------------------------------------------------------------------------
+
+struct subsys_private {
+	struct kset subsys;
+	struct kset *devices_kset;
+	struct list_head interfaces;
+	struct mutex mutex;
+
+	struct kset *drivers_kset;
+	struct klist klist_devices;
+	struct klist klist_drivers;
+	struct blocking_notifier_head bus_notifier;
+	unsigned int drivers_autoprobe:1;
+	struct bus_type *bus;
+
+	struct kset glue_dirs;
+	struct class *class;
+};
+
+
+struct device_private {
+	struct klist klist_children;
+	struct klist_node knode_parent;
+	struct klist_node knode_driver;
+	struct klist_node knode_bus;
+	struct list_head deferred_probe;
+	struct device *device;
+};
+
+
