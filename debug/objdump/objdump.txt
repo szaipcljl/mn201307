@@ -23,3 +23,21 @@ x86:
 
 2) 根据地址指出在哪个文件的哪一行出错：
 	prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-addr2line -a  要查询的地址  -e vmlinux
+
+********************************************************************************
+
+(1) 在linux内核代码根目录的 Makefile 中增加-g编译参数：
+	KBUILD_CFLAGS   := -g -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+					   -fno-strict-aliasing -fno-common \
+					   -Werror-implicit-function-declaration \
+					   -Wno-format-security \
+					   -fno-delete-null-pointer-checks
+
+	修改Makefile后，重新编译内核，生成的 vmlinux 就会包含原来的代码信息，文件的大小也比原来大一倍！
+
+
+(2) arm-none-eabi-objdump -Dz -S vmlinux > linux.dump
+
+	-S 表示尽可能把原来的代码和反汇编出来的代码一起呈现出来，
+	-S 参数需要结合 arm-linux-gcc 编译参数-g，才能达到反汇编时同时输出原来的代码。
+
