@@ -1,0 +1,71 @@
+
+
+
+608 [    4.982877] ### mmc_blk_rpmb_add                                                                                                       
+609 [    4.982879] ### [dump_stack] start ###
+610 [    4.982883] CPU: 3 PID: 802 Comm: kworker/u8:4 Tainted: G     U  W
+4.4.59-quilt-2e5dc0ac-gd45414e-dirty #3
+611 [    4.982895] Workqueue: kmmcd mmc_rescan
+612 [    4.982898]  0000000000000000 ffff8802755ebb60 ffffffff8139ba65
+ffffffffffffffea
+613 [    4.982900]  ffffffff822fd6e0 ffff8802755ebb90 ffffffff81498cd0
+ffff880076863800
+614 [    4.982902]  ffff88007686c600 ffff880276a16200 0000000000000000
+ffff8802755ebc08
+615 [    4.982903] Call Trace:
+616 [    4.982911]  [<ffffffff8139ba65>] dump_stack+0x67/0x92
+617 [    4.982914]  [<ffffffff81498cd0>] rpmb_dev_register+0x30/0x170
+618 [    4.982918]  [<ffffffff817d70df>] mmc_blk_probe+0x36f/0x450
+619 [    4.982920]  [<ffffffff817c8217>] mmc_bus_probe+0x17/0x20
+620 [    4.982923]  [<ffffffff815ba4e4>] driver_probe_device+0x224/0x4a0
+621 [    4.982925]  [<ffffffff815ba892>] __device_attach_driver+0x72/0x80
+622 [    4.982927]  [<ffffffff815ba820>] ?  driver_allows_async_probing+0x30/0x30
+623 [    4.982929]  [<ffffffff815b829b>] bus_for_each_drv+0x5b/0x90
+624 [    4.982930]  [<ffffffff815ba1d6>] __device_attach+0xb6/0x130
+625 [    4.982932]  [<ffffffff815baa23>] device_initial_probe+0x13/0x20
+626 [    4.982933]  [<ffffffff815b9668>] bus_probe_device+0x98/0xb0
+627 [    4.982936]  [<ffffffff815b7425>] device_add+0x445/0x600
+628 [    4.982939]  [<ffffffff817c86e8>] mmc_add_card+0x128/0x220
+629 [    4.982941]  [<ffffffff817cbec3>] mmc_attach_mmc+0xb3/0x180
+630 [    4.982943]  [<ffffffff817c7d6f>] mmc_rescan+0x2bf/0x340
+631 [    4.982947]  [<ffffffff810b274a>] process_one_work+0x14a/0x450
+632 [    4.982949]  [<ffffffff810b2d86>] worker_thread+0x66/0x450
+633 [    4.982951]  [<ffffffff810b2d20>] ?  rescuer_thread+0x2d0/0x2d0
+634 [    4.982953]  [<ffffffff810b2d20>] ?  rescuer_thread+0x2d0/0x2d0
+635 [    4.982955]  [<ffffffff810b7e3d>] kthread+0xed/0x110
+636 [    4.982957]  [<ffffffff810b7d50>] ?  kthread_create_on_node+0x190/0x190
+637 [    4.982961]  [<ffffffff81a2deef>] ret_from_fork+0x3f/0x70
+638 [    4.982963]  [<ffffffff810b7d50>] ?  kthread_create_on_node+0x190/0x190
+639 [    4.982964] ### [dump_stack] over ###
+
+
+
+
+838 [    7.076525] ### rpmb_sim_probe
+839 [    7.092517] ### [dump_stack] start ###
+840 [    7.096305] CPU: 2 PID: 1 Comm: init Tainted: G     U  W 4.4.59-quilt-2e5dc0ac-gd45414e-dirty #3
+841 [    7.105616]  0000000000000000 ffff880276973b58 ffffffff8139ba65 ffffffffffffffea
+842 [    7.113086]  ffffffffa0156120 ffff880276973b88 ffffffff81498cd0 ffff880272d9fc00
+843 [    7.120530]  0000000000000000 ffffffffa0156640 000000000000000b ffff880276973bb0
+844 [    7.127977] Call Trace:
+845 [    7.130431]  [<ffffffff8139ba65>] dump_stack+0x67/0x92
+846 [    7.135571]  [<ffffffff81498cd0>] rpmb_dev_register+0x30/0x170
+847 [    7.141407]  [<ffffffffa015408e>] rpmb_sim_probe+0xde/0x18a [rpmb_sim]
+848 [    7.147937]  [<ffffffff815ba4e4>] driver_probe_device+0x224/0x4a0
+849 [    7.154028]  [<ffffffff815ba7e4>] __driver_attach+0x84/0x90
+850 [    7.159598]  [<ffffffff815ba760>] ?  driver_probe_device+0x4a0/0x4a0
+851 [    7.165863]  [<ffffffff815b81e4>] bus_for_each_dev+0x64/0xa0
+852 [    7.171525]  [<ffffffff815b9e6e>] driver_attach+0x1e/0x20
+853 [    7.176920]  [<ffffffff815b99f1>] bus_add_driver+0x1f1/0x290
+854 [    7.182579]  [<ffffffffa0092000>] ? 0xffffffffa0092000
+855 [    7.187718]  [<ffffffff815bb230>] driver_register+0x60/0xe0
+856 [    7.193294]  [<ffffffffa009208b>] rpmb_sim_init+0x8b/0x1000 [rpmb_sim]
+857 [    7.199825]  [<ffffffff81000403>] do_one_initcall+0xd3/0x1f0
+858 [    7.205485]  [<ffffffff8117da00>] do_init_module+0x60/0x1ce
+859 [    7.211060]  [<ffffffff81117a2d>] load_module+0x229d/0x2630
+860 [    7.216632]  [<ffffffff81113ce0>] ?  __symbol_put+0x70/0x70
+861 [    7.222117]  [<ffffffff81117ee6>] SYSC_init_module+0x126/0x160
+862 [    7.227949]  [<ffffffff81117fce>] SyS_init_module+0xe/0x10
+863 [    7.233445]  [<ffffffff81a2db97>] entry_SYSCALL_64_fastpath+0x12/0x6a
+864 [    7.239927] ### [dump_stack] over ###
+

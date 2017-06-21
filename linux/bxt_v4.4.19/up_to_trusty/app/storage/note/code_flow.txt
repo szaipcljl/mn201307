@@ -2,7 +2,8 @@
 
 
 (1) daemon:
-device/intel/broxton/bxtp_abl/init.rc
+//device/intel/broxton/bxtp_abl/init.rc
+device/intel/mixins/group/trusty/true/init.rc
 
 service storageproxyd /vendor/bin/intelstorageproxyd -d /dev/trusty-ipc-dev0 -p /data/misc/securestorage -r /dev/rpmb1
     class late_start

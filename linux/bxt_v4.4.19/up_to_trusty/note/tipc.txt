@@ -1,0 +1,159 @@
+tipc
+
+***************************************************
+CA:
+tipc_test.c
+
+(1) device name
+tipc_test.c:
+#define TIPC_DEFAULT_DEVNAME "/dev/trusty-ipc-dev0"
+
+
+defined in system/core/trusty/libtrusty/trusty.c
+int tipc_connect(const char *dev_name, const char *srv_name)
+|--> fd = open(dev_name, O_RDWR);
+	 rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name); //will wait for 5s, see driver
+
+
+
+(2)
+tipc_test.c
+static const char *echo_name = "com.android.ipc-unittest.srv.echo";
+
+(3) driver
+drivers/trusty/trusty-ipc.c:
+
+#define TIPC_IOC_CONNECT		_IOW(TIPC_IOC_MAGIC, 0x80, char *)
+#if defined(CONFIG_COMPAT) //has been defined
+#define TIPC_IOC_CONNECT_COMPAT		_IOW(TIPC_IOC_MAGIC, 0x80, \
+					     compat_uptr_t)
+#endif
+
+
+static const struct file_operations tipc_fops = {
+	.open		= tipc_open,
+	.release	= tipc_release,
+	.unlocked_ioctl	= tipc_ioctl,
+#if defined(CONFIG_COMPAT)
+	.compat_ioctl	= tipc_compat_ioctl,
+#endif
+	.read_iter	= tipc_read_iter,
+	.write_iter	= tipc_write_iter,
+	.poll		= tipc_poll,
+	.owner		= THIS_MODULE,
+};
+
+
+static long tipc_compat_ioctl(struct file *filp,
+|-> case TIPC_IOC_CONNECT_COMPAT:
+		ret = dn_connect_ioctl(dn, user_req);
+		|-> return dn_wait_for_reply(dn, REPLY_TIMEOUT);
+			|-> ret = wait_for_completion_interruptible_timeout(&dn->reply_comp,
+						msecs_to_jiffies(timeout));
+				
+
+#define REPLY_TIMEOUT			5000
+
+(4) accept?
+
+drivers/trusty/trusty-ipc.c:
+static void dn_connected(struct tipc_dn_chan *dn)
+{
+	mutex_lock(&dn->lock);
+	dn->state = TIPC_CONNECTED;
+	dn->pulse = PULSE_ACTIVE;
+
+	/* complete all pending  */
+	complete(&dn->reply_comp);
+
+	mutex_unlock(&dn->lock);
+}
+
+
+static void dn_handle_event(void *data, int event)
+|-> case TIPC_CHANNEL_CONNECTED:
+		dn_connected(dn);
+		break;
+
+
+static struct tipc_chan_ops _dn_ops = {
+	.handle_msg = dn_handle_msg,
+	.handle_event = dn_handle_event,
+};
+
+
+static int tipc_open(struct inode *inode, struct file *filp)
+|->
+	dn->chan = vds_create_channel(vds, &_dn_ops, dn);
+
+
+static void chan_trigger_event(struct tipc_chan *chan, int event)
+{
+	if (!event)
+		return;
+
+	chan->ops->handle_event(chan->ops_arg, event);
+}
+
+
+static void _handle_conn_rsp(struct tipc_virtio_dev *vds,
+			     struct tipc_conn_rsp_body *rsp, size_t len)
+|-> chan_trigger_event(chan,
+			   TIPC_CHANNEL_CONNECTED);
+
+
+
+static void _handle_ctrl_msg(struct tipc_virtio_dev *vds,
+			     void *data, int len, u32 src)
+|-> case TIPC_CTRL_MSGTYPE_CONN_RSP:
+		_handle_conn_rsp(vds, (struct tipc_conn_rsp_body *)msg->body,
+				 msg->body_len);
+	break;
+
+
+
+static int tipc_virtio_probe(struct virtio_device *vdev)
+|-> vq_callback_t *vq_cbs[] = {_rxvq_cb, _txvq_cb};
+
+
+static void _rxvq_cb(struct virtqueue *rxvq)
+|-> _handle_rxbuf
+	|-> _handle_ctrl_msg
+		|-> _handle_conn_rsp
+***************************************************
+TA:
+
+(1)
+
+lk/trusty/lib/trusty/tipc_config.c:
+
+/* Default TIPC device (/dev/trusty-ipc-dev0) */
+DECLARE_TIPC_DEVICE_DESCR(_descr0, 0, 32, 32, "dev0");
+
+
+(2)
+app/sample/ipc-unittest/srv/srv.c:
+
+#define SRV_NAME(name)   SRV_PATH_BASE ".srv." name
+
+
+static const struct tipc_srv _services[] =
+{
+	...
+
+	{
+		.name = SRV_NAME("echo"),
+		.msg_num = 8,
+		.msg_size = MAX_PORT_BUF_SIZE,
+		.port_flags = IPC_PORT_ALLOW_ALL,
+		.port_handler = echo_handle_port,
+		.chan_handler = echo_handle_chan,
+	},
+	...
+
+};
+
+------------
+wait_any
+sys_wait_any
+lk/trusty/lib/trusty/uctx.c

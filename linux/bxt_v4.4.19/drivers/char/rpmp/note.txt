@@ -1,0 +1,83 @@
+
+
+struct rpmb_dev
+struct rpmb_data
+struct rpmb_cmd
+
+
+enum rpmb_type {
+	RPMB_TYPE_ANY = 0,
+	RPMB_TYPE_EMMC,
+	RPMB_TYPE_UFS,
+	RPMB_TYPE_SIM,
+	RPMB_TYPE_MAX = RPMB_TYPE_SIM
+};
+
+
+//rpmb1: Simulation
+mmc_blk_rpmb_add // drivers/mmc/card/block.c
+|-> rpmb_dev_register
+
+
+//rpmb0: real
+rpmb_sim_probe
+|-> rpmb_dev_register
+
+
+when enter device password:
+[  350.814597] ### rpmb_sim_cmd_seq
+[  350.818559] ###-write rpmb_op_write_data
+
+
+
+
+return when enter rpmb_op_write_data(), can not confirm password:
+[  105.411133] ### rpmb_sim_cmd_seq
+[  105.424627] ### rpmb_sim_cmd_seq
+[  105.428013] ###-write:fault injection rpmb_op_write_data
+[  105.433746] trusty: write data: Bad response type, 0x400, expected 0x300
+[  105.440447] trusty: block_cache_complete_write:214: write block 1 failed, fail transaction
+[  105.448708] trusty: app/storage/block_cache.c:762: block_cache_discard_transaction: assert "entry->dev == dev" failed
+
+********************************************************************************
+1. Simulation rpmb:
+
+rpmb1
+rpmb_sim.c:
+
+static struct rpmb_ops rpmb_sim_ops = {
+	.cmd_seq = rpmb_sim_cmd_seq,
+	.type = RPMB_TYPE_EMMC,
+}; 
+//rpmb_sim_probe:
+// rsdev->rdev = rpmb_dev_register(rsdev->dev, &rpmb_sim_ops);
+
+rpmb_sim_cmd_seq
+|-> rpmb_sim_write
+	|-> rpmb_op_write_data
+
+
+========================================
+drivers/mmc/card/block.c
+
+static struct rpmb_ops mmc_rpmb_dev_ops = {
+	.cmd_seq = mmc_blk_rpmb_cmd_seq,
+	.type = RPMB_TYPE_EMMC,
+};
+
+mmc_blk_rpmb_cmd_seq
+|-> mmc_blk_rpmb_process
+	|-> mmc_blk_rpmb_sequence
+		|-> mmc_rpmb_send_cmd
+			|-> mmc_set_data_timeout
+				mmc_wait_for_req
+
+
+--------
+ls out/target/product/bxtp_abl/obj/kernel/drivers/mmc/host/
+built-in.o  modules.builtin  modules.order  sdhci-acpi.o  sdhci.o
+sdhci-pci-core.o  sdhci-pci-data.o  sdhci-pci.o  sdhci-pci-o2micro.o
+
+drivers/mmc/host/sdhci.c
+static const struct mmc_host_ops sdhci_ops = {
+	.request	= sdhci_request,

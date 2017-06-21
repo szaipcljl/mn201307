@@ -1,0 +1,90 @@
+
+
+
+//trusty/lib/lib/storage/storage.c
+storage_open_file
+|-> send_reqv
+	|-> send_msg -----------+
+		get_response        |
+                            |
+                            +-> see (1)
+
+
+
+
+(1)
+	<1> trusty/lk/trusty/lib/trusty/include/syscall_table.h:
+			DEF_SYSCALL(0x23, send_msg, long, 2, uint32_t handle, ipc_msg_t *msg)
+
+		(0x23 <-> send_msg)
+
+		trusty/lk/trusty/lib/trusty/ipc_msg.c:
+			sys_send_msg
+			|-> copy_from_user
+				uctx_handle_get
+				check_channel_connected_locked
+				msg_write_locked
+				handle_notify
+
+
+
+	<2> trusty/lib/include/trusty_syscalls.h:
+			#define __NR_send_msg		0x23
+			long send_msg (uint32_t handle, ipc_msg_t *msg);
+
+		trusty/lib/lib/libc-trusty/arch/x86/64/trusty_syscall.S:
+		trusty/lib/lib/libc-trusty/arch/x86/32/trusty_syscall.S:
+
+			FUNCTION(send_msg)
+				PROLOG
+				movq $__NR_send_msg, %rax
+				MOV_PARAMS
+				sysenter
+				EPILOG
+				ret
+********************************************************************************
+trusty/app/storage/client_tipc.c
+
+client_handle_msg
+|-> case STORAGE_FILE_OPEN:
+		storage_file_open
+<1> init
+main //trusty/app/storage/main.c
+|-> struct ipc_port_context ctx = {
+		.ops = {
+			.on_connect = proxy_connect,
+		}
+	};
+
+proxy_connect //proxy.c
+|-> block_device_tipc_init //client_tipc.c
+	|-> client_create_port //client_tipc.c
+		|-> client_ctx->ops.on_connect = client_connect; //client_tipc.c
+
+client_connect //client_tipc.c
+|-> client_channel_ops_init //client_tipc.c
+static void client_channel_ops_init(struct ipc_channel_ops *ops)
+{
+	ops->on_handle_msg = client_handle_msg;
+	ops->on_disconnect = client_disconnect;
+}
+
+<2> call
+do_connect
+|-> chan_ctx->common.evt_handler = handle_channel;
+
+handle_channel // trusty/app/storage/ipc.c
+|-> int rc = do_handle_msg(channel_ctx, ev); //ipc.c
+	|-> rc = ctx->ops.on_handle_msg(ctx, msg_buf, msg_inf.len); //ipc.c
+
+client_create_port---------+
+main------------------+    |
+sys_port_create       |    |
+|-> ipc_port_create <-+-<--+
+	|-> ctxp->common.evt_handler = handle_port;
+
+handle_port
+|-> do_connect(port_ctx, ev);
+
+
+
