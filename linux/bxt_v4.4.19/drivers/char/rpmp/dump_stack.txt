@@ -69,3 +69,31 @@ ffff8802755ebc08
 863 [    7.233445]  [<ffffffff81a2db97>] entry_SYSCALL_64_fastpath+0x12/0x6a
 864 [    7.239927] ### [dump_stack] over ###
 
+
+
+================================================================================
+[    3.200903] Call Trace:
+[    3.200911]  [<ffffffff8139ddb5>] dump_stack+0x67/0x92
+[    3.200914]  [<ffffffff817e064c>] sdhci_send_command+0x40c/0xc90
+[    3.200918]  [<ffffffff810c529d>] ? get_parent_ip+0xd/0x50
+[    3.200920]  [<ffffffff817e1616>] sdhci_request+0x116/0x1f0
+[    3.200923]  [<ffffffff817c7efc>] __mmc_start_request+0x3c/0xc0
+[    3.200924]  [<ffffffff817c82a3>] mmc_start_request+0x153/0x290
+[    3.200926]  [<ffffffff817c87e1>] __mmc_start_req+0x51/0x80
+[    3.200928]  [<ffffffff817c8bf6>] mmc_wait_for_cmd+0x66/0xb0
+[    3.200930]  [<ffffffff817c73e0>] ? mmc_wait_data_done+0x30/0x30
+[    3.200932]  [<ffffffff817cff6f>] mmc_all_send_cid+0x4f/0x80
+[    3.200934]  [<ffffffff817cd3a3>] mmc_init_card+0x83/0x1ad0
+[    3.200938]  [<ffffffff81a359c8>] ? _raw_spin_unlock_irqrestore+0x28/0x50
+[    3.200939]  [<ffffffff817cf388>] mmc_attach_mmc+0x98/0x180
+[    3.200941]  [<ffffffff817cb24f>] mmc_rescan+0x2bf/0x340
+[    3.200944]  [<ffffffff810b2b8a>] process_one_work+0x14a/0x450
+[    3.200946]  [<ffffffff810b31c6>] worker_thread+0x66/0x450
+[    3.200948]  [<ffffffff810b3160>] ? rescuer_thread+0x2d0/0x2d0
+[    3.200950]  [<ffffffff810b3160>] ? rescuer_thread+0x2d0/0x2d0
+[    3.200952]  [<ffffffff810b827d>] kthread+0xed/0x110
+[    3.200954]  [<ffffffff810b8190>] ? kthread_create_on_node+0x190/0x190
+[    3.200956]  [<ffffffff81a3636f>] ret_from_fork+0x3f/0x70
+[    3.200958]  [<ffffffff810b8190>] ? kthread_create_on_node+0x190/0x190
+
+================================================================================

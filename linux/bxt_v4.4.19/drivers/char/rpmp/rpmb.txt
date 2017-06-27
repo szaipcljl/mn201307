@@ -1,0 +1,62 @@
+
+
+
+//rpmb0: real
+mmc_blk_rpmb_add // drivers/mmc/card/block.c
+|-> rpmb_dev_register
+
+
+========================================
+rpmb/cdev.c:
+
+static const struct file_operations rpmb_fops = {
+	.unlocked_ioctl = rpmb_ioctl,
+	...
+};
+
+rpmb_ioctl
+|-> rpmb_ioctl_seq_cmd
+	|-> rpmb_cmd_seq //rpmb/core.c
+		|-> err = rdev->ops->cmd_seq(rdev->dev.parent, cmds, ncmds); //ops -> struct rpmb_ops
+
+mmc_blk_rpmb_add //drivers/mmc/card/block.c
+|-> rdev = rpmb_dev_register(disk_to_dev(part_md->disk),
+				 &mmc_rpmb_dev_ops); // &mmc_rpmb_dev_ops
+	|-> rdev->ops = ops; //ops is a incoming parameter -> &mmc_rpmb_dev_ops
+		...
+		rpmb_cdev_prepare
+		|-> cdev_init(&rdev->cdev, &rpmb_fops);
+
+----------
+ops -> struct rpmb_ops
+drivers/mmc/card/block.c
+
+static struct rpmb_ops mmc_rpmb_dev_ops = {
+	.cmd_seq = mmc_blk_rpmb_cmd_seq,
+	.type = RPMB_TYPE_EMMC,
+};
+
+mmc_blk_rpmb_cmd_seq
+|-> mmc_blk_rpmb_process
+	|-> mmc_blk_rpmb_sequence
+		|-> mmc_rpmb_send_cmd
+			|-> mmc_set_data_timeout
+				mmc_wait_for_req // mmc/core/core.c
+				|-> __mmc_start_req(host, mrq);
+					|-> err = mmc_start_request(host, mrq);
+						|-> __mmc_start_request(host, mrq);
+							|-> host->ops->request(host, mrq); //host is sdhci.c
+
+
+--------
+$ ls out/target/product/bxtp_abl/obj/kernel/drivers/mmc/host/
+sdhci-acpi.o  sdhci.o
+sdhci-pci-core.o  sdhci-pci-data.o  sdhci-pci.o  sdhci-pci-o2micro.o
+--------
+
+drivers/mmc/host/sdhci.c
+static const struct mmc_host_ops sdhci_ops = {
+	.request	= sdhci_request,
+
+
+----------

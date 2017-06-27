@@ -1,0 +1,20 @@
+linux/drivers/mmc/host/sdhci.c
+- Secure Digital Host Controller Interface driver
+
+================================================================================
+//sdhci.c
+static const struct mmc_host_ops sdhci_ops = {
+	.request	= sdhci_request,
+	...
+};
+
+sdhci_request
+|-> sdhci_send_command
+	|-> sdhci_prepare_data(host, cmd);
+	|-> sdhci_writel(host, cmd->arg, SDHCI_ARGUMENT);
+		|-> sdhci_writel //sdhci.h
+			|-> writel(val, host->ioaddr + reg);
+
+----------
+sdhci_alloc_host
+|-> host->mmc_host_ops = sdhci_ops;

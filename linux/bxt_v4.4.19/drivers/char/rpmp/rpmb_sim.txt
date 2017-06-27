@@ -14,12 +14,10 @@ enum rpmb_type {
 };
 
 
+
+
+
 //rpmb1: Simulation
-mmc_blk_rpmb_add // drivers/mmc/card/block.c
-|-> rpmb_dev_register
-
-
-//rpmb0: real
 rpmb_sim_probe
 |-> rpmb_dev_register
 
@@ -57,27 +55,3 @@ rpmb_sim_cmd_seq
 	|-> rpmb_op_write_data
 
 
-========================================
-drivers/mmc/card/block.c
-
-static struct rpmb_ops mmc_rpmb_dev_ops = {
-	.cmd_seq = mmc_blk_rpmb_cmd_seq,
-	.type = RPMB_TYPE_EMMC,
-};
-
-mmc_blk_rpmb_cmd_seq
-|-> mmc_blk_rpmb_process
-	|-> mmc_blk_rpmb_sequence
-		|-> mmc_rpmb_send_cmd
-			|-> mmc_set_data_timeout
-				mmc_wait_for_req
-
-
---------
-ls out/target/product/bxtp_abl/obj/kernel/drivers/mmc/host/
-built-in.o  modules.builtin  modules.order  sdhci-acpi.o  sdhci.o
-sdhci-pci-core.o  sdhci-pci-data.o  sdhci-pci.o  sdhci-pci-o2micro.o
-
-drivers/mmc/host/sdhci.c
-static const struct mmc_host_ops sdhci_ops = {
-	.request	= sdhci_request,
