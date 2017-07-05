@@ -1,0 +1,70 @@
+pcileech
+https://github.com/ufrisk/pcileech 
+
+========================================
+pcileech_flash.c
+USB3380 -> pcileech
+turn the USB3380 development board into a PCILeech device.
+
+pcileech_flash_init
+|-> return _action_flash_1();
+	|-> // (1) retrieve compatible devices
+		while((pdev = pci_get_device(0x14e4, 0x16bc, pdev))) { ---+    //flashed as PCILeech
+		while((pdev = pci_get_device(0x10b5, 0x3380, pdev))) { ---+    //not flashed as PCILeech.
+                                                                  |
+                                                                  | 
+                                                                  +--> ret = _action_flash_2(pdev);
+
+_action_flash_2
+|-> // (2) enable the device
+	pci_enable_device(pdev)
+|-> // (3) take ownership of pci related regions
+	pci_request_regions(pdev, "expdev")
+|-> // (4) checking if PCI-device reachable by checking that BAR0 is defined and memory mapped
+	if(!(pci_resource_flags(pdev, 0) & IORESOURCE_MEM))
+		goto error;
+|-> // (5) remap BAR0 avoiding the use of CPU cache
+	pbar0 = ioremap_nocache(pci_resource_start(pdev, 0), pci_resource_len(pdev, 0));
+|-> // (6)
+	ret = _action_flash_writeverify(pbar0);
+	if(ret) {
+		// try force 1-byte addressing and make another flash attempt.
+		*(unsigned char*)(pbar0 + OFFSET_PCIREG_EEPROM_CTL + 2) =
+		0x60 | (0x1f & *(unsigned char*)(pbar0 + OFFSET_PCIREG_EEPROM_CTL + 2));
+		ret = _action_flash_writeverify(pbar0);
+	}
+	if(ret) {
+		// try force 2-byte addressing and make another flash attempt.
+		*(unsigned char*)(pbar0 + OFFSET_PCIREG_EEPROM_CTL + 2) =
+		  0xa0 | (0x1f & *(unsigned char*)(pbar0 + OFFSET_PCIREG_EEPROM_CTL + 2));
+		ret = _action_flash_writeverify(pbar0); 
+	}
+
+
+_action_flash_writeverify
+|-> // 1: check if this is a valid device / memory range.
+	if(*(unsigned int*)(pbar0 + OFFSET_PCIREG_SUBSYS) != 0x338010B5) {
+		return -2;
+	}
+	if(*(unsigned int*)(pbar0 + OFFSET_PCIREG_VEN_DEV) != 0x338010B5 
+			&& *(unsigned int*)(pbar0 + OFFSET_PCIREG_VEN_DEV) != 0x16BC14E4) {
+		return -2;
+	}
+|->	// 2: check if EEPROM exists
+	if((*(unsigned int*)(pbar0 + OFFSET_PCIREG_EEPROM_CTL) & 0x00030000) == 0) {
+		return -3;
+	}
+|->	// 3: is firmware already flashed?
+	if(0 == _action_flash_verify(pbar0)) {
+		SET_LED(0xf); // success -> blue+red led
+		return 0;
+	}
+|->	// 4: flash firmware.
+	_action_flash_write(pbar0);
+|->	// 5: verify flashed firmware.
+	if(0 == _action_flash_verify(pbar0)) {
+		SET_LED(0x8); // success -> blue led
+		return 0;
+	}
+	SET_LED(0x7); // fail -> red led
+	return -1;
