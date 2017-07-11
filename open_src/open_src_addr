@@ -24,3 +24,14 @@ system memory. This is achieved by using DMA over PCIe.
 ----------------------------------------
 Android
 https://android.googlesource.com/
+
+
+----------------------------------------
+afl: american fuzzy lop
+http://lcamtuf.coredump.cx/afl/
+--------
+ele7enxxh/android-afl:
+git clone https://github.com/ele7enxxh/android-afl
+Porting to Android:
+http://zke1ev3n.me/2016/10/09/Port-AFL-to-Android-By-LLVM/
+

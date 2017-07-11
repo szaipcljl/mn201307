@@ -68,3 +68,25 @@ _action_flash_writeverify
 	}
 	SET_LED(0x7); // fail -> red led
 	return -1;
+
+========================================
+Using SDK to flash hardware with firmware
+download sdk, linux package only, from: http://www.plxtech.com/products/sdk/ You need to register to get access.
+https://docs.broadcom.com/docs/SDK-Linux-Package-Only
+
+unzip, then untar
+export PLX_SDK_DIR=..pathtofiles/PlxSdk
+cd PlxSdk/PlxApi
+make
+cd ../Driver
+./builddriver Svc
+cd ../
+./Bin/Plx_load Svc
+cd Samples/PlxCm
+make
+./App/PlxCm
+
+PlxCm is their command line interface. it should automatically choose your usb3380. 
+type: show current eeprom state: "eep" load slotscreamer config: "eep_load SLOTSCREAMER.bin" confirm loading: "eep"
+
+That's it, your usb3380 reference board is now a SLOTSCREAMER
