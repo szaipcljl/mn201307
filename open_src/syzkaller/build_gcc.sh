@@ -20,5 +20,5 @@ mkdir build
 mkdir install
 cd build/
 ../configure --enable-languages=c,c++ --disable-bootstrap --enable-checking=no --with-gnu-as --with-gnu-ld --with-ld=/usr/bin/ld.bfd --disable-multilib --prefix=$GCC/install/
-make -j($nproc)
+make -j$(nproc)
 make install

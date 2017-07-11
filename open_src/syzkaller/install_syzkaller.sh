@@ -5,14 +5,14 @@
 #Install Go 1.8.1:
 #
 # download Go distribution and unpack Go into a directory
-mkdir go gocode
+sudo mkdir /go /gopath
 wget https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
-tar -zxvf go1.8.3.linux-amd64.tar.gz go/
+tar -zxvf go1.8.3.linux-amd64.tar.gz /go
 
 # set env var
-export GOROOT=$HOME/go
-export PATH=$HOME/go/bin:$PATH
-export GOPATH=$HOME/gocode
+export GOROOT=/go
+export PATH=/go/bin:$PATH
+export GOPATH=/gopath
 
 #
 # Syzkaller
@@ -22,6 +22,6 @@ sudo apt install golang-go --allow-unauthenticated
 go get -u -d github.com/google/syzkaller/
 
 # build
-cd ~/gocode/src/github.com/google/syzkaller
+cd /gopath/src/github.com/google/syzkaller
 mkdir workdir
 make
