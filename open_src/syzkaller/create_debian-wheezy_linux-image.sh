@@ -3,7 +3,7 @@
 #
 # Image
 #
-IMAGE=/image
+IMAGE=$HOME/image
 
 # Install debootstrap:
 sudo apt-get install debootstrap

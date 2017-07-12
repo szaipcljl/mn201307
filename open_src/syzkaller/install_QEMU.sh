@@ -4,7 +4,7 @@
 # QEMU
 #
 KERNEL=$HOME/linux
-IMAGE=/image
+IMAGE=$HOME/image
 # Install QEMU:
 sudo apt-get install kvm qemu-kvm
 

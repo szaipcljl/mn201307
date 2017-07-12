@@ -7,8 +7,8 @@
 # configuring the kernel with CONFIG_KCOV=y.
 
 GCC=$HOME/gcc-7.1.0
-KERNEL=/linux
-sudo mkdir $KERNEL
+KERNEL=$HOME/linux
+mkdir $KERNEL
 
 # Checkout Linux kernel source:
 git clone https://github.com/torvalds/linux.git $KERNEL
@@ -24,9 +24,9 @@ make kvmconfig
 #CONFIG_DEBUG_INFO=y
 #CONFIG_KASAN=y
 #CONFIG_KASAN_INLINE=y
-sudo sed -i 's/# CONFIG_KCOV is not set/CONFIG_KCOV=y/' $KERNEL/.config
-sudo sed -i 's/# CONFIG_DEBUG_INFO is not set/CONFIG_DEBUG_INFO=y/' $KERNEL/.config
-sudo sed -i 's/# CONFIG_KASAN is not set/CONFIG_KASAN=y/' $KERNEL/.config
+sed -i 's/# CONFIG_KCOV is not set/CONFIG_KCOV=y/' $KERNEL/.config
+sed -i 's/# CONFIG_DEBUG_INFO is not set/CONFIG_DEBUG_INFO=y/' $KERNEL/.config
+sed -i 's/# CONFIG_KASAN is not set/CONFIG_KASAN=y/' $KERNEL/.config
 
 # Since enabling these options results in more sub options being available, we
 # need to regenerate config. Run this and press enter each time when prompted for

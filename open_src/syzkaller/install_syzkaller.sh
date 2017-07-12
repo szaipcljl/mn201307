@@ -1,11 +1,6 @@
 #!/bin/bash
 # Generic setup instructions
 
-#
-#Install Go 1.8.1:
-#
-source ./install_GO.sh
-
 # set env var
 export GOROOT=$HOME/go
 export PATH=$HOME/bin:$PATH
