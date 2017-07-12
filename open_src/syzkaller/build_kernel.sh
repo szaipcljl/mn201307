@@ -33,6 +33,7 @@ sudo sed -i 's/# CONFIG_KASAN is not set/CONFIG_KASAN=y/' $KERNEL/.config
 # some config value to leave it as default:
 
 make oldconfig
+# note!!!:
 # 'CONFIG_KASAN_INLINE=y' => follow bellow after make oldconfig
 #*
 #* kmemcheck: trap use of uninitialized memory
@@ -45,7 +46,7 @@ make oldconfig
 		  #choice[1-2]: 2
 
 # Build the kernel with previously built GCC:
-make CC='$GCC/install/bin/gcc' -j$(nproc)
+make CC=$GCC/install/bin/gcc -j$(nproc)
 
 # Now you should have vmlinux (kernel binary) and bzImage (packed kernel image):
 ls $KERNEL/vmlinux
