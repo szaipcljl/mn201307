@@ -7,7 +7,7 @@
 # download Go distribution and unpack Go into a directory
 sudo mkdir /go /gopath
 wget https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
-tar -zxvf go1.8.3.linux-amd64.tar.gz /go
+sudo tar -zxvf go1.8.3.linux-amd64.tar.gz -C /go
 
 # set env var
 export GOROOT=/go
