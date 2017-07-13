@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "### enter install_GO.sh ###"
 #
 #Install Go 1.8.1:
 #
@@ -10,3 +11,5 @@ wget https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
 tar -zxvf go1.8.3.linux-amd64.tar.gz
 
 sudo apt install golang-go --allow-unauthenticated
+
+echo "### end of install_GO.sh ###"

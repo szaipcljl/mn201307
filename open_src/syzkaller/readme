@@ -1,0 +1,14 @@
+readme
+
+1) you should mv "nma1x" to your hostname in qemu.cfg or adb.cfg
+2) related folder:
+	$HOME/gcc-7.1.0
+	$HOME/linux
+	$HOME/image
+	$HOME/go
+	$HIME/gopath
+
+qemu_kernel-boots_sshd-starts.sh:
+	vm.log
+	vm.pid
+

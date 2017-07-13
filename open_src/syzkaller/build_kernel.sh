@@ -6,6 +6,7 @@
 # KCOV was committed upstream in Linux kernel version 4.6 and can be enabled by
 # configuring the kernel with CONFIG_KCOV=y.
 
+echo "### enter build_kernel.sh ###"
 GCC=$HOME/gcc-7.1.0
 KERNEL=$HOME/linux
 mkdir $KERNEL
@@ -51,3 +52,4 @@ make CC=$GCC/install/bin/gcc -j$(nproc)
 # Now you should have vmlinux (kernel binary) and bzImage (packed kernel image):
 ls $KERNEL/vmlinux
 ls $KERNEL/arch/x86/boot/bzImage
+echo "### end of build_kernel.sh ###"

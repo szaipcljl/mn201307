@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "### enter create_debian-wheezy_linux-image.sh ###"
 #
 # Image
 #
@@ -11,7 +12,7 @@ sudo apt-get install debootstrap
 # Use create-image.sh to create a minimal Debian-wheezy Linux image. The result should
 # be $IMAGE/wheezy.img disk image.
 mkdir $IMAGE
-cp ./create-image.sh $IMAGE
+cp $syzkaller_dir_path/create-image.sh $IMAGE
 cd $IMAGE
 ./create-image.sh
 
@@ -28,3 +29,5 @@ sudo chroot wheezy /bin/bash -c "apt-get update; apt-get install -y flex bison p
 sudo chroot wheezy /bin/bash -c "cd /tmp/linux/tools/perf/; make"
 sudo chroot wheezy /bin/bash -c "cp /tmp/linux/tools/perf/perf /usr/bin/"
 rm -r wheezy/tmp/linux
+
+echo "### end of create_debian-wheezy_linux-image.sh ###"
