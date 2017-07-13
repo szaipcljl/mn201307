@@ -1,0 +1,46 @@
+scheduler_tick()
+	维持当前最新的 time_slice 计数器
+
+--------------------
+...
+tick_setup_periodic
+|
+|-> tick_set_periodic_handler() : 
+		dev->event_handler = tick_handle_periodic;
+	|
+	|-> tick_handle_periodic()
+		|
+		|-> tick_periodic()
+			|
+			|-> update_process_times()
+				|
+				|-> scheduler_tick()
+
+
+note:
+void scheduler_tick(void)
+	linux/kernel/sched/core.c
+	This function gets called by the timer code, with HZ frequency.
+	We call it with interrupts disabled.
+
+void update_process_times(int user_tick)
+	linux/kernel/time/timer.c
+	Called from the timer interrupt handler to charge one tick to the current
+	process.  user_tick is 1 if the tick is user time, 0 for system.
+
+static void tick_periodic(int cpu)
+	linux/kernel/time/tick-common.c
+	Periodic tick
+
+void tick_handle_periodic(struct clock_event_device *dev)
+	linux/kernel/time/tick-common.c
+	Event handler for periodic ticks
+
+static inline void tick_set_periodic_handler(struct clock_event_device *dev, int broadcast)
+	linux/kernel/time/tick-internal.h
+	Set the periodic handler in non broadcast mode
+
+void tick_setup_periodic(struct clock_event_device *dev, int broadcast)
+	linux/kernel/time/tick-common.c
+	Setup the device for a periodic tick
+

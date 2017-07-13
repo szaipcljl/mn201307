@@ -1,0 +1,20 @@
+7.4 Functions Used by the Scheduler
+
+--------------------
+important functions:
+
+scheduler_tick()
+	维持当前最新的 time_slice 计数器
+
+try_to_wake_up()
+	唤醒睡眠进程
+
+recalc_task_prio()
+	更新进程的动态优先级
+
+schedule()
+	选择要被执行的新进程
+
+load_balance()
+	维持多处理器系统中运行队列的平衡
+
