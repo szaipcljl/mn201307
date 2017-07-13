@@ -1,6 +1,7 @@
 #!/bin/bash
 # Generic setup instructions
 
+echo "### enter install_syzkaller.sh ###"
 # set env var
 export GOROOT=$HOME/go
 export PATH=$HOME/bin:$PATH
@@ -16,3 +17,5 @@ go get -u -d github.com/google/syzkaller/...
 cd $GOPATH/src/github.com/google/syzkaller
 mkdir workdir
 make
+
+echo "### end of install_syzkaller.sh ###"
