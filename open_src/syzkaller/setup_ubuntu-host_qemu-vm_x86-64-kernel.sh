@@ -27,6 +27,9 @@ source $syzkaller_dir_path/install_GO.sh
 source $syzkaller_dir_path/install_syzkaller.sh
 
 # 5.Run syzkaller manager:
+#2017/07/14 16:27:27 failed to create instance: qemu stopped:
+#Could not access KVM kernel module: Permission denied
+sudo chmod 666 /dev/kvm
 ./bin/syz-manager -config=$syzkaller_dir_path/qemu.cfg
 
 # Create config with "type": "adb" and specify adb devices to use
