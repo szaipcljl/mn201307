@@ -1,0 +1,23 @@
+build kernel:
+(1) cd $KERNEL
+make defconfig
+# make kvmconfig
+
+(2) # Edit .config to enable some config options required for xxx. 
+
+(3) regenerate config
+# Since enabling these options results in more sub options being available, we
+# need to regenerate config.
+# Run this and press enter each time when prompted for
+# some config value to leave it as default:
+
+yes "" | make oldconfig
+# or
+make oldconfig
+
+(4) # Build the kernel with previously built GCC:
+make CC=$GCC/install/bin/gcc -j$(nproc)
+
+# Now you should have vmlinux (kernel binary) and bzImage (packed kernel image):
+ls $KERNEL/vmlinux
+ls $KERNEL/arch/x86/boot/bzImage

@@ -1,0 +1,6 @@
+build kernel:
+cd kernel/bxt
+cp arch/x86/configs/x86_64_defconfig .config
+make arch=x86_64 menuconfig
+cp .config arch/x86/configs/x86_64_defconfig
+make mrproper  
