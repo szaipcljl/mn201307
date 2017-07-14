@@ -28,12 +28,14 @@ make kvmconfig
 sed -i 's/# CONFIG_KCOV is not set/CONFIG_KCOV=y/' $KERNEL/.config
 sed -i 's/# CONFIG_DEBUG_INFO is not set/CONFIG_DEBUG_INFO=y/' $KERNEL/.config
 sed -i 's/# CONFIG_KASAN is not set/CONFIG_KASAN=y/' $KERNEL/.config
+echo "CONFIG_KASAN_INLINE=y" >> $KERNEL/.config
 
 # Since enabling these options results in more sub options being available, we
 # need to regenerate config. Run this and press enter each time when prompted for
 # some config value to leave it as default:
 
-make oldconfig
+yes "" | make oldconfig
+# make oldconfig
 # note!!!:
 # 'CONFIG_KASAN_INLINE=y' => follow bellow after make oldconfig
 #*
