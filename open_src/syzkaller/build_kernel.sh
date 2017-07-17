@@ -7,7 +7,9 @@
 # configuring the kernel with CONFIG_KCOV=y.
 
 echo "### enter build_kernel.sh ###"
-GCC=$HOME/gcc-7.1.0
+GCC_VERSION=gcc-7.1.0
+#GCC_VERSION=gcc-6.1.0
+GCC=$HOME/$GCC_VERSION
 KERNEL=$HOME/linux
 mkdir $KERNEL
 

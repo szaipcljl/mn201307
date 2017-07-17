@@ -3,8 +3,8 @@
 #
 # GCC
 #
-GCC_VERSION=gcc-6.1.0
-#GCC_VERSION=gcc-7.1.0
+#GCC_VERSION=gcc-6.1.0
+GCC_VERSION=gcc-7.1.0
 GCC=$HOME/$GCC_VERSION
 
 #sudo apt install subversion --allow-unauthenticated
