@@ -3,14 +3,19 @@
 #
 # GCC
 #
-GCC=$HOME/gcc-7.1.0
+GCC_VERSION=gcc-6.1.0
+#GCC_VERSION=gcc-7.1.0
+GCC=$HOME/$GCC_VERSION
+
 #sudo apt install subversion --allow-unauthenticated
 #svn checkout svn://gcc.gnu.org/svn/gcc/trunk $GCC
+# svn failed, so wo download gcc source code from the mirrors
 
 echo "### enter build_gcc.sh ###"
 cd $HOME
-wget http://mirrors-usa.go-parts.com/gcc/releases/gcc-7.1.0/gcc-7.1.0.tar.gz
-tar -zxvf gcc-7.1.0.tar.gz
+wget http://mirrors-usa.go-parts.com/gcc/releases/$GCC_VERSION/$GCC_VERSION.tar.gz
+tar -zxvf $GCC_VERSION.tar.gz
+
 cd $GCC
 
 sudo apt-get install flex bison libc6-dev libc6-dev-i386 linux-libc-dev libgmp3-dev libmpfr-dev libmpc-dev
