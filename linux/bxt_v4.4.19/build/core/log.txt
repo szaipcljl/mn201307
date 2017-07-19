@@ -1,0 +1,8 @@
+
+========================================
+###mn-start
+Install: out/target/product/bxtp_abl/system/lib/afl-llvm-rt.so
+###mn:prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9/bin/x86_64-linux-android-gcc
+###mn-end
+========================================
+
