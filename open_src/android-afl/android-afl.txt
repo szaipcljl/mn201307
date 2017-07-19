@@ -1,0 +1,29 @@
+android-afl
+
+========================================
+git clone https://github.com/ele7enxxh/android-afl
+
+=======
+To fuzz
+
+if you want fuzz on host, you should use the afl-fuzz in the $(HOST_OUT)/bin
+folder, otherwise you need to use the afl-fuzz in the $(target_OUT)/bin folder. 
+
+----------
+fuzz on host
+out/host/linux-x86/bin/afl-gcc android-afl/android-test/crash.c -o crash
+mkdir testcase
+echo 'afltest' > testcase/file
+out/host/linux-x86/bin/afl-fuzz -i testcase/ -o output ./crash  @@
+
+
+--------------------
+fuzz on target board
+
+adb push /home/nma1x/disk2/nma1x-wk/m_608/out/target/product/bxtp_abl/system/bin/afl-fuzz /system/bin
+gordon_peak:/data # mkdir in
+gordon_peak:/data # mkdir out
+
+echo 'adbdevid' > file && adb push file /data/in
+
+gordon_peak:/data # afl-fuzz -i in/ -o out/ ../vendor/bin/hostapd 
