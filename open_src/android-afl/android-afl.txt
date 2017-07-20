@@ -12,9 +12,9 @@ folder, otherwise you need to use the afl-fuzz in the $(target_OUT)/bin folder.
 ----------
 fuzz on host
 out/host/linux-x86/bin/afl-gcc android-afl/android-test/crash.c -o crash
-mkdir testcase
-echo 'afltest' > testcase/file
-out/host/linux-x86/bin/afl-fuzz -i testcase/ -o output ./crash  @@
+mkdir input
+echo 'bad!' > input/file
+out/host/linux-x86/bin/afl-fuzz -i input/ -o output ./crash  @@
 
 
 --------------------
@@ -27,3 +27,15 @@ gordon_peak:/data # mkdir out
 echo 'adbdevid' > file && adb push file /data/in
 
 gordon_peak:/data # afl-fuzz -i in/ -o out/ ../vendor/bin/hostapd 
+
+
+--------------------
+对AFL源码进行修改以修复下面几个错误。
+
+error: undefined reference to '__fprintf_chk'
+error: undefined reference to 'shmat'
+error: undefined reference 'afl-area_prev'
+
+$ wget http://ele7enxxh.com/downloads/afl-2.39b.diff
+$ cd afl-2.39b
+$ patch -p2 < afl-2.39b.diff
