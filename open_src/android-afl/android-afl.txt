@@ -3,6 +3,8 @@ android-afl
 ========================================
 git clone https://github.com/ele7enxxh/android-afl
 
+http://lcamtuf.coredump.cx/afl/releases/
+
 =======
 To fuzz
 

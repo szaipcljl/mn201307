@@ -1,0 +1,19 @@
+
+================
+readelf -a crash | tee crash.txt
+-a --all
+
+readelf -d crash
+-d --dynamic           Display the dynamic section (if present)
+================
+nm - list symbols from object files
+
+nm -g libtest.so
+导出符号表
+
+nm -D crash
+-D
+--dynamic
+Display the dynamic symbols rather than the normal
+symbols.  This is only meaningful for dynamic objects,
+such as certain types of shared libraries.
