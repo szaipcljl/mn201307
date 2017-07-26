@@ -1,0 +1,21 @@
+From cb54e31febbf37051851a9885901e54b9a0826cd Mon Sep 17 00:00:00 2001
+From: Huang, Yang <yang.huang@intel.com>
+Date: Fri, 09 Jun 2017 10:14:02 +0800
+Subject: [PATCH] enable tipc test from trusty
+
+Change-Id: I123f306a68a035a00a8a9e410188372b5b28d5b0
+Signed-off-by: Huang, Yang <yang.huang@intel.com>
+---
+
+diff --git a/project/sand-x86-64.mk b/project/sand-x86-64.mk
+index c9c7c78..f7504d1 100644
+--- a/project/sand-x86-64.mk
++++ b/project/sand-x86-64.mk
+@@ -49,3 +49,7 @@
+ EXTRA_BUILDRULES += app/trusty/user-tasks.mk
+ 
+ include  $(LOCAL_DIR)/product/$(TARGET_PRODUCT).mk
++
++TRUSTY_ALL_USER_TASKS += \
++	sample/ipc-unittest/main \
++	sample/ipc-unittest/srv

@@ -1,0 +1,37 @@
+From c73976dab7a01d2331f0154613dd7c6737b0fe70 Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Fri, 14 Apr 2017 14:23:32 +0800
+Subject: [PATCH] add new syscall virt_to_phys(part1)
+
+Change-Id: I4d5e68341069d4fe4b33182542cb66802dbf24f7
+Tracked-On:
+---
+
+diff --git a/lib/trusty/include/syscall_table.h b/lib/trusty/include/syscall_table.h
+index 8d9dac8..1dfb230 100644
+--- a/lib/trusty/include/syscall_table.h
++++ b/lib/trusty/include/syscall_table.h
+@@ -55,3 +55,5 @@
+ DEF_SYSCALL(0x21, read_msg, long, 4, uint32_t handle, uint32_t msg_id, uint32_t offset, ipc_msg_t *msg)
+ DEF_SYSCALL(0x22, put_msg, long, 2, uint32_t handle, uint32_t msg_id)
+ DEF_SYSCALL(0x23, send_msg, long, 2, uint32_t handle, ipc_msg_t *msg)
++
++DEF_SYSCALL(0x24, virt_to_phys, paddr_t, 1, void *ptr)
+diff --git a/lib/trusty/syscall.c b/lib/trusty/syscall.c
+index 434dc97..3df2977 100644
+--- a/lib/trusty/syscall.c
++++ b/lib/trusty/syscall.c
+@@ -324,3 +324,13 @@
+ 	return NO_ERROR;
+ }
+ 
++paddr_t sys_virt_to_phys(void *ptr)
++{
++	paddr_t phys_addr = NULL;
++
++	phys_addr = kvaddr_to_paddr(ptr);
++	if (!phys_addr)
++		panic("### failed to convert virtual address to physical address\n");
++
++	return phys_addr;
++}

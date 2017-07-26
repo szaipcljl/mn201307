@@ -1,0 +1,1 @@
+cat /proc/2161/maps

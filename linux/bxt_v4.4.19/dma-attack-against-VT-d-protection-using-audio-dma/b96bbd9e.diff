@@ -1,0 +1,52 @@
+From b96bbd9eab3dfbdab4d2d1852fe766cb34e168f6 Mon Sep 17 00:00:00 2001
+From: Huang, Yang <yang.huang@intel.com>
+Date: Mon, 20 Feb 2017 09:03:56 +0800
+Subject: [PATCH] revert KM, GK and SS
+
+Change-Id: Ieddd85822934ff5796d714c60a0db3419eaeeec1
+Signed-off-by: Huang, Yang <yang.huang@intel.com>
+---
+
+diff --git a/groups/trusty/true/BoardConfig.mk b/groups/trusty/true/BoardConfig.mk
+index fb3ea7a..4a88985 100644
+--- a/groups/trusty/true/BoardConfig.mk
++++ b/groups/trusty/true/BoardConfig.mk
+@@ -1,6 +1,4 @@
+ TARGET_USE_TRUSTY := true
+-BOARD_USES_TRUSTY := true
+-BOARD_USES_KEYMASTER1 := true
+ TARGET_USE_MULTIBOOT := true
+ BOARD_SEPOLICY_DIRS += device/intel/sepolicy/trusty
+ 
+diff --git a/groups/trusty/true/init.rc b/groups/trusty/true/init.rc
+index cba1494..37bbf73 100644
+--- a/groups/trusty/true/init.rc
++++ b/groups/trusty/true/init.rc
+@@ -21,8 +21,3 @@
+     mkdir /data/misc/securestorage 0700 system system
+     chmod 666 /dev/rpmb0
+     chmod 666 /dev/rpmb1
+-
+-service storageproxyd /vendor/bin/intelstorageproxyd -d /dev/trusty-ipc-dev0 -p /data/misc/securestorage -r /dev/rpmb1
+-    class late_start
+-    user system
+-    group system
+diff --git a/groups/trusty/true/product.mk b/groups/trusty/true/product.mk
+deleted file mode 100644
+index e192bc6..0000000
+--- a/groups/trusty/true/product.mk
++++ /dev/null
+@@ -1,13 +0,0 @@
+-PRODUCT_PACKAGES += \
+-	keystore.${TARGET_BOARD_PLATFORM} \
+-	libtrusty \
+-	intelstorageproxyd \
+-	libinteltrustystorage \
+-	libinteltrustystorageinterface \
+-	gatekeeper.trusty \
+-	libscrypt_static \
+-	scrypt_test \
+-
+-PRODUCT_PACKAGES_DEBUG += \
+-	intel-secure-storage-unit-test \
+-	gatekeeper-unit-tests \

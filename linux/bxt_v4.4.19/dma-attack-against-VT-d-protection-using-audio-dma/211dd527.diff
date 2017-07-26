@@ -1,0 +1,61 @@
+From 211dd5277be7aff279034e46427190f52128b2eb Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Fri, 14 Apr 2017 14:28:24 +0800
+Subject: [PATCH] add new syscall virt_to_phys (part2)
+
+Change-Id: I9a498d3d9b942628fc1f8fa4c9451dc8f09968b1
+Tracked-On:
+---
+
+diff --git a/include/trusty_syscalls.h b/include/trusty_syscalls.h
+index 1439987..0468a63 100644
+--- a/include/trusty_syscalls.h
++++ b/include/trusty_syscalls.h
+@@ -46,6 +46,7 @@
+ #define __NR_read_msg		0x21
+ #define __NR_put_msg		0x22
+ #define __NR_send_msg		0x23
++#define __NR_virt_to_phys		0x24
+ 
+ #ifndef ASSEMBLY
+ 
+@@ -74,6 +75,7 @@
+ long read_msg (uint32_t handle, uint32_t msg_id, uint32_t offset, ipc_msg_t *msg);
+ long put_msg (uint32_t handle, uint32_t msg_id);
+ long send_msg (uint32_t handle, ipc_msg_t *msg);
++paddr_t virt_to_phys(void *ptr);
+ 
+ __END_CDECLS
+ 
+diff --git a/lib/libc-trusty/arch/x86-64/trusty_syscall.S b/lib/libc-trusty/arch/x86-64/trusty_syscall.S
+index 53d96f2..c67084b 100644
+--- a/lib/libc-trusty/arch/x86-64/trusty_syscall.S
++++ b/lib/libc-trusty/arch/x86-64/trusty_syscall.S
+@@ -236,3 +236,11 @@
+     sysenter
+     EPILOG
+     ret
++
++FUNCTION(virt_to_phys)
++    PROLOG
++    movq $__NR_virt_to_phys, %rax
++    MOV_PARAMS
++    sysenter
++    EPILOG
++    ret
+diff --git a/lib/libc-trusty/arch/x86/trusty_syscall.S b/lib/libc-trusty/arch/x86/trusty_syscall.S
+index 43e73be..9a5cc3a 100644
+--- a/lib/libc-trusty/arch/x86/trusty_syscall.S
++++ b/lib/libc-trusty/arch/x86/trusty_syscall.S
+@@ -231,3 +231,11 @@
+     sysenter
+     EPILOG
+     ret
++
++FUNCTION(virt_to_phys)
++    PROLOG
++    mov $__NR_virt_to_phys, %eax
++    MOV_PARAMS
++    sysenter
++    EPILOG
++    ret
