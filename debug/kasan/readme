@@ -1,0 +1,6 @@
+ddressSanitizer
+
+The KernelAddressSanitizer (KASAN) detects dynamic memory errors in the Linux
+kernel.[9] Kernel instrumentation requires a special feature in the compiler
+supplying the -fsanitize=kernel-address command line option, since kernels do
+not use the same address space as normal programs.
