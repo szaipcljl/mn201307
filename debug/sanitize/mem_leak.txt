@@ -1,0 +1,10 @@
+
+=================================================================
+==627==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x7fe7fe790602 in malloc (/usr/lib/x86_64-linux-gnu/libasan.so.2+0x98602)
+    #1 0x40083e in main /home/nma1x/mn/mn201307/debug/sanitize/mem_leak.c:13
+    #2 0x7fe7fe34e82f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2082f)
+
+SUMMARY: AddressSanitizer: 1024 byte(s) leaked in 1 allocation(s).
