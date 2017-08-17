@@ -1,0 +1,232 @@
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Build fingerprint: 'intel/r0_bxtp_abl/bxtp_abl:6.0.1/MMB31C/nma1x08010929:userdebug/test-keys'
+Revision: '0'
+ABI: 'x86_64'
+pid: 8692, tid: 8692, name: crash  >>> ./crash <<<
+signal 6 (SIGABRT), code -6 (SI_TKILL), fault addr --------
+    rax 0000000000000000  rbx 00007fc2ddc6d2c0  rcx 00007fc2dda798a7  rdx 0000000000000006
+    rsi 00000000000021f4  rdi 00000000000021f4
+    r8  00000000000021f4  r9  00007fc2ddc6d200  r10 0000000000000008  r11 0000000000000202
+    r12 00000000000021f4  r13 0000000000000006  r14 0000000000000000  r15 0000000000000000
+    cs  0000000000000033  ss  000000000000002b
+    rip 00007fc2dda798a7  rbp 0000000000000019  rsp 00007ffcfb9fe808  eflags 0000000000000202
+
+backtrace:
+    #00 pc 00000000000898a7  /system/lib64/libc.so (tgkill+7)
+    #01 pc 0000000000086812  /system/lib64/libc.so (pthread_kill+66)
+    #02 pc 000000000002ea21  /system/lib64/libc.so (raise+17)
+    #03 pc 0000000000028a8e  /system/lib64/libc.so (abort+62)
+    #04 pc 000000000000111a  /data/crash
+    #05 pc 0000000000000a8b  /data/crash
+    #06 pc 000000000001cf0c  /system/lib64/libc.so (__libc_init+92)
+    #07 pc 0000000000000b2d  /data/crash
+    #08 pc 0000000000000001  <unknown>
+
+stack:
+         00007ffcfb9fe788  00007ffcfb9fe960  [stack]
+         00007ffcfb9fe790  0000000000000002
+         00007ffcfb9fe798  00007fc2dda6b100  /system/lib64/libc.so (vfprintf+48)
+         00007ffcfb9fe7a0  0000555800000012
+         00007ffcfb9fe7a8  00007ffcfb9fe7c8  [stack]
+         00007ffcfb9fe7b0  00007fc2ddafae80
+         00007ffcfb9fe7b8  00007fc2dda6618a  /system/lib64/libc.so (printf+154)
+         00007ffcfb9fe7c0  00007fc2ddafae80
+         00007ffcfb9fe7c8  0000003000000010
+         00007ffcfb9fe7d0  00007ffcfb9fe8a0  [stack]
+         00007ffcfb9fe7d8  00007ffcfb9fe7e0  [stack]
+         00007ffcfb9fe7e0  00007fc2ddc6d200
+         00007ffcfb9fe7e8  0000000000000019
+         00007ffcfb9fe7f0  00007fc2ddc6d200
+         00007ffcfb9fe7f8  00007fc2dda76479  /system/lib64/libc.so (_Z23__pthread_internal_findl+57)
+         00007ffcfb9fe800  00007fc2ddc6d2c0
+    #00  00007ffcfb9fe808  00007fc2dda76813  /system/lib64/libc.so (pthread_kill+67)
+    #01  00007ffcfb9fe810  0000000000000001
+         00007ffcfb9fe818  0000000000000006
+         00007ffcfb9fe820  00007ffcfb9fe860  [stack]
+         00007ffcfb9fe828  0000000000000002
+         00007ffcfb9fe830  00005558772299e0  /data/crash
+         00007ffcfb9fe838  00007fc2dda1ea22  /system/lib64/libc.so (raise+18)
+    #02  00007ffcfb9fe840  00007ffcfb9fe858  [stack]
+         00007ffcfb9fe848  00007fc2dda18a8f  /system/lib64/libc.so (abort+63)
+    #03  00007ffcfb9fe850  00000000000001b6
+         00007ffcfb9fe858  ffffffffffffffdf
+         00007ffcfb9fe860  00005558772299e0  /data/crash
+         00007ffcfb9fe868  0000000000000000
+         00007ffcfb9fe870  0000000000000000
+         00007ffcfb9fe878  00007fc2dda61757  /system/lib64/libc.so (fopen+71)
+         00007ffcfb9fe880  00007fc2ddc2a468  /system/bin/linker64
+         00007ffcfb9fe888  00007fc2ddafae80
+         00007ffcfb9fe890  00007ffcfb9fe960  [stack]
+         00007ffcfb9fe898  000055587722a11b  /data/crash
+    #04  00007ffcfb9fe8a0  0000000000000002
+         00007ffcfb9fe8a8  0000555877229a8c  /data/crash
+    #05  00007ffcfb9fe8b0  00007ffc21646162
+         00007ffcfb9fe8b8  00007ffcfb9fe960  [stack]
+         00007ffcfb9fe8c0  0000000000000002
+         00007ffcfb9fe8c8  00007ffcfb9fe948  [stack]
+         00007ffcfb9fe8d0  00007ffcfb9fe960  [stack]
+         00007ffcfb9fe8d8  00007fc2dda0cf0d  /system/lib64/libc.so (__libc_init+93)
+    #06  00007ffcfb9fe8e0  0000000000000000
+         00007ffcfb9fe8e8  0000000000000000
+         00007ffcfb9fe8f0  00007ffcfb9fe938  [stack]
+         00007ffcfb9fe8f8  0000000000000000
+         00007ffcfb9fe900  0000000000000000
+         00007ffcfb9fe908  0000555877229b2e  /data/crash
+    #07  00007ffcfb9fe910  0000000000000000
+         00007ffcfb9fe918  000055587722bcd0  /data/crash
+         00007ffcfb9fe920  000055587722bce0  /data/crash
+         00007ffcfb9fe928  000055587722bcf0  /data/crash
+         00007ffcfb9fe930  00007ffcfb9fe940  [stack]
+         00007ffcfb9fe938  0000000000000000
+         00007ffcfb9fe940  0000000000000002
+    #08  00007ffcfb9fe948  00007ffcfba00ad9  [stack]
+         00007ffcfb9fe950  00007ffcfba00ae1  [stack]
+         00007ffcfb9fe958  0000000000000000
+         00007ffcfb9fe960  00007ffcfba00af6  [stack]
+         00007ffcfb9fe968  00007ffcfba00b03  [stack]
+         00007ffcfb9fe970  00007ffcfba00b16  [stack]
+         00007ffcfb9fe978  00007ffcfba00b2a  [stack]
+         00007ffcfb9fe980  00007ffcfba00b35  [stack]
+         00007ffcfb9fe988  00007ffcfba00b3f  [stack]
+         00007ffcfb9fe990  00007ffcfba00b54  [stack]
+         00007ffcfb9fe998  00007ffcfba00b5f  [stack]
+         00007ffcfb9fe9a0  00007ffcfba00b74  [stack]
+         00007ffcfb9fe9a8  00007ffcfba00b87  [stack]
+         00007ffcfb9fe9b0  00007ffcfba00b9e  [stack]
+         00007ffcfb9fe9b8  00007ffcfba00bb9  [stack]
+         00007ffcfb9fe9c0  00007ffcfba00bd3  [stack]
+
+memory near rbx:
+    00007fc2ddc6d2a0 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d2b0 00007fc2ddc6d2b0 00007fc2ddc6d200  ................
+    00007fc2ddc6d2c0 0000000000000019 0000000000000000  ................
+    00007fc2ddc6d2d0 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d2e0 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d2f0 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d300 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d310 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d320 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d330 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d340 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d350 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d360 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d370 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d380 0000000000000000 0000000000000000  ................
+    00007fc2ddc6d390 0000000000000000 0000000000000001  ................
+
+memory near rcx:
+    00007fc2dda79880 00000114b8ca8949 fffff0013d48050f  I.........H=....
+    00007fc2dda79890 c5e8c789d8f70972 00401f0fc3fffa58  r.......X.....@.
+    00007fc2dda798a0 48050f000000eab8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798b0 fffa58a8e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda798c0 48050f0000011bb8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798d0 fffa5888e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda798e0 48050f0000011fb8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798f0 fffa5868e8c789d8 00000000801f0fc3  ....hX..........
+    00007fc2dda79900 0000011eb8ca8949 fffff0013d48050f  I.........H=....
+    00007fc2dda79910 45e8c789d8f70972 00401f0fc3fffa58  r......EX.....@.
+    00007fc2dda79920 48050f00000064b8 f70972fffff0013d  .d.....H=....r..
+    00007fc2dda79930 fffa5828e8c789d8 00000000801f0fc3  ....(X..........
+    00007fc2dda79940 48050f0000004cb8 f70972fffff0013d  .L.....H=....r..
+    00007fc2dda79950 fffa5808e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda79960 48050f0000005fb8 f70972fffff0013d  ._.....H=....r..
+    00007fc2dda79970 fffa57e8e8c789d8 00000000801f0fc3  .....W..........
+
+memory near rsi:
+    00000000000021d0 ---------------- ----------------  ................
+    00000000000021e0 ---------------- ----------------  ................
+    00000000000021f0 ---------------- ----------------  ................
+    0000000000002200 ---------------- ----------------  ................
+    0000000000002210 ---------------- ----------------  ................
+    0000000000002220 ---------------- ----------------  ................
+    0000000000002230 ---------------- ----------------  ................
+    0000000000002240 ---------------- ----------------  ................
+    0000000000002250 ---------------- ----------------  ................
+    0000000000002260 ---------------- ----------------  ................
+    0000000000002270 ---------------- ----------------  ................
+    0000000000002280 ---------------- ----------------  ................
+    0000000000002290 ---------------- ----------------  ................
+    00000000000022a0 ---------------- ----------------  ................
+    00000000000022b0 ---------------- ----------------  ................
+    00000000000022c0 ---------------- ----------------  ................
+
+memory near rdi:
+    00000000000021d0 ---------------- ----------------  ................
+    00000000000021e0 ---------------- ----------------  ................
+    00000000000021f0 ---------------- ----------------  ................
+    0000000000002200 ---------------- ----------------  ................
+    0000000000002210 ---------------- ----------------  ................
+    0000000000002220 ---------------- ----------------  ................
+    0000000000002230 ---------------- ----------------  ................
+    0000000000002240 ---------------- ----------------  ................
+    0000000000002250 ---------------- ----------------  ................
+    0000000000002260 ---------------- ----------------  ................
+    0000000000002270 ---------------- ----------------  ................
+    0000000000002280 ---------------- ----------------  ................
+    0000000000002290 ---------------- ----------------  ................
+    00000000000022a0 ---------------- ----------------  ................
+    00000000000022b0 ---------------- ----------------  ................
+    00000000000022c0 ---------------- ----------------  ................
+
+code around rip:
+    00007fc2dda79880 00000114b8ca8949 fffff0013d48050f  I.........H=....
+    00007fc2dda79890 c5e8c789d8f70972 00401f0fc3fffa58  r.......X.....@.
+    00007fc2dda798a0 48050f000000eab8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798b0 fffa58a8e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda798c0 48050f0000011bb8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798d0 fffa5888e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda798e0 48050f0000011fb8 f70972fffff0013d  .......H=....r..
+    00007fc2dda798f0 fffa5868e8c789d8 00000000801f0fc3  ....hX..........
+    00007fc2dda79900 0000011eb8ca8949 fffff0013d48050f  I.........H=....
+    00007fc2dda79910 45e8c789d8f70972 00401f0fc3fffa58  r......EX.....@.
+    00007fc2dda79920 48050f00000064b8 f70972fffff0013d  .d.....H=....r..
+    00007fc2dda79930 fffa5828e8c789d8 00000000801f0fc3  ....(X..........
+    00007fc2dda79940 48050f0000004cb8 f70972fffff0013d  .L.....H=....r..
+    00007fc2dda79950 fffa5808e8c789d8 00000000801f0fc3  .....X..........
+    00007fc2dda79960 48050f0000005fb8 f70972fffff0013d  ._.....H=....r..
+    00007fc2dda79970 fffa57e8e8c789d8 00000000801f0fc3  .....W..........
+
+memory map:
+    00005558'77229000-00005558'7722afff r-x         0      2000  /data/crash
+    00005558'7722b000-00005558'7722bfff r--      1000      1000  /data/crash
+    00005558'7722c000-00005558'7722cfff rw-         0      1000
+    00007fc2'dd740000-00007fc2'dd93ffff rw-         0    200000  [anon:libc_malloc]
+    00007fc2'dd968000-00007fc2'dd977fff rw-         0     10000  /dev/ashmem/0 (deleted)
+    00007fc2'dd978000-00007fc2'dd979fff r-x         0      2000  /system/lib64/libnetd_client.so (BuildId: aaa9bc1cbd6a340bd85d6da26484445f)
+    00007fc2'dd97a000-00007fc2'dd97afff r--      1000      1000  /system/lib64/libnetd_client.so
+    00007fc2'dd97b000-00007fc2'dd97bfff rw-      2000      1000  /system/lib64/libnetd_client.so
+    00007fc2'dd97c000-00007fc2'dd99bfff r--         0     20000  /dev/__properties__
+    00007fc2'dd99c000-00007fc2'dd99cfff rw-         0      1000  [anon:linker_alloc_vector]
+    00007fc2'dd99d000-00007fc2'dd9edfff r-x         0     51000  /system/lib64/libm.so
+    00007fc2'dd9ee000-00007fc2'dd9eefff r--     50000      1000  /system/lib64/libm.so
+    00007fc2'dd9ef000-00007fc2'dd9effff rw-     51000      1000  /system/lib64/libm.so
+    00007fc2'dd9f0000-00007fc2'ddae5fff r-x         0     f6000  /system/lib64/libc.so
+    00007fc2'ddae6000-00007fc2'ddaecfff r--     f5000      7000  /system/lib64/libc.so
+    00007fc2'ddaed000-00007fc2'ddaeffff rw-     fc000      3000  /system/lib64/libc.so
+    00007fc2'ddaf0000-00007fc2'ddafffff rw-         0     10000
+    00007fc2'ddb00000-00007fc2'ddbeefff r-x         0     ef000  /system/lib64/libc++.so (BuildId: ce10b685c26d81a6941d57b8002d0b3d)
+    00007fc2'ddbef000-00007fc2'ddbeffff ---         0      1000
+    00007fc2'ddbf0000-00007fc2'ddbf7fff r--     ef000      8000  /system/lib64/libc++.so
+    00007fc2'ddbf8000-00007fc2'ddbf8fff rw-     f7000      1000  /system/lib64/libc++.so
+    00007fc2'ddbf9000-00007fc2'ddbfbfff rw-         0      3000
+    00007fc2'ddbfc000-00007fc2'ddbfcfff rw-         0      1000  [anon:linker_alloc_vector]
+    00007fc2'ddbfe000-00007fc2'ddbfffff rw-         0      2000  [anon:linker_alloc_vector]
+    00007fc2'ddc00000-00007fc2'ddc00fff rw-         0      1000  [anon:linker_alloc_64]
+    00007fc2'ddc01000-00007fc2'ddc01fff r--         0      1000
+    00007fc2'ddc02000-00007fc2'ddc02fff r--         0      1000  [anon:linker_alloc]
+    00007fc2'ddc03000-00007fc2'ddc03fff rw-         0      1000  [anon:linker_alloc]
+    00007fc2'ddc04000-00007fc2'ddc04fff r--         0      1000  [anon:linker_alloc]
+    00007fc2'ddc05000-00007fc2'ddc24fff r--         0     20000  /dev/__properties__
+    00007fc2'ddc25000-00007fc2'ddc25fff ---         0      1000
+    00007fc2'ddc26000-00007fc2'ddc29fff rw-         0      4000  [anon:thread signal stack]
+    00007fc2'ddc2a000-00007fc2'ddc68fff r-x         0     3f000  /system/bin/linker64 (BuildId: 70fd69e8ccd47e86c503bf6dd2b17b58)
+    00007fc2'ddc69000-00007fc2'ddc69fff r--         0      1000
+    00007fc2'ddc6a000-00007fc2'ddc6afff r--     3f000      1000  /system/bin/linker64
+    00007fc2'ddc6b000-00007fc2'ddc6cfff rw-     40000      2000  /system/bin/linker64
+    00007fc2'ddc6d000-00007fc2'ddc70fff rw-         0      4000
+    00007ffc'fb9e0000-00007ffc'fba00fff rw-         0     21000  [stack]
+    00007ffc'fbbcf000-00007ffc'fbbd0fff r--         0      2000  [vvar]
+    00007ffc'fbbd1000-00007ffc'fbbd2fff r-x         0      2000  [vdso] (BuildId: 170f578519a8ee67a1df322b0acd203e12661945)
+    ffffffff'ff600000-ffffffff'ff600fff r-x         0      1000  [vsyscall]
+
+Tombstone written to: /data/tombstones/tombstone_01
