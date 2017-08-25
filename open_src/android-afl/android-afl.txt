@@ -19,6 +19,12 @@ echo 'bad!' > input/file
 out/host/linux-x86/bin/afl-fuzz -i input/ -o output ./crash  @@
 
 
+
+-n	- fuzz without instrumentation (dumb mode):
+afl-fuzz -n -i in/ -o out  ./crash @@ 
+
+This tool displays raw tuple data captured by AFL instrumentation:
+out/host/linux-x86/bin/afl-showmap -o- ./crash
 --------------------
 fuzz on target board
 
