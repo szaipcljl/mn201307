@@ -1,0 +1,323 @@
+From a191de405ff9c739b9ccce285651510a4744f52b Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Mon, 20 Mar 2017 18:12:06 +0800
+Subject: [PATCH] [dma_test] dma test driver
+
+Change-Id: I21fc35e67b56f0589387971e29db819291fc1bdd
+Tracked-On:
+---
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index b9defbd..c808953 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2729,3 +2729,5 @@
+ source "arch/x86/kvm/Kconfig"
+ 
+ source "lib/Kconfig"
++
++source "drivers/dma_test/Kconfig"
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 871eb40..b20450a 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -5387,3 +5387,6 @@
+ CONFIG_BOARD_THERMAL=y
+ CONFIG_AMBIENT_THERMAL=y
+ CONFIG_FAN_COOLING=y
++
++# TEST
++CONFIG_DMA_TEST=y
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index fb50b18..b433372 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -200,4 +200,5 @@
+ 
+ source "drivers/fpga/Kconfig"
+ 
++source "drivers/dma_test/Kconfig"
+ endmenu
+diff --git a/drivers/Makefile b/drivers/Makefile
+index d96cfae..43102be 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -173,3 +173,4 @@
+ obj-$(CONFIG_ANDROID)		+= android/
+ obj-$(CONFIG_NVMEM)		+= nvmem/
+ obj-$(CONFIG_FPGA)		+= fpga/
++obj-m +=dma_test/
+diff --git a/drivers/dma_test/Kconfig b/drivers/dma_test/Kconfig
+new file mode 100644
+index 0000000..7d0fdaa
+--- /dev/null
++++ b/drivers/dma_test/Kconfig
+@@ -0,0 +1,5 @@
++config DMA_TEST
++	tristate "dma access mem test"
++	default n
++	help
++	This is the dma access mem test driver.
+diff --git a/drivers/dma_test/Makefile b/drivers/dma_test/Makefile
+new file mode 100644
+index 0000000..6895d2d
+--- /dev/null
++++ b/drivers/dma_test/Makefile
+@@ -0,0 +1 @@
++obj-m=dma_test.o
+diff --git a/drivers/dma_test/dma_test.c b/drivers/dma_test/dma_test.c
+new file mode 100644
+index 0000000..30123d5
+--- /dev/null
++++ b/drivers/dma_test/dma_test.c
+@@ -0,0 +1,250 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/kobject.h>
++#include <linux/sysfs.h>
++#include <linux/string.h>
++#include <linux/cdev.h>			/* Char device regiseter / deregister */
++#include <linux/device.h>		/* dynamic device creating */
++#include <linux/fs.h>
++#include <linux/slab.h>			/* kmalloc etc.. */
++
++MODULE_LICENSE("GPL");
++
++#define TRUSTY_VMCALL_SECURITY_TEST 0x74727509
++
++#define SYSFS_ATTR_CREATE
++#ifdef SYSFS_ATTR_CREATE
++
++static int test_value;
++
++static ssize_t test_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
++{
++	printk("###%s:%d\n", __func__, __LINE__);
++	return sprintf(buf, "%d\n", test_value);
++}
++
++static ssize_t test_store(struct kobject *kobj,
++		struct kobj_attribute *attr, const char *buf, size_t count)
++{
++	printk("###%s:%d\n", __func__, __LINE__);
++
++	sscanf(buf, "%d\n", &test_value);
++	return count;
++}
++
++static struct kobj_attribute
++test_value_attribute = __ATTR(test_value, 0664/*0666*/, test_show, test_store);
++//chmod a+w test_value
++
++static struct kobject *dmatest_kobj;
++#endif
++
++#define CREATE_CHAR_DEV
++#ifdef CREATE_CHAR_DEV
++
++#define DEVICE_NAME "dmatest_drv"
++static int device_open(struct inode *inode, struct file *filep);
++static int device_close(struct inode *inode, struct file *filep);
++static ssize_t device_read(struct file *filp, char __user * buffer,
++						   size_t length, loff_t * offset);
++static ssize_t device_write(struct file *filp, const char __user * buff,
++							size_t len, loff_t * off);
++long device_ioctl(struct file *filep, unsigned int cmd, unsigned long arg);
++
++/* Char device creation functions */
++static dev_t dmatest_drv_dev;		/* Device number */
++static struct cdev dmatest_drv_cdev;	/* Char device structure */
++static struct class *dmatest_drv_class;	/* Device class */
++
++/* File operations structure */
++static struct file_operations fops = {
++	.read = device_read,
++	.write = device_write,
++	.unlocked_ioctl = device_ioctl,
++	.compat_ioctl = device_ioctl,
++	.open = device_open,
++	.release = device_close,
++};
++
++
++static ssize_t device_read(struct file *filp, char __user * buffer,
++						   size_t length, loff_t * offset)
++{
++	printk("###%s:%d\n", __func__, __LINE__);
++	return 0;
++}
++static ssize_t device_write(struct file *filp, const char __user * buff,
++							size_t len, loff_t * off)
++{
++	return 0;
++}
++
++long device_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
++{
++	return 0;
++}
++
++int device_open(struct inode *inode, struct file *filep)
++{
++	return 0;
++}
++
++int device_close(struct inode *inode, struct file *filep)
++{
++	return 0;
++}
++
++/* Create a chr device */
++static int create_device(void)
++{
++
++	/* Allocate char device */
++	if (alloc_chrdev_region(&dmatest_drv_dev, 0, 1, DEVICE_NAME) < 0) {
++		printk("Failed alloc_chardev_region\n");
++		return -1;
++	}
++
++	/* Create a device class */
++	if ((dmatest_drv_class = class_create(THIS_MODULE, "dmatest_drv_class")) == NULL) {
++		printk("### class_create failed.\n");
++		unregister_chrdev_region(dmatest_drv_dev, 1);
++		return -1;
++	}
++
++	/* Create the device */
++	if (device_create(dmatest_drv_class, NULL, dmatest_drv_dev, NULL, DEVICE_NAME) ==
++		NULL) {
++		printk("### device_create failed.\n");
++		class_destroy(dmatest_drv_class);
++		unregister_chrdev_region(dmatest_drv_dev, 1);
++		return -1;
++	}
++	/* Add SHM char device */
++	cdev_init(&dmatest_drv_cdev, &fops);
++	if (cdev_add(&dmatest_drv_cdev, dmatest_drv_dev, 1) == -1) {
++		printk("### cdev_init failed.\n");
++		device_destroy(dmatest_drv_class, dmatest_drv_dev);
++		class_destroy(dmatest_drv_class);
++		unregister_chrdev_region(dmatest_drv_dev, 1);
++		return -1;
++	}
++	printk("\ndmatest### driver installed\n");
++	return 0;
++}
++
++static void delete_device(void)
++{
++	printk("Deleting tee_drv device:%s \n", DEVICE_NAME);
++	cdev_del(&dmatest_drv_cdev);
++	device_destroy(dmatest_drv_class, dmatest_drv_dev);
++	class_destroy(dmatest_drv_class);
++	unregister_chrdev_region(dmatest_drv_dev, 1);
++	return;
++}
++
++#endif
++
++struct security_test_alloc {
++    uint64_t vir_addr;
++    uint64_t phy_addr;
++};
++
++#if 0
++void make_vmcall(void)
++{
++	printk("dma_test###14 %s start\n", __func__);
++}
++#else
++
++static inline struct security_test_alloc * make_vmcall(struct security_test_alloc *r0, ulong r1)
++{
++	__asm__ __volatile__(
++			"vmcall; \n"
++			: "=D"(r0)
++			: "a"(TRUSTY_VMCALL_SECURITY_TEST), "D"(r0), "S"(r1));
++	return r0;
++}
++
++#endif
++
++
++#define DEBUG_BUF_SIZE (16 * 4096)
++static void dma_debug_buffer_alloc(void)
++{
++	printk("dma_test###14 %s start\n", __func__);
++
++	struct security_test_alloc *test_alloc;
++
++	test_alloc = (struct security_test_alloc *)kmalloc(sizeof(struct security_test_alloc), GFP_KERNEL);
++	if (!test_alloc) {
++		printk("dmatest###15 Failed to allocate memory for test_alloc\n");
++		return;
++	}
++	memset((char *)test_alloc, 0, sizeof(struct security_test_alloc));
++
++	test_alloc = make_vmcall(test_alloc, DEBUG_BUF_SIZE);
++
++	printk("dmatest###15 HVA=%lx, HPA=%lx, Size=%d\n ",
++			test_alloc->vir_addr, test_alloc->phy_addr, DEBUG_BUF_SIZE );
++}
++
++static void dmatest_dev_init(void)
++{
++	printk("dma_test###14 %s\n", __func__);
++}
++static void trigger_dmatest(void)
++{
++	printk("dma_test###14 %s\n", __func__);
++}
++
++static int dma_test_init(void)
++{
++	printk("dma_test###14 %s\n", __func__);
++
++	int ret;
++
++#ifdef SYSFS_ATTR_CREATE
++	/*
++	 * Create a simple kobject with the name of "dmatest",
++	 * located under /sys/kernel/
++	 **/
++	dmatest_kobj = kobject_create_and_add("dmatest", kernel_kobj);
++	if (!dmatest_kobj)
++		return -ENOMEM;
++
++	ret = sysfs_create_file(dmatest_kobj, &test_value_attribute);
++	if (ret)
++		kobject_put(dmatest_kobj);
++#endif
++
++#ifdef CREATE_CHAR_DEV
++	/* register and create device */
++	if (create_device() != 0) {
++		printk("Failed to create device:%s\n", DEVICE_NAME);
++		return -1;
++	}
++#endif
++
++	dma_debug_buffer_alloc();
++	dmatest_dev_init();
++	trigger_dmatest();
++	return 0;
++}
++
++static void dma_test_exit(void)
++{
++#ifdef SYSFS_ATTR_CREATE
++	kobject_put(dmatest_kobj);
++#endif
++
++#ifdef CREATE_CHAR_DEV
++	/* Unregister and delete the node */
++	delete_device();
++#endif
++	printk("dma_test###14%s: device exit...\n", __func__);
++
++}
++
++module_init(dma_test_init);
++module_exit(dma_test_exit);
