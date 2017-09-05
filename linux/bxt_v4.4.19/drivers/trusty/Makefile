@@ -19,6 +19,10 @@ CC := $(HOME)/gcc-6.1.0/install/bin/gcc
 # userland api, the code coverage options of GCC
 #ccflags-y += -fprofile-arcs -ftest-coverage
 
+# The -fsanitize=kernel-address flag will cause GCC to instrument
+# each memory load and store operation.
+ccflags-y += -fsanitize=kernel-address
+
 module:
 	$(MAKE) -C $(KERNELDIR) M=$(shell pwd) modules
 clean:
