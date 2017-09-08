@@ -15,6 +15,9 @@ yes "" | make oldconfig
 # or
 make oldconfig
 
+# to see changes from one .config to another one:
+scripts/diffconfig .config.old .config
+
 (4) # Build the kernel with previously built GCC:
 make CC=$GCC/install/bin/gcc -j$(nproc)
 
