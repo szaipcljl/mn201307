@@ -1,0 +1,9 @@
+addr2line
+
+addr2line -e ./a.out 0x4005ab
+
+addr2line -Cfe helloworld.o 0xd
+
+prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-addr2line -a address -e vmlinux
+
+
