@@ -1,0 +1,99 @@
+trusty-ipc
+==========
+
+
+
+structure
+*********
+
+struct tipc_cdev_node {
+	struct cdev cdev;
+	struct device *dev;
+	unsigned int minor;
+};
+
+struct tipc_virtio_dev {
+	struct kref refcount;
+	struct mutex lock; /* protects access to this device */
+	struct virtio_device *vdev;
+	struct virtqueue *rxvq;
+	struct virtqueue *txvq;
+	uint msg_buf_cnt;
+	uint msg_buf_max_cnt;
+	size_t msg_buf_max_sz;
+	uint free_msg_buf_cnt;
+	struct list_head free_buf_list;
+	wait_queue_head_t sendq;
+	struct idr addr_idr;
+	enum tipc_device_state state;
+	struct tipc_cdev_node cdev_node;
+	char   cdev_name[MAX_DEV_NAME_LEN];
+};
+
+struct tipc_chan {
+	struct mutex lock; /* protects channel state  */
+	struct kref refcount;
+	enum tipc_chan_state state;
+	struct tipc_virtio_dev *vds;
+	const struct tipc_chan_ops *ops;
+	void *ops_arg;
+	u32 remote;
+	u32 local;
+	u32 max_msg_size;
+	u32 max_msg_cnt;
+	char srv_name[MAX_SRV_NAME_LEN];
+};
+
+
+struct file_operations tipc_fops
+--------------------------------
+static const struct file_operations tipc_fops = {
+	.open		= tipc_open,
+	.release	= tipc_release,
+	.unlocked_ioctl	= tipc_ioctl,
+#if defined(CONFIG_COMPAT)
+	.compat_ioctl	= tipc_compat_ioctl,
+#endif
+	.read_iter	= tipc_read_iter,
+	.write_iter	= tipc_write_iter,
+	.poll		= tipc_poll,
+	.owner		= THIS_MODULE,
+};
+
+--------------------------
+/* We need to init this early */
+subsys_initcall(tipc_init);
+module_exit(tipc_exit);
+
+tipc_init
+---------
+	ret = alloc_chrdev_region(&dev, 0, MAX_DEVICES, KBUILD_MODNAME);
+	tipc_class = class_create(THIS_MODULE, KBUILD_MODNAME);
+	ret = register_virtio_driver(&virtio_tipc_driver);
+
+
+tipc_open
+---------
+1, lookup struct tipc_virtio_dev vds
+    struct tipc_cdev_node *cdn = cdev_to_cdn(inode->i_cdev);
+    vds = _dn_lookup_vds(cdn);
+
+2, kzalloc mem for struct tipc_dn_chan (poiter dn), and initialize its members.
+
+3, create channel for vds, return struct tipc_chan pointer
+	dn->chan = vds_create_channel(vds, &_dn_ops, dn);
+	//(1) kzalloc mem for tipc_chan, init( ... ; kref_get(&vds->refcount););
+	//(2) vds_add_channel(vds, chan);
+	//(3) return tipc_chan
+
+    _dn_ops:
+    static struct tipc_chan_ops _dn_ops = {
+        .handle_msg = dn_handle_msg,
+        .handle_event = dn_handle_event,
+    };
+
+4, store dn in private_data
+	filp->private_data = dn;
+	kref_put(&vds->refcount, _free_vds); //decrement refcount for object
+
+

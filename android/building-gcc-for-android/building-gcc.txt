@@ -1,0 +1,79 @@
+download BuildUtils and GCC for custom compiling
+
+
+FYI Here is what I was looking for...
+
+git clone https://android.googlesource.com/toolchain/gcc.git
+git clone https://android.googlesource.com/toolchain/gmp.git
+git clone https://android.googlesource.com/toolchain/build.git
+git clone https://android.googlesource.com/toolchain/mpc.git
+git clone https://android.googlesource.com/toolchain/mpfr.git
+git clone https://android.googlesource.com/toolchain/gdb.git
+
+
+
+Check out the branch gcc
+=======================
+repo init -u https://android.googlesource.com/platform/manifest -b gcc
+repo sync
+
+
+--------------------------------------------------
+Additional Linux Dependencies (available from apt):
+	texinfo
+	gcc-mingw32 ==> gcc-mingw-w64 (for windows)
+	bison
+	flex
+	libtool
+
+sudo apt install texinfo bison flex libtool
+
+Toolchain build error...
+------------------------
+Please remember that Linux is case-sensitive and that per debian policy there
+are only lowercase package names in the repository. Thus, apt-get install
+Texinfo will never work.
+
+Remember also that you can use apt-file to find binaries:
+dmr@skynet:~$ apt-file search /bin/makeinfo
+texinfo: /usr/bin/makeinfo
+
+
+How do you generate libasan.so?
+=====================================
+how do you build compiler and runtime?
+
+the keypoint to generate a gcc-based cross-compiler toolchain for
+android/arm32 as following:
+
+1) generate an stage-1 cross-compile gcc toolchain with  the existing native
+gcc;
+2) build the sysroot from scratch with the stage-1 cross-compile toolchain;
+3) generate the final cross-compile gcc_toolchain with the corresponding
+sysroot.
+
+
+you can see the keypoint is that we should create a right sysroot for
+the final cross-compile gcc-toolchain for android/arm32.
+
+1) generate an stage-1 cross-compile gcc toolchain with  the existing
+native gcc;
+2) build the sysroot from scratch with the stage-1 cross-compile
+toolchain;
+3) generate the final cross-compile gcc_toolchain (with
+	--enable-libsanitizer option) with the corresponding sysroot;so 
+the final cross-compile could instrument the check code according to 
+the excellent paper address_sanity_checker.pdf;
+
+4) reset the PATH environment variable, the generate the libasan.so.2
+with the final cross-compile gcc-toolchain:
+	mkdir libasan-for-android-build
+	cd libasan-for-android-build
+	../gcc-source-tree/libsanitizer/configure \
+		--host=arm-linux-androideabi \
+		--prefix=/tmp/toolchain-build-linux-4.9.2/prefix \
+		--enable-shared \
+		--disable-static
+
+don't use any cross-tool like utility here. we should create
+anything we need from scratch. 

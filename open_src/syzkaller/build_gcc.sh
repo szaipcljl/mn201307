@@ -19,7 +19,11 @@ tar -zxvf $GCC_VERSION.tar.gz
 cd $GCC
 
 sudo apt-get install flex bison libc6-dev libc6-dev-i386 linux-libc-dev libgmp3-dev libmpfr-dev libmpc-dev
-# linux-libc-dev:i386 
+# linux-libc-dev:i386
+
+# If you have previously built GCC in the same directory for a different target
+# machine, do ‘make distclean’ to delete all files that might be invalid.
+#make distclean
 
 # Build GCC:
 mkdir build
