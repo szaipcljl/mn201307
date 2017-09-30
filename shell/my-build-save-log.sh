@@ -8,7 +8,7 @@ fi
 suffix=$(date +%F-%T)
 
 if [ ! -d "./log_tmp" ]; then
-	echo "create directory: ./log_tmp/"
+	echo "create directory: ./log_tmp"
 	mkdir ./log_tmp
 fi
 
@@ -18,6 +18,8 @@ logpath=$logdir/$prefix-$keywords$suffix.log
 
 #sudo python build.py --toolchain x86_64 | tee $logpath
 touch $logpath
+echo -n "end time: "
+date +%F-%T
 echo "log path: $logpath"
 
 
