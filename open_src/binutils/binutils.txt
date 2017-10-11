@@ -1,0 +1,12 @@
+binutils
+
+https://www.gnu.org/software/binutils/
+
+Most of these programs use BFD, the Binary File Descriptor library, to do
+low-level manipulation. Many of them also use the opcodes library to assemble
+and disassemble machine instructions.
+
+Obtaining binutils:
+http://ftp.gnu.org/gnu/binutils/
+git clone git://sourceware.org/git/binutils-gdb.git
+
