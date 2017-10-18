@@ -1,0 +1,7 @@
+pdf reader
+
+evince(系统自带):
+evince UnderstandingTheLinuxKernel3rdEdition.pdf &
+
+okular:
+sudo apt install okular
