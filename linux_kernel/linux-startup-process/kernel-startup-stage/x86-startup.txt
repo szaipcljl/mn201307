@@ -1,0 +1,38 @@
+x86 startup
+
+kernel: v2.6.35
+
+:
+-------------------------
+|startup_32		[arch/x86/kernel/head_32.S] //32-bit kernel entrypoint; only used by the boot CPU.
+	|i386_start_kernel	[arch/x86/kernel/head32.c]
+		|#ifdef CONFIG_X86_TRAMPOLINE
+			|reserve_early_overlap_ok
+		|#endif
+		|#ifdef CONFIG_BLK_DEV_INITRD
+			|if (boot_params.hdr.type_of_loader && boot_params.hdr.ramdisk_image)
+				|reserve_early
+		|#endif
+		|switch (boot_params.hdr.hardware_subarch)
+			|case X86_SUBARCH_MRST:
+				x86_mrst_early_setup();
+				break;
+			 default:
+				i386_default_early_setup();
+				break;
+		|reserve_early
+		|start_kernel	[init/main.c]
+			|smp_setup_processor_id
+			|lockdep_init
+			|debug_objects_early_init
+			|boot_init_stack_canary
+			|cgroup_init_early
+			|local_irq_disable
+			|early_boot_irqs_off
+			|early_init_irq_lock_class
+
+
+
+
+
+
