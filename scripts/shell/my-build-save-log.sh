@@ -18,8 +18,8 @@ logpath=$logdir/$prefix-$keywords$suffix.log
 
 #sudo python build.py --toolchain x86_64 2>&1 | tee $logpath
 touch $logpath
-echo -n "end time: "
-date +%F-%T
-echo "log path: $logpath"
-
+echo -n "end time: " | tee -a $logpath
+date +%F-%T | tee -a $logpath
+echo "log path: $logpath" | tee -a $logpath
+vi $logpath
 
