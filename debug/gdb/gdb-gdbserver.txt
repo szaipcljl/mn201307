@@ -48,3 +48,8 @@ For bug reporting instructions, please see:
 
 
 4. 开始gdb调试
+
+================================================================================
+gdbserver64 10.239.92.151:2345 /data/local/tmp/cxa_demangle_fuzzer
+gdb out/target/product/car-x86_64/data/nativetest64/fuzzers/cxa_demangle_fuzzer/cxa_demangle_fuzzer
+target remote 10.239.92.151:2345 out/target/product/car-x86_64/data/nativetest64/fuzzers/cxa_demangle_fuzzer/cxa_demangle_fuzzer 

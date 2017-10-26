@@ -30,6 +30,10 @@ kernel: v2.6.35
 			|local_irq_disable
 			|early_boot_irqs_off
 			|early_init_irq_lock_class
+			|lock_kernel
+			|tick_init
+			|boot_cpu_init
+			|page_address_init
 
 
 
