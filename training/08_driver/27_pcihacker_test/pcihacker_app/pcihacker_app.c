@@ -53,7 +53,8 @@ int main(int argc, const char *argv[])
 
 	fd = open(pathname, O_RDWR, 0664);
 	if (fd < 0) {
-		printf("### open %s failed: try 'sudo chmod 666 /dev/pcihacker_drv' \n", pathname);
+		printf("### open %s failed: 1) check if insmod moduel, "
+			"\t 2) try 'sudo chmod 666 /dev/pcihacker_drv' \n", pathname);
 		return -1;
 	}
 
@@ -71,7 +72,7 @@ int main(int argc, const char *argv[])
 	for (i=BUS_ARG_IDX; i < BUS_ARG_IDX+5; i++) {
 		printf("### argv[%d]=%s\n", i, argv[i]);
 	}
-	printf("bus: %x, dev: %x, func: %x, reg: %x, val: %x\n",
+	printf("bdf: %x:%x.%x, reg: %x, val: %x\n",
 			bus, dev, func, g_pci_test.reg, g_pci_test.val);
 #else
 	//adb shell lspci -k
