@@ -1,0 +1,29 @@
+how to test
+
+(1) insmod pci_hacker.ko
+(2) use lspci get bdf(bus,dev,fun), here is a 0 2
+lspci -vvv
+
+0a:00.2 Mass storage controller: O2 Micro, Inc. O2 Flash Memory Card (rev 05)
+	Subsystem: Dell O2 Flash Memory Card
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+	Stepping- SERR- FastB2B- DisINTx-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin C routed to IRQ 10
+	Region 0: Memory at e2c10000 (32-bit, non-prefetchable) [size=1K]
+	Region 2: Memory at e2c00000 (32-bit, non-prefetchable) [size=1K] Capabilities: <access denied>
+(3) run test app:
+	./pcihacker_app r/w bus dev fun reg val
+	./pcihacker_app r 10 0 2 0 0
+
+(4) dmesg
+	[266966.167453] ### bars[0]=e2c10000
+	[266966.167458] ### bars[1]=fffffffc
+	[266966.167462] ### bars[2]=e2c00000
+	[266966.167467] ### bars[3]=fffffffc
+	[266966.167471] ### bars[4]=fffffffc
+	[266966.167475] ### bars[5]=fffffffc
+
+	bars[0] => Region 0
+	bars[2] => Region 2
