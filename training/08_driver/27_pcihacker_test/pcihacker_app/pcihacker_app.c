@@ -21,7 +21,7 @@
 #define FUN_ARG_IDX (BUS_ARG_IDX+2)
 #define REG_ARG_IDX (BUS_ARG_IDX+3)
 #define VAL_ARG_IDX (BUS_ARG_IDX+4)
-#define ARG_MAX 7
+#define ARG_MAG_NUM 7
 
 #define PCI_DEV(bus, dev, fun) (((uint16_t)(bus) << 8) | \
 		((uint16_t)(dev) << 3)| \
@@ -29,15 +29,23 @@
 
 const char *pathname = "/dev/pcihacker_drv";
 
+typedef union {
+	struct {
+		uint16_t fun:3;
+		uint16_t dev:5;
+		uint16_t bus:8;
+	} bits;
+	uint16_t u16;
+} pci_dev_t;
 
-struct pci_test_t {
-	uint16_t pci_dev;
+typedef struct {
+	pci_dev_t pci_dev;
 	/*uint8_t reg;*/
 	uint16_t reg;
 	uint16_t val;
-};
-typedef struct pci_test_t pci_test;
-pci_test g_pci_test;
+	uint32_t read_val;
+} pci_test_t;
+pci_test_t g_pci_test;
 
 
 int main(int argc, const char *argv[])
@@ -45,7 +53,7 @@ int main(int argc, const char *argv[])
 	int fd;
 	char buf[16];
 
-	if (argc != ARG_MAX) {
+	if (argc != ARG_MAG_NUM) {
 		printf("### error: argc != 6\n");
 		return -1;
 	}
@@ -58,13 +66,11 @@ int main(int argc, const char *argv[])
 		return -1;
 	}
 
-#if 1
-	//atoi: param should be decimal 
-	uint16_t bus = (uint16_t)atoi(argv[BUS_ARG_IDX]);
-	uint16_t dev = (uint16_t)atoi(argv[DEV_ARG_IDX]);
-	uint16_t func =	(uint16_t)atoi(argv[FUN_ARG_IDX]);
+	//atoi: param should be decimal
+	g_pci_test.pci_dev.bits.bus = (uint16_t)atoi(argv[BUS_ARG_IDX]);
+	g_pci_test.pci_dev.bits.dev = (uint16_t)atoi(argv[DEV_ARG_IDX]);
+	g_pci_test.pci_dev.bits.fun = (uint16_t)atoi(argv[FUN_ARG_IDX]);
 
-	g_pci_test.pci_dev = PCI_DEV(bus, dev, func);
 	g_pci_test.reg = (uint8_t)atoi(argv[REG_ARG_IDX]);
 	g_pci_test.val = (uint16_t)atoi(argv[VAL_ARG_IDX]);
 
@@ -73,19 +79,19 @@ int main(int argc, const char *argv[])
 		printf("### argv[%d]=%s\n", i, argv[i]);
 	}
 	printf("bdf: %x:%x.%x, reg: %x, val: %x\n",
-			bus, dev, func, g_pci_test.reg, g_pci_test.val);
-#else
+			g_pci_test.pci_dev.bits.bus, g_pci_test.pci_dev.bits.dev,
+			g_pci_test.pci_dev.bits.fun, g_pci_test.reg, g_pci_test.val);
 	//adb shell lspci -k
-	g_pci_test.pci_dev = PCI_DEV(0, 0xd, 0);
-	g_pci_test.reg = 0x0; //vendor 0x8086(2-byte)
-	g_pci_test.val = 0;
-#endif
-	printf("### pci_dev=%x, reg=%x, val=%x\n", g_pci_test.pci_dev, g_pci_test.reg, g_pci_test.val);
+	//offset 0: vendor, eg. intel: 0x8086(2-byte)
+
+	printf("### pci_dev: 0x%x, reg: 0x%x, val: 0x%x\n", g_pci_test.pci_dev.u16, g_pci_test.reg, g_pci_test.val);
 
 	if (!strncmp(REG_R, argv[RW_ARG_IDX], 1)) {
 		printf("### [read reg]\n");
 		// read cfg
 		read(fd, (void *)&g_pci_test, sizeof(g_pci_test));
+		printf("### pci_dev: 0x%x, reg: 0x%x, val: 0x%x\n", g_pci_test.pci_dev.u16, g_pci_test.reg, g_pci_test.val);
+		printf("read_val: %x\n", g_pci_test.read_val);
 	} else if (!strncmp(REG_W, argv[RW_ARG_IDX], 1)) {
 		printf("### [write reg]\n");
 		write(fd, (void *)&g_pci_test, sizeof(g_pci_test));
@@ -93,8 +99,8 @@ int main(int argc, const char *argv[])
 		printf("### reg_wr_flag should be r/w\n");
 	}
 
-	ioctl(fd, LED_ON);
-	ioctl(fd, LED_OFF, &fd);
+	/*ioctl(fd, LED_ON);*/
+	/*ioctl(fd, LED_OFF, &fd);*/
 
 	return 0;
 }

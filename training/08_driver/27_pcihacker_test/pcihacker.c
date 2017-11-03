@@ -61,6 +61,9 @@ static dev_t pcihacker_drv_dev;		/* Device number */
 static struct cdev pcihacker_drv_cdev;	/* Char device structure */
 static struct class *pcihacker_drv_class;	/* Device class */
 
+pci_test_t g_pci_test;
+pci_block_device_t g_pci_block_dev;
+
 /* File operations structure */
 static struct file_operations fops = {
 	.read = device_read,
@@ -71,31 +74,20 @@ static struct file_operations fops = {
 	.release = device_close,
 };
 
-struct pci_test_t {
-	uint16_t pci_dev;
-	/*uint8_t reg;*/
-	uint16_t reg;
-	uint16_t val;
-};
-
-typedef struct pci_test_t pci_test;
-pci_test g_pci_test;
-pci_block_device_t g_pci_block_dev;
-
 static ssize_t device_read(struct file *filp, char __user * buff,
 		size_t len, loff_t * off)
 {
+	int i;
 	printk("=== %s:%d\n", __func__, __LINE__);
 
 	copy_from_user(&g_pci_test , buff, len);
 
 	// read cfg
 	/*uint16_t ret = pci_read16(g_pci_test.pci_dev, g_pci_test.reg);*/
-	g_pci_block_dev.pci_dev = g_pci_test.pci_dev;
+	g_pci_block_dev.pci_dev = g_pci_test.pci_dev.u16;
 	pci_cfg_bars_decode(&g_pci_block_dev);
 	printk("### g_pci_block_dev.pci_dev=%x\n", g_pci_block_dev.pci_dev);  
 
-	int i;
 	for (i=0; i < PCI_DEVICE_BAR_NUM; i++) {
 		printk("### bars[%d]=%llx\n", i, g_pci_block_dev.bars[i].addr);
 	}
@@ -105,9 +97,11 @@ static ssize_t device_read(struct file *filp, char __user * buff,
 		printk("### offset-248 %x\n", *(uint32_t *)(g_pci_block_dev.bars[0].addr+0x248));
 	}
 
-	// read bar
-	uint32_t ret = pci_read32(g_pci_test.pci_dev, g_pci_test.reg);
-	printk("### ret = %x, pci_dev=%x, reg=%x\n", ret, g_pci_test.pci_dev, g_pci_test.reg);
+	// read reg
+	g_pci_test.read_val = pci_read32(g_pci_test.pci_dev.u16, g_pci_test.reg);
+	printk("### pci_dev: %x, reg: %x, read_val: %x\n", g_pci_test.pci_dev.u16, g_pci_test.reg, g_pci_test.read_val);
+
+	copy_to_user(buff, &g_pci_test, sizeof(g_pci_test));
 
 	return 0;
 }
@@ -125,8 +119,8 @@ static ssize_t device_write(struct file *filp, const char __user * buff,
 	uint16_t ret;
 #endif
 
-	pci_write16(g_pci_test.pci_dev, g_pci_test.reg, g_pci_test.val);
-	printk("###pci_dev=%x, reg=%x\n", g_pci_test.pci_dev, g_pci_test.reg);
+	pci_write16(g_pci_test.pci_dev.u16, g_pci_test.reg, g_pci_test.val);
+	printk("###pci_dev=%x, reg=%x\n", g_pci_test.pci_dev.u16, g_pci_test.reg);
 	return 0;
 }
 
@@ -194,7 +188,7 @@ static int create_device(void)
 		unregister_chrdev_region(pcihacker_drv_dev, 1);
 		return -1;
 	}
-	printk("\npcihacker### driver installed\n");
+	printk("### pcihacker driver installed\n");
 	return 0;
 }
 
@@ -214,8 +208,8 @@ static void delete_device(void)
 
 static int pcihacker_init(void)
 {
-	printk("=== pcihacker###14 %s\n", __func__);
 	int ret;
+	printk("=== %s\n", __func__);
 
 #ifdef SYSFS_ATTR_CREATE
 	/*

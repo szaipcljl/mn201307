@@ -13,6 +13,7 @@ lspci -vvv
 	Interrupt: pin C routed to IRQ 10
 	Region 0: Memory at e2c10000 (32-bit, non-prefetchable) [size=1K]
 	Region 2: Memory at e2c00000 (32-bit, non-prefetchable) [size=1K] Capabilities: <access denied>
+
 (3) run test app:
 	./pcihacker_app r/w bus dev fun reg val
 	./pcihacker_app r 10 0 2 0 0
@@ -27,3 +28,97 @@ lspci -vvv
 
 	bars[0] => Region 0
 	bars[2] => Region 2
+
+
+------------------------------------------------------------------------------
+lspci -vvv
+
+01:00.0 3D controller: NVIDIA Corporation Device 134b (rev a2)
+	Subsystem: Device 1d72:1602
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 16
+	Region 0: Memory at a3000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 90000000 (64-bit, prefetchable) [size=256M]
+	Region 3: Memory at a0000000 (64-bit, prefetchable) [size=32M]
+	Region 5: I/O ports at 4000 [size=128]
+	Expansion ROM at <ignored> [disabled]
+	Capabilities: <access denied>
+	Kernel modules: nvidiafb, nouveau
+
+02:00.0 Network controller: Intel Corporation Wireless 8260 (rev 3a)
+	Subsystem: Intel Corporation Wireless 8260
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 286
+	Region 0: Memory at a4100000 (64-bit, non-prefetchable) [size=8K]
+	Capabilities: <access denied>
+	Kernel driver in use: iwlwifi
+	Kernel modules: iwlwifi
+
+03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller (rev 01) (prog-if 02 [NVM Express])
+	Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 16
+	Region 0: Memory at a4000000 (64-bit, non-prefetchable) [size=16K]
+	Region 2: I/O ports at 3000 [size=256]
+	Capabilities: <access denied>
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+
+dmesg
+	[ 1921.593958] 1:0:0:10, bar_value_low=0xa3000000
+	[ 1921.593974] 1:0:0:14, bar_value_low=0x9000000c
+	[ 1921.593998] 1:0:0:1c, bar_value_low=0xa000000c
+	[ 1921.594022] 1:0:0:24, bar_value_low=0x4001
+	[ 1921.594038] ### g_pci_block_dev.pci_dev=100
+	[ 1921.594045] ### bars[0]=a3000000
+	[ 1921.594051] ### bars[1]=90000000
+	[ 1921.594057] ### bars[2]=a0000000
+	[ 1921.594063] ### bars[3]=4000
+	[ 1921.594069] ### bars[4]=0
+	[ 1921.594075] ### bars[5]=0
+	[ 1921.594084] ### pci_dev: 100, reg: 0, read_val: 134b10de
+
+	>>
+	mmio:
+	bars[0] => Region 0
+	bars[1] => Region 1
+	bars[2] => Region 3
+	i/o ports
+	bars[3] => Region 5
+
+$ cat /proc/iomem
+  ...
+  90000000-a1ffffff : PCI Bus 0000:01
+    90000000-9fffffff : 0000:01:00.0
+    a0000000-a1ffffff : 0000:01:00.0
+  ...
+
+
+pci bus Memory:
+$ cat /proc/iomem | grep  "Bus"
+  000a0000-000bffff : PCI Bus 0000:00
+  000c0000-000c3fff : PCI Bus 0000:00
+  000c4000-000c7fff : PCI Bus 0000:00
+  000c8000-000cbfff : PCI Bus 0000:00
+  000cc000-000cffff : PCI Bus 0000:00
+  000d0000-000d3fff : PCI Bus 0000:00
+  000d4000-000d7fff : PCI Bus 0000:00
+  000d8000-000dbfff : PCI Bus 0000:00
+  000dc000-000dffff : PCI Bus 0000:00
+  000e0000-000e3fff : PCI Bus 0000:00
+  000e4000-000e7fff : PCI Bus 0000:00
+  000e8000-000ebfff : PCI Bus 0000:00
+  000ec000-000effff : PCI Bus 0000:00
+  000f0000-000fffff : PCI Bus 0000:00
+80000000-dfffffff : PCI Bus 0000:00
+  90000000-a1ffffff : PCI Bus 0000:01
+  a3000000-a3ffffff : PCI Bus 0000:01
+  a4000000-a40fffff : PCI Bus 0000:03
+  a4100000-a41fffff : PCI Bus 0000:02
+  fd000000-fe7fffff : PCI Bus 0000:00
