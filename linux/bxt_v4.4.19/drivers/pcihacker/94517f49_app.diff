@@ -1,0 +1,290 @@
+From 94517f49cc9643f7ef5909f1b1c832e39e038d4e Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Mon, 06 Nov 2017 16:18:03 +0800
+Subject: [PATCH] [debug] app for pcihacker [to generate pcihacker_app]
+
+Change-Id: I4f2bba20258fabe86ddeff4be99f86a75ee6db28
+Tracked-On:
+---
+
+diff --git a/pcihacker_app/Android.mk b/pcihacker_app/Android.mk
+new file mode 100644
+index 0000000..1b41fe6
+--- /dev/null
++++ b/pcihacker_app/Android.mk
+@@ -0,0 +1,23 @@
++# Copyright (C) 2015 The Android Open Source Project
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := pcihacker_app
++LOCAL_SRC_FILES := pcihacker_app.c
++#LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
++
++include $(BUILD_EXECUTABLE)
+diff --git a/pcihacker_app/pcihacker_app.c b/pcihacker_app/pcihacker_app.c
+new file mode 100644
+index 0000000..ec36156
+--- /dev/null
++++ b/pcihacker_app/pcihacker_app.c
+@@ -0,0 +1,219 @@
++#include <stdio.h>
++#include <stdint.h> //uint16_t ...
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <sys/ioctl.h>
++#include <string.h>
++
++#define LED_ON _IO('K',0)
++//#define LED_OFF _IO('K',1)
++#define LED_OFF _IOW('K',1,int)
++
++#define REG_W "w"
++#define REG_R "r"
++
++#define RW_ARG_IDX 1
++#define BUS_ARG_IDX 2
++#define DEV_ARG_IDX (BUS_ARG_IDX+1)
++#define FUN_ARG_IDX (BUS_ARG_IDX+2)
++#define REG_ARG_IDX (BUS_ARG_IDX+3)
++#define VAL_ARG_IDX (BUS_ARG_IDX+4)
++#define ARG_MAX_NUM 7
++
++#define DID_VID 0x5a928086
++#define P2SB_CTR_REG 0xe0
++#define HIDE_UNHIDE 0x7
++
++#define PCI_DEV(bus, dev, fun) (((uint16_t)(bus) << 8) | \
++		((uint16_t)(dev) << 3)| \
++		(uint16_t)(fun))
++
++const char *pathname = "/dev/pcihacker_drv";
++
++typedef union {
++	struct {
++		uint16_t fun:3;
++		uint16_t dev:5;
++		uint16_t bus:8;
++	} bits;
++	uint16_t u16;
++} pci_dev_t;
++
++
++typedef struct {
++	pci_dev_t pci_dev;
++	/*uint8_t reg;*/
++	uint16_t reg;
++	uint16_t val;
++	uint32_t read_val[3];
++} pci_test_t;
++pci_test_t g_pci_test;
++
++typedef struct {
++	pci_test_t cmd_test_dev;
++	char *cmd_opt;
++} pci_cmd_t;
++pci_cmd_t pci_cmd;
++
++int p2sb_test(int fd)
++{
++	uint32_t val[0]; //here should be 0:
++	g_pci_test.pci_dev.u16 = PCI_DEV((uint16_t)0, (uint16_t)0xd, (uint16_t)0);
++	g_pci_test.reg = (uint8_t)P2SB_CTR_REG;
++	g_pci_test.val = (uint16_t)HIDE_UNHIDE; //ignore if use mmio write
++
++	printf("### [write pci reg]\n");
++	write(fd, (void *)&g_pci_test, sizeof(g_pci_test)); //unhide p2sb(0:d:0) reg(0xe0) bit8: 0
++
++	int count = 50;
++	int success = 0;
++	printf("### [read pci reg]\n");
++	do {
++		read(fd, (void *)&g_pci_test, sizeof(g_pci_test));
++		if ((uint32_t)g_pci_test.read_val[0] == DID_VID) {
++			success = 1;
++			break;
++		}
++	} while (count--);
++
++	printf("count: %d, pci_dev=0x%x, reg: 0x%x, val: 0x%x\n",
++			51-count, g_pci_test.pci_dev.u16,g_pci_test.reg, g_pci_test.val);
++	printf("offset-0: 0x%x, offset-240: 0x%x, offset-248: 0x%x\n",
++			g_pci_test.read_val[0], g_pci_test.read_val[1], g_pci_test.read_val[2]);
++
++	if (!success) {
++		printf("read p2sb's reg failed: reboot and try again\n");
++		return -1;
++	}
++	if ((g_pci_test.read_val[1] & 0x1) || (g_pci_test.read_val[2] & 0x1)) {
++		printf("=> check result:[failed] offset 240 or 248 bit0 is not 0 !!\n");
++	} else {
++		printf("=> check result:[pass] offset 240 and 248 bit0 is both 0 !!\n");
++	}
++	return 0;
++}
++
++void parse_run_cmd(int fd, pci_cmd_t *pci_cmd)
++{
++	printf("bdf: %x:%x.%x, pci_dev=%x,reg: %x, val: %x\n",
++			pci_cmd->cmd_test_dev.pci_dev.bits.bus, pci_cmd->cmd_test_dev.pci_dev.bits.dev,
++			pci_cmd->cmd_test_dev.pci_dev.bits.fun,
++			pci_cmd->cmd_test_dev.pci_dev.u16, pci_cmd->cmd_test_dev.reg, pci_cmd->cmd_test_dev.val);
++
++
++	if (!strncmp(REG_R, pci_cmd->cmd_opt, 1)) {
++		printf("### [read reg]\n");
++		read(fd, (void *)&(pci_cmd->cmd_test_dev), sizeof(pci_test_t)); // read cfg
++	} else if (!strncmp(REG_W, pci_cmd->cmd_opt, 1)) {
++		printf("### [write reg]\n");
++		write(fd, (void *)&(pci_cmd->cmd_test_dev), sizeof(pci_test_t));
++	} else {
++		printf("### reg_wr_flag should be r/w\n");
++	}
++
++	printf("offset-0: 0x%x, offset-240: 0x%x, offset-248: 0x%x\n",
++			pci_cmd->cmd_test_dev.read_val[0], pci_cmd->cmd_test_dev.read_val[1],
++			pci_cmd->cmd_test_dev.read_val[2]);
++}
++
++int main(int argc, const char *argv[])
++{
++	int fd;
++	char buf[16];
++	int ret;
++
++	if (argc != ARG_MAX_NUM && argc != 2) {
++		printf("### error: argc != 6 && argc != 2\n");
++		printf("cmd format:\n");
++		printf("\tadb shell /data/pcihacker_app p2sb\n");
++		printf("\tadb shell /data/pcihacker_app r/w bus dev fun reg val\n");
++		printf("\tadb shell /data/pcihacker_app cmd\n");
++		return -1;
++	}
++
++
++	fd = open(pathname, O_RDWR, 0664);
++	if (fd < 0) {
++		printf("### open %s failed: try 'sudo chmod 666 /dev/pcihacker_drv' \n", pathname);
++		return -1;
++	}
++
++	if (argc == 2) {
++		if (!strncmp("p2sb", argv[RW_ARG_IDX], 1)) {
++			ret = p2sb_test(fd);
++			return ret;
++		}
++		if (!strncmp("cmd", argv[RW_ARG_IDX], 1)) {
++
++			char opt;
++			uint16_t bus;
++			uint16_t dev;
++			uint16_t fun;
++			uint8_t reg;
++			uint16_t val;
++			while (1) {
++				printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
++				do {
++					printf("input r/w/q: ");
++					scanf("%s", &opt);
++					if (!strncmp("r", &opt, 1) || !strncmp("w", &opt, 1) || !strncmp("q", &opt, 1)) {
++						break;
++					} else {
++						printf("invalid input, you should input r/w/q !!\n");
++					}
++				} while (1);
++				if (!strncmp("q", &opt, 1)) {
++					printf("exit...\n");
++					return 0;
++				}
++				printf("input bus num: ");
++				scanf("%hu", &bus);
++				printf("input dev num: ");
++				scanf("%hu", &dev);
++				printf("input fun num: ");
++				scanf("%hu", &fun);
++				printf("input reg: ");
++				scanf("%hhu", &reg);
++				printf("input val: ");
++				scanf("%hu", &val);
++
++				pci_cmd.cmd_opt = &opt;
++				pci_cmd.cmd_test_dev.pci_dev.bits.bus = bus;
++				pci_cmd.cmd_test_dev.pci_dev.bits.dev = dev;
++				pci_cmd.cmd_test_dev.pci_dev.bits.fun = fun;
++				pci_cmd.cmd_test_dev.reg = reg;
++				pci_cmd.cmd_test_dev.val = val;
++
++				parse_run_cmd(fd, &pci_cmd);
++			}
++
++		}
++	} else { //argc == 7
++		//adb shell lspci -k
++		//atoi: param should be decimal
++		int i;
++		for (i=BUS_ARG_IDX; i < BUS_ARG_IDX+5; i++) {
++			printf("### argv[%d]=%s\n", i, argv[i]);
++		}
++
++		pci_cmd.cmd_opt = (char *)argv[1];
++		pci_cmd.cmd_test_dev.pci_dev.bits.bus = (uint16_t)atoi(argv[BUS_ARG_IDX]);
++		pci_cmd.cmd_test_dev.pci_dev.bits.dev = (uint16_t)atoi(argv[DEV_ARG_IDX]);
++		pci_cmd.cmd_test_dev.pci_dev.bits.fun =	(uint16_t)atoi(argv[FUN_ARG_IDX]);
++
++		pci_cmd.cmd_test_dev.reg = (uint8_t)atoi(argv[REG_ARG_IDX]);
++		pci_cmd.cmd_test_dev.val = (uint16_t)atoi(argv[VAL_ARG_IDX]);
++
++		parse_run_cmd(fd, &pci_cmd);
++
++
++	}
++
++	/*ioctl(fd, LED_ON);*/
++	/*ioctl(fd, LED_OFF, &fd);*/
++
++	return 0;
++}
+diff --git a/pcihacker_app/push_to_device.sh b/pcihacker_app/push_to_device.sh
+new file mode 100755
+index 0000000..dbaa65e
+--- /dev/null
++++ b/pcihacker_app/push_to_device.sh
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++adb root
++adb push pcihacker_app /data/
++# $1:read/write, $2: bus, $3: dev, $4:func, $5: reg, $6: val
++echo "*************** pcihacker_app log *************"
++adb shell /data/pcihacker_app $1 $2 $3 $4 $5 $6
++echo "****************** kernel log *****************"
++adb shell dmesg -c
+diff --git a/pcihacker_app/scp_bin_to_local.sh b/pcihacker_app/scp_bin_to_local.sh
+new file mode 100755
+index 0000000..ca92b41
+--- /dev/null
++++ b/pcihacker_app/scp_bin_to_local.sh
+@@ -0,0 +1,6 @@
++#!/bin/bash
++binary=../../../out/target/product/bxtp_abl/system/bin/pcihacker_app
++dest_path=nma1x@mn:~/bxtp/p2sb-m
++password="1"
++
++sshpass -p $password scp $binary push_to_device.sh $dest_path

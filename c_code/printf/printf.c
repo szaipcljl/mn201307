@@ -39,12 +39,26 @@ void char_test()
 	printf("x  : 0x%x\n", c);
 }
 
+void point_test()
+{
+	unsigned long a;
+	unsigned long *b;
+
+	a = 0x12345678;
+	b = &a;
+	printf("p  : %p\n", b);
+	printf("lx : 0x%lx\n", b);
+	printf("llx: 0x%llx(uint64_t)\n", (uint64_t)b);
+	printf("llx: 0x%llx(unsigned int)\n", (unsigned int)b);
+}
+
 
 int main(int argc, const char *argv[])
 {
 
 	char_test();
 	union_test();
+	point_test();
 
 	return 0;
 }
