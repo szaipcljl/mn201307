@@ -80,6 +80,16 @@ typedef struct {
 } pci_block_device_t;
 
 
+typedef struct {
+	pci_dev_t pci_dev;
+	/*uint8_t reg;*/
+	uint16_t reg;
+	uint16_t val;
+	uint32_t read_val;
+} pci_test_t;
+
+
+
 
 #define PCI_DEV(bus, dev, fun) (((uint16_t)(bus) << 8) | \
 				((uint16_t)(dev) << 3)| \
