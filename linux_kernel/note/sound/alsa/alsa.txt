@@ -1,0 +1,26 @@
+
+
+
+ls /dev/snd/ 
+comprC0D12 comprC0D14 controlC0 pcmC0D10c pcmC0D1c pcmC0D3c pcmC0D5c pcmC0D7c pcmC0D9c 
+comprC0D13 comprC0D15 pcmC0D0p  pcmC0D11c pcmC0D2p pcmC0D4p pcmC0D6p pcmC0D8p timer
+
+C0D0代表的是声卡0中的设备0，
+pcmC0D0c最后一个c代表capture，
+pcmC0D0p最后一个p代表playback，
+这些都是alsa-driver中的命名规则
+
+$ cat /proc/asound/devices 
+ 1:        : sequencer
+ 2: [ 0]   : control
+ 3: [ 0- 0]: digital audio playback
+ 4: [ 0- 0]: digital audio capture
+ 5: [ 0- 3]: digital audio playback
+ 6: [ 0- 7]: digital audio playback
+ 7: [ 0- 8]: digital audio playback
+ 8: [ 0- 0]: hardware dependent
+ 9: [ 0- 1]: hardware dependent
+10: [ 0- 3]: hardware dependent
+33:        : timer
+
+[Minor number]: [ [Card number]- [Device number]]:

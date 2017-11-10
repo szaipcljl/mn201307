@@ -1,0 +1,26 @@
+
+
+abl(bios) -> os loader
+
+hardware/intel/kernelflinger/kf4abl.c
+
+
+
+Android Verified Boot (AVB)
+
+Android 4.4 及更高版本支持通过可选的 device-mapper-verity (dm-verity)
+内核功能进行的验证启动，以便对块设备进行透明的完整性检查
+
+
+
+abl:
+====================================================================
+bxtp-o$ ls vendor/intel/abl/
+abl_build_tools  abl_config_tool  abl_prebuilt  bootloader_apl  ifwi-apl
+
+make ABL_BUILD_FROM_SRC=true  abl_image
+
+device/intel/broxton/gordon_peak/device.mk:112:LIBPAYLOAD_BASE_ADDRESS := 0x12800000
+device/intel/build/core/elf_ia32_abl.lds 
+CONFIG_LP_BASE_ADDRESS: runtime start address
+

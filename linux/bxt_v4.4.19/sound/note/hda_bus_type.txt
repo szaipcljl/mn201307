@@ -1,0 +1,7 @@
+
+
+
+subsys_initcall(hda_bus_init);
+
+struct bus_type snd_hda_bus_type = {
+	.name = "hdaudio",

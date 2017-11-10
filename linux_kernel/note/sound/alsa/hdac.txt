@@ -1,0 +1,177 @@
+
+hda - High Definition Audio
+
+kernel/Documentation/sound/alsa/HD-Audio-Models.txt
+
+
+sys
+---
+gordon_peak:/sys/bus/hdaudio/devices/ehdaudio0D2 # cat modalias
+hdaudio:v8086280Ar00100000a02
+
+gordon_peak:/sys/bus/hdaudio/devices/ehdaudio0D2 # cat chip_name
+ID 280a
+
+gordon_peak:/sys/bus/hdaudio/devices/ehdaudio0D2 # cat vendor_id
+0x8086280a
+
+gordon_peak:/sys/bus/hdaudio/devices/ehdaudio0D2 # cat vendor_name
+Intel
+
+
+
+
+abbreviation
+------------
+bdl: Buffer Descriptor List
+
+high-definition-audio-specification.pdf
+---------------------------------------
+https://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/high-definition-audio-specification.pdf
+
+
+3.3.42 Offset 98h: {IOB}SDnBDPL – Input/Output/Bidirectional Stream
+       Descriptor n BDL Pointer Lower Base Address
+Length: 4 bytes
+
+Table 41. Stream Descriptor n Lower Base Address
++------+------+-------+---------------------------------------------------------------------------------------------+
+| Bit  | Type | Reset |  Description                                                                                |
+|------+------+-------+---------------------------------------------------------------------------------------------+
+|      |      |       | Buffer Descriptor List Lower Base Address (BDLLBASE): Lower address of                      |
+| 31:7 |  RW  | 0‟s   | the Buffer Descriptor List. This register field must not be written when the DMA            |
+|      |      |       | engine is running or the DMA transfer may be corrupted. This value should not               |
+|      |      |       | be modified except when the RUN bit is 0.                                                   |
+|      |      |       | 6:0 RsvdZ 0‟s Hardwired to 0 to force 128-byte alignment of the BDL. Attempting to write any|
+|      |      |       | value other than zero to this field may result in unspecified behavior.                     |
++------+------+-------+---------------------------------------------------------------------------------------------+
+
+
+3.3.43 Offset 9Ch: {IOB}SDnBDPU – Input/Output/Bidirectional
+       Stream Descriptor n BDL Pointer Upper Base Address
+Length: 4 bytes
+
+Table 42. Stream Descriptor n Upper Base Address
++------+------+--------+-------------------------------------------------------------------------------------+
+| Bit  |Type  |  Reset | Description                                                                         |
++------+------+--------+-------------------------------------------------------------------------------------+
+| 31:0 |RW 	  |   0's  | Buffer Descriptor List Upper Base Address (BDLUBASE): Upper 32-bit                  |   
+|      |      |        | address of the Buffer Descriptor List. This register field must not be written when |   
+|      |      |        | the DMA engine is running or the DMA transfer may be corrupted. This value          |   
+|      |      |        | should not be modified except when the RUN bit is 0. This register is reserved,     |   
+|      |      |        | read only 0 if  the 64OK bit indicates that the controller does not support 64-bit  |   
+|      |      |        | addressing.                                                                         |   
++------+------+----------------------------------------------------------------------------------------------+   
+
+
+
+3.6.2 Buffer Descriptor List
+The Buffer Descriptor List (BDL) is a memory structure that describes the buffers in memory. The
+BDL is comprised of a series of Buffer Descriptor List Entries. There must be at least two entries
+in the list, with a maximum of 256 entries. Also, the start of the structure must be aligned on a 128
+byte boundary. The BDL should not be modified unless the RUN bit is 0.
+
+Table 49. Buffer Descriptor
++---------+--------+--------+---------------------------------+
+| Offset  | Length |  Field |  Description                    |
+| (Bytes) | (Bytes)|        |                                 |
++---------+--------+--------+---------------------------------+
+| 0x00    | 16     | BDLE0  |  Buffer Descriptor List Entry 0 |
++---------+--------+--------+---------------------------------+
+| 0x10    | 16     | BDLE1  |  Buffer Descriptor List Entry 1 |
++---------+--------+--------+---------------------------------+
+| …       | …      |  …     |                                 |
++---------+--------+--------+---------------------------------+
+| 0xn0    | 16     | BDLEn  |  Buffer Descriptor List Entry n |
++---------+--------+--------+---------------------------------+
+
+
+3.6.3 Buffer Descriptor List Entry
+Each Buffer Descriptor List Entry (BDLE) contains a description of a buffer which is a piece of the
+whole cyclic stream buffer. The BDLE contains a pointer to the physical memory containing the
+buffer, the length of the buffer, and a flag which indicates whether or not an interrupt should be
+generated when the buffer is complete.
+The buffers described by the BDLE must start on a 128-byte boundary, and the length must be an
+integer number of Words.
+
+Table 50. Buffer Descriptor
++-------------+--------+---------+----------------------------------------------------------+
+|Offset       | Length | Field   |  Description                                             |
+|(Bytes:bits) | (Bits) |         |                                                          |
++-------------+--------+---------+----------------------------------------------------------+
+|0x00         | 64     |ADDRESS  |  The 64 bit address of the buffer described. The Buffer  |
+|             |        |         |  starting address must be 128-byte aligned.              |
++-------------+--------+---------+----------------------------------------------------------+
+|0x08         | 32     |LENGTH   |  The length of the buffer described in bytes. The buffer |
+|             |        |         |  length must be at least one Word.                       |
++-------------+--------+---------+----------------------------------------------------------+
+|0x0C:0       | 1      |IOC      |  Interrupt on Completion. If 1, the controller will      |
+|             |        |         |  generate an interrupt when the last byte of the buffer  |
+|             |        |         |  has been fetched by the DMA engine (if enabled by the   |
+|             |        |         |  stream‟s Interrupt On Completion Enable bit).           |
++-------------+--------+---------+----------------------------------------------------------+
+|0x0C:1       | 31     |Reserved |  Reserved; must be 0.                                    |
++-------------+--------+---------+----------------------------------------------------------+
+
+
+4.5.2 Configuring and Controlling Streams
+4.5.3 Starting Streams
+To create a stream, the software must first determine the appropriate stream parameters, such as
+sample rate, bit depth, and number of channels. The controller and codec resources should be
+checked to make sure sufficient resources are available to support the desired stream format.
+A data buffer and BDL buffer are then allocated from the proper memory pool, making sure that the
+proper buffer alignment and caching requirements are met. The BDL is constructed to describe the
+stream data buffer, including setting Interrupt on Completion bits at the points interrupts are
+desired. Software then allocates a Stream Descriptor (Input or Output, as appropriate), and
+configures the Descriptor with the stream format, BDL address, Cyclic Buffer Length, interrupt
+policy, and other necessary register settings.
+
+The codec is next configured by configuring the appropriate Audio Input or Output Converters with
+the stream ID and format information. Other widgets in the audio path are configured so that the
+audio data flows to (or from) the Pin Complex Widgets, with Connection Select, Amplifiers,
+Processing Controls, and all other controls in the audio path set as appropriate. At this point, the
+codec is ready to accept data if the stream is an output stream or begins sending data on the link for
+an input stream.
+The Stream Descriptor‟s RUN bit is then set to 1 to start the DMA engine and begin the transfer of
+data to or from the link.
+
+
+
+
+4.5.4 Stopping Streams
+To stop a stream, the software writes a 0 to the RUN bit in the Stream Descriptor. The RUN bit
+will not immediately transition to a 0. Rather, the DMA engine will continue receiving or
+transmitting data normally for the rest of the current frame but will stop receiving or transmitting
+data at the beginning of the next frame. When the DMA transfer has stopped and the hardware has
+idled, the RUN bit will then be read as 0. The run bit should transition from a 1 to a 0 within 40 μs.
+
+4.5.5 Resuming Streams
+If a stream which was previously running has been stopped, it can be restarted by setting the RUN
+bit back to 1. If the stream has been recently stopped, the RUN bit must be checked to make sure
+that it has transition back to a 0 to indicate that the hardware is ready to restart. When the RUN bit
+is again set to 1, the DMA engine will then restart at the point it left off.
+
+4.5.6 Stream Steady State Operation
+Once the stream has been started, the hardware will continue fetching data from the Cyclic Buffer
+described by the Buffer Descriptor List. For an output stream, software is responsible for making
+sure that valid data is present in the buffers before it is fetched by the hardware. For an input
+stream, data must be removed from the buffers before being overwritten by hardware. When the
+hardware has reached the end of the Cyclic Buffer, it will automatically wrap back around to the
+beginning of the buffer and continue to process the stream data until the stream is stopped by the
+software by clearing the RUN bit.
+
+Software can either use interrupts at the end of selected buffers by setting the IOC bit in the BDL
+entry or can poll the stream position to determine when to process the stream data.
+If interrupts are being used, some care must be taken to access the stream Status and Control
+registers in a safe manner. A recommended policy is that the Interrupt Service Routine only use
+byte access to read or write the Status register to clear the status bits. The ISR should not attempt
+to write to the stream Control register, as there may be synchronization issues between the ISR and
+the non-ISR code both trying to perform Read-Modify-Write cycles on the register. 
+After the RUN bit has been set, the buffer described by the BDL should not be changed by the
+software. The hardware may pre-fetch and/or cache an arbitrary number of BDL Entries from the
+list, so there is no way to ensure when or if any changes to the BDL list would be visible to the
+hardware. Even when the RUN bit has been cleared to pause the stream after it has been running,
+the hardware may still have pre-fetched descriptors that will not be flushed when the stream is
+restarted. Therefore, the software should only modify the BDL before the RUN bit has been set for
+the first time after a Stream Reset.
+

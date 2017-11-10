@@ -1,0 +1,6 @@
+
+Changing device state
+fastboot flashing [unlock | lock]
+
+gordon_peak:/ $ getprop | grep build
+

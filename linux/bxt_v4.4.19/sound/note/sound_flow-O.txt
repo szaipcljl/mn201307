@@ -1,0 +1,22 @@
+
+gordon_peak:/ # ls /proc/asound/
+broxtontdf8532 card0 cards devices hwdep oss pcm seq timers version
+
+log:
+bxt_tdf8532 bxt_tdf8532: broxton_tdf8532_audio_probe registering bxt_tdf8532
+******************************************************************************
+(1)
+	sound/soc/intel/boards/bxt_tdf8532.c(system on chip):
+	module_platform_driver(broxton_tdf8532_audio)
+
+	static struct platform_driver broxton_tdf8532_audio = {
+		.probe = broxton_tdf8532_audio_probe,
+		.remove = broxton_tdf8532_audio_remove,
+		.driver = {
+			.name = "bxt_tdf8532",
+			.pm = &snd_soc_pm_ops,
+		},
+	};
+
+	MODULE_ALIAS("platform:gpmrb_machine");
+(2)

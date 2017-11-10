@@ -2,9 +2,12 @@
 
 1. dma buffer and data?
 2. how to use buffer ops -> how to init
+3. device name?
+
 
 ********************************************************************************
 
+(1) probe
 module_platform_driver(broxton_audio) //sound/soc/intel/boards/bxt_gpmrb.c
 |-> broxton_audio_probe //bxt_gpmrb.c
 	<=> static struct platform_driver broxton_audio = {
