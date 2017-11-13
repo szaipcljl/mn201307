@@ -1,0 +1,12 @@
+for study
+
+copy from pcileech/pcileech_kmd/linux
+
+PCILeech uses PCIe hardware devices to read and write from the target system
+memory. This is achieved by using DMA over PCIe. No drivers are needed on the
+target system.
+
+PCILeech supports multiple hardware. USB3380 based hardware is only able to read
+4GB of memory natively, but is able to read all memory if a kernel module (KMD)
+is first inserted into the target system kernel. FPGA based hardware is able
+to read all memory.
