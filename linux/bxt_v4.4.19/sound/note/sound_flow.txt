@@ -6,9 +6,16 @@
 
 
 ********************************************************************************
+[register]
 
-(1) probe
-module_platform_driver(broxton_audio) //sound/soc/intel/boards/bxt_gpmrb.c
+system-on-chip
+code path: sound/soc/intel/boards/
+
+(1) register a driver for platform-level devices, platform driver
+structure is struct platform_driver broxton_audio:
+
+module_platform_driver(broxton_audio)
+	//sound/soc/intel/boards/bxt_gpmrb.c
 |-> broxton_audio_probe //bxt_gpmrb.c
 	<=> static struct platform_driver broxton_audio = {
 				.probe = broxton_audio_probe,
@@ -23,7 +30,8 @@ module_platform_driver(broxton_audio) //sound/soc/intel/boards/bxt_gpmrb.c
 			|-> soc_probe_link_dais //sound/soc/soc-core.c
 				|-> soc_new_pcm // sound/soc/soc-pcm.c
 					//create a new pcm 
-					|-> ret = platform->driver->pcm_new(rtd); //sound/soc/soc-pcm.c
+					|-> ret = platform->driver->pcm_new(rtd);
+						//sound/soc/soc-pcm.c
 						<=> static struct snd_soc_platform_driver skl_platform_drv  = {//sound/soc/intel/skylake/skl-pcm.c
 								.probe		= skl_platform_soc_probe,
 								.ops		= &skl_platform_ops,
@@ -85,7 +93,18 @@ static int snd_pcm_dev_register(struct snd_device *device)
 				  &pcm->streams[cidx].dev);
 }
 ********************************************************************************
+static struct snd_soc_dai_ops skl_pcm_dai_ops = {  
+	.startup = skl_pcm_open,
+	.shutdown = skl_pcm_close,
+	.prepare = skl_pcm_prepare,
+	.hw_params = skl_pcm_hw_params,
+	.hw_free = skl_pcm_hw_free,
+	.trigger = skl_pcm_trigger,
+};
+static struct snd_soc_dai_driver skl_fe_dai[] = {
+	...
 
+backtrace:
 hdac_ext_writeb [snd_hda_ext_core]
 snd_hdac_stream_start [snd_hda_core]
 skl_decoupled_trigger [snd_soc_skl]

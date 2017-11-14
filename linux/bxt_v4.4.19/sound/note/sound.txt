@@ -24,3 +24,8 @@ JNI，
 硬件抽象层HAL，
 ALSA-LIB,
 ALSA-DRIVER。
+
+ASoC Digital Audio Interface (DAI)
+	ASoC currently supports the three main Digital Audio Interfaces (DAI) found
+	on SoC controllers and portable audio CODECs today, namely AC97, I2S and
+	PCM.

@@ -5,8 +5,17 @@ broxtontdf8532 card0 cards devices hwdep oss pcm seq timers version
 log:
 bxt_tdf8532 bxt_tdf8532: broxton_tdf8532_audio_probe registering bxt_tdf8532
 ******************************************************************************
-(1)
-	sound/soc/intel/boards/bxt_tdf8532.c(system on chip):
+[register]
+
+system-on-chip
+code path: sound/soc/intel/boards/
+
+(1) register a driver for platform-level devices, platform driver
+structure is struct platform_driver broxton_tdf8532_audio:
+
+	file:	bxt_tdf8532.c:
+
+	code:
 	module_platform_driver(broxton_tdf8532_audio)
 
 	static struct platform_driver broxton_tdf8532_audio = {
@@ -19,4 +28,177 @@ bxt_tdf8532 bxt_tdf8532: broxton_tdf8532_audio_probe registering bxt_tdf8532
 	};
 
 	MODULE_ALIAS("platform:gpmrb_machine");
-(2)
+
+(2) Get the device pointer and register a card with the ASoC core
+in platform_driver's probe function, the broxton audio machine 
+driver for TDF8532 is  struct snd_soc_card broxton_tdf8532.
+
+	file: bxt_tdf8532.c
+	code:
+	/* broxton audio machine driver for TDF8532 */              
+	static struct snd_soc_card broxton_tdf8532 = {
+		.name = "broxton_tdf8532",
+		.dai_link = broxton_tdf8532_dais,
+		.num_links = ARRAY_SIZE(broxton_tdf8532_dais),
+		.controls = broxton_tdf8532_controls,
+		.num_controls = ARRAY_SIZE(broxton_tdf8532_controls),
+		.dapm_widgets = broxton_tdf8532_widgets,
+		.num_dapm_widgets =
+			ARRAY_SIZE(broxton_tdf8532_widgets),
+		.dapm_routes = broxton_tdf8532_map,
+		.num_dapm_routes =
+			ARRAY_SIZE(broxton_tdf8532_map),
+		.fully_routed = true,
+		.add_dai_link =
+			bxt_add_dai_link,
+	};
+
+	register function: snd_soc_register_card
+		(1) init link (Digital Audio Interfaces (DAI)):
+			soc_init_dai_link(card, link);  
+		(2) instantiate snd_soc_card
+			snd_soc_instantiate_card(card);
+
+	instantiate snd_soc_card:
+		(1) bind DAIs
+			ret = soc_bind_dai_link(card, &card->dai_link[i]);
+		(2) bind aux_devs too
+			ret = soc_bind_aux_dev(card, i);
+		(3) add predefined DAI links to the list
+			snd_soc_add_dai_link(card, card->dai_link+i);
+		(4) initialize the register cache for each available codec
+			ret = snd_soc_init_codec_cache(codec);
+		(5) card bind complete so register a sound card
+			snd_card_new - create and initialize a soundcard structure
+		(6)
+			soc_init_card_debugfs(card);
+		(7) initialise the sound card only once
+			ret = card->probe(card);
+		(8) probe all components used by DAI links on this card
+			ret = soc_probe_link_components(card, rtd, order);
+		(9) probe auxiliary components
+			ret = soc_probe_aux_devices(card);
+		(10) Find new DAI links added during probing components and bind them.
+			 Components with topology may bring new DAIs and DAI links.
+			ret = soc_init_dai_link(card, dai_link);
+			ret = soc_bind_dai_link(card, dai_link);
+		(11) probe all DAI links on this card
+			ret = soc_probe_link_dais(card, rtd, order);
+		(12) 
+			snd_soc_dapm_link_dai_widgets(card);
+			snd_soc_dapm_connect_dai_link_widgets(card);
+
+			if (card->controls)
+				snd_soc_add_card_controls(card, card->controls, card->num_controls);
+
+			if (card->dapm_routes)
+				snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+							card->num_dapm_routes);
+
+			if (card->of_dapm_routes)
+				snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+							card->num_of_dapm_routes);
+		(13)
+			ret = card->late_probe(card);
+		(14)
+			snd_soc_dapm_new_widgets(card);
+
+******************************************************
+soc_probe_link_dais
+|-soc_new_pcm
+	|-snd_pcm_new
+		|-_snd_pcm_new
+
+	create a new pcm
+	soc_new_pcm //sound/soc/soc-pcm.c
+		ret = snd_pcm_new(rtd->card->snd_card, new_name, num, playback,
+		/* ASoC PCM operations */
+		...
+		if (playback)
+			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &rtd->ops);
+		if (capture)
+			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
+		if (platform->driver->pcm_new) {
+			ret = platform->driver->pcm_new(rtd);
+
+
+store the new pcm instance: struct snd_pcm
+
+-----------------------
+sound/core/pcm_native.c
+
+playback and capture's file_operations:
+const struct file_operations snd_pcm_f_ops[2] = {
+	{
+		.owner =		THIS_MODULE,
+		.write =		snd_pcm_write,
+		.write_iter =		snd_pcm_writev,
+		.open =			snd_pcm_playback_open,
+		.release =		snd_pcm_release,
+		.llseek =		no_llseek,
+		.poll =			snd_pcm_playback_poll,
+		.unlocked_ioctl =	snd_pcm_playback_ioctl,
+		.compat_ioctl = 	snd_pcm_ioctl_compat,
+		.mmap =			snd_pcm_mmap,
+		.fasync =		snd_pcm_fasync,
+		.get_unmapped_area =	snd_pcm_get_unmapped_area,
+	},
+	{
+		.owner =		THIS_MODULE,
+		.read =			snd_pcm_read,
+		.read_iter =		snd_pcm_readv,
+		.open =			snd_pcm_capture_open,
+		.release =		snd_pcm_release,
+		.llseek =		no_llseek,
+		.poll =			snd_pcm_capture_poll,
+		.unlocked_ioctl =	snd_pcm_capture_ioctl,
+		.compat_ioctl = 	snd_pcm_ioctl_compat,
+		.mmap =			snd_pcm_mmap,
+		.fasync =		snd_pcm_fasync,
+		.get_unmapped_area =	snd_pcm_get_unmapped_area,
+	}
+};
+
+
+----------------
+sound/core/pcm.c
+register pcm dev:
+	snd_pcm_dev_register:
+	(1) add pcm to list
+		err = snd_pcm_add(pcm);
+	(2)	//Register the ALSA device file for the card
+		err = snd_register_device(devtype, pcm->card, pcm->device,
+					  &snd_pcm_f_ops[cidx], pcm,
+					  &pcm->streams[cidx].dev);
+	(3)
+		notify->n_register(pcm);
+
+_snd_pcm_new
+	(1)
+		snd_pcm_new_stream //playback
+	(2)
+		snd_pcm_new_stream //capture
+	(3) create an ALSA device component
+		snd_device_new
+
+*************************************
+sound/hda/hdac_stream.c:
+
+snd_hdac_stream_init - initialize each stream (aka device)
+snd_hdac_stream_start - start a stream
+snd_hdac_stream_clear - stop a stream DMA
+snd_hdac_stream_stop - stop a stream
+snd_hdac_stream_setup -  set up the SD for streaming
+jnd_hdac_stream_cleanup - cleanup a stream
+snd_hdac_stream_assign - assign a stream for the PCM
+snd_hdac_stream_release - release the assigned stream
+snd_hdac_get_stream - return hdac_stream based on stream_tag and
+snd_hdac_stream_setup_periods - set up BDL entries
+snd_hdac_stream_set_params - set stream parameters
+snd_hdac_stream_timecounter_init - initialize time counter
+snd_hdac_stream_sync_trigger - turn on/off stream sync register
+snd_hdac_stream_sync - sync with start/strop trigger operation
+snd_hdac_dsp_prepare - prepare for DSP loading
+snd_hdac_dsp_trigger - start / stop DSP loading
+snd_hdac_dsp_cleanup - clean up the stream from DSP loading to normal
+
