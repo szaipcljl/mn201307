@@ -40,4 +40,10 @@ x86:
 
 	-S 表示尽可能把原来的代码和反汇编出来的代码一起呈现出来，
 	-S 参数需要结合 arm-linux-gcc 编译参数-g，才能达到反汇编时同时输出原来的代码。
+*********************************************************************************
+regarding disassembling I found this: when all one has is the bin file and not
+the elf the following still disassembles the file:
+	$(OBJDUMP) -D -m arm -b binary $(IMAGE)
 
+for example:
+	arm-none-eabi-objdump -D -m arm -b binary kernel.img
