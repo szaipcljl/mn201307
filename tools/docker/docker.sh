@@ -18,7 +18,6 @@ sudo apt-get update
 
 # Make sure you are about to install from the Docker repo instead of the default
 # Ubuntu 16.04 repo:
-
 apt-cache policy docker-ce
 
 # Finally, install Docker:
@@ -72,7 +71,7 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo echo "
 [Service]
 Environment=\"HTTP_PROXY=http://child-prc.intel.com:913/\"
-Environment=\"HTTPS_PROXY=http://child-prc.intel.com:913/\"" \
+Environment=\"HTTPS_PROXY=https://child-prc.intel.com:913/\"" \
 	> /etc/systemd/system/docker.service.d/http-proxy.conf
 
 # Flush changes:
@@ -80,3 +79,8 @@ sudo systemctl daemon-reload
 
 # Restart Docker:
 sudo systemctl restart docker
+
+#
+# Dockerfile proxy 
+#
+#ENV HTTPS_PROXY=http://10.239.4.160:913/
