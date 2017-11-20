@@ -1,0 +1,12 @@
+
+===
+pip
+
+=========================================
+setup.py is not part of the python installation location. It is included with
+the package that you wish to install. Change directories to the location of the
+source that you downloaded and then run the setup.py file.
+
+git clone https://github.com/axt/angr-utils
+cd angr-utils
+sudo python setup.py install
