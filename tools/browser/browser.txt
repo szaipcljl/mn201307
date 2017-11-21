@@ -1,3 +1,8 @@
 
+# gmail(8336391@)
+sudo apt install chromium-browser
+
+
+open in terminal:
 chromium-browser baidu.com &
 firefox baidu.com &
