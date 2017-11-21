@@ -1,7 +1,7 @@
 #!/bin/bash
 
-mkdir ~/angr_dir
-andr_dir=~/angr_dir
+mkdir $HOME/angr_dir
+angr_dir=$HOME/angr_dir
 
 cd $andr_dir
 
