@@ -25,7 +25,7 @@ sudo apt-get install -y docker-ce
 
 # Docker should now be installed, the daemon started, and the process enabled to
 # start on boot. Check that it's running:
-sudo systemctl status docker
+#sudo systemctl status docker
 
 
 #
@@ -81,6 +81,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 #
-# Dockerfile proxy 
+# Dockerfile proxy
 #
 #ENV HTTPS_PROXY=http://10.239.4.160:913/
