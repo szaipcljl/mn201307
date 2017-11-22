@@ -4,13 +4,12 @@
 #
 
 # ubuntu12.04 install method
-
 sudo add-apt-repository ppa:fcitx-team/nightly
 sudo apt-get update
 
 sudo apt-get install fcitx
 
-# set keyboard input method system 
+# set keyboard input method system
 sudo apt-get install im-switch
 im-switch -s fcitx -z default
 
