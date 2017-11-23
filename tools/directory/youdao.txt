@@ -1,0 +1,17 @@
+Ubuntu 16.04安装有道词典
+
+从Ubuntu 14.04升级到16.04以后，有道词典就安装不上了。因为官方的deb包（Ubuntu版本的）
+依赖gstreamer0.10-plugins-ugly，但是该软件在16.04里面已经没有了。但其实没有该包，完
+全不影响有道词典的使用。所以我们可以去掉deb包里面对于该库的依赖。具体操作如下：
+
+1. 从官方下载Ubuntu版本的deb包：youdao-dict_1.1.0-0-ubuntu_amd64.deb
+2. 创建youdao目录，把该deb包解压到youdao目录：
+	dpkg -X ./youdao-dict_1.1.0-0-ubuntu_amd64.deb  youdao
+3. 解压deb包中的control信息（包的依赖就写在这个文件里面）：
+	dpkg -e ./youdao-dict_1.1.0-0-ubuntu_amd64.deb youdao/DEBIAN
+4. 编辑control文件，删除Depends里面的gstreamer0.10-plugins-ugly。
+5. 创建youdaobuild目录，重新打包：
+	dpkg-deb -b youdao youdaobuild/
+6. 安装这个新的 deb 包，修复依赖:
+	sudo dpkg -i youdaobuild/youdao-dict_1.1.0-0~ubuntu_amd64.deb
+	sudo apt-get -f install
