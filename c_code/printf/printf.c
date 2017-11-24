@@ -60,5 +60,9 @@ int main(int argc, const char *argv[])
 	union_test();
 	point_test();
 
+	// # The result is converted to an "alternative form". ... For x (or X) conversion,
+	// a nonzero result has 0x (or 0X) prefixed to it
+	printf("%#x\n", 128);
+
 	return 0;
 }
