@@ -1,0 +1,434 @@
+GDB Debugging - Displaying x86 Assembly from C program and stepping through
+instructions
+
+
+(1) gcc -g asmexample.c -o asmexample
+
+ning@linux:~/mn/mn201307/debug/gdb/asmexample[master]$ gcc -g asmexample.c -o asmexample
+ning@linux:~/mn/mn201307/debug/gdb/asmexample[master]$ ls
+asmexample  asmexample.c  readme
+ning@linux:~/mn/mn201307/debug/gdb/asmexample[master]$ gdb asmexample 
+GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.5) 7.11.1
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from asmexample...done.
+(gdb) list
+1	#include <stdio.h>
+2	
+3	int main(int argc, const char *argv[])
+4	{
+5		int a = 1;
+6		int b = 2;
+7		int c = 3;
+8		a += b;
+9		a = a + c;
+10	
+(gdb) 
+11		printf("Value of A is %d\n", a);
+12	
+13		return 0;
+14	}
+(gdb) 
+Line number 15 out of range; asmexample.c has 14 lines.
+
+(gdb) list 1,14
+1	#include <stdio.h>
+2	
+3	int main(int argc, const char *argv[])
+4	{
+5		int a = 1;
+6		int b = 2;
+7		int c = 3;
+8		a += b;
+9		a = a + c;
+10	
+11		printf("Value of A is %d\n", a);
+12	
+13		return 0;
+14	}
+
+(gdb) info b
+No breakpoints or watchpoints.
+(gdb) b main 
+Breakpoint 1 at 0x400535: file asmexample.c, line 5.
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000400535 in main at asmexample.c:5
+(gdb) run
+Starting program: /home/ning/mn/mn201307/debug/gdb/asmexample/asmexample 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffde38) at asmexample.c:5
+5		int a = 1;
+
+
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+=> 0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+
+(gdb) nexti
+6		int b = 2;
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+=> 0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) print a
+$1 = 1
+(gdb) print &a
+$2 = (int *) 0x7fffffffdd44
+(gdb) x /d $rbp-0xc
+0x7fffffffdd44:	1
+
+(gdb) nexti
+7		int c = 3;
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+=> 0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) info reg
+rax            0x400526	4195622
+rbx            0x0	0
+rcx            0x0	0
+rdx            0x7fffffffde48	140737488346696
+rsi            0x7fffffffde38	140737488346680
+rdi            0x1	1
+rbp            0x7fffffffdd50	0x7fffffffdd50
+rsp            0x7fffffffdd30	0x7fffffffdd30
+r8             0x4005f0	4195824
+r9             0x7ffff7de7ab0	140737351940784
+r10            0x846	2118
+r11            0x7ffff7a2d740	140737348032320
+r12            0x400430	4195376
+r13            0x7fffffffde30	140737488346672
+r14            0x0	0
+r15            0x0	0
+rip            0x400543	0x400543 <main+29>
+eflags         0x206	[ PF IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+(gdb) nexti
+8		a += b;
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+=> 0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+0x000000000040054d	8		a += b;
+(gdb) 
+9		a = a + c;
+(gdb) 
+0x0000000000400553	9		a = a + c;
+(gdb) 
+11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+=> 0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+0x0000000000400559	11		printf("Value of A is %d\n", a);
+(gdb) nexti
+0x000000000040055b	11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+=> 0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+0x0000000000400560	11		printf("Value of A is %d\n", a);
+(gdb) nexti
+0x0000000000400565	11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+=> 0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+Value of A is 6
+13		return 0;
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+=> 0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) list
+8		a += b;
+9		a = a + c;
+10	
+11		printf("Value of A is %d\n", a);
+12	
+13		return 0;
+14	}
+(gdb) continue 
+Continuing.
+[Inferior 1 (process 3261) exited normally]
+
+(gdb) continue 
+Continuing.
+[Inferior 1 (process 3261) exited normally]
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000400535 in main at asmexample.c:5
+	breakpoint already hit 1 time
+(gdb) d 1
+(gdb) b 11
+Breakpoint 2 at 0x400556: file asmexample.c, line 11.
+(gdb) run
+Starting program: /home/ning/mn/mn201307/debug/gdb/asmexample/asmexample 
+
+Breakpoint 2, main (argc=1, argv=0x7fffffffde38) at asmexample.c:11
+11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+=> 0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+0x0000000000400559	11		printf("Value of A is %d\n", a);
+(gdb) nexti
+0x000000000040055b	11		printf("Value of A is %d\n", a);
+(gdb) nexti
+0x0000000000400560	11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+=> 0x0000000000400560 <+58>:	mov    $0x0,%eax
+   0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) nexti
+0x0000000000400565	11		printf("Value of A is %d\n", a);
+(gdb) disass
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x20,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x20(%rbp)
+   0x0000000000400535 <+15>:	movl   $0x1,-0xc(%rbp)
+   0x000000000040053c <+22>:	movl   $0x2,-0x8(%rbp)
+   0x0000000000400543 <+29>:	movl   $0x3,-0x4(%rbp)
+   0x000000000040054a <+36>:	mov    -0x8(%rbp),%eax
+   0x000000000040054d <+39>:	add    %eax,-0xc(%rbp)
+   0x0000000000400550 <+42>:	mov    -0x4(%rbp),%eax
+   0x0000000000400553 <+45>:	add    %eax,-0xc(%rbp)
+   0x0000000000400556 <+48>:	mov    -0xc(%rbp),%eax
+   0x0000000000400559 <+51>:	mov    %eax,%esi
+   0x000000000040055b <+53>:	mov    $0x400604,%edi
+   0x0000000000400560 <+58>:	mov    $0x0,%eax
+=> 0x0000000000400565 <+63>:	callq  0x400400 <printf@plt>
+   0x000000000040056a <+68>:	mov    $0x0,%eax
+   0x000000000040056f <+73>:	leaveq 
+   0x0000000000400570 <+74>:	retq   
+End of assembler dump.
+(gdb) stepi
+0x0000000000400400 in printf@plt ()
+(gdb) disass
+Dump of assembler code for function printf@plt:
+=> 0x0000000000400400 <+0>:	jmpq   *0x200c12(%rip)        # 0x601018
+   0x0000000000400406 <+6>:	pushq  $0x0
+   0x000000000040040b <+11>:	jmpq   0x4003f0
+End of assembler dump.(gdb) continue 
+Continuing.
+Value of A is 6
+[Inferior 1 (process 20517) exited normally]
+
+
+

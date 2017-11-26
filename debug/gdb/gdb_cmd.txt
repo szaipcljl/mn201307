@@ -345,3 +345,6 @@ end
 
 (gdb) b *0x80400000
 (gdb) watch *(unsigned int *)0xbffff400==0x90909090
+
+
+

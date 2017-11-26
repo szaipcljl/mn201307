@@ -1,0 +1,34 @@
+
+
+
+(1) dump of assembler code for function
+--------------------------------------
+
+(gdb) b main 
+Breakpoint 1 at 0x40070b: file test.c, line 63.
+(gdb) run
+Starting program: /home/ning/mn/mn201307/debug/gdb/a.out 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffde58) at test.c:63
+63		get_args(argc,argv);
+(gdb) disassemble 
+Dump of assembler code for function main:
+   0x00000000004006fc <+0>:	push   %rbp
+   0x00000000004006fd <+1>:	mov    %rsp,%rbp
+   0x0000000000400700 <+4>:	sub    $0x10,%rsp
+   0x0000000000400704 <+8>:	mov    %edi,-0x4(%rbp)
+   0x0000000000400707 <+11>:	mov    %rsi,-0x10(%rbp)
+=> 0x000000000040070b <+15>:	mov    -0x10(%rbp),%rdx
+   0x000000000040070f <+19>:	mov    -0x4(%rbp),%eax
+   0x0000000000400712 <+22>:	mov    %rdx,%rsi
+   0x0000000000400715 <+25>:	mov    %eax,%edi
+   0x0000000000400717 <+27>:	callq  0x400566 <get_args>
+   0x000000000040071c <+32>:	mov    $0x0,%eax
+   0x0000000000400721 <+37>:	callq  0x400674 <process_data>
+   0x0000000000400726 <+42>:	mov    $0x0,%eax
+   0x000000000040072b <+47>:	callq 0x4006bc <print_results>
+   0x0000000000400730 <+52>:	mov $0x0,%eax
+   0x0000000000400735 <+57>:	leaveq 
+   0x0000000000400736 <+58>:	retq   
+End of assembler dump.
+
