@@ -1,0 +1,433 @@
+This is the graph: 
+It has 270 nodes and 380 edges
+There were 1 contexts for the entry block
+Predecessors of the entry point: []
+Successors of the entry point: [<CFGNode 0x401180L[6]>]
+Successors (and type of jump) of the entry point: ['Ijk_Call to 4198784']
+<dictionary-keyiterator object at 0x7fb3b3aeeaf8>
+sub_4013d0
+<angr.knowledge_plugins.functions.function_manager.FunctionManager object at 0x7fb3b546c4d0>
+47
+Function sub_401000 [0x401000]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401000, 0x401010, 0x401015]
+  Calling convention: None
+[]
+Function abort [0x401060]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x401060]
+  Calling convention: None
+[]
+Function strncmp [0x401080]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401080]
+  Calling convention: None
+[]
+Function textdomain [0x4010b0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4010b0]
+  Calling convention: None
+[]
+Function bindtextdomain [0x4010d0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4010d0]
+  Calling convention: None
+[]
+Function dcgettext [0x4010e0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4010e0]
+  Calling convention: None
+[]
+Function __stack_chk_fail [0x401110]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x401110]
+  Calling convention: None
+[]
+Function strrchr [0x401130]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401130]
+  Calling convention: None
+[]
+Function __libc_start_main [0x401180]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x401180]
+  Calling convention: None
+[]
+Function fputs_unlocked [0x4011a0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4011a0]
+  Calling convention: None
+[]
+Function strcmp [0x4011c0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4011c0]
+  Calling convention: None
+[]
+Function setlocale [0x401260]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401260]
+  Calling convention: None
+[]
+Function __printf_chk [0x401270]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401270]
+  Calling convention: None
+[]
+Function exit [0x4012c0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x4012c0]
+  Calling convention: None
+[]
+Function fwrite [0x4012d0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4012d0]
+  Calling convention: None
+[]
+Function __fprintf_chk [0x4012e0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4012e0]
+  Calling convention: None
+[]
+Function sub_401320 [0x401320]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]
+Function sub_401330 [0x401330]
+  Syscall: False
+  SP difference: 8
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401362, 0x401344, 0x4013c6, 0x401387, 0x40138b, 0x40136c, 0x4013c2, 0x4013cd, 0x401330, 0x401398, 0x401353, 0x401335, 0x401376, 0x401338, 0x40139c]
+  Calling convention: None
+[]
+Function sub_4013d0 [0x4013d0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x4013d0]
+  Calling convention: None
+[]
+Function sub_401400 [0x401400]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401400, 0x401430, 0x401415, 0x40141f]
+  Calling convention: None
+[]
+Function sub_401480 [0x401480]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401480, 0x401489, 0x40149a, 0x401492]
+  Calling convention: None
+[]
+Function sub_4014a0 [0x4014a0]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4014a0, 0x401440, 0x401463, 0x4014ab, 0x4014c0, 0x40146d, 0x4014b0, 0x401478, 0x4014ba]
+  Calling convention: None
+[]
+Function sub_4014d0 [0x4014d0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: Unknown
+  Arguments: reg: [], stack: []
+  Blocks: [0x401681, 0x401502, 0x401706, 0x401781, 0x401582, 0x401692, 0x401593, 0x401517, 0x4016da, 0x40169f, 0x4016a1, 0x4016a3, 0x4015a7, 0x401528, 0x4017ab, 0x401630, 0x4016b4, 0x40153c, 0x40163c, 0x401741, 0x40170d, 0x401646, 0x401648, 0x40164a, 0x401737, 0x4016cd, 0x40168d, 0x4014d0, 0x401723, 0x401554, 0x40175a, 0x401792, 0x40155f, 0x4016e0, 0x401663, 0x401766, 0x401668, 0x40173c, 0x40176b, 0x401712, 0x4016f1, 0x401577, 0x40177d]
+  Calling convention: None
+[]
+Function sub_401890 [0x401890]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x401903, 0x4018c6, 0x4018f3, 0x4018a8, 0x4018ca, 0x401890, 0x4018c8, 0x4018a3, 0x401896, 0x4018d7, 0x4018b8, 0x4018d9, 0x4018e8, 0x40191e]
+  Calling convention: None
+[]
+Function sub_403190 [0x403190]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4032a0, 0x4031b0, 0x403310, 0x4032ff, 0x403209, 0x4031ca, 0x4032f8, 0x40352f, 0x403190, 0x4031f8, 0x403272, 0x403214, 0x403518, 0x4031db, 0x40321e, 0x403538]
+  Calling convention: None
+[]
+Function sub_4035a0 [0x4035a0]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x4035a0, 0x4035c0, 0x4035e3, 0x403625, 0x403608, 0x4035eb, 0x403610, 0x403603, 0x403620, 0x4035d9]
+  Calling convention: None
+[]
+Function sub_403630 [0x403630]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x403645, 0x4036ca, 0x403630, 0x4036d2, 0x4036ba, 0x40367c]
+  Calling convention: None
+[]
+Function sub_403f80 [0x403f80]
+  Syscall: False
+  SP difference: 8
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x403f80, 0x403fc0, 0x403fcd, 0x403fb3, 0x403fd6, 0x403fb8]
+  Calling convention: None
+[]
+Function sub_404000 [0x404000]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x404000, 0x404020, 0x4012b0, 0x40400c]
+  Calling convention: None
+[]
+Function abort [0x1000018]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]
+Function strncmp [0x1000028]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000028]
+  Calling convention: None
+[]
+Function textdomain [0x1000040]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000040]
+  Calling convention: None
+[]
+Function bindtextdomain [0x1000050]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000050]
+  Calling convention: None
+[]
+Function dcgettext [0x1000058]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000058]
+  Calling convention: None
+[]
+Function __stack_chk_fail [0x1000070]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]
+Function strrchr [0x1000080]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000080]
+  Calling convention: None
+[]
+Function __libc_start_main [0x10000a8]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x10000a8, 0x10001b8]
+  Calling convention: None
+[]
+Function fputs_unlocked [0x10000b8]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x10000b8]
+  Calling convention: None
+[]
+Function strcmp [0x10000c8]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x10000c8]
+  Calling convention: None
+[]
+Function setlocale [0x1000118]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000118]
+  Calling convention: None
+[]
+Function __printf_chk [0x1000120]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000120]
+  Calling convention: None
+[]
+Function __cxa_atexit [0x1000140]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000140]
+  Calling convention: None
+[]
+Function exit [0x1000148]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]
+Function fwrite [0x1000150]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]
+Function __fprintf_chk [0x1000158]
+  Syscall: False
+  SP difference: 0
+  Has return: True
+  Returning: True
+  Arguments: reg: [], stack: []
+  Blocks: [0x1000158]
+  Calling convention: None
+[]
+Function __libc_start_main [0x10001b8]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: [0x10001b8, 0x10001c0]
+  Calling convention: None
+[]
+Function __libc_start_main [0x10001c0]
+  Syscall: False
+  SP difference: 0
+  Has return: False
+  Returning: False
+  Arguments: reg: [], stack: []
+  Blocks: []
+  Calling convention: None
+[]

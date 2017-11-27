@@ -1,0 +1,10 @@
+This is the graph: 
+It has 270 nodes and 380 edges
+There were 1 contexts for the entry block
+Predecessors of the entry point: []
+Successors of the entry point: [<CFGNode 0x401180L[6]>]
+Successors (and type of jump) of the entry point: ['Ijk_Call to 4198784']
+<dictionary-keyiterator object at 0x7f244650caf8>
+sub_4013d0
+<angr.knowledge_plugins.functions.function_manager.FunctionManager object at 0x7f2447e8a4d0>
+47
