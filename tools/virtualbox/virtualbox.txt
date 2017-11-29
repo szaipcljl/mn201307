@@ -1,0 +1,10 @@
+
+(1) install virtualbox
+	sudo apt-get install virtualbox
+(2) Microsoft offers these downloadable virtual machine images for cross-browser
+testing (IE8-IE11 and Edge).
+https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/
+
+
+ref:
+	https://itsfoss.com/install-windows-10-virtualbox-linux/
