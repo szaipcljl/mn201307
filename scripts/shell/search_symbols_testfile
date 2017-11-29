@@ -1,0 +1,18 @@
+1286d3c0 <emmc_read_rpmb_data_sdio>:
+1286d962:	eb b5                	jmp    1286d919 <emmc_read_rpmb_data_sdio+0x559>
+1286e890 <emmc_simulate_read_rpmb_data>:
+1286e8b4:	0f 84 a6 00 00 00    	je     1286e960 <emmc_simulate_read_rpmb_data+0xd0>
+1286f030 <emmc_read_rpmb_data>:
+12870eca:	e8 c1 d9 ff ff       	call   1286e890 <emmc_simulate_read_rpmb_data>
+128716a2:	e8 89 d9 ff ff       	call   1286f030 <emmc_read_rpmb_data>
+128e3d4b:	e8 50 5d 00 00       	call   128e9aa0 <mmc_read_count>
+128e9aa0 <mmc_read_count>:
+1286dd70 <emmc_write_rpmb_data_sdio>:
+1286dd9d:	74 29                	je     1286ddc8 <emmc_write_rpmb_data_sdio+0x58>
+1286f080 <emmc_write_rpmb_data>:
+128716e6:	e8 95 d9 ff ff       	call   1286f080 <emmc_write_rpmb_data>
+1286ea20 <emmc_simulate_write_rpmb_data>:
+1286eba2:	e9 25 ff ff ff       	jmp    1286eacc <emmc_simulate_write_rpmb_data+0xac>
+12805150 <flash_write>:
+12805170:	0f 84 ea 00 00 00    	je     12805260 <flash_write+0x110>
+12868140 <flash_oemvars_silent_write_error>:

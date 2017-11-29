@@ -1,0 +1,26 @@
+
+
+(1) objdump failed:
+	$ objdump -D out/target/product/gordon_peak/obj/ABL/kf4abl-userdebug_intermediates/kf4abl.ab
+	objdump: out/target/product/gordon_peak/obj/ABL/kf4abl-userdebug_intermediates/kf4abl.abl: File format not recognized
+
+(2) check the file type
+	nma1x@Mserver:~/disk2/bxtpo$ file out/target/product/gordon_peak/obj/ABL/kf4abl-userdebug_intermediates/kf4abl.abl
+	out/target/product/gordon_peak/obj/ABL/kf4abl-userdebug_intermediates/kf4abl.abl: data
+
+(3) check it how to be packed form build commands:
+	showcommands when building, we can see it:
+
+	kf4abl.elf 
+	--> kf4abl.ablunsigned
+	--> build/target/product/security/verity.pk8
+		build/target/product/security/verity.x509.pem
+	--> out/target/product/gordon_peak/obj/ABL/kf4abl-userdebug_intermediates/kf4abl.abl (signed)
+
+(4) due to kf4abl.abl has been signed, we disassemble kf4abl.elf
+	$ objdump -D kf4abl.elf
+
+
+ps:
+	hardware/intel/kernelflinger/kf4abl.c : osloader
+	abl -> evmm -> osloader
