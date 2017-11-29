@@ -6,7 +6,11 @@ mkdir output
 
 #target=./kf4abl.asm
 target=./search_symbols_testfile
+<<<<<<< HEAD
 keywords=("mmc" "emmc" "sd" "flash" "oeminfo" "offset" "index" "kernel" "ramdisk")
+=======
+keywords=( "mmc" "emmc" "sd" "flash" "oeminfo" "offset" "index" "kernel" "ramdisk")
+>>>>>>> 212a31bf0ef96eff544179b1e2ede87bba9b9b76
 direction=("read" "write")
 
 echo "source_keywords: "${source_keywords[*]}
