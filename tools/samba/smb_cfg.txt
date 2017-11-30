@@ -8,13 +8,13 @@ dns proxy = no
 
 #============================ Share Definitions ============================== 
 
-[Anonymous]
-path = /samba/anonymous
-browsable =yes
-writable = yes
-guest ok = yes
-read only = no
-force user = nobody
+#[Anonymous]
+#path = /samba/anonymous
+#browsable =yes
+#writable = yes
+#guest ok = yes
+#read only = no
+#force user = nobody
 
 [secured]
 path = /samba/secured
@@ -26,6 +26,14 @@ browsable = yes
 # Share HOME dir
 [nma1x]
 path = /home/nma1x/
+valid users = @nma1x
+guest ok = no
+writable = yes
+browsable = yes
+
+# Share /home
+[home]
+path = /home
 valid users = @nma1x
 guest ok = no
 writable = yes
