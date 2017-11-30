@@ -30,3 +30,11 @@ valid users = @nma1x
 guest ok = no
 writable = yes
 browsable = yes
+
+# Share /home
+[home]
+path = /home
+valid users = @nma1x
+guest ok = no
+writable = yes
+browsable = yes
