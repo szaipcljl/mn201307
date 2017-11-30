@@ -43,11 +43,11 @@ cat ./smb_cfg.txt | sed -e "s/nma1x/$USERNAME/g" >> /etc/samba/smb.conf
 
 # create a directory for the secured share and set the correct permissions.
 addgroup smbgrp
-useradd guest -G smbgrp
-# Enter the password of the user named 'guest', others can use guest to access
-# your shared directory
+useradd till -G smbgrp
+# Enter the password of the user named 'till', others can use till to access
+# your shared directory (smbgrp group)
 PASS=123
-echo -ne "$PASS\n$PASS\n" | smbpasswd -as guest
+echo -ne "$PASS\n$PASS\n" | smbpasswd -as till
 #(echo newpassword; echo confirmNewPassword) | smbpasswd -s
 
 mkdir -p /samba/secured
@@ -66,7 +66,7 @@ service smbd restart
 # (5) display some infomation
 #
 echo "login name: $USERNAME	password: what you have entered"
-echo "login name: guest		password: $PASS"
+echo "/samba/secured(smbgrp) login name: till		password: $PASS"
 
 
 #========#
