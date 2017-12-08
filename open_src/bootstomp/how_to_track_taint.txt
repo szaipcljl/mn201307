@@ -1,0 +1,30 @@
+how to track taint
+
+
+taint tracking:
+BootStomp/taint_analysis/bootloadertaint.py
+
+
+1. get config information from config file
+	the config is stored in BootStomp/config/ such as config/config.huawei
+	we can get the bootloader filename, taint info path ect. from the config.
+
+2. get a new instance of class BootloaderTaint;
+	arguments given to the class instantiation operator are passed on to __init__().
+    bt = BootloaderTaint(filename, arch, path, enable_thumb=enable_thumb, start_with_thumb=start_with_thumb,
+                         exit_on_decode_error=exit_on_decode_error)
+
+	It will initialize some variables and load bootloader's binary.
+
+3. call the method run to start the analysis.
+	(1) create a tainted buffer and initialize the taint analysis
+
+	(2) initialize the core taint module
+		get a instance of class _CoreTaint
+
+		class _CoreTaint: Perform a symbolic-execution-based taint analysis on a given bootloader to find whether
+		it exists a tainted path between a source and a sink. 
+		_CoreTaint method call flow:
+			run -> flat_explore -> _flat_explore
+			_flat_explore: Find a tainted path between a source and a sink, return the tainted path between the source and the sink, if any
+	

@@ -1,0 +1,62 @@
+how to find taint
+
+We heavily use IDA's decompiler API to identify taint seeds and sinks. angr, at
+least at the time of development, didn't have any decompiler support.
+Referring to section 7.3 of the paper,
+
+[where defined]
+
+
+fold:
+	BootStomp/taint_analysis
+
+
+the steps to find taint sources and sinks:
+find_taint.py:
+	use ida:
+	(1) Populate the data structures by filling up information on methods found in the blob
+		Populate to a global array functions_info
+		helper.populate_method_info_ida() [helper.py]
+
+	(2) search seeds: source_or_sink = 0
+		class instantiation: get a new instance of the class "GetTaintSource";
+		get_taint_source = find_taint_sources.GetTaintSource() [find_taint_sources.py]
+		
+		call the function to search the keywords
+		get_taint_source.heuristic_search_keywords_in_log_messages()
+
+	(3) search sinks(sinks_memwrite): source_or_sink = 1
+		class "GetTaintSource" instantiation; [find_taint_sources.py]
+		call the function to search the keywords
+
+	(4) search sinks_memcpy	[find_taint_sinks.py]
+
+	(5) render taint sources and sinks, then save to file
+
+===========================================================
+data flow:
+
+get_taint_source.heuristic_search_keywords_in_log_messages()
+
+-----------------------------
+taint_addr
+
+-----------------------------
+taint_bb_addr
+
+-----------------------------
+log_message_xref_addr:
+referencing string at log_message_xref_addr
+log_message_xref_addr <- caller_method.call_site
+
+caller_method <- str_refs[str_idx] <- detect_ADRP_n_ADD_as_ADRL(return strings_referenced_by_methods_filtered)
+<- filtered_callers <- strings_referenced_by_methods
+-----------------------------
+log_message_addr:
+log_message_addr <- candidate_string.ea
+referencing string
+
+----------------------------
+
+func_addr -> analyze_ast.traverse() ->  function = get_func(func_addr)
+-> function_ctree = decompile(function)
