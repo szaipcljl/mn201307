@@ -38,14 +38,27 @@ data flow:
 
 get_taint_source.heuristic_search_keywords_in_log_messages()
 
+method_name, method_addr, taint_addr, log_message_xref_addr, log_message_addr
+<- taint_source_per_instance
+<- guard_analyze.taint_sources_all_instances
+<- (guard_analyze = analyze_ast.GuardAnalyze())
+<- taint_source_per_instance = [] {class GuardAnalyze}
+<- taint_source_per_instance
+|
+|<- method analyze_function_ptr: self.taint_source_per_instance.append
+|<- metho analyze_if_expression: self.taint_source_per_instance.append
 -----------------------------
 taint_addr
 
 -----------------------------
-taint_bb_addr
+taint_bb_addr:
+
+
 
 -----------------------------
 log_message_xref_addr:
+The address of the instruction referencing the string
+
 referencing string at log_message_xref_addr
 log_message_xref_addr <- caller_method.call_site
 
@@ -60,3 +73,6 @@ referencing string
 
 func_addr -> analyze_ast.traverse() ->  function = get_func(func_addr)
 -> function_ctree = decompile(function)
+==============================================================
+class GuardAnalyze, method traverse:
+        function_ctree = decompile(function)

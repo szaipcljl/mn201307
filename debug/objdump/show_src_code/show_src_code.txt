@@ -1,0 +1,27 @@
+Making objdump -S find your source code
+
+Posted on mandag, juni 18, 2012 in Planet Ubuntu-DK, Ubuntu, University
+
+We all know the situation: We want to disassemble the most awesome pre-compiled
+object file, with accompanying sources, using objdump and we would like to view
+the assembly and C-code interleaved, so we use -S. Unfortunately, objdump fails
+to find the sources, and we are sad 🙁
+
+How does objdump look for the sources? Normally the paths are hardcoded in the
+object file in the DWARF information. To inspect the DWARF debug info:
+
+	$ objdump --dwarf myobject.o | less
+
+and look for DW_TAG_compile_unit sections, where the paths should exist like:
+
+	<25> DW_AT_name : C:/ARM/myfile.c
+
+Of course, this might not be the path you have on your machine, and thus objdump
+gives up.
+
+However, we can use an undocumented option to objdump: the -I or –include:
+
+	$ objdump -I ../mysources -S myobject.o | less
+
+and voila, objdump finds the sources, inlines the C-code, and everything is
+awesome!

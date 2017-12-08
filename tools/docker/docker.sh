@@ -84,3 +84,9 @@ sudo systemctl restart docker
 # Dockerfile proxy
 #
 #ENV HTTPS_PROXY=http://10.239.4.160:913/
+
+
+#
+# copy files from host to docker
+#
+docker run -v ~/local_dir:/home/angr/docker_dir -it bootstomp

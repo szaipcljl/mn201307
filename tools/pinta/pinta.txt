@@ -1,0 +1,7 @@
+Pinta
+
+一款开源免费的图形编辑绘图软件，目标是为用户提供一款可运行在Linux、mac
+和windows系统上的简单而强大的绘图编辑软件。
+
+
+sudo apt install pinta
