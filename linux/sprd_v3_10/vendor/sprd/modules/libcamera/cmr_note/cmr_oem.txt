@@ -1,0 +1,97 @@
+camera oem
+
+oem: original equipment manufacturef
+
+dir:
+vendor/sprd/modules/libcamera/oem2v0
+===========================================
+
+
+
+
+
+
+
+
+============================================
+
+1. sensor/gc5005/sensor_gc5005_mipi_raw.c
+
+	(1) use ioctl functoins to init the struct
+	SENSOR_IOCTL_FUNC_TAB_T: all ioctl functoins
+
+	static SENSOR_IOCTL_FUNC_TAB_T s_gc5005_ioctl_func_tab;
+	(2) save the specific info to SENSOR_INFO_T
+		init a SENSOR_INFO_T
+		SENSOR_INFO_T g_gc5005_mipi_raw_info = { ...
+
+		SENSOR_INFO_T: sensor all info, modify this variable acording spec.
+
+		the pointer to ioctl functoins table is one of the members
+		g_gc5005_mipi_raw_info->ioctl_func_tab_ptr => s_gc5005_ioctl_func_tab
+	(3) to call common function in every specific sensor's ioctl functoins, 
+		you need to include sensor_drv_u.h
+
+2. oem2v0/src/sensor_drv_u.c
+
+	struct sensor_drv_context ? how to get
+
+	how to match id?
+
+
+	where is fd stored?
+	sensor_cxt->fd_sensor
+
+
+
+==========================================
+
+1. power
+	sensor_cxt->sensor_info_ptr->ioctl_func_tab_ptr->power;
+	=> gc5005_power_on()
+		this functoin get info from the sensor's SENSOR_INFO_T;
+		call common functions exported from sensor_drv_u.c
+	power_on:
+		(1) Sensor_PowerDown(power_down) -> sns_dev_pwdn -> ioctl
+		(2) Sensor_SetResetLevel -> sns_dev_rst_lvl -> ioctl
+		(3) Sensor_SetIovddVoltage -> sns_dev_set_iovdd -> ioctl
+		(4) Sensor_SetDvddVoltage -> sns_dev_set_dvdd -> ioctl
+		(5) Sensor_SetAvddVoltage -> sns_dev_set_avdd -> ioctl
+		(6) Sensor_SetMCLK -> sns_dev_set_mclk -> ioctl
+		(7) Sensor_PowerDown(!power_down);
+		(8) Sensor_SetResetLevel(!reset_level);
+
+		(9) Sensor_SetMonitorVoltage -> sns_dev_set_motor_val -> ioctl
+		(10) dw9714_init
+
+	Sensor_PowerDown():
+		in every Sensor_XX() like functions, the first thing is to get the pointer to
+		sensor_drv_context struct. 
+
+		how to get it?
+		sensor_get_dev_cxt() -> return (void *)s_local_sensor_cxt;
+
+		where the s_local_sensor_cxt was set?
+		struct sensor_drv_context *s_local_sensor_cxt;
+		sensor_set_cxt_common() will set the value.
+
+		main //oem2v0/isp_calibration/src/utest_camera.cpp
+		-> camera_init //oem2v0/src/SprdOEMCamera.c
+		-> camera_local_int
+		-> camera_init_internal
+		-> camera_sensor_init
+		-> cmr_sensor_init // param IN: struct sensor_init_param *init_param_ptr; return handle
+		-> cmr_sns_create_thread //param: struct cmr_sensor_handle *handle
+		-> ret = cmr_thread_create(&handle->thread_cxt.thread_handle,
+				SENSOR_MSG_QUEUE_SIZE,
+				cmr_sns_thread_proc,
+				(void*)handle);
+		<=> cmr_sns_thread_proc //CMR_SENSOR_EVT_OPEN: camera sensor open for every bits
+		-> cmr_sns_open //open all signed camera sensor; create monitor thread; create focus move thread
+		-> sensor_open_common //open one sensor on 1 time
+		-> sns_open
+		-> sensor_set_cxt_common(sensor_cxt);
+
+
+
+
