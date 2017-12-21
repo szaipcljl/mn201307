@@ -4,15 +4,238 @@ oem: original equipment manufacturef
 
 dir:
 vendor/sprd/modules/libcamera/oem2v0
+
+1. 先看整体框架
+2. 再看层次结构
+3. 再了解各文件的调用层次
+4. 理清调用关系:
+	单个文件内的调用层次，向上/向下提供的接口，向上/向下接口都会调用的接口，
 ===========================================
 
+ --------------------------------+---------------------------------------------------
+                                 |
+                                 v
+Oem layer            +-----------------------------+
+[HAL C interface]    |      SprdOEMCamera.c        |
+                     |     对hal直接提供的接口     |
+                     +-----------------------------+ 
+                                 ^ 
+                                 | 
+                                 v 
+                     +------------------------------+
+                     |         cmr_oem.c            |
+    +--------------->|      具体oem内部实现接口     |<----------+
+    |                +------------------------------+           |
+    |                   ^      ^   ^              ^             |
+    |                   |      |   |              |             |
+    |                   v      |   |              |             |
+    |      +--------------+    |   |              |             |
+    |      |cmr_snapshot.c|    |   |              |             |
+    |      |Snapshot的实现|    |   |              v             |
+    |      +--------------+<---|---|-------->+--------------+   |
+    |                          |   |  +----->|cmr_setting.c |   |
+    |      +---------------+ <-+   |  | +--->| 设置接口     |   |
+    |      |cmr_preview.c  |<------|--+ | +->+--------------+   |
+    |      |Preview相关实现|       |    | |       ^             |
+    |      +---------------+       |    | |       |             v
+    |                              |    | |  +----v-------------------+
+    |                              |    | |  |cmr_sensor.c            |
+    |  +------------------------+<-+    | |  |对上关于sensor的接口实现|
+    |  |cmr_rotate.c/cmr_scale.c|<------+ |  +------------------------+
+    |  |  Rotate,scale的实现    |         |       ^
+    |  +------------------------+         |       |
+    |                                     |       v
+    |                                     |  +------------------------------------+
+    |      +---------------+              |  |  sensor_drv_u.c                    |
+    +----->| cmr_grab.c    |<-------------+  | 向cmr_sensor.c提供操作sensor的接口 |
+           | 数据抓取的实现|                 +------------------------------------+
+           +---------------+                   ^                       ^
+                ^                              |                       |
+                |                              |                       v
+                |                              |               +----------------------+
+                |                              |               | sensor_cfg.c         |
+                |                              |               | 向上注册支持的sensor |
+                |                              |               +----------------------+
+                |                              |                       ^
+                |                              |                       |
+                |                              |                       v
+                |                              |               +-------------------------------+
+                |                              |               |sensor/sensor_ov5648_mipi_raw.c|
+                |                              |               |具体sensor相关操作实现         |
+                |                              |               +-------------------------------+
+                |                              |
+                |+------------------+          v    +------------------------+
+----------------|| read/write/ioctl |---------------| i2c寄存器读写和电源操作|-------------------
+                |+------------------+               +------------------------+
 
 
+************************************************************************************************
+handle? 里面会集成多个部分的操作函数？还是每个部分各自有自己的操作函数？
+
+1. oem layer 最上层，对hal直接提供的接口: SprdOEMCamera.c      
+	is prefixed with camera_
+	functoins like camera_xx() here will check param and call the oem concrete interface.
+	这里的接口都检查或处理参数，（或根据参数,switch 中）调用具体的oem接口。
+	
+2. 具体oem内部实现接口: cmr_oem.c         
+	is prefixed with camera_ or camera_local_
+	通过传入的参数cmr_handle,获得回调函数，在这些接口中被调用。
+
+------------------
+3.	cmr_snapshot.c
+	Snapshot的实现
+	is prefixed with camera_, cmr_, snp_, isp_
+
+	cmr_ 前缀的接口是向上对 cmr_oem.c 中提供的接口.
+	camera_  前缀的接口，在本文件中使用。
+	isp_ 前缀的接口，在本文件中使用
+	snp_ 前缀的接口，在本文件中使用。
+
+	(1) snapshot 的操作函数，在cmr_oem.c 中被初始化[camera_snapshot_init],
+		类似 preview
+
+4. cmr_preview.c  
+   Preview相关实现
+   is prefixed with cmr_preview_, prev_
+
+   (1) preview 的操作函数，在cmr_oem.c中被初始化[camera_preview_init]，
+   		比如，init_param.ops.channel_start初始化为camera_channel_start,
+		cmr_oem.c中实现的函数， 这个函数会：
+			<1> 调用 cmr_common.c 中的camera_take_snapshot_step
+			<2> 调用 cmr_grab.c 中的 cmr_grab_cap_start
+		初始化后，会调用
+		ret = cmr_preview_init(&init_param, &prev_cxt->preview_handle);
+		//cmr_preview.c 中定义
+
+		操作函数被 cmr_oem.c 中实现的函数来初始化，cmr_oem.c中实现的函数，可以
+		自由调用下层文件提供的各个接口。在 preview/snapshot 等文件中就可以通过
+		回调函数的调用，进入 cmr_oem.c 中实现的函数，进而可以调用到其他文件提
+		供的接口。
+		通过这种方式可以实现与其他文件交互。
+
+	(2)
+
+	preview 通过操作函数回调 cmr_oem.c 中实现的函数来进而调用到cmr_grab.c中的函数。
+
+5. cmr_setting.c
+   设置接口    
+   is prefixed with get_, setting_, camera_, cmr_
+
+   camera_, cmr_ 前缀的函数， 对外提供的接口，对cmr_oem.c
+
+   (1) cmr_setting_ioctl 函数在cmr_oem.c中被调用，用来设置，函数中定义了一个
+   		setting_list 数组， 数组的元素是一个结构体，它包含两个成员：cmd_type
+		和 setting_ioctl 回调函数指针。 cmd_type 的类型是枚举变量，和数组下标
+		对应。
+		通过这种方式，就能在cmr_oem.c中实现对setting 相关函数的调用。
+
+	   如何与其他文件交互的？
+	   
 
 
+6. cmr_rotate.c/cmr_scale.c
+	Rotate,scale的实现, 向上对cmr_oem.c 提供接口。
+	cmr_rotate.c:
+	is prefixed with cmr_rot or cmr_rot_
 
 
+	cmr_scale.c
+	is prefixed with cmr_scale_, cmr_, cmr_scaling_
 
+8.cmr_grab.c    
+  数据抓取的实现, 对上给 cmr_oem.c 提供接口。
+  is prefixed with cmr_grap_
+
+  (1) CMR_GRAB_DEV_NAME是"/dev/sprd_image", 打开这个设备节点，调用系统调用
+  		read/write/ioctl 对其进行操作。
+
+------------------------
+9~12: i2c寄存器读写和电源操作(控制流)
+
+9. cmr_sensor.c            
+   对上关于sensor的接口实现. 向 cmr_oem.c 提供接口.
+   is prefixed with cmr_sensor_, cmr_sns_
+
+	(1) cmr_sensor_前缀的接口是对上提供的，供cmr_oem.c文件调用的接口。即对本
+		文件外提供的接口，前缀都是cmr_sensor_
+
+	(2) cmr_sns_ 前缀的接口都在本文件内被调用。内部接口。
+
+10. sensor_drv_u.c                    
+    向上对cmr_sensor.c提供操作sensor的接口, 向下对具体sensor 驱动提供接口
+	i2c寄存器读写和电源操作, ioctl操作的函数实现都在这个文件中。
+
+	is prefixed with sensor_xxx_common(对上接口),  Sensor_(对下接口),
+	sns_(sns_device_), sns_dev_, _sensor_cali_,
+
+	(1) Sensor_接口，向下提供接口，具体sensor的操作函数，会调用Sensor_前缀的接口; sensor_
+		前缀的接口也会调用Sensor_前缀的接口
+		Sensor_ 前缀的接口中，会调用sns_前缀的接口, sns_中的接口会调用ioctl();
+		sns_device_ 前缀的接口根据名字调用到了read/write/close.
+		Sensor_Device_WriteRegTab 直接调用了ioctl().
+
+	(2) sensor_xxx_common 接口，向上提供接口
+		cmr_sns_open(cmr_sensor.c) -> sensor_open_common
+		sensor_xxx_common 这样的函数，提供给cmr_sensor.c调用的接口， sensor_xxx_common
+		函数主要调用sns_前缀的函数，也会调用Sensor_,_sensor_cali_, 等其他前缀的函数。
+	
+	(3) sns_ 通用实现，被sensor_xxx_common样子的向上提供的接口或Sensor_前缀的向下
+		提供的接口调用。
+
+		sns_dev_ 前缀的接口: 会调用 ioctl 操作设备. 被sns_不带dev的，Sensor_,或
+				sensor_xxx_common类的接口调用。
+
+		sns_前缀的不带dev的函数: 会调用sns_dev_前缀或Sensor_前缀，其他sns_前缀不带dev的，
+				或者sensor_xxx_xommon类的函数，
+
+	(4) _sensor_cali_前缀的函数, 主要是sensor_open_common中调用。
+		sensor_open_common -> _Sensor_Device_GetID -> _sensor_cali_load_param ->
+		调用_sensor_cali_前缀的其他函数
+	
+
+	sns_register 中会调用 Sensor_GetInforTab(sensor_cfg.c中提供的接口)
+
+11. sensor_cfg.c        
+    向上注册支持的sensor, 提供main 和 sub两个数组，及操作的接口。(提供对象及操作对象的方法)
+	is prefixed with Sensor_
+
+	(1) c文件形式实现的配置文件，通过 extern 来声明具体sensor驱动文件中的 SENSOR_INFO_T 类型的变量。
+		extern SENSOR_INFO_T g_ov5648_mipi_raw_info;
+		将具体sensor 的名字和sensor对象指针作为一个结构体类型的元素，添加到
+		主/次sensor infor table数组中，数组的元素类型为 SENSOR_MATCH_T, 
+		即每个元素是一个具有2个成员的结构体，sensor 的名字和表示具体sensor的对象指针。
+		添加到数组中的sensor即表示已经被注册的sensor。
+
+		const SENSOR_MATCH_T main_sensor_infor_tab[]= {};
+		const SENSOR_MATCH_T sub_sensor_infor_tab[]= {};
+
+		数组每个元素是一个有2个成员的结构体：
+		typedef struct sensor_match_tab{
+			char  sn_name[36];
+			SENSOR_INFO_T* sensor_info;
+		}SENSOR_MATCH_T;
+
+		别的oem 是不是用xml来配置sensor 的注册？
+	(2) 并提供3个获得数组, 数组长度, index的接口：
+		Sensor_GetInforTab
+		Sensor_GetInforTabLenght
+		Sensor_IndexGet
+
+12. sensor/gc5005/sensor_gc5005_mipi_raw.c 
+    具体sensor相关操作实现, 向上提供具体sensor的抽象对象。
+	is prefixed with gc5005_
+
+	(1) 该文件最终提供一个表示具体sensor所有信息的sensor抽象(SENSOR_INFO_T类型对象)，
+		SENSOR_INFO_T g_gc5005_mipi_raw_info = {};
+
+	(2) 这个具体sensor的驱动文件在user space,  有些操作是通过i2c 写寄存器实现。
+		所有ioctl 函数放在SENSOR_IOCTL_FUNC_TAB_T 类型结构体中。
+		该结构中具体 sensor 的操作函数，会调用sensor_drv_u.c中提供的Sensor_前缀的接口。
+
+
+-------------
+操作具体sensor的设备节点
+和数据抓取的设备节点不一样？ 
 ============================================
 
 1. sensor/gc5005/sensor_gc5005_mipi_raw.c
@@ -93,5 +316,6 @@ vendor/sprd/modules/libcamera/oem2v0
 		-> sensor_set_cxt_common(sensor_cxt);
 
 
+===========================================
 
 
