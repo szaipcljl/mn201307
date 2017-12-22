@@ -71,15 +71,24 @@ Oem layer            +-----------------------------+
 
 ************************************************************************************************
 handle? 里面会集成多个部分的操作函数？还是每个部分各自有自己的操作函数？
+//代码在写的时候，是怎么组织的，怎么设计的？最顶层的接口先留号吗？自上向下完善吗？
 
 1. oem layer 最上层，对hal直接提供的接口: SprdOEMCamera.c      
+	在hal3的SprdCamera3OEMIf.cpp文件中会调用这个文件提供的接口，c++文件通过extern
+	"C" 能链接到这里的函数。
 	is prefixed with camera_
 	functoins like camera_xx() here will check param and call the oem concrete interface.
 	这里的接口都检查或处理参数，（或根据参数,switch 中）调用具体的oem接口。
+
+	cmr_oem.c 对外提供的接口，在这个文件中进一步封装后，向hal
+	提供接口。可以从这一层（oem的顶层）往下看代码。
 	
 2. 具体oem内部实现接口: cmr_oem.c         
 	is prefixed with camera_ or camera_local_
 	通过传入的参数cmr_handle,获得回调函数，在这些接口中被调用。
+
+	camera_local_ 前缀的接口是对外提供的，供SprdOEMCamera.c调用.
+	camera_ 前缀不带local的接口，一般是内部函数调用的。
 
 ------------------
 3.	cmr_snapshot.c
