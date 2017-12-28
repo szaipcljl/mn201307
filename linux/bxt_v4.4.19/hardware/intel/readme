@@ -1,0 +1,3 @@
+username
+
+zip --encrypt -r kernelflinger.zip kernelflinger/

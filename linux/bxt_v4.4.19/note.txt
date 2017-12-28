@@ -8,3 +8,10 @@ kernel: gmin64(useprebuilt=false,src_path=kernel/bxt,loglevel=7, interactive_gov
 build command:
 ./device/intel/mixins/mixin-update
 		
+
+
+================================================================================
+dir/company:
+	device/intel
+	hardware/intel
+	vendor/intel
