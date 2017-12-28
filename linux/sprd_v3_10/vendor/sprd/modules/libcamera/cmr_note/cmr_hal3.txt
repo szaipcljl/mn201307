@@ -115,11 +115,12 @@ camera3_device_ops_t 类型的成员ops 即包含操作表。
 open 时传入的指向hw_device_t结构的二级指针，可以用来保存hw_device_t 结构的地址
 
 
-	SprdCamera3HWI::openCamera
+	SprdCamera3HWI::openCamera	//带参数的openCamera
 		(1) openCamera() -> mSetting = new SprdCamera3Setting(mCameraId);
 							mOEMIf = new SprdCamera3OEMIf(mCameraId, mSetting);
 							ret = mOEMIf->openCamera();
-		(2) *hw_device = &mCameraDevice.common;
+							// new 一个 OEMIf 对象，地址保存到 HWI 对象的 mOEMIf
+		(2) *hw_device = &mCameraDevice.common; //初始化 hw_device_t 指针
 		(3) CONFIG_CAMERA_ISP
 			startispserver();
 			ispvideo_RegCameraFunc(1, ispVideoStartPreview);
@@ -153,4 +154,4 @@ need to include oem2v0/inc/SprdOEMCamera.h: it use extern "C" to declares functi
 where is other ops?
 
 open 成功不成功在哪里决定的？id在哪里匹配？
-kernel?
+kernel? user space driver?

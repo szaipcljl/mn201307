@@ -1,0 +1,47 @@
+class
+
+
+(1) hw_module_t 和 camera_module_t
+
+camera_module_t 的common成员为hw_module_t结构，即通用的 hw_module_t 结构会
+嵌入到具体表示具体硬件设备的 camera_module_t 结构中。
+
+hw_module_t 结构的 methods 方法初始化为静态声明的 SprdCamera3Factory 对象的
+mModuleMethods 方法;
+camera_module_t 结构的四个方法也初始化为静态声明的 SprdCamera3Factory 对象中
+的方法。
+
+camera_module_t -----------------------------------------+
+|                                                        |
+|.common                                                 |
+|                                                        |
+V                                                        | .get_number_of_cameras
+hw_module_t                                              | .get_camera_info
+|                                                        | .set_callbacks
+|.methods                                                | .get_vendor_tag_ops
+|                                                        |
+V                                                        |
+&sprdcamera::SprdCamera3Factory::mModuleMethods          |
+                                                         |
+                                                         |
+                                                         v
+	get_number_of_cameras: sprdcamera::SprdCamera3Factory::get_number_of_cameras,
+	get_camera_info: sprdcamera::SprdCamera3Factory::get_camera_info,
+	set_callbacks: sprdcamera::SprdCamera3Factory::set_callbacks,/*HAL 3.2*/
+	get_vendor_tag_ops: sprdcamera::SprdCamera3Factory::get_vendor_tag_ops,/*HAL 3.2*/
+
+SprdCamera3Factory.cpp:
+	SprdCamera3Factory gSprdCamera3Factory; //静态声明了一个对象
+
+--------------------------------------------------------------------------------
+                                                        
+                            +--------------------------+
+                            |     SprdCamera3HWI       |
+            +---------------|                          |---------------------+
+            |               +--------------------------+                     |
+            |                 |                    |                         |
+            |mOEMIf           | mSetting           |                         |
+            |                 |                    |                         |
+            |                 |                    |                         |
+            V                 v                    v                         v
+		SprdCamera3OEMIf   SprdCamera3Setting  Sprdamera3MetadataChannel  SprdCamera3HeapMemory

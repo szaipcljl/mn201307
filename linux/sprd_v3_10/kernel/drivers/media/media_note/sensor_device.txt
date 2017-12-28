@@ -1,0 +1,59 @@
+sensor device
+
+
+
+/dev/sprd_sensor    控制 sensor 的设备节点
+================================================================================
+1. 内核初始化阶段，注册一个platform_driver 结构体，表示 sensor device
+	module_init(sensor_k_init);
+
+	sensor_k_init
+	|-> platform_driver_register
+
+	注册一个platform_driver 类型的结构体.名叫sensor_dev_driver,
+	这个结构的probe，remove, driver结构的owner/name/of_match_table成员初始化。
+2.
+	//v4.9
+	(1) include/linux/platform_device.h
+       #define platform_driver_register(drv) \
+	        	__platform_driver_register(drv, THIS_MODULE)
+	(2) drivers/base/platform.c
+		__platform_driver_register
+		|-> init platform_driver 的driver成员的 owner/bus/probe/remove/shutdown 字段
+		|-> driver_register //注册platform_driver的 driver 字段表示的driver结构体 到bus
+			|-> driver_find //通过driver的名字在总线上定位driver,检查driver是否已经注册
+			|-> bus_add_driver //添加driver到总线上
+				|-> bus_get
+				|-> kzalloc
+				|-> klist_init
+					kobject_init_and_add
+					klist_add_tail
+				|-> driver_attach // not allow probe driver asynchronously
+					//try to bind driver to devices
+					|-> bus_for_each_dev
+						|-> 找到之后，调用 __driver_attach
+				|-> module_add_driver
+				|-> driver_create_file
+				|-> driver_add_groups
+			|-> driver_add_groups //创建一组属性
+			|-> kobject_uevent
+
+--------------------------------------------------------------------------------
+platform_driver 的 probe 函数:
+sensor_k_probe
+
+--------
+register miscdev
+
+LOCAL struct miscdevice sensor_dev = {
+	.minor = SENSOR_MINOR,
+	.name = SENSOR_DEVICE_NAME,
+	.fops = &sensor_fops,
+};
+
+====
+sensor 是怎么被probe的?
+platform_driver_register 在注册platform_driver 时，会执行 probe 函数吗？
+
+of_match_table 中的of_device_id结构体用于匹配dts中的设备，匹配的字段放在
+compatible 字段中，匹配的方法是bus 持有的match方法。

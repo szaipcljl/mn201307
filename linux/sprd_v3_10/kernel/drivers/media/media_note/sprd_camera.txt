@@ -1,0 +1,18 @@
+
+
+/dev/sprd_sensor    控制 sensor 的设备节点
+/dev/sprd_image     数据抓取的设备节点
+
+#define IMG_DEVICE_NAME "sprd_image" // sprd_dcam/common/dcam_img.c
+#define SENSOR_DEVICE_NAME "sprd_sensor" // sprd_sensor/sensor_drv_k.c
+
+从设备节点开始看code
+================================================================================
+sprd_sensor/sensor_drv_k.c
+	this module calls platform_driver_register() to register a platform driver.
+	platform_driver struct member: probe, remove, driver need to be init.
+								   driver.owner/name/of_match_table.
+	(1) probe
+			 
+
+	 

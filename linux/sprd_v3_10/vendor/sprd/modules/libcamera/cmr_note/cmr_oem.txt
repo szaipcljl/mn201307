@@ -245,6 +245,10 @@ handle? 里面会集成多个部分的操作函数？还是每个部分各自有
 -------------
 操作具体sensor的设备节点
 和数据抓取的设备节点不一样？ 
+/dev/sprd_sensor	控制 sensor 的设备节点
+/dev/sprd_image		数据抓取的设备节点
+
+看kernel中对应code
 ============================================
 
 1. sensor/gc5005/sensor_gc5005_mipi_raw.c
