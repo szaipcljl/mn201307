@@ -7,7 +7,7 @@ Camera hal3
                      |    SprdCamera3Hal.cpp        |   通过此文件对上向camera注册对应实现
                      +------------------------------+
                                   ^
-                                  | new SprdCamera3HWI(camera_id)
+                                  | new SprdCamera3HWI(camera_id) //SprdCamera3Factory.cpp
                                   v
                      +------------------------------+
                      |    SprdCamera3HWI.cpp        |
@@ -43,33 +43,77 @@ Hal -> HWI -> OEMIf
 1.
 SprdCamera3Hal.cpp 
 对上向camera注册对应实现
-	init two struct
+	init two struct: hw_module_t 和 包含这个模块的更大的模块 camera_module_t
 	(1) hw_module_t
 		static hw_module_t camera_common = {
+			...
+		};
 	
-		camera_common.methods => hw_module_methods_t struct, and it has a member
-			named open
+		camera_common.methods => hw_module_methods_t struct, and it has only a member
+			named open 
+
 		struct hw_module_methods_t SprdCamera3Factory::mModuleMethods = {
 			open: SprdCamera3Factory::camera_device_open, //open a camera device by its ID
 		}; //SprdCamera3Factory.cpp
 
 	(2) camera_module_t
 		camera_module_t HAL_MODULE_INFO_SYM = {
+			...
+		};
 
 	camera device open:
-		SprdCamera3Factory.cpp
+		SprdCamera3Factory.cpp:
+
 		SprdCamera3Factory::camera_device_open
-		-> SprdCamera3Factory::cameraDeviceOpen
-		-> SprdCamera3HWI *hw = new SprdCamera3HWI(camera_id);
-		   rc = hw->openCamera(hw_device);
+		//最上层open接口:初步检查参数，调用下一层open接口
+			|-> SprdCamera3Factory::cameraDeviceOpen
+				// open a camera device by its ID, passing 3 arguments:
+				//		camera ID/hw_module_t 和 hw_device_t 结构ptr to struct 
+				// 		storing camera hardware device info
+				// 第二层接口中，new 一个 HWI 接口对象，调用其中的openCamera方法,
+				// 打开camera,打开成功，会将设备信息指针保存到hw_device_t结构体指针中
+				// 在构造函数中， camera3_device_t 结构被填好，它的common成员即是
+				// hw_device_t 结构的; 操作表也在构造时初始化
+				// mCameraDevice.ops = &mCameraOps; 
+				|-> SprdCamera3HWI *hw = new SprdCamera3HWI(camera_id);
+					rc = hw->openCamera(hw_device);
 
 		to new a SprdCamera3HWI object in cameraDeviceOpen, then you can use the interface
 
-		open function return what? used for other ops?
+		HWI 接口对象的构造函数中初始化的操作表, camera3_device_t结构的ops 成员中。
+		操作表中有这几个方法：
+				initialize
+				configure_streams
+				construct_default_request_settings
+				process_capture_request
+				dump
+				flush
+
+		camera3_device_ops_t SprdCamera3HWI::mCameraOps = {
+			initialize:	                        SprdCamera3HWI::initialize,
+			configure_streams:                  SprdCamera3HWI::configure_streams,
+			register_stream_buffers:            NULL,//SprdCamera3HWI::register_stream_buffers,
+			construct_default_request_settings: SprdCamera3HWI::construct_default_request_settings,
+			process_capture_request:            SprdCamera3HWI::process_capture_request,
+			get_metadata_vendor_tag_ops:        NULL,//SprdCamera3HWI::get_metadata_vendor_tag_ops,
+			dump:                               SprdCamera3HWI::dump,
+			flush:                              SprdCamera3HWI::flush,
+			reserved:{0},
+		};
+
+
+SprdCamera3Factory.cpp
+	对SprdCamera3Hal.cpp 提供封装了 SprdCamera3HWI.cpp 的接口的方法。?
 
 2.
 SprdCamera3HWI.cpp  
 Hal层对上提供的接口
+这里的接口，在new 一个HWI 接口对象后，并调用其中的openCamera方法成功后，
+可以获得。
+通过hw_device_t结构可以得到其父结构 camera3_device_t,这个父结构的
+camera3_device_ops_t 类型的成员ops 即包含操作表。
+open 时传入的指向hw_device_t结构的二级指针，可以用来保存hw_device_t 结构的地址
+
 
 	SprdCamera3HWI::openCamera
 		(1) openCamera() -> mSetting = new SprdCamera3Setting(mCameraId);
@@ -105,5 +149,8 @@ need to include oem2v0/inc/SprdOEMCamera.h: it use extern "C" to declares functi
 	(7) set_ddr_freq(BASE_FREQ_REQ); // SprdCamera3OEMIf::set_ddr_freq
 
 
-
+================================================================================
 where is other ops?
+
+open 成功不成功在哪里决定的？id在哪里匹配？
+kernel?
