@@ -1,0 +1,162 @@
+sensor device
+
+
+
+/dev/sprd_sensor    控制 sensor 的设备节点
+================================================================================
+1. 内核初始化阶段，注册一个platform_driver 结构体，表示 sensor device
+	module_init(sensor_k_init);
+
+	sensor_k_init
+	|-> platform_driver_register
+
+	注册一个platform_driver 类型的结构体.名叫sensor_dev_driver,
+	这个结构的probe，remove, driver结构的owner/name/of_match_table成员初始化。
+2.
+	//v4.9
+	(1) include/linux/platform_device.h
+       #define platform_driver_register(drv) \
+	        	__platform_driver_register(drv, THIS_MODULE)
+	(2) drivers/base/platform.c
+		__platform_driver_register
+		|-> init platform_driver 的driver成员的 owner/bus/probe/remove/shutdown 字段
+		|-> driver_register //注册platform_driver的 driver 字段表示的driver结构体 到bus
+			|-> driver_find //通过driver的名字在总线上定位driver,检查driver是否已经注册
+			|-> bus_add_driver //添加driver到总线上
+				|-> bus_get
+				|-> kzalloc
+				|-> klist_init
+					kobject_init_and_add
+					klist_add_tail
+				|-> driver_attach // not allow probe driver asynchronously
+					//try to bind driver to devices
+					|-> bus_for_each_dev
+						|-> 找到之后，调用 __driver_attach
+				|-> module_add_driver
+				|-> driver_create_file
+				|-> driver_add_groups
+			|-> driver_add_groups //创建一组属性
+			|-> kobject_uevent
+
+--------------------------------------------------------------------------------
+platform_driver 的 probe 函数:
+sensor_k_probe
+
+-----
+sensor 是怎么被probe的?
+platform_driver_register 在注册platform_driver 时，会执行 probe 函数吗？
+
+of_match_table 中的of_device_id结构体用于匹配dts中的设备，匹配的字段放在
+compatible 字段中，匹配的方法是bus 持有的match方法。
+
+
+--------
+register miscdev
+
+LOCAL struct miscdevice sensor_dev = {
+	.minor = SENSOR_MINOR,
+	.name = SENSOR_DEVICE_NAME,
+	.fops = &sensor_fops,
+};
+
+-----
+如何操作的sensor?
+ioctl
+注册 miscdevice 类型的结构体 sensor_dev,它的fops字段保存 file_operations 结构的
+操作表结构的地址, 操作函数接口包括:
+	open/read/write/unlocked_ioctl/release
+
+
+====
+如何利用i2c adapter 向sensor 发送命令，操作sensor?
+
+------
+open
+sensor_k_open:
+	(1) 文件对象file的private_data 保存 miscdevice 对象的指针，从private_data
+		可以获得混杂设备对象;
+	(2)	miscdevice 对象的this_device 字段指向 device struct 结构，从这个结构的
+		platform_data 字段 获得 指向 sensor_module_tab_tag 的指针。
+		//sensor_module_tab_tag 用处？
+	(3) 分配并初始化sensor_file_tag结构体, 并将其地址保存到file->private_data中;
+		调用csi_api_malloc 分配初始化 该结构体的 csi_handle 字段;
+	(4) 增加计数器 total_users, 如果是1, enable clk等
+----
+read
+空函数
+----
+向i2c 从设备写
+write
+sensor_k_write:
+	(1) 从 file 对象的private_data字段中得到 sensor_file_tag 的指针
+		从 sensor_file_tag 对象的 module_data 字段得到 sensor_module_tab_tag
+		的指针;
+	(2) 从sensor_module_tab_tag 对象的sensor_dev_tab 数组中的sensor_id为下标 对应的元素的cur_i2c_client 字段中得到 i2c_client
+	(3) prepare a buf 用于保存用户空间传入的数据
+	(4) copy_from_user, 从用户空间复制数据到buffer
+	(5) 填充 i2c_msg 结构的addr/flags/buf/len
+	(6) i2c_transfer, 执行一个或多个 i2c message, 向slave 地址发送message
+
+----
+i2c_client 在哪被初始化？ 怎么被填充的？
+	
+
+----
+unlocked_ioctl
+sensor_k_ioctl:
+	(1) 从 file 对象的private_data字段中得到 sensor_file_tag 的指针
+		从 sensor_file_tag 对象的 module_data 字段得到 sensor_module_tab_tag
+		的指针;
+	(2) cmd 为 SENSOR_IO_SET_ID 时，先调用 copy_from_user 把用户空间的数据
+		拷贝到sensor_id 中。
+		//switch  中对应这个命令的case 相同操作，这里是为什么？
+		// 似乎是为了获得对应id的锁，在第一次发这个command 之后，sensor_id 
+		// 就被填充了，以后的操作都针对这个sensor_id了
+	(3) 在switch之前，获得对应sensor的互斥锁 sync_lock
+	(4) cmd 匹配switch 下的case,这些 case 包括：
+		SENSOR_IO_PD:		设置 pwd level
+		SENSOR_IO_AF_PD:		设置af_enable
+		SENSOR_IO_SET_CAMMOT:		设置cammot 电压 //mot: motion?
+		SENSOR_IO_SET_AVDD:			设置 avdd	
+		SENSOR_IO_SET_DVDD:			设置 dvdd
+		SENSOR_IO_SET_IOVDD:		设置 iovdd
+		SENSOR_IO_SET_MCLK:		设置mclk	//main clock?
+		SENSOR_IO_RST:		reset	
+		SENSOR_IO_I2C_INIT: sensor id 保存到sensor_id 字段
+		SENSOR_IO_I2C_DEINIT:
+		SENSOR_IO_SET_ID:	设置gpio_tab的 pwn和reset字段
+		SENSOR_IO_RST_LEVEL:
+		SENSOR_IO_SET_MIPI_SWITCH: 		设置mipi level
+		SENSOR_IO_I2C_ADDR: 	设置对应sensor 的 cur_i2c_client->addr
+		SENSOR_IO_I2C_READ:		读 i2c 从设备的寄存器
+		SENSOR_IO_I2C_WRITE: 	向 i2c 从设备写寄存器，寄存器地址和数据都放在
+								i2c message的buf 字段指向的结构中
+
+		SENSOR_IO_I2C_WRITE_REGS:	//和SENSOR_IO_I2C_WRITE 区别
+		SENSOR_IO_SET_I2CCLOCK:		设置i2c clock
+		SENSOR_IO_I2C_WRITE_EXT:
+		SENSOR_IO_I2C_READ_EXT:
+		SENSOR_IO_GET_FLASH_LEVEL:	获得flash level,低亮和高亮，低电流和高电流值
+		SENSOR_IO_GET_SOCID:
+		SENSOR_IO_IF_CFG:		接口配置，
+
+
+
+//回过头，再对照 user space 的驱动来看操作
+====
+这个sensor 怎么和v4l2框架交互的？
+
+====
+bus/device/driver
+
+现在驱动注册的时候，会挂在总线上，总线有其下挂载的驱动链表。
+在注册时，调用probe? 完成和设备的匹配，待确认。
+还是会从 dts 上解析？
+
+和bus 总线上 device 链表上的设备匹配？
+
+dts 保存这设备信息，所以注册时，会从dts中解析设备?似乎不是？
+
+dts 上的设备信息，何时被挂到对应的bus 总线上？
+
+
