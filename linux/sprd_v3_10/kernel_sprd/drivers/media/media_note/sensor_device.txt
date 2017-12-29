@@ -138,13 +138,23 @@ sensor_k_ioctl:
 		SENSOR_IO_I2C_READ_EXT:
 		SENSOR_IO_GET_FLASH_LEVEL:	获得flash level,低亮和高亮，低电流和高电流值
 		SENSOR_IO_GET_SOCID:
-		SENSOR_IO_IF_CFG:		接口配置，
+		SENSOR_IO_IF_CFG:		配置mipi接口，打开mipi.
+								会enable dcam mipi clk;
+								csi 相关的设置//csi ?
 
+		SENSOR_IO_POWER_CFG:	power on/off
+		SENSOR_IO_READ_OTPDATA:		//读 OTP 相关数据;	one time program
+		//SENSOR_IO_GET_ID:
 
 
 //回过头，再对照 user space 的驱动来看操作
 ====
-这个sensor 怎么和v4l2框架交互的？
+这个sensor 怎么和v4l2框架交互的？ 和v4l2 交互有什么目的？
+
+----
+如何注册的 subdevs
+sensor_k_register_subdevs
+
 
 ====
 bus/device/driver

@@ -2099,6 +2099,7 @@ LOCAL long sensor_k_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 				printk("2sensor_k_ioctl:back_sensor_array=%s\n",back_sensor_array);
 				main_sensor_name=back_sensor_array;			
 				main_sensor_id=sensor_info.back_sensor_id;
+
 				memset(front_sensor_array,0,sizeof(front_sensor_array));
 				strcpy(front_sensor_array,sensor_info.front_sensor_name);
 				sub_sensor_name=front_sensor_array;			
