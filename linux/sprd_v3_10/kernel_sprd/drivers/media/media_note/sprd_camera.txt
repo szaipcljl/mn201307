@@ -1,12 +1,33 @@
 
 
-/dev/sprd_sensor    控制 sensor 的设备节点
+/dev/sprd_sensor    控制 sensor 的设备节点; miscdevice 杂项字符设备; i2c_client;
+					和v4l2 不交互 
+
 /dev/sprd_image     数据抓取的设备节点
 
 #define IMG_DEVICE_NAME "sprd_image" // sprd_dcam/common/dcam_img.c
 #define SENSOR_DEVICE_NAME "sprd_sensor" // sprd_sensor/sensor_drv_k.c
 
 从设备节点开始看code
+================================================================================
+
+media[master]$ grep -nR "NAME" . | grep "define" | grep "DEV"
+
+./sprd_rotation/img_rot.c:37:#define ROT_DEVICE_NAME "sprd_rotation"
+
+./sprd_sensor/sensor_drv_k.c:68:#define SENSOR_DEVICE_NAME "sprd_sensor"
+./sprd_sensor/sensor_drv_sprd.h:52:#define SENSOR_DEV0_I2C_NAME "sensor_main"
+./sprd_sensor/sensor_drv_sprd.h:53:#define SENSOR_DEV1_I2C_NAME "sensor_sub"
+./sprd_sensor/sensor_drv_sprd.h:54:#define SENSOR_DEV2_I2C_NAME "sensor_i2c_dev2"
+
+./sprd_scale/common/img_scale.c:35:#define SCALE_DEVICE_NAME "sprd_scale"
+
+./sprd_dcam/common/dcam_img.c:55:#define IMG_DEVICE_NAME "sprd_image"
+
+./sprd_dcam/common/flash_test.h:21:#define FLASH_TEST_DEVICE_NODE_NAME "flash_test"
+./sprd_dcam/common/flash_test.h:22:#define FLASH_TEST_DEVICE_FILE_NAME "flash_test"
+./sprd_dcam/common/flash_test.h:23:#define FLASH_TEST_DEVICE_PROC_NAME "flash_test"
+./sprd_dcam/common/flash_test.h:24:#define FLASH_TEST_DEVICE_CLASS_NAME "flash_test"
 ================================================================================
 sprd_sensor/sensor_drv_k.c
 	this module calls platform_driver_register() to register a platform driver.

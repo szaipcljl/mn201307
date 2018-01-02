@@ -1,0 +1,63 @@
+sprd_dcam
+DCAM Driver
+digital camera module
+
+
+/dev/sprd_image     数据抓取的设备节点
+
+./sprd_dcam/common/dcam_img.c:55:#define IMG_DEVICE_NAME "sprd_image"
+================================================================================
+
+module_init(sprd_img_k_init);
+module_exit(sprd_img_k_exit);
+
+sprd_img_k_init:
+	(1) 注册 platform_driver 
+		platform_driver_register(&sprd_img_driver)
+	(2) 分配一个 dcam_sc_array 结构,地址保存到全局变量 s_dcam_sc_array 中.
+		dcam_scale_coeff_alloc()
+		// 这个结构作用？ 
+
+--------------------------------------------------------------------------------
+ platform_driver sprd_img_driver
+ probe/remove/shutdown/driver 字段静态初始化
+
+--------------------------------------------------------------------------------
+probe:
+sprd_img_probe
+	(1) 注册杂项设备
+		misc_register(&image_dev);
+	(2) 保存 dts 节点到 杂项设备的this_device的of_node
+		image_dev.this_device->of_node = pdev->dev.of_node;
+	(3) 解析 base address 和 irq
+
+
+--------------------------------------------------------------------------------
+杂项设备的文件操作表:
+static struct miscdevice image_dev = {
+	.minor = IMAGE_MINOR,
+	.name = IMG_DEVICE_NAME,
+	.fops = &image_fops,
+};
+
+static struct file_operations image_fops = {
+	owner/open/unlocked_ioctl/release/read/write
+};
+
+----
+open
+sprd_img_k_open:
+	(1) 从file对象的private_data 字段获取 miscdevice 设备;
+	(2) 分配并初始化一个dcam_dev: 初始化互斥锁/信号量;
+		users计数器加1,
+	(3) 调用 dcam_module_en() enable dcam module:
+	(4) 调用 sprd_img_queue_init,初始化image queue, 
+	(5) 调用 sprd_init_timer 初始化定时器;
+	(6) 调用 sprd_init_handle 初始化handle 
+	(7) 调用 dcam_create_flash_thread 创建flash thread
+	(8) 调用 sprd_img_create_zoom_thread 创建zoom thread
+	(9) miscdevic 结构体的地址保存到 dcam_dev 结构的driver_data字段;
+		dcam_dev 结构的地址保存好file对象的private_data字段
+
+--------------------------------------------------------------------------------
+
