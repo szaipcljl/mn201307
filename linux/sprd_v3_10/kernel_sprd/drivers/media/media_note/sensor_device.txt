@@ -1,6 +1,8 @@
 sensor device
 
-
+sprd_sensor/sensor_drv_k.c:
+杂项字符设备
+i2c client 设备相关
 
 /dev/sprd_sensor    控制 sensor 的设备节点
 ================================================================================
@@ -41,6 +43,24 @@ sensor device
 --------------------------------------------------------------------------------
 platform_driver 的 probe 函数:
 sensor_k_probe
+	(1) 分配并初始化 sensor_module_tab_tag 结构
+	(2) platform_set_drvdata, 它会调用 dev_set_drvdata, 将platform_device 结构的
+		struct device 类型的字段dev的driver_data 成员指向 dev_set_drvdata,
+		将platform_device 结构的 struct device 类型的字段dev的driver_data 成员
+		指向 sensor_module_tab_tag 结构的地址.
+	(3) atomic_set. 将total_users 字段清零 
+	(4) 调用 misc_register 注册一个杂项字符设备 sensor_dev
+	(5) 通过 device_node 描述符解析 base address
+		//见： 
+		// ../../arch/arm/boot/dts/sprd-scx35l_sp9832iea_4m_volte.dts:631:
+		// sprd_sensor {
+	(6) sensor_module_tab_tag 描述符的地址，保存到字符杂项设备的this_device字段中
+		的platform_data成员中
+		sensor_dev.this_device->platform_data = (void*)p_mod;
+	(7) CONFIG_SC_FPGA_PIN 未定义，gpio_request/gpio_direction_output/gpio_set_value
+		分配并设置dts中对应的gpio: main reset/powerdown; sub reset/powerdown ...
+	(8) 调用 sensor_k_register_subdevs 注册 sub dev
+	(9) 调用 kthread_run, 执行线程sensor_reloadinfo_thread 来reload otp data
 
 -----
 sensor 是怎么被probe的?
@@ -48,6 +68,8 @@ platform_driver_register 在注册platform_driver 时，会执行 probe 函数�
 
 of_match_table 中的of_device_id结构体用于匹配dts中的设备，匹配的字段放在
 compatible 字段中，匹配的方法是bus 持有的match方法。
+struct device 结构的 of_node 字段，指向struct device_node 描述符，代表
+关联的device tree node
 
 
 --------
@@ -69,7 +91,7 @@ ioctl
 
 ====
 如何利用i2c adapter 向sensor 发送命令，操作sensor?
-
+通过杂项字符设备的文件操作函数，填充 i2c_msg 后，调用 i2c_transfer
 ------
 open
 sensor_k_open:
@@ -91,7 +113,8 @@ sensor_k_write:
 	(1) 从 file 对象的private_data字段中得到 sensor_file_tag 的指针
 		从 sensor_file_tag 对象的 module_data 字段得到 sensor_module_tab_tag
 		的指针;
-	(2) 从sensor_module_tab_tag 对象的sensor_dev_tab 数组中的sensor_id为下标 对应的元素的cur_i2c_client 字段中得到 i2c_client
+	(2) 从sensor_module_tab_tag 对象的sensor_dev_tab 数组中的sensor_id为下标
+		对应的元素的cur_i2c_client 字段中得到 i2c_client
 	(3) prepare a buf 用于保存用户空间传入的数据
 	(4) copy_from_user, 从用户空间复制数据到buffer
 	(5) 填充 i2c_msg 结构的addr/flags/buf/len
@@ -99,7 +122,7 @@ sensor_k_write:
 
 ----
 i2c_client 在哪被初始化？ 怎么被填充的？
-	
+	在 sensor_k_register_subdevs 中会找到dts 中对应的 i2c_client
 
 ----
 unlocked_ioctl
@@ -150,10 +173,51 @@ sensor_k_ioctl:
 //回过头，再对照 user space 的驱动来看操作
 ====
 这个sensor 怎么和v4l2框架交互的？ 和v4l2 交互有什么目的？
+sprd_sensor 与 v4l2 没有交互。
 
 ----
 如何注册的 subdevs
+在dts 中找到 sensor 相应的client, 将client 放到 sensor_module_tag 描述符中
+这些i2c_client 作为杂项字符设备的subdevs 而存在吗？文件操作中怎么操作到具体
+的哪一个subdev? i2c 设备地址不一样？
+比如open 函数中，会调用
+	p_mod = (struct sensor_module_tab_tag*)md->this_device->platform_data;
+	得到probe 时保存的
+
 sensor_k_register_subdevs
+	(1) 调用 platform_get_drvdata, 获得sensor_module_tab_tag 描述符的地址
+	(2) 调用 for_each_compatible_node 找到和"sprd,i2c" 兼容的每一个adapter,
+		对每一个兼容的 adapter, 调用 of_find_device_by_node 找到与节点关联
+		的platform_device. 
+		再调用 for_each_available_child_of_node, 遍历 adapter 的每一个child,
+		对每一个child 调用 of_find_i2c_device_by_node, 查找 i2c_client，并
+		将client 的name 分别与 SENSOR_DEV0/1/2_I2C_NAME,SENSOR_VCM0_I2C_NAME
+		比较。将匹配的放入p_mod->sensor_dev_tab数组中。每个数组元素是一个
+		sensor_module_tag 描述符。
+		name分别是 sensor_main/sensor_sub/sensor_i2c_dev2/sensor_i2c_vcm0
+		这些都用同一个驱动？通过device 的不同来区分不同设备,
+		dts 中只看到sensor_main/sensor_sub 两个子节点，对应前后摄像头
+	(3)  通过"i2c-gpio" 兼容字符串来寻找，类似(2)
+
+
+-----
+设备节点和sensor_main/sensor_sub 如何关联的？
+	在probe 函数中：
+	对应 sensor_main/sensor_sub 的client 保存在 sensor_module_tab_tag
+	的数组元素中
+	(6) sensor_module_tab_tag 描述符的地址，保存到字符杂项设备的this_device字段中
+		的platform_data成员中
+	在杂项字符设备的操作函数，如open 中，会调用
+	p_mod = (struct sensor_module_tab_tag*)md->this_device->platform_data;
+	write 函数中，通过sensor_id 得到对应的subdev
+	i2c_client = p_mod->sensor_dev_tab[p_file->sensor_id].cur_i2c_client;
+
+	ioctl 中 SENSOR_IO_SET_ID 和 SENSOR_IO_I2C_INIT命令会将
+	sensor id 保存到sensor_id 字段
+
+>> 对应看 user space 驱动的操作过程
+
+		
 
 
 ====
@@ -162,6 +226,7 @@ bus/device/driver
 现在驱动注册的时候，会挂在总线上，总线有其下挂载的驱动链表。
 在注册时，调用probe? 完成和设备的匹配，待确认。
 还是会从 dts 上解析？
+probe 探测硬件？probe之后，硬件就准备好了，可以通过open打开来工作了。
 
 和bus 总线上 device 链表上的设备匹配？
 
