@@ -1,0 +1,5 @@
+
+vr_sensor: interrupt mode
+vr_sensor_poll: polling mode
+
+change interrupt mode to polling mode

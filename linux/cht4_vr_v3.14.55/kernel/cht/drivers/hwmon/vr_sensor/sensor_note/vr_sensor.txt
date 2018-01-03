@@ -1,0 +1,56 @@
+sensor
+
+psh_cht_spi.c
+psh_ia_common.c
+================================================================================
+psh_cht_spi.c
+
+调用辅助宏注册一个 SPI driver
+//Helper macro for registering a SPI driver
+module_spi_driver(psh_vr_driver);
+
+spi_driver struct 静态初始化4个成员：
+	probe/remove/shutdown和driver字段的name/owner/pm
+
+----
+probe
+psh_probe
+	传入一个指向 spi_device 描述符的指针
+	(1) 分配一个 psh_ext_if 结构体
+	(2) 调用 psh_ia_common_init ，该函数：
+			<1> 分配并初始化 psh_ia_priv 结构,
+			<2> dev_set_drvdata 保存该结构的指针到 device struct 
+				的driver_data字段。
+			<3> 调用 sysfs_create_file 和 sysfs_create_bin_file 创建sysfs
+	(3) 调用 hwmon_device_register, register hwmon device
+	(4) 
+		psh_if_info->pshc = client;
+		ia_data->platform_priv = psh_if_info;
+	(5) psh_ext_if 描述符的 gpio_psh_rst 初始化 mcu reset pin的gpio;
+		调用 gpio_request 申请 gpio，申请成功，设置gpio:
+			gpio_export
+			gpio_direction_output
+			gpio_set_value
+	(6) 调用 gpio_to_irq 获得中断号(the IRQ corresponding to the passed GPIO);
+		调用 gpio_request 申请用于中断的gpio, 申请成功调用 gpio_export;
+		调用 irq_set_status_flags enable irq的标志为 IRQ_NOAUTOEN;
+		调用 request_threaded_irq, allocate an interrupt line 
+		设置 psh_ext_if 描述符的 irq_disabled 字段为1
+	(7) 调用 create_singlethread_workqueue 创建一个名为“psh_work” 的workqueue;
+		调用 INIT_WORK ,初始化工作
+	(8) ENABLE_RPM 情况下相关操作;
+	(9) 设置 psh_ext_if 描述符的 irq_disabled 字段为0,
+		调用enable_irq 开启中断
+	
+probe 成功之后，中断就被开启。
+
+
+
+-----
+ret = request_threaded_irq(client->irq, NULL, psh_byt_irq_thread,
+	IRQF_TRIGGER_FALLING | IRQF_ONESHOT, "psh_byt", client);
+		
+
+
+
+

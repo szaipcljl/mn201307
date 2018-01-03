@@ -1,0 +1,9 @@
+vr_sensor
+
+(1) compile platform_vr_spi.c
+	arch/x86/platform/intel-mid/device_libs/Makefile:
+		+obj-y += platform_vr_spi.o
+	add c file
+	arch/x86/platform/intel-mid/device_libs/platform_vr_spi.c
+
+================================================================================

@@ -1,0 +1,86 @@
+struct
+
+
+================================================================================
+1. psh_ext_if
+
+struct psh_ext_if {
+	struct device *hwmon_dev;
+	struct spi_device *pshc;
+	char psh_frame[LBUF_MAX_CELL_SIZE];
+
+	int gpio_psh_ctl, gpio_psh_rst;
+	int gpio_psh_int;
+
+	int irq_disabled;
+	
+	struct workqueue_struct *wq;
+	
+	struct work_struct work;
+#ifdef DRV_POLLING_MODE	
+	struct delayed_work dwork;
+#endif 
+	
+};
+
+2. psh_ia_priv
+
+struct psh_ia_priv {
+	struct loop_buffer *lbuf; /* loop bufer, if have */
+	struct circ_buf circ, circ_dbg;	/* circ buf for sysfs data node */
+	struct resp_debug_get_mask dbg_mask;
+	struct resp_counter counter;
+	struct resp_cmd_ack *cmd_ack;
+	char *version_str;
+	struct mutex cmd_mutex;
+	struct mutex circ_dbg_mutex;
+	struct completion cmd_load_comp;
+	struct completion cmd_comp;
+	struct list_head sensor_list;
+	u8 cmd_in_progress;
+	u32 load_in_progress;
+	u32 status_bitmask;
+
+	void *platform_priv;
+};
+
+================================================================================
+dev_set_drvdate
+dev_get_drvdata
+
+		sturct spi_device
+        +---------------+
+        | ...           |           
+        +----------------
+  +-----+ stuct device  |          
+  |     +---------------+           
+  |      
+  |dev.driver_data      
+  |      
+  |      
+  |
+  |     struct psh_ia_priv  
+  +---->+-----------------+ 
+        | ...             | 
+        | platform_priv   +---+
+        |                 |   |
+        +-----------------+   |                                   
+                              | (2)                               
+                              |
+         struct psh_ext_if    |
+         +----------------+<--+
+         | ...            | 
+         |                | 
+         +----------------+                                                     
+                                                             
+      
+                                             
+                                             
+                                             
+                                             
+                                                             
+                                      
+                                      
+                                      
+                                      
+                                      
