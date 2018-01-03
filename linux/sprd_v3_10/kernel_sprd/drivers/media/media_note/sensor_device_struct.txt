@@ -14,6 +14,7 @@ sensor device struct
        | this_device  |
        | ..           |
        +--------------+
+
 2. struct sensor_module_tab_tag  代表 sensor模块table
 
 	 sensor_module_tab_ta
@@ -38,6 +39,7 @@ sensor device struct
          +---------------------+
          |   ...               |
          +---------------+-----+
+
 3. struct sensor_module_tag 代表一个 sensor 设备
 
 		sensor_module_tag
@@ -119,6 +121,7 @@ struct sensor_file_tag {
 		sensor_module_tab_tag 的地址保存到 sensor_file_tag 的module_data
 		字段中。
 
+	open 之后，file 对象中 private_data 字段：
 		sturct file
         +---------------+
         | ...           |           

@@ -1,0 +1,189 @@
+sprd_dcam
+DCAM Driver
+digital camera module
+
+
+/dev/sprd_image     数据抓取的设备节点
+
+./sprd_dcam/common/dcam_img.c:55:#define IMG_DEVICE_NAME "sprd_image"
+================================================================================
+
+module_init(sprd_img_k_init);
+module_exit(sprd_img_k_exit);
+
+sprd_img_k_init:
+	(1) 注册 platform_driver 
+		platform_driver_register(&sprd_img_driver)
+	(2) 分配一个 dcam_sc_array 结构,地址保存到全局变量 s_dcam_sc_array 中.
+		dcam_scale_coeff_alloc()
+		// 这个结构作用？ 
+
+--------------------------------------------------------------------------------
+ platform_driver sprd_img_driver
+ probe/remove/shutdown/driver 字段静态初始化
+
+--------------------------------------------------------------------------------
+probe:
+sprd_img_probe
+	(1) 注册杂项设备
+		misc_register(&image_dev);
+	(2) 保存 dts 节点到 杂项设备的this_device的of_node
+		image_dev.this_device->of_node = pdev->dev.of_node;
+	(3) 解析 base address 和 irq
+
+
+--------------------------------------------------------------------------------
+杂项设备的文件操作表:
+static struct miscdevice image_dev = {
+	.minor = IMAGE_MINOR,
+	.name = IMG_DEVICE_NAME,
+	.fops = &image_fops,
+};
+
+static struct file_operations image_fops = {
+	owner/open/unlocked_ioctl/release/read/write
+};
+
+----
+open
+sprd_img_k_open:
+	(1) 从file对象的private_data 字段获取 miscdevice 设备;
+	(2) 分配并初始化一个dcam_dev: 初始化互斥锁/信号量;
+		users计数器加1,
+	(3) 调用 dcam_module_en() enable dcam module:
+	(4) 调用 sprd_img_queue_init,初始化image queue, 
+	(5) 调用 sprd_init_timer 初始化定时器;
+	(6) 调用 sprd_init_handle 初始化handle 
+	(7) 调用 dcam_create_flash_thread 创建flash thread
+	(8) 调用 sprd_img_create_zoom_thread 创建zoom thread
+	(9) miscdevic 结构体的地址保存到 dcam_dev 结构的driver_data字段;
+		dcam_dev 结构的地址保存好file对象的private_data字段
+	
+	dcam open 之后，在 file 对象的 private_data 中就能获得一个代表 dcam 设备的
+	dcam_dev struct。其他系统调用使用更方便。
+
+----
+unlocked_ioctl
+sprd_img_k_ioctl:
+	(1) 从file对象的private_data字段获得 dcam_dev 描述符的指针,保存到dev中;
+	(2) 从dcam_dev 描述符的dcam_cxt 字段获得 dcam_info 描述符的指针，保存在
+		info中 ;
+	(3) 一个switch 语句，包含,
+
+		SPRD_IMG_IO_SET_MODE:
+			设置capture mode. 
+			获取 dcam_mutex 互斥锁， 从用户空间拷贝数据，
+			保存到 dcam_dev 描述符的dcam_cxt字段的 capture_mode 中。
+
+		SPRD_IMG_IO_SET_FREQ_FLAG: 
+			设置frequency 标志. 
+			获取 dcam_mutex 互斥锁，从用户空间拷贝数据,
+			如果宏定义，数据传入 dcam_set_highclk_flag函数中。
+
+		SPRD_IMG_IO_SET_SKIP_NUM:
+			设置 skip 的帧数。
+			获取 dcam_mutex 互斥锁，从用户空间拷贝数据,
+			保存到 dcam_dev 描述符的dcam_cxt字段的 skip_number 中。
+
+		SPRD_IMG_IO_SET_SENSOR_SIZE:
+			设置 sensor 的 size.
+			获取 dcam_mutex 互斥锁，从用户空间拷贝数据,
+			保存到 dcam_dev 描述符的dcam_cxt字段的 cap_in_size.w/.h 中。
+
+		SPRD_IMG_IO_SET_SENSOR_TRIM:
+			设置 sensor 的 修剪。
+			获取 dcam_mutex 互斥锁，从用户空间拷贝数据,
+			保存到 dcam_dev 描述符的dcam_cxt字段的 cap_in_rect.x/.y/.w/.h 中。
+			并将cap_in_rect.w/.h 进一步保存到 该dcam_cxt的 cap_out_size.w/.h 中
+
+		SPRD_IMG_IO_SET_FRM_ID_BASE:
+			设置 FRM ID base.
+			获取 dcam_mutex 互斥锁，从用户空间拷贝数据,
+			用一个 switch 语句，来根据 拷贝的数据的 channel_id,匹配不同的PATH,
+			都会将 用户空间传入的结构的 frame_base_id 成员，保存到 dcam_dev描述符
+			的dcam_cxt 字段下的dcam_path数组对应channel_id 下标的元素的
+			frm_id_base字段中.
+
+		SPRD_IMG_IO_SET_CROP:
+
+		SPRD_IMG_IO_SET_FLASH:
+			设置flash_status
+
+		SPRD_IMG_IO_SET_OUTPUT_SIZE:
+			set output size
+
+		SPRD_IMG_IO_SET_ZOOM_MODE:
+			set is_smooth_zoom
+
+		SPRD_IMG_IO_SET_SENSOR_IF:
+			set sensor if
+
+		SPRD_IMG_IO_SET_FRAME_ADDR:
+
+		SPRD_IMG_IO_PATH_FRM_DECI:
+
+		SPRD_IMG_IO_SET_SHRINK:
+
+		SPRD_IMG_IO_PATH_PAUSE:
+
+		SPRD_IMG_IO_PATH_RESUME:
+
+		SPRD_IMG_IO_STREAM_ON:
+			dcam driver module initialization:
+				dcam_module_init
+				sprd_img_queue_init
+				sprd_img_cap_cfg /* config cap sub-module */
+				if: sprd_img_path_cfg
+				else: dcam_path1_cfg /* config path1 sub-module if necessary*/
+				/* config path2 sub-module if necessary*/
+			dcam_start
+
+		SPRD_IMG_IO_STREAM_OFF:
+
+		SPRD_IMG_IO_GET_FMT:
+
+		SPRD_IMG_IO_GET_CH_ID:
+		SPRD_IMG_IO_GET_TIME:
+		SPRD_IMG_IO_CHECK_FMT:
+		SPRD_IMG_IO_CFG_FLASH:
+			
+
+
+----
+release
+sprd_img_k_release
+
+
+----
+read
+sprd_img_read
+	(1) 从file对象的private_data 字段获取 dcam_dev 描述符的指针，保存到dev 
+	(2)	判断cnt, 如果小于sprd_img_read_op 描述符的大小，错误返回。
+	(3) 从用户空间拷贝数据 copy_from_user,拷贝到read_op指向的 sprd_img_read_op
+		描述符中，
+	(4) 一个switch语句，来匹配read_op的cmd字段
+		SPRD_IMG_GET_SCALE_CAP:
+			get scale capbility
+
+		SPRD_IMG_GET_FRM_BUFFER:
+		SPRD_IMG_GET_PATH_CAP:
+
+----
+write
+sprd_img_write
+	(1) 从file对象的private_data 字段获取 dcam_dev 描述符的指针，保存到dev 
+	(2)	判断cnt, 如果小于sprd_img_write_op 描述符的大小，错误返回。
+	(3) 从用户空间拷贝数据 copy_from_user,拷贝到write_op指向的 sprd_img_write_op
+		描述符中，
+	(4) 一个switch语句，来匹配write_op的cmd字段
+		SPRD_IMG_STOP_DCAM:
+		SPRD_IMG_FREE_FRAME:
+
+----
+SPRD_IMG_IO_STREAM_ON:
+
+----
+SPRD_IMG_IO_STREAM_OFF
+
+--------------------------------------------------------------------------------
+

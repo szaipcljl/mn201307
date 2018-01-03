@@ -3530,7 +3530,7 @@ ssize_t sprd_img_write(struct file *file, const char __user * u_data, size_t cnt
 		return -EFAULT;
 
 	if (cnt < sizeof(struct sprd_img_write_op)) {
-		printk("sprd_img_write: error, cnt %ld read_op %ld \n", cnt, sizeof(struct sprd_img_write_op));
+		printk("sprd_img_write: error, cnt %ld write_op %ld \n", cnt, sizeof(struct sprd_img_write_op));
 		return -EIO;
 	}
 

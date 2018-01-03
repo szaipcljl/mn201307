@@ -1,0 +1,135 @@
+
+
+
+struct dcam_dev 代表一个dcam(digital camera module)
+
+================================================================================
+DCAM将review trim指定区域的图像进行scale down处理，然后显示在LCD指定的区域上。
+一个典型的preview流程如下所述：
+{
+	...
+	打开DCAM设备
+	...
+	设置Preview参数
+	启动Camera Preview
+	...
+	停止Preview
+	...
+	关闭设备
+	...
+}
+
+
+================================================================================
+1. sturct dcam_dev
+
+struct dcam_dev {
+	struct mutex             dcam_mutex;
+	struct semaphore         irq_sem;
+	atomic_t                 users;
+	struct dcam_info         dcam_cxt;
+	atomic_t                 stream_on;
+	uint32_t                 stream_mode;
+	struct dcam_queue        queue;
+	struct timer_list        dcam_timer;
+	atomic_t                 run_flag;
+	uint32_t                 got_resizer;
+	struct proc_dir_entry*   proc_file;
+	struct semaphore         flash_thread_sem;
+	struct task_struct*      flash_thread;
+	uint32_t                 is_flash_thread_stop;
+	uint32_t                 frame_skipped;
+	struct semaphore         zoom_thread_sem;
+	struct task_struct*      zoom_thread;
+	uint32_t                 is_zoom_thread_stop;
+	uint32_t                 zoom_level;
+	uint32_t                 channel_id;
+	void                     *driver_data;
+};
+
+2. sprd_img_read_op
+
+3. sprd_img_write_op
+
+
+
+================================================================================
+Camera的Capture流程
+DCAM将capture trim指定区域的图像压缩成JPEG格式，
+一个典型的capture流程如下:
+{
+	...
+	打开DCAM设备
+	...
+	设置Preview参数
+	启动Camera Preview
+	...
+	设置Capture参数
+	启动Capture操作
+	...
+	等待Capture操作结束
+	获取压缩数据
+	释放数据
+	...
+	关闭设备
+	...
+}
+================================================================================
+
+open "sprd_image" 设备文件时：
+	(1) file对象的private_data 字段保存着 杂项字符设备描述符的地址，
+	(2) 杂项字符设备描述符的this_device字段的 of_node 成员，
+		保存着 device_node 描述符的地址。enable dcam module 时使用。
+
+		sturct file
+        +---------------+
+        | ...           |           
+  +-----+ private_data  |          
+  |     +---------------+           
+  |(1)                                 
+  |     struct miscdevice  
+  +---->+-----------------+ 
+        | ...             | 
+        | this_device     +---+
+        |                 |   |
+        +-----------------+   |                                   
+                              | (2)                               
+                              |
+         struct device        |
+         +----------------+<--+
+         | ...            | 
+ +-------+ of_node        | 
+ |       +----------------+              
+ |(2)                                                        
+ |
+ |                                           
+ |        struct device_node       
+ +------>+------------------------+          
+         |                        |          
+         |                        |                          
+         +------------------------+
+
+	open 之后，file 对象中 private_data 字段：
+
+
+		sturct file
+        +---------------+
+        | ...           |           
+  +-----+ private_data  |          
+  |     +---------------+           
+  |(3)                                 
+  |     struct dcam_dev  
+  +---->+-----------------+ 
+        | ...             | 
+  +-----+ driver_data     |    
+  |     |                 |    
+  |     +-----------------+                                       
+  |                            
+  |
+  |       struct miscdevice       
+  +----->+------------------------+          
+         |                        |          
+         |                        |                          
+         +------------------------+
+
+
