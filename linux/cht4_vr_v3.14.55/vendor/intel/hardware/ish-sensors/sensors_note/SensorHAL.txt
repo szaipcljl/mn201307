@@ -1,0 +1,36 @@
+HAL
+
+================================================================================
+vr_sensors/SensorHAL.cpp
+
+	定义一个 sensors_module_t 类型的结构体，有common 和 get_sensors_list
+	两个成员，其common成员是 hw_module_t 类型的结构体。
+
+	common 的methods 字段，保存 hw_module_methods_t 结构体的地址，这个结构体中只有
+	open 一个成员函数被初始化。
+
+	struct sensors_module_t HAL_MODULE_INFO_SYM = {};
+
+该文件定义了以下几个函数：
+    get_sensors_list
+    initSensors
+    sensorActivate
+    sensorSetDelay
+    sensorBatch
+    sensorFlush
+    sensorPoll
+    close
+    open
+----
+open
+	(1)  初始化一个类型为 sensors_poll_device_1 的static 声明的结构体。
+		//static 声明
+		成员包括common, activate, setDelay, poll, batch, flush;
+		函数定义在本文件。
+
+	(2) 初始化传入的 hw_device_t 对象二级指针
+        *device = &dev.common;
+	(2) 调用 initSensors
+
+
+
