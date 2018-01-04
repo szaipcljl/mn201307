@@ -47,10 +47,113 @@ probe 成功之后，中断就被开启。
 
 
 -----
+读取数据：
 ret = request_threaded_irq(client->irq, NULL, psh_byt_irq_thread,
 	IRQF_TRIGGER_FALLING | IRQF_ONESHOT, "psh_byt", client);
+
+*  @irq: Interrupt line to allocate
+*  @handler: Function to be called when the IRQ occurs.
+*        Primary handler for threaded interrupts
+*        If NULL and thread_fn != NULL the default
+*        primary handler is installed
+*  @thread_fn: Function called from the irq handler thread
+*          If NULL, no irq thread is created
+*  @irqflags: Interrupt type flags
+*  @devname: An ascii name for the claiming device
+*  @dev_id: A cookie passed back to the handler function
+
+    
+psh_byt_irq_thread
+	(1) 调用 dev_get_drvdata 获得 pah_ia_priv 描述符的地址，
+	(2) 调用 read_psh_data(ia_data);
+----
+read_psh_data
+每次中断时，irq handler thread 会通过thread_fn 调用 read_psh_data
+读数据。
+read_psh_data
+	(1) 从psh_ia_priv 描述符的 platform_priv 字段获得 psh_ext_if 描述符的
+		地址;
+	(2) 定义2个spi_transfer 结构体：
+		定义一个 spi_transfer 结构体,名为xfer_fh，rx_buf 字段初始化为 frame_head 描述符的
+		地址, len 字段为该类型的长度。
+		再定义一个 spi_transfer 类型的结构体，名为 xfer_payload 
+	(d1) //调用 gpio_get_value 获得中断 gpio 的值，应为 debug 用。
+	(3) Loop read till error or no more data:
+		<1> 检查 psh_ia_priv 描述符的 cmd_in_progress 字段，如果为 CMD_RESET,
+			则跳出循环; 如果为CMD_INVALID, 则调用 schedule ;
+		<2> 检查 sequent_dummy， 如果>=2，跳出循环，需要检查fw。
+		<3> Read frame header
+			调用 spi_message_init 来初始化 spi_message;
+			调用 spi_message_add_tail 来将 spi_message 添加到 spi_transfer 的
+				transfer_list 的尾部; 通过 spi_message 中内嵌的名为 transfers 
+				字段来链接。
+			调用 spi_sync 来 blocking/synchronous SPI data transfers. 
+		(d2) //在 spi_sync 前后调用，ktime_get_ts, 计算耗时, debug用
+		<4> check 读到的 frame_head 的 sign 字段，如果是LBUF_CELL_SIGN, 进一步检查
+			frame_head 的length 字段，如果>LBUF_MAX_CELL_SIZE, 则 frame size is too
+			big, 设置错误码，跳出循环; sign 不是 LBUF_CELL_SIGN,则进一步检查sign或
+			length  二者是否有一个不为0,如果是，设置错误码，跳出循环，如果都为0.
+			sequent_dummy加1,continue 循环.
+		<5> 保存 frame_head 的length到局部变量len和xfer_payload.len 中.
+		<6> Read main frame 
+			调用 spi_message_init, spi_message_add_tail, spi_sync
+			为 xfer_payload 这个 spi_transfer
+		<7> 循环, 调用 ia_handle_frame 处理psh_frame 数组的数据,当前读的数据> 250，将 cur_read
+			清0, 并调用 sysfs_notify 来唤醒在读写属性文件(sysfs节点)时因调用select()
+			或poll()而阻塞的用户进程. 节点的名字 data_size.
+			直到 len <= 0时退出循环。
+		<8> 如果ENABLE_RPM,相关 pm_runtime_ 操作。
+		<9> 如果cur_read 不为0, 再调用 sysfs_notify, 节点名 “data_size”;
+			//degug: 此处计算并打印 elapsed time
+		<9> 如果 loop >8, 调用queue_work//这里看来似乎loop不会大于8,
+			遗留代码？还是待完成？
+--
+Q:
+1.//应用层select "data_size" 节点，会阻塞，如果有数据，会读data 节点吗？
+数据放在哪里?
+spi_transfer 结构体的rx_buf 字段， 为 psh_ext_if描述符的 psh_frame 数组的地址.
+
+2. 两个 spi_transfer 用处？
+
+
+----
+ia_handle_frame
+
+----
+工作队列：
+psh_work_func
+	如果 psh_ext_if 描述符的 irq_disabled 字段为0, 即开中断，
+	该工作函数调用 disable_irq() 关中断，并设置 psh_ext_if 
+	描述符的 irq_disabled 字段为1.
+
+目的？何时？
+在 read_psh_data 函数中，如果 loop > 8时，调用 queue_work 把函数插入到工作队列,
+看起来没什么用？
+
+================================================================================
+发送命令：
+process_send_cmd
+处理发送到 sensor hub的命令
+
 		
+================================================================================
+电源管理：
+dev_pm_ops 结构体中，
+	调用辅助宏SET_SYSTEM_SLEEP_PM_OPS 设置 suspend
+	和 resume 等相关字段,其余字段设置为默认的。
+	调用辅助宏 SET_RUNTIME_PM_OPS 设置 runtime_suspend 和 runtime_resume
+	字段，
 
+static const struct dev_pm_ops psh_byt_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(psh_byt_suspend,
+			psh_byt_resume)
+	SET_RUNTIME_PM_OPS(psh_byt_runtime_suspend,
+			psh_byt_runtime_resume, NULL)
+};
 
+这个结构体的地址，保存包spi_driver结构体的driver 成员的pm字段中。
 
-
+================================================================================
+debug
+1. interrupt gpio
+2. time

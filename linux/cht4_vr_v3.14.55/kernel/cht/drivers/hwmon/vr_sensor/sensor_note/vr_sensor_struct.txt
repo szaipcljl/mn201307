@@ -1,6 +1,8 @@
 struct
 
-
+数据怎么组织起来的？结构体的关系
+数据 buf 链路
+命令 传递 链路
 ================================================================================
 1. psh_ext_if
 
@@ -24,6 +26,7 @@ struct psh_ext_if {
 };
 
 2. psh_ia_priv
+    顶层的代表 sensorhub 的结构?
 
 struct psh_ia_priv {
 	struct loop_buffer *lbuf; /* loop bufer, if have */
@@ -41,9 +44,27 @@ struct psh_ia_priv {
 	u32 load_in_progress;
 	u32 status_bitmask;
 
-	void *platform_priv;
+	void *platform_priv; //psh_ext_if 描述符地址
 };
 
+3. struct frame_head
+
+struct frame_head {
+	u16 sign;
+	u16 length;
+};
+
+4. struct cmd_resp
+
+struct cmd_resp {
+	u8 tran_id;
+	u8 type;
+	u8 sensor_id;
+	u16 data_len;
+	char buf[0];
+} __packed;
+
+5.
 ================================================================================
 dev_set_drvdate
 dev_get_drvdata

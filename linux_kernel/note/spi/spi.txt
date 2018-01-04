@@ -31,3 +31,15 @@ pxa2xx_spi_probe() //spi-pxa2xx.c
 	|-- spi_register_master() //register SPI master controller
 		|-- spi_match_master_to_boardinfo()
 				|-- spi_new_device() //master->bus_num == bi->bus_num
+
+
+========
+spi 传输
+定义1个spi_transfer 结构体：
+声明一个 struct spi_message msg;
+
+(1) 调用 spi_message_init 来初始化 spi_message;
+(2) 调用 spi_message_add_tail 来将 spi_message 添加到 spi_transfer 的
+	transfer_list 的尾部; 通过 spi_message 中内嵌的名为 transfers 
+	字段来链接。
+(3) 调用 spi_sync 来 blocking/synchronous SPI data transfers. 
