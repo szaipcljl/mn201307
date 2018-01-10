@@ -1,0 +1,199 @@
+
+bxtp use kf4abl.c, not use kernelflinger.c
+================================================================================
+Secure Digital Input Output(SDIO), a type of Secure Digital card interface. It can be
+used as an interface for input or output devices
+
+hardware/intel/kernelflinger/
+================================================================================
+
+              +-----------------------+
+              |   rpmb_storage.c      |
+              |                       |
+              +-----------------------+
+                         ^
+                         |
+                         |
+                         v
+              +-----------------------+
+              |     rpmb.c            |
+              |                       |
+              +-----------------------+
+
+
+
+
+================================================================================
+libkernelflinger/rpmb_storage.c 
+
+对上提供操作rpmb的统一接口， 屏蔽了真实和模拟的rpmb的区别，通过引入 一个名叫
+rpmb_ops的全局操作表实现。
+
+rpmb_storage_init 对rpmb_ops 操作表初始化。
+
+program_rpmb_key 对外提供的接口，通过rpmb_ops操作表的对应函数，来区分real或simulate,
+real或simulate 对应的不同函数在 初始化时填充到rpmb_ops操作表中， 操作表作为全局变量，
+再调用 program_rpmb_key 函数时，其函数内部进一步调用rpmb_ops操作表中的函数，进而实现
+了对上 提供统一的接口。 操作表rpmb_ops
+此处是作为全局变量，也可以作为相应对象的成员，这样再调用时需要传入具体对象，kernel
+中这种用法。
+
+类似program_rpmb_key 这种形式的(xx_rpmb_xx)，对外提供的接口是通过调用rpmb_ops操作表
+中具体函数的进一步封装。 
+
+向kf4abl.c提供的接口:
+	set_rpmb_key
+	is_rpmb_programed
+	program_rpmb_key
+	rpmb_storage_init
+
+向avb/libavb/uefi_avb_ops.c 提供的接口:
+	read_rpmb_rollback_index
+	write_rpmb_rollback_index
+
+向 libfastboot/fastboot_oem.c提供的接口：
+	erase_rpmb_all_blocks
+
+向 kernelflinger/vars.c 提供的接口：
+	write_rpmb_device_state
+	read_rpmb_device_state
+
+向 libqltipc/ql-tipc/libtipc.c 提供的接口：
+	write_rpmb_keybox_magic
+	read_rpmb_keybox_magic
+
+本文件层次：
+rpmb 统一的对外接口 -> fpmb_ops 操作表 -> rpmb 具体的接口
+
+--------------------------------------------------------------------------------
+libkernelflinger/rpmb.c
+rpmb 更底层的接口 
+emmc_xx 或xx_emmc 样子
+
+struct emmc_rpmb_ops emmc_rpmb_ops_sdio;
+static struct emmc_rpmb_ops *def_emmc_rpmb_ops = &emmc_rpmb_ops_sdio;
+
+对上提供的接口，都是调用 def_emmc_rpmb_ops 中的具体成员函数的封装，
+
+本文件层次：
+rpmb 对外提供的接口 -> def_emmc_rpmb_ops 操作表 -> rpmb 具体接口
+
+emmc_rpmb_init
+	对外提供的，初始化 def_emmc_rpmb_ops 操作表 接口,
+
+对 libqltipc/ql-tipc/storage_ops_osloader.c 提供的接口：
+	get_emmc
+	get_emmc_partition_num
+	emmc_partition_switch
+	emmc_rpmb_send_request
+	emmc_rpmb_get_response
+
+对 libkernelflinger/rpmb_storage.c 提供的接口：
+	emmc_program_key
+	emmc_get_counter
+	emmc_read_rpmb_data
+	emmc_write_rpmb_data
+
+
+--------------------------------------------------------------------------------
+libkernelflinger/vars.c
+
+向 kf4abl.c 提供的接口：
+	boot_state_to_string
+	device_is_unlocked
+	get_serial_number
+	set_reboot_reason
+
+向 libkernelflinger/android.c 提供的接口：
+	boot_state_to_string
+	get_disable_watchdog
+	get_property_bootloader
+	get_property_name
+	get_property_brand
+	get_property_model
+	get_property_device
+	get_device_id
+	get_serial_number
+	get_reboot_reason
+	del_reboot_reason
+
+向 libfastboot/fastboot_oem.c 提供的接口： 
+	get_off_mode_charge
+	set_off_mode_charge
+	set_crash_event_menu
+	set_slot_fallback
+	reprovision_state_vars
+	erase_efivars
+	set_watchdog_counter_max
+
+向 kernelflinger.c 提供的接口：
+	get_off_mode_charge
+	get_crash_event_menu
+	get_oemvars_update
+	set_oemvars_update
+	device_is_unlocked
+	get_watchdog_status
+	reset_watchdog_status
+	set_watchdog_counter
+	set_watchdog_time_reference
+	get_watchdog_counter_max
+	is_reboot_reason
+	del_reboot_reason
+	blpolicy_is_flashed
+
+
+向 ux.c 提供的接口：
+	get_display_splash
+
+向 libkernelflinger/slot.c 提供的接口：
+	get_slot_fallback
+
+向 libkernelflinger/lib.c 提供的接口：
+	device_is_class_A
+	min_boot_state_policy
+
+向 libfastboot/fastboot.c 提供的接口：
+	get_current_state
+	get_current_state_string
+
+向 libfastboot/fastboot_flashing.c 提供的接口：
+	get_current_state
+	set_current_state
+	device_is_unlocked
+	device_is_locked
+	device_is_provisioning
+
+向 libfastboot/intel_variables.c 提供的接口：
+	intel_variables.c
+	get_serial_number
+
+向 libfastboot/fastboot_ui.c 提供的接口：
+	get_current_state_string
+	get_current_state_color
+	get_serial_number
+
+向 libfastboot/info.c 提供的接口:
+	get_property_device
+
+向 libavb/uefi_avb_ops.c 提供的接口：
+	device_is_unlocked
+
+向 rpmb_storage.c 提供的接口：
+	get_serial_number
+
+向 libefiusb/usb.c 提供的接口：
+	get_serial_number
+
+向 libfastboot/authenticated_action.c 提供的接口：
+	get_oak_hash
+
+本文件内使用的接口：
+	get_current_boolean_var
+	set_boolean_var
+	set_provisioning_mode
+	get_serialno_var
+	...
+	其他接口也可能被本文件使用;
+
+--------------------------------------------------------------------------------
+

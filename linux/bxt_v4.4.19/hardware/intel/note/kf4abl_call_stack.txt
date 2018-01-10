@@ -1,0 +1,355 @@
+kf4abl
+
+hardware/intel/kernelflinger/
+
+libkernelflinger/rpmb_storage.c
+================================================================================
+efi_main:
+
+efi_main	//kf4abl.c
+|-> program_rpmb_key //libkernelflinger/rpmb_storage.c
+	|-> rpmb_ops.program_rpmb_key	//rpmb_storage.c; real or simulate
+		<=> program_rpmb_key_real	//rpmb_storage.c; rpmb_storage_init: init rpmb_ops
+			|-> memcpy
+			|-> mmc_program_key
+				|-> def_emmc_rpmb_ops->emmc_program_key //&emmc_rpmb_ops_sdio
+					<=> emmc_program_key_sdio	//rpmb.c
+						|-> memcpy
+						|-> emmc_rpmb_send_request_sdio
+							|-> emmc_rpmb_send_blockcount_sdio
+								|-> uefi_call_wrapper
+							|-> memcpy
+							|-> uefi_call_wrapper
+						|-> emmc_rpmb_request_response_sdio
+							|-> emmc_rpmb_send_request_sdio
+							|-> emmc_rpmb_get_response_sdio
+								|-> emmc_rpmb_send_blockcount_sdio
+									|-> uefi_call_wrapper
+								|-> uefi_call_wrapper
+								|-> memcpy
+								|-> FreePool
+|-> boot_android
+	|-> load_boot_image
+	|-> FreePool
+	|-> validate_bootimage
+	|-> load_tos_image
+	|-> get_bootimage_header
+	|-> start_boot_image
+
+================================================================================
+1. read
+
+(1) read_rpmb_rollback_index_real:
+
+efi_main
+|-> avb_boot_android //kf4abl.c
+	|-> avb_update_stored_rollback_indexes_for_slot //avb_init.c; rdrbid_caller-1
+		|-> data->ops.read_rollback_index = read_rollback_index;
+		// uefi_avb_ops_new: init; avb/libavb/uefi_avb_ops.c
+			<=> read_rollback_index	// avb/libavb/uefi_avb_ops.c
+				|-> read_rpmb_rollback_index	// rpmb_storage.c
+					|-> rpmb_ops.read_rpmb_rollback_index
+						<=> read_rpmb_rollback_index_real //rpmb_storage.c
+							|-> emmc_read_rpmb_data
+							|-> memcpy
+------
+
+{
+<<avb_load_verify_boot_image>>
+<<load_boot_image>>
+<<efi_main>>
+<<avb_boot_android>>
+<<fastboot_slot_get_active>>
+<<setup_command_line>>
+<<android_image_load_partition_avb>>
+<<setup_command_line_abl>>
+}
+|-> slot_get_active	//slot_set_active; slot_avb.c
+	|-> avb_ab_flow	//avb/libavb_ab/avb_ab_flow.c; asv_caller-1
+		|-> avb_slot_verify //avb/libavb/avb_slot_verify.c
+			|-> load_and_verify_vbmeta
+			//recursive call; avb/libavb/avb_slot_verify.c; rdrbid_caller-2
+				|-> data->ops.read_rollback_index = read_rollback_index; // uefi_avb_ops_new
+				//...
+
+
+
+---
+efi_main
+|-> avb_boot_android	//kf4abl.c; asv_caller-2
+	|-> avb_slot_verify
+---
+
+...
+avb_load_verify_boot_image //kernelflinger.c
+|-> android_image_load_partition_avb
+	//libkernelflinger/android.c; asv_caller-3
+	|-> avb_slot_verify
+-----------
+avb_ab_flow
+|-> data->ops.read_rollback_index = read_rollback_index; // uefi_avb_ops_new
+//...
+--------------------------------------------------------------------------------
+(2) read_rpmb_rollback_index
+	=> read_rpmb_rollback_index_real
+
+(3) read_rollback_index
+	=> read_rpmb_rollback_index
+		=> read_rpmb_rollback_index_real
+--------------------------------------------------------------------------------
+(4) trusty_read_rollback_index:
+
+trusty_read_rollback_index // libqltipc/ql-tipc/avb.c
+|-> avb_do_tipc
+
+--------------------------------------------------------------------------------
+(5) emmc_read_rpmb_data_sdio
+
+{
+<<emmc_read_rpmb_data>>
+<<write_rpmb_device_state_real>>
+<<read_rpmb_device_state_real>>
+<<write_rpmb_rollback_index_real>>
+<<read_rpmb_rollback_index_real>>
+<<write_rpmb_keybox_magic_real>>
+<<read_rpmb_keybox_magic_real>>
+}
+|-> def_emmc_rpmb_ops->emmc_read_rpmb_data
+	<=> .emmc_read_rpmb_data = emmc_read_rpmb_data_sdio,
+		<=> emmc_read_rpmb_data_sdio
+
+---------
+read_rpmb_device_state_real:
+emmc_read_rpmb_data:
+
+{
+<<cmd_flash>>
+<<fastboot_run_cmd>>
+<<is_already_in_state>>
+<<get_current_state_string>>
+<<get_current_state_color>>
+<<device_is_unlocked>>
+<<device_is_locked>>
+<<device_is_provisioning>>
+}
+|-> get_current_state	//libkernelflinger/vars.c
+	|-> read_rpmb_device_state
+		|-> rpmb_ops.read_rpmb_device_state = read_rpmb_device_state_real; //rpmb_storage.c
+			<=> read_rpmb_device_state_real
+				|-> emmc_read_rpmb_data
+					|-> def_emmc_rpmb_ops->emmc_read_rpmb_data
+
+---------
+
+
+
+
+
+
+================================================================================
+2. write:
+	force_unlock
+
+(1) emmc_write_rpmb_data:
+emmc_write_rpmb_data_sdio:
+
+BOOTLOADER_POLICY //is not defined?
+
+static struct fastboot_cmd COMMANDS[] = { //libfastboot/fastboot_oem.c
+	//...
+	{ "get-action-nonce",		LOCKED,		cmd_oem_get_action_nonce }
+	//...
+};
+cmd_oem_get_action_nonce	//libfastboot/fastboot_oem.c
+|-> authenticated_action_new_nonce	//libfastboot/authenticated_action.c
+	|-> for (i = 0; i < ARRAY_SIZE(ACTIONS); i++)
+			if (!strcmp((CHAR8 *)ACTIONS[i].name, (CHAR8 *)action_name)) {
+				action = &ACTIONS[i];
+				break;
+			}
+----
+ACTIONS[i]: //here
+static const action_t ACTIONS[] = {//libfastboot/authenticated_action.c
+	{ 0, "force-unlock", force_unlock }
+};
+
+force_unlock	// libfastboot/authenticated_action.c
+|-> change_device_state //fastboot_flashing.c
+	|-> set_current_state //vars.c
+		|-> write_rpmb_device_state //rpmb_storage.c
+			|-> rpmb_ops.write_rpmb_device_state
+			<=> rpmb_ops.write_rpmb_device_state = write_rpmb_device_state_real;
+				<=> write_rpmb_device_state_real //rpmb_storage.c
+					|-> emmc_write_rpmb_data //rpmb.c
+						|-> def_emmc_rpmb_ops->emmc_write_rpmb_data
+							<=> .emmc_write_rpmb_data = emmc_write_rpmb_data_sdio, //rpmb.c
+								<=> emmc_write_rpmb_data_sdio //rpmb.c
+
+--------------------------------------------------------------------------------
+(2) flash_write:
+
+<<efi_main>> //kf4abl.c
+------
+<<efi_main>> //installer.c
+<<enter_fastboot_mode>> //kernelflinger/kf4abl.c
+|-> fastboot_start	//libfastboot/fastboot.c
+	|-> fastboot_init	//libfastboot/fastboot.c
+		|-> fastboot_register(&COMMANDS[i]); // for loop;Register commands
+		|-> fastboot_oem_init
+		|->	fastboot_flashing_init
+----
+<<fastboot_init>> //libfastboot/fastboot.c
+<<fastboot_oem_init>> //libfastboot/fastboot_oem.c
+<<fastboot_flashing_init>> //libfastboot/fastboot_flashing.c
+|-> static struct fastboot_cmd COMMANDS[] = {	//libfastboot/fastboot.c
+		{ "download",		LOCKED,		cmd_download },
+		{ "flash",		LOCKED,		cmd_flash },
+		{ "erase",		UNLOCKED,	cmd_erase },
+		{ "getvar",		LOCKED,		cmd_getvar },
+		{ "boot",		UNLOCKED,	cmd_boot },
+		{ "continue",		LOCKED,		cmd_continue },
+		{ "reboot",		LOCKED,		cmd_reboot },
+		{ "reboot-bootloader",	LOCKED,		cmd_reboot_bootloader },
+		{ "set_active",		UNLOCKED,	cmd_set_active }
+	};
+	|-> COMMANDS[1].handle
+		<=> cmd_flash	//libfastboot/fastboot.c
+------
+<<cmd_flash>>
+<<flash_file>> //could not find the caller
+|-> flash	//libfastboot/flash.c
+	|-> for (i = 0; i < ARRAY_SIZE(LABEL_EXCEPTIONS); i++)
+			if (!StrCmp(LABEL_EXCEPTIONS[i].name, label))
+				return LABEL_EXCEPTIONS[i].flash_func(data, size);
+		<=> static struct label_exception {	//libfastboot/flash.c
+				CHAR16 *name;
+				EFI_STATUS (*flash_func)(VOID *data, UINTN size);
+			} LABEL_EXCEPTIONS[] = {
+				//...
+				{ BOOTLOADER_LABEL, flash_bootloader },
+				//...
+			};
+	|-> flash_bootloader	//libfastboot/bootloader.c
+
+-----
+flash_file  //libfastboot/flash.c; could not find caller
+|-> flash //flash.c
+
+-----
+<<flash_bootloader>>
+<<flash>>
+flash_partition //libfastboot/flash.c
+|-> flash_sparse
+	|-> flash_chunk //spare.c
+		|-> flash_raw_data //libfastboot/spare.c
+
+
+
+-----
+<<flash_fill>>
+<<flash_new_bootimage>>
+<<flash_partition>>
+<<flush_buffer>>
+<<flash_raw_data>>
+|-> flash_write	//libfastboot/flash.c
+
+
+--------------------------------------------------------------------------------
+write_rpmb_rollback_index_real:
+
+<<avb_load_verify_boot_image>>	<- efi_main//kernelflinger.c
+<<load_boot_image>>	<- boot_android //kf4abl.c <- efi_main //kf4abl.c
+<<efi_main>>
+<<avb_boot_android>>	<- efi_main //kf4abl.c
+<<fastboot_slot_get_active>> <- publish_slots //fastboot.c
+<<setup_command_line>> <- android_image_start_buffer //android.c 
+					<- install_boot //install.c; static function
+<<android_image_load_partition_avb>> <- load_tos_image //trusty.c
+				<- boot_android //kf4abl.c <- efi_main //kf4abl.c
+<<setup_command_line_abl>> <- android_image_start_buffer_abl //android.c
+|-> slot_get_active //libkernelflinger/slot_avb.c
+	|-> avb_ab_flow
+
+-------
+<<process_bootimage>> <- enter_fastboot_mode //static function
+<<start_boot_image>> <- start_boot_image //static function
+|-> android_image_start_buffer_abl //android.c
+	|-> <<setup_command_line_abl>> 
+--------
+<<avb_ab_flow>>
+<<avb_update_stored_rollback_indexes_for_slot>>
+|-> data->ops.write_rollback_index = write_rollback_index;
+	<=> write_rollback_index
+		|-> write_rpmb_rollback_index //rpmb_storage.c
+			|-> rpmb_ops.write_rpmb_rollback_index
+				<=> rpmb_ops.write_rpmb_rollback_index = write_rpmb_rollback_index_real;
+					//rpmb_storage.c; rpmb_storage_init
+					<=> write_rpmb_rollback_index_real //libkernelflinger/rpmb_storage.c
+						|-> emmc_write_rpmb_data	//libkernelflinger/rpmb.c
+							|-> def_emmc_rpmb_ops->emmc_write_rpmb_data
+								<=> .emmc_write_rpmb_data = emmc_write_rpmb_data_sdio,
+
+--------------------------------------------------------------------------------
+
+
+trusty_write_rollback_index //avb.c
+
+================================================================================
+struct
+
+static rpmb_storage_t rpmb_ops;
+typedef struct rpmb_storage {
+	BOOLEAN (*is_rpmb_programed)(void);
+	EFI_STATUS (*program_rpmb_key)(UINT8 *key);
+
+	EFI_STATUS (*write_rpmb_device_state)(UINT8 state);
+	EFI_STATUS (*read_rpmb_device_state)(UINT8 *state);
+
+	EFI_STATUS (*write_rpmb_rollback_index)(size_t index, UINT64 in_rollback_index);
+	EFI_STATUS (*read_rpmb_rollback_index)(size_t index, UINT64 *out_rollback_index);
+
+	EFI_STATUS (*write_rpmb_keybox_magic)(UINT16 offset, void *buffer);
+	EFI_STATUS (*read_rpmb_keybox_magic)(UINT16 offset, void *buffer);
+} rpmb_storage_t;
+---------------
+
+static struct emmc_rpmb_ops *def_emmc_rpmb_ops = &emmc_rpmb_ops_sdio;
+struct emmc_rpmb_ops {
+	EFI_STATUS (*get_emmc)(void **rpmb_dev, EFI_HANDLE disk_handle);
+	EFI_STATUS (*emmc_program_key)(void *rpmb_dev,
+			const void *key, RPMB_RESPONSE_RESULT * result);
+	EFI_STATUS (*get_emmc_partition_num)(void *rpmb_dev,
+			UINT8 * current_part);
+	EFI_STATUS (*emmc_partition_switch)(void *rpmb_dev, UINT8 part);
+	EFI_STATUS (*emmc_get_counter)(void *rpmb_dev,
+			UINT32 *write_counter, const void *key,
+			RPMB_RESPONSE_RESULT * result);
+
+	EFI_STATUS (*emmc_read_rpmb_data)(void *rpmb_dev,
+			UINT16 blk_count, UINT16 blk_addr, void *buffer,
+			const void *key, RPMB_RESPONSE_RESULT * result);
+	EFI_STATUS (*emmc_write_rpmb_data)(void *rpmb_dev,
+			UINT16 blk_count, UINT16 blk_addr, void *buffer,
+			const void *key, RPMB_RESPONSE_RESULT * result);
+
+	EFI_STATUS (*emmc_rpmb_send_request)(void *rpmb_dev,
+			rpmb_data_frame * data_frame, UINT8 count,
+			BOOLEAN is_rel_write);
+	EFI_STATUS(*emmc_rpmb_get_response)(void *rpmb_dev,
+			rpmb_data_frame * data_frame, UINT8 count);
+
+};
+
+================================================================================
+how does the functions like DevicePathFromHandle be called?
+
+(1) #include <efilib.h>
+	should be include.
+	// external/syslinux/efi64/include/efi/efilib.h
+
+	external/syslinux/efi64/lib/libefi.a
+(2) Android.mk, include static library libefi
+	KERNELFLINGER_STATIC_LIBRARIES := \
+		...\
+		libefi
+

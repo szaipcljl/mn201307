@@ -1,0 +1,185 @@
+
+
+(1) read_rpmb_rollback_index_real:
+
+efi_main
+|-> avb_boot_android //kf4abl.c
+	|-> avb_update_stored_rollback_indexes_for_slot //avb_init.c; rdrbid_caller-1
+		|-> data->ops.read_rollback_index = read_rollback_index;
+		// uefi_avb_ops_new: init; avb/libavb/uefi_avb_ops.c
+			<=> read_rollback_index	// avb/libavb/uefi_avb_ops.c
+				|-> read_rpmb_rollback_index	// rpmb_storage.c
+					|-> rpmb_ops.read_rpmb_rollback_index
+						<=> read_rpmb_rollback_index_real //rpmb_storage.c
+							|-> emmc_read_rpmb_data
+							|-> memcpy
+
+
+----------------
+<<avb_load_verify_boot_image>>	<- efi_main//kernelflinger.c
+<<load_boot_image>>	<- boot_android //kf4abl.c <- efi_main //kf4abl.c
+<<efi_main>>
+<<avb_boot_android>>	<- efi_main //kf4abl.c
+<<fastboot_slot_get_active>> <- publish_slots //fastboot.c
+<<setup_command_line>> <- android_image_start_buffer //android.c 
+					<- install_boot //install.c; static function
+<<android_image_load_partition_avb>> <- load_tos_image //trusty.c
+				<- boot_android //kf4abl.c <- efi_main //kf4abl.c
+<<setup_command_line_abl>> <- android_image_start_buffer_abl //android.c
+|-> slot_get_active	//slot_set_active; slot_avb.c
+	|-> avb_ab_flow	//avb/libavb_ab/avb_ab_flow.c; asv_caller-1
+		|-> avb_slot_verify //avb/libavb/avb_slot_verify.c
+			|-> load_and_verify_vbmeta
+			//recursive call; avb/libavb/avb_slot_verify.c; rdrbid_caller-2
+				|-> data->ops.read_rollback_index = read_rollback_index; // uefi_avb_ops_new
+				//...
+
+
+
+
+---
+efi_main
+|-> avb_boot_android	//kf4abl.c; asv_caller-2
+	|-> avb_slot_verify
+---
+
+...
+avb_load_verify_boot_image //kernelflinger.c
+|-> android_image_load_partition_avb
+	//libkernelflinger/android.c; asv_caller-3
+	|-> avb_slot_verify
+
+----
+avb_ab_flow
+|-> data->ops.read_rollback_index = read_rollback_index; // uefi_avb_ops_new
+//...
+==================================================
+rollback path:
+
+(1) avb_update_stored_rollback_indexes_for_slot //avb_init.c
+
+	ops->read_rollback_index
+
+	if (rollback_index > current_stored_rollback_index) {
+		io_ret = ops->write_rollback_index(ops, n, rollback_index);
+		//..
+	}
+(2) load_and_verify_vbmeta: //avb/libavb/avb_slot_verify.c
+
+	ops->read_rollback_index
+
+	if (vbmeta_header.rollback_index < stored_rollback_index) {
+		//Image rollback index is less than the stored rollback index.
+	}
+
+(3) avb_ab_flow //avb/libavb_ab/avb_ab_flow.c
+
+  /* Update stored rollback index such that the stored rollback index
+   * is the largest value supporting all currently bootable slots. Do
+   * this for every rollback index location.
+   */
+
+      io_ret = ops->read_rollback_index(ops, n, &current_rollback_index_value);
+
+      if (current_rollback_index_value != rollback_index_value) {
+        io_ret = ops->write_rollback_index(ops, n, rollback_index_value);
+		//..
+	  }
+
+==================================================
+(1) [fun1]avb_update_stored_rollback_indexes_for_slot //avb_init.c
+
+efi_main
+|-> avb_boot_android: //boot_target:RECOVERY/NORMAL_BOOT
+
+	(1) avb_init //get avbOps, and then determine whether device is unlocked
+	(2) slot_get_active (-> [fun3]avb_ab_flow -> avb_slot_verify -> [fun2]load_and_verify_vbmeta)
+		//return the pointer to one of the suffixes
+	(3) avb_slot_verify	-> load_and_verify_vbmeta
+		//
+	(4) get_avb_result
+		// set boot_state
+	(5) USE_TRUSTY:
+		requested_partitions[0] = "tos";
+		avb_slot_verify
+		get_avb_result
+		init_trusty_startup_params
+		launch_trusty_os
+		avb_vbmeta_image_verify
+		get_rot_data
+		trusty_ipc_init
+		trusty_ipc_shutdown
+		heci_end_of_post //send EOP message to CSE F
+	(6) boot_state == BOOT_STATE_GREEN:
+			[fun1]avb_update_stored_rollback_indexes_for_slot
+	(7) start_boot_image // orange, red, green,
+
+-----------------
+(2) [fun2]load_and_verify_vbmeta
+
+						|--- "set_active"
+						V
+				|-- cmd_set_active            |<-- load_boot_image  <-- boot_android <-- efi_main
+				|	libfastboot/fastboot.c    |		kf4abl.c        kf4abl.c//USE_AVB not defined
+				V                             |<-- avb_boot_android <-- efi_main[Y]
+		|<-- slot_set_active                  |		kf4abl.c
+		|	 libkernelflinger/slot_avb.c      |<-- fastboot_slot_get_active
+		|                                     |    libfastboot/fastboot.c 
+		|<-- slot_get_active			<-----|<-- setup_command_line <-- android_image_start_buffer
+		|	 libkernelflinger/slot_avb.c	  | 	libkernelflinger/android.c  adnroid.c
+|		V									  |<-- android_image_load_partition_avb <-- load_tos_image
+|<-- avb_ab_flow [fun3] 				      |		libkernelflinger/android.c
+|	 libavb_ab/avb_ab_flow.c				  |<-- setup_command_line_abl <-- android_image_start_buffer_abl
+|											  |		libkernelflinger/android.c
+|<-- avb_boot_android <-- efi_main[Y]
+|    kf4abl.c//USE_AVB defined
+|                                                                        
+|<-- android_image_load_partition_avb <-- load_tos_image   <----|<-- start_trusty (not used)
+|    libkernelflinger/android.c		  libkernelflinger/trusty.c |  libkernelflinger/trusty.c
+v                                                               |<-- boot_android <-- efi_main
+avb_slot_verify //avb_slot_verify.c                             |    kf4abl.c //USE_AVB not defined
+|-> [fun2]load_and_verify_vbmeta
+
+
+The main entry point for verification is avb_slot_verify().
+In particular avb_slot_verify() takes a slot_suffix parameter and its result
+struct AvbSlotVerifyData convey the rollback indexes in the image that was
+-----------------
+(3) [fun3] avb_ab_flow
+
+|<---- slot_get_active
+|
+|<---- slot_set_active
+|
+v
+avb_ab_flow
+
+
+====
+AvbSlotVerifyData contains data needed to boot a particular slot
+and is returned by avb_slot_verify() if partitions in a slot are
+successfully verified.
+
+The main entry point for verification is avb_slot_verify().
+
+====
+rollback index flow:
+
+load_and_verify_vbmeta:
+
+io_ret = ops->read_from_partition(ops,
+								full_partition_name,
+								vbmeta_offset,
+								vbmeta_size,
+								vbmeta_buf,
+//								&vbmeta_num_read);
+|
+V
+avb_vbmeta_image_header_to_host_byte_order((AvbVBMetaImageHeader*)vbmeta_buf,
+										 &vbmeta_header);
+//vbmeta_header is copied from vbmeta_buf
+|
+v
+vbmeta_header.rollback_index < stored_rollback_index
+
+

@@ -1,0 +1,28 @@
+abl call stack
+
+vendor/intel/abl/bootloader_apl/src
+
+================================================================================
+_run_in_car: //[_reset.asm ]
+|-> call	stage0	//;; load the IBBM into CAR, and load stage-1
+	|-> stage0 //[stage0.c]
+		|-> copy_from_SRAM or load_IBBM -> relocate_FIT_data
+		|-> load_stage1 //load_stage2
+			|-> load_image
+				|->	decomp_image
+					|->	copy_to_DRAM
+			|->	memset
+
+
+--------------------------------------------------------------------------------
+_relocate_stage2:	//[_reset.asm ], ;; Load/decompress stage-2 code, data to DRAM.
+|-> call	load_stage2
+	|-> load_stage2 //[stage0.c]
+		|->	relocate_FIT
+		|->	relocate_FIT_data
+		|->	load_image //.data
+		|->	load_image //.text
+		|->	memset
+		|->	init_S2_console_outbuf
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,31 @@
+adapter
+
+drivers/i2c/busses/i2c-sprd.c
+================================================================================
+subsys_initcall(sprd_i2c_init);
+module_exit(sprd_i2c_exit);
+
+sprd_i2c_init:
+	module init 函数中，注册 platform_driver
+	platform_driver_register(&sprd_i2c_driver);
+
+----
+struct platform_driver
+	probe/remove/driver/suspend/resume 字段被静态初始化，
+	driver 字段中的owner/name/of_match_table 字段
+--------------------------------------------------------------------------------
+probe
+sprd_i2c_probe
+	(1)	从 platform_device 描述符的dev字段的of_node 成员获得 device_node的地址;
+	(2) 调用 of_alias_get_id 从 device_node 描述符中获得 id 并保存到 platform_device
+		描述符的 id 字段
+	(3) kzalloc 动态分配一个 sprd_i2c 结构
+	(4) 调用 platform_get_resource 获得 IORESOURCE_MEM 资源
+	(5) 初始化 sprd_i2c 描述符的字段
+		调用 i2c_set_adapdata 将sprd_i2c 描述符地址保存在描述符的adap 字段中;
+		将名字"sprd-i2c" 保存到 sprd_i2c 描述符的name 字段中
+
+
+
+----
+platform_device 在哪里被填充？
