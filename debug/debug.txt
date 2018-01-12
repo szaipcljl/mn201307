@@ -38,3 +38,15 @@ porting driver
 bug 分析
 1. panic
 2. hang
+
+
+================================================================================
+编译器优化相关：
+1. 禁止编译成inline
+	android gcc 编译时，not stripped 的banary找不到符号名，被编译成inline 了，可以
+	显示禁止编译成inline,即在函数定位时，函数名前加上 __attribute__((noinline))
+
+	void __attribute__((noinline)) 
+	readMemoryByte(size_t malicious_x, uint8_t value[2], int score[2])
+
+2. 编译器优化级别

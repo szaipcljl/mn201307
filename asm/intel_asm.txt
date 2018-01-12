@@ -1,0 +1,88 @@
+
+--------------------------------------------------------------------------------
+What is %al in a mov instruction in Assembly?
+
+In 32-bit assembly:  
+
+%al referes to the low byte of the %ax register
+%ah referes to the high byte of the %ax register.
+
+A register is 32-bits (4 bytes). Let's visualize it as such:
+[00000000 00000000 00000000 00000000]
+
+When you operate on the whole 32-bits of the register, you use the %eax
+(extended ax) operand.
+
+%ax referes to the lowest two bytes (16 bits) of the %eax register
+[00000000 00000000 -------- --------]
+
+%al again, referes two the lowest byte in %ax
+[00000000 -------- -------- --------]
+
+and %ah the highest byte in %ax (note: not the highest byte in %eax)
+	[-------- 00000000 -------- --------]
+
+To sum up: 
+
+%eax = [x x x x]
+%ax = [x x - -]
+%al = [x - - -]
+%ah = [- x - -]
+
+
+----
+In a 64 bit machine:
+
+%rax uses all 64 bits
+%eax representation(which is again a part of %rax register) will use only lower
+	32 bits of the 64 bits
+%ax uses the lower 16 bits of %rax register
+%al and %ah are the lower and higher 8 bits of %ax register.
+
+%rax = [x x x x x x x x]
+%eax = [x x x x - - - -]
+%ax
+%al
+%ah
+--------------------------------------------------------------------------------
+In GAS assembly, instructions are suffixed with the letters "b", "s", "w", "l",
+"q" or "t" to determine what size operand is being manipulated.
+
+* b = byte (8 bit)
+* s = short (16 bit integer) or single (32-bit floating point)
+* w = word (16 bit)
+* l = long (32 bit integer or 64-bit floating point)
+* q = quad (64 bit)
+* t = ten bytes (80-bit floating point)
+--------------------------------------------------------------------------------
+ROR - Rotate Right
+ROL - Rotate Left
+--------------------------------------------------------------------------------
+sal shl sar shr
+
+shr src, dest	GAS Syntax	(GNU ASM)
+shr dest, src	Intel Syntax
+
+Logical shift dest to the right by src bits.
+
+shl src, dest	GAS Syntax
+shl dest, src	Intel Syntax
+
+sal (or its synonym shl) left shifts (multiplies) a byte, word, or long value
+for a count specified by an immediate value and stores the product in that byte,
+word, or long respectively. The second variation left shifts by a count
+value specified in the CL register. The high-order bit is shifted into the
+carry flag; the low-order bit is set to 0.
+
+sar right shifts (signed divides) a byte, word, or long value for a count
+specified by an immediate value and stores the quotient in that byte, word,
+or long respectively. The second variation right shifts by a count value
+specified in the CL register. sar rounds toward negative infinity; the
+high-order bit remains unchanged.
+
+shr right shifts (unsigned divides) a byte, word, or long value for a count
+specified by an immediate value and stores the quotient in that byte, word,
+or long respectively. The second variation divides by a count value
+specified in the CL register. shr sets the high-order bit to 0.
+
+

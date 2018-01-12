@@ -11,7 +11,13 @@
 	4)spi
 	5)vfs
 	6)uboot和kernel启动流程
+	7) schedule
+	8) mm
 --------------------------------------------------------------------------------
 板卡级别的驱动开发
 汽车电子，工业电子
 
+Starting with Linux kernel 4.12, KASLR (Kernel Address Space Layout
+Randomizaton) is active by default. This means, that the location of the
+kernel (and also the direct physical map which maps the entire physical memory)
+changes with each reboot.
