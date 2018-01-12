@@ -22,19 +22,8 @@ int main(int argc, const char *argv[])
 	size_t correct = 0, wrong = 0;
 	int progress = 0;
 
-	int i = 8;
-	while (i--)
-		printf("%c\n", "abcd"[(progress++) % 4]);
-
-	printf("\n");
-	i = 8;
-	while (i--)
-		printf("%c\n", "ABCDE"[(progress++) % 4]);
-
-	printf("\n");
-	i = 8;
-	while (i--)
-		printf("%c\n", "123"[(progress++) % 4]);
+	//[] 数组运算符
+	printf("%c\n", "/-\\|"[2]);
 
 	while (1) {
 		correct ++;
