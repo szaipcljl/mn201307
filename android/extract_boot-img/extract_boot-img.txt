@@ -1,0 +1,31 @@
+
+
+boot.img is a small(ish) file that contain two main parts.
+
+	* kernel(important for android)
+	* ramdisk( a core set of instruction & binaries)
+
+Unpack boot.img:
+
+	It contains the following steps:
+
+	1. Download the tool using wget
+		https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/android-serialport-api/android_bootimg_tools.tar.gz
+
+	2. Extract the file using tar xvzf android_bootimg_tools.tar.gz.
+		It contains two binaries:
+
+		* unpackbootimg
+		* mkbootimg
+
+	3. Then execute ./unpackbootimg -i <filename.img> -o <output_path>
+		It will contain,
+
+		* boot.img-zImage     ----> kernel
+		* boot.img-ramdisk.gz ----> ramdisk
+
+		We can extract ramdisk also, using the following command
+			gunzip -c boot.img-ramdisk.gz | cpio -i
+
+After changing the files, we can again pack those files as boot.img using mkbootimg
+

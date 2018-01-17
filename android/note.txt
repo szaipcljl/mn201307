@@ -1,0 +1,30 @@
+
+
+================================================================================
+android O
+
+1|gordon_peak:/ # ls ./dev/block/bootdevice/by-name
+boot_a bootloader data     misc      persistent system_b tos_a vbmeta_a vendor_a 
+boot_b config     metadata multiboot system_a   teedata  tos_b vbmeta_b vendor_b 
+
+gordon_peak:/dev/block/bootdevice/by-name # ls -l
+total 0
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 boot_a -> /dev/block/mmcblk1p2
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 boot_b -> /dev/block/mmcblk1p3
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 bootloader -> /dev/block/mmcblk1p1
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 config -> /dev/block/mmcblk1p18
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 data -> /dev/block/mmcblk1p13
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 metadata -> /dev/block/mmcblk1p8
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 misc -> /dev/block/mmcblk1p7
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 multiboot -> /dev/block/mmcblk1p4
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 persistent -> /dev/block/mmcblk1p14
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 system_a -> /dev/block/mmcblk1p9
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 system_b -> /dev/block/mmcblk1p10
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 teedata -> /dev/block/mmcblk1p15
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 tos_a -> /dev/block/mmcblk1p5
+lrwxrwxrwx 1 root root 20 2011-11-11 11:11 tos_b -> /dev/block/mmcblk1p6
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vbmeta_a -> /dev/block/mmcblk1p16
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vbmeta_b -> /dev/block/mmcblk1p17
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_a -> /dev/block/mmcblk1p11
+lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_b -> /dev/block/mmcblk1p12
+

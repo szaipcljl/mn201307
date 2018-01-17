@@ -97,3 +97,115 @@ hardware
                    +------------+       +------------+
 
 ================================================================================
+3. i2c core 初始化
+3.1 i2c_init 函数用来初始化 i2c core.
+
+	postcore_initcall(i2c_init);
+	//drivers/i2c/i2c-core.c
+
+#define postcore_initcall(fn)       __define_initcall(fn, 2)
+	//include/linux/init.h
+
+	宏定义的函数的初始化顺序：
+	它在arch_initcall, sub_initcall 等宏定义的函数之前执行。
+
+3.2	i2c_init 主要执行过程：
+	(1) 总线注册 bus_register
+	(2) 类注册 class_compat_register
+	(3) 驱动注册 i2c_add_driver(&dummy_driver)
+		/sys/bus/i2c/drivers/dummy	
+
+	bus_register:
+		(1) 将 bus_type_private 与 bus 相关联
+		(2) 初始化 bus_type_private 事件通知链表
+		(3) 设置 bus_type_private 的内嵌的object 中的 kset, ktype
+		(4) 创建该总线所属的子系统集
+		(5) 创建属于该总线的设备和驱动链表
+		(6) 创建该总线的属性文件，方便用户在sysfs 中查看
+			(根据配置不同，在用户空间来是否支持热插拔)
+		(7) 增加引用计数
+
+	初始化完成后，/sys/bus/i2c 目录下可看目录结构
+		/sys/bus/i2c/
+		|-- devices
+		|-- drivers
+		|    |-- dummy
+		|      |-- bind
+		|      |-- uevent
+		|      |`-- unbind
+		|-- drivers_autoprobe
+		|-- drivers_probe
+		|-- uevent
+
+3.2.1 从 sysfs 角度 说明这三个函数分别完成哪些事情
+	bus_register 中完成创建哪些文件：
+		bus_create_file		->	uevent文件
+		kset_create_and_add("devices"...) 	-> devices 目录
+		kset_create_and_add("drivers"...)	-> drivers 目录
+		add_probe_files:
+			bus_create_file(bus, &bus_attr_drivers_probe)	-> drivers_probe
+			bus_create_file(bus, &bus_attr_drivers_autoprobe)	-> drivers_autoprobe
+
+	class_compat_register 所做的事情：	
+		在 /sys/class 目录下创建 i2c-adapter 目录
+
+	i2c_add_driver 为适配器注册驱动程序。
+	dummy_driver 驱动中的 dummy_probe, dummy_remove 函数为空，是为了支持不同的适配器。
+	在此不将代码固定化，core 层只是一个适配层，连接 client 与适配器的中间层。
+	具体适配器的初始化，延迟到内核配置完成之后，确定了某类的适配器之后，这个驱动
+	才会初始化。
+
+4. 适配器的实现
+	drivers/i2c/busses
+	适配器的定义： struct i2c_adapter
+
+
+	在i2c.h文件中，主要定义
+	struct i2c_msg;
+	struct i2c_algorithm;
+	struct i2c_adapter;
+	struct i2c_client;
+	struct i2c_driver;
+	union i2c_smbus_data;
+	struct i2c_board_info;
+
+	设备向总线注册的过程同时会与总线下已经注册的驱动相匹配。
+	对于每种适配器都有自己的通信算法，core层屏蔽了底层硬件的差异。
+
+	i2c_add_adapter - declare i2c adapter, use dynamic bus number
+
+                             +-------------------+
+                             |  i2c_add_adapter  |
+                             |  //i2c-core.c     |
+                             +---------+---------+
+                                       |
+                                       v
+                           +------------------------+
+                           |   i2c_register_adapter |
+                           |  //i2c-core.c          |
+                           +-----------+------------+
+                                       |
+       +--------------------+----------+-------------+------------------------------+
+       |                    |                        |                              |
+       v                    v                        v                              v
++--------------+   +-----------------+   +----------------------------+  +----------------------+
+| 填充adap结构 |   | device_register |   | i2c_scan_static_board_info |  | bus_for_each_drv     |
++--------------+   | //i2c-core.c    |   |  //i2c-core.c              |  | //drivers/base/bus.c |
+                   +--------+--------+   +----------------------------+  +-----+----------------+
+                            |                                                  |
+                            v                                                  v
+             +------------------------+             +---------------------------------------------+
+             |  device_initialize     |             | i2c_do_add_adapter(to_i2c_driver(d), data)  |
+             |  device_add            |             | //其封装是回调函数，最后一个参数传入。      |
+             |  //drivers/base/core.c |             | //i2c_core.c                                |
+             +------------------------+             +-----------------+---------------------------+
+                                                                      |
+                                                                      v
+                                                        +----------------------------+
+                                                        |  i2c_detect(adap, driver)  |
+                                                        |  //i2c_core.c              |
+                                                        +----------------------------+
+
+
+
+
