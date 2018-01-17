@@ -29,9 +29,8 @@ lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vbmeta_b -> /dev/block/mmcblk1p17
 lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_a -> /dev/block/mmcblk1p11
 lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_b -> /dev/block/mmcblk1p12
 
-(1) dd for a device, then copying it ove 
-	gordon_peak:/dev/block/bootdevice/by-name # dd if=/dev/block/mmcblk1p3
-	of=/data/local/tmp/boot.img 
+(1) dd for a device, then copying it over
+	gordon_peak:/dev/block/bootdevice/by-name # dd if=/dev/block/mmcblk1p3 of=/data/local/tmp/boot.img 
 	61440+0 records in
 	61440+0 records out
 	31457280 bytes transferred in 0.669 secs (47021345 bytes/sec)
