@@ -1,5 +1,6 @@
+dbtain an Android system image
 
-
+wget http://newandroidbook.com/tools/imgtool.tgz
 ================================================================================
 android O
 
@@ -27,4 +28,22 @@ lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vbmeta_a -> /dev/block/mmcblk1p16
 lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vbmeta_b -> /dev/block/mmcblk1p17
 lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_a -> /dev/block/mmcblk1p11
 lrwxrwxrwx 1 root root 21 2011-11-11 11:11 vendor_b -> /dev/block/mmcblk1p12
+
+(1) dd for a device, then copying it ove 
+	gordon_peak:/dev/block/bootdevice/by-name # dd if=/dev/block/mmcblk1p3
+	of=/data/local/tmp/boot.img 
+	61440+0 records in
+	61440+0 records out
+	31457280 bytes transferred in 0.669 secs (47021345 bytes/sec)
+
+(2)  # Back on host 
+	adb pull /data/local/tmp/boot.im
+
+(3) # Locating the ANDROID! magic
+	mtest@mclient:~/split_bootimg/boot$  od  -A d -t c  boot.img  | grep "A   N D"
+	0000000   A   N   D   R   O   I   D   ! 360 334 214  \0  \0 200  \0 020
+	7764672 017   d 273   G 003   p 366 223 004 267   !   A   N   D   t 004
+	7920304 034   g   ' 360 002 264 004 215   E   C  \a   e   A   N   D 224
+	7983520   N   1 034 030 274 004 364   !   " 307   0   A   N   D   /   }
+	8117840 345   f 025       ( 031 320 274   % 227   %   A   N   D   H 360
 
