@@ -1,0 +1,44 @@
+platform bus
+
+================================================================================
+platform_driver_register
+|-> __platform_driver_register
+	|-> platform_drv 的driver成员的owner/bus/probe/remove/shutdown初始化
+	|-> call driver_register, 
+
+
+
+================================================================================
+1. __platform_driver_register 中
+drv->driver.bus = &platform_bus_type;
+
+2. 这个bus_type 的match 字段，是driver 和 device 的 match 方方法，即platform_match.
+在 platform_match 中，有四种match方法：
+	(1) OF style match
+		of_driver_match_device
+	(2) ACPI style match
+		acpi_driver_match_device
+	(3) match against the id table
+		platform_match_id
+	(4) driver name match
+		strcmp
+3. 这个  match 方法会在后面回调，
+	driver_register 函数里面的 bus_add_driver 的 driver_attach, 
+	它会调用，bus_for_each_dev, 遍历device, 传入名为__driver_attach
+	的回调函数.
+	__driver_attach 回调函数，会调用driver_match_device, 它实际上通过
+	device_driver 结构的bus成员往回指到match方法，来调用.
+
+int driver_attach(struct device_driver *drv)
+{
+	return bus_for_each_dev(drv->bus, NULL, drv, __driver_attach);
+}
+
+static inline int driver_match_device(struct device_driver *drv,
+				      struct device *dev)
+{
+	return drv->bus->match ? drv->bus->match(dev, drv) : 1;
+}
+---
+ACPI: Advanced Configuration and Power Interface
+高级配置和电源管理接口
