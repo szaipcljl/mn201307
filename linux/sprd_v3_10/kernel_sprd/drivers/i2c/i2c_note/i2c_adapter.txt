@@ -1,6 +1,28 @@
 adapter
 
 drivers/i2c/busses/i2c-sprd.c
+--------------------------------------------------------------------------------
+i2c adapter 以 platform_driver 的形式，注册到platform 总线上.
+
+在init 函数中一般 是调用 platform_driver_register 注册一个 platform_driver ,
+在注册时:
+	(1) 会对 platform_driver 的 driver 字段的各成员进行填充，其中就包括填充
+		bus 成员为 platform_bus_type的地址，
+	(2) 然后调用 driver_register 参数为 platform_driver 的 driver 字段的地址。
+	(3) driver_register 中:
+		a. 检查bus的probe/remove/shutdown 和 device_driver 的probe/remove/shutdown
+			是否有同时定义的，如果有打印一句警告，driver need updating
+		b. 调用driver_find, 检查驱动是否已经注册到总线上，  
+		c. 没有被注册，就调用 bus_add_driver, 添加一个driver 到bus上， 添加的过程
+			中，会匹配 driver 和 总线上的设备，匹配的方法即是platform_bus_type
+			中的 match 字段指向的方法。
+		d. driver_add_groups 创建一组属性
+		e. kobject_uevent, 通过发送一个uevent,通知userspace
+
+platform_driver_register 是对 driver_register 的进一步封装，在填充完
+platform_driver的driver字段后，调用  driver_register。
+
+bus_type 结构的match 字段，指定 match 的方法。
 ================================================================================
 subsys_initcall(sprd_i2c_init);
 module_exit(sprd_i2c_exit);
@@ -29,3 +51,4 @@ sprd_i2c_probe
 
 ----
 platform_device 在哪里被填充？
+================================================================================
