@@ -1,0 +1,14 @@
+register platform bus
+
+================================================================================
+v2.6.12
+
+start_kernel //init/main.c
+|-> rest_init //init/main.c; in the end of start_kernel, call this function
+	|-> kernel_thread(init, NULL, CLONE_FS | CLONE_SIGHAND);
+		<=> init //init/main.c
+			|->do_basic_setup	//init/main.c
+				|-> driver_init	//initialize driver model.  drivers/base/init.c
+					|-> platform_bus_init() //drivers/base/platform.c
+						|-> bus_register(&platform_bus_type);  //drivers/base/bus.c
+
