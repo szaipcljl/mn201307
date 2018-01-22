@@ -1,0 +1,17 @@
+KPTI: kernel page table isolation, CONFIG_PAGE_TABLE_ISOLATION
+
+
+arch/x86/boot/compressed/misc.h
+arch/x86/entry/entry_64.S
+arch/x86/events/intel/ds.c
+arch/x86/include/asm/cpufeatures.h
+arch/x86/include/asm/kaiser.h
+arch/x86/include/asm/pgtable.h
+arch/x86/include/asm/pgtable_64.h
+arch/x86/include/asm/pgtable_types.h
+arch/x86/include/asm/tlbflush.h
+arch/x86/kernel/head_64.S
+arch/x86/mm/Makefile
+arch/x86/mm/kaiser.c
+security/Kconfig
+

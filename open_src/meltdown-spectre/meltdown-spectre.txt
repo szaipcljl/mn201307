@@ -45,3 +45,29 @@ ffffffff9cdbc61d T sys_read
 64bit, 8 bytes, 倒着写，在kallsyms搜索对应的系统调用地址。
 sys_call_table 中保存的是系统调用的地址.
 
+================================================================================
+KPTI:
+内核页表隔离
+Kernel page-table isolation (KPTI or PTI, previously called KAISER) is
+a Linux kernel feature that mitigates the Meltdown security vulnerability
+(affecting mainly Intel's x86 CPUs) and improves kernel hardening against
+attempts to bypass kernel address space layout randomization (KASLR). It works
+by better isolating user space and kernel space memory. KPTI was merged
+into Linux kernel version 4.15, to be released in early 2018, and backported
+to Linux kernels 4.14.11, 4.9.75, 4.4.110. Windows[11] and macOS[12]
+released similar updates. KPTI does not address the related Spectre
+vulnerability.
+
+KAISER:  Kernel Address Isolation to have Side-channels Efficiently Removed
+
+KPTI补丁基于KAISER，它是一个用于缓解不太重要问题的早期补丁，当时业界还未了解到
+Meltdown的存在。
+如果没有KPTI，每当执行用户空间代码（应用程序）时，Linux会在其分頁表中保留整个
+内核内存的映射，并保护其访问。这样做的优点是当应用程序向内核内核发送系统调用或
+收到中斷时，内核页表始终存在，可以避免绝大多数上下文交換相关的开销（TLB刷新、
+页表交换等）。
+
+2005年，Linux内核采用了位址空間配置隨機載入（KASLR）隐匿用户空间中的相关内核地
+址，增加了利用其他内核漏洞的难度。尽管阻止了对这些内核映射的访问，但在此后发现，
+现有的英特尔x86处理器（截至2017年12月）还存在着多处可能泄露这些内存位置的旁路攻
+击，可能绕过KASLR。AMD称其处理器不受这些攻击的影响，所以不需要KPTI作为缓解措施。

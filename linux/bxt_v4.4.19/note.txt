@@ -24,3 +24,6 @@ Intel® Pentium® Processor N4200, Formerly Apollo Lake
 bxtp cpuinfo:
 model name	: Intel(R) Atom(TM) Processor E3900 @ 1.90GHz
 cpu cores	: 4
+================================================================================
+KPTI:
+CONFIG_KAISER (old flag) => CONFIG_PAGE_TABLE_ISOLATION
