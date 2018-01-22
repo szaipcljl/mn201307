@@ -1,0 +1,13 @@
+
+device model:
+1. 驱动安装完，如何通知应用空间？
+	uevent
+	init 进程创建一个socket 监听 event 事件
+
+
+架构多看看
+
+裸板移植经验，bootloader 如何烧录到设备
+
+进程管理：
+1. cgroup

@@ -1,0 +1,87 @@
+SAFE-Trusty
+
+
+
+Google Android Trusty*
+	- Google’s TEE (Trusted Execution Environment) solution for
+	  Android, public in Feb 2016.
+
+	- Google provides an implementation based on ARM TrustZone
+	  security extension.
+
+	- Intel provides hypervisor-based Trusty TEE for IA on SoC Platforms:
+		-APL (BXT-P for IVI), and APL/Brillo
+
+Official site -	https://source.android.com/security/trusty/index.html
+================================================================================
+trusty architectrue on IA/VT-x
+
+
+Android(non-secure world)            | Trusty(secure world)
+                                     |
++-----+  +-----+  +-----+  +-------+ |  +----+ +----+ +----+ +----+ +---------+
+| KM  |  | GK  |  | FP  |  |  SS   | |  | KM | | GK | | FP | | SS | | CryptoS |
+| HAL |  | HAL |  | HAL |  | proxy | |  | TA | | TA | | TA | | TA | | rv. TA  |
++-----+  +-----+  +-----+  +-------+ |  +----+ +----+ +----+ +----+ +---------+
+                                     |  +-------------------------------------+
++----------------------------------+ |  |          Trusty library             |
+|       Trusty library             | |  |    (crypto lib, Trusty APIs...)     |
++----------------------------------+ |  +-------------------------------------+
+------------------------------------ |  ---------------------------------------
++----------------------------------+ | +---------------------------------------+
+|        Trusty drivers            | | |LK kernel & drivers(ipc,irq,mem,virtio)|
+|     (ipc,irq,mem,virtio)         | | +---------------------------------------+
++----------------------------------+ |
+                                     |  +--------------------------------------+
+                                     |  | x86 HAL (MMU, Interrupt, Thread ...) |
+       +---------------+             |  +--------------------------------------+
+       |   x86 SMC     |             |   +-------------+  +--------+  +--------+
+       | adapter layer |             |   |  x86 SMC    |  | Secure |  | Seed/H |
+       +---------------+             |   |adapter layer|  | Ticks  |  |  uk    |
+                                     |   +-------------+  +--------+  +--------+
+                                     |
+
++------------------------------------------------------------------------------+
+|                      Secure Monitor (Hypervisor)                             |
++------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------+
+|   +---------+                      +--------+                                |
+|   |  IAFW   |                      |  CSE   |                 Firmware Layer |
+|   +---------+                      +--------+                                |
++------------------------------------------------------------------------------+
+ 
++------------------------------------------------------------------------------+
+|                  Intel H/W Soc (Atom/VT-x, VT-d, mlA)                        |
++------------------------------------------------------------------------------+
+
+
+
+
+----
+android FP HAL: Google + Intle 实现
+Trusty FP HAL, CryptoS rv. TA: Google + Intel 实现
+android x86 SMC adapter layer 及以下是intel实现
+Trusty x86 HAL 及以下，是intel 实现。
+
+--
+Trusty kernel is LK (little kernel) https://github.com/littlekernel/lk for both
+x86 and ARM.
+
+================================================================================
+What can OEM do in Trusty?
+
+Android 的CAs, Trusty 的 TAs, Trusty drivers.
+
+OEM can develop their own Android client app and corresponding Trusty
+app/service.
+
+================================================================================
+
+
+
+
+
+
+
+

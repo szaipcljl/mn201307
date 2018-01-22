@@ -1,0 +1,6 @@
+cht
+
+spi
+
+1. sensorhub 和 android 通信
+

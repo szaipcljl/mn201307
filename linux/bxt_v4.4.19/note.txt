@@ -15,3 +15,12 @@ dir/company:
 	device/intel
 	hardware/intel
 	vendor/intel
+
+
+================================================================================
+ntel Atom® Processor E3900 Series, Intel® Celeron® Processor N3350, and
+Intel® Pentium® Processor N4200, Formerly Apollo Lake
+
+bxtp cpuinfo:
+model name	: Intel(R) Atom(TM) Processor E3900 @ 1.90GHz
+cpu cores	: 4
