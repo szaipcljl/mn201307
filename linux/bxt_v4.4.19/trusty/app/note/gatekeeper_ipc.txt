@@ -1,0 +1,65 @@
+gatekeeper ipc
+
+trusty/app/gatekeeper/ipc/gatekeeper_ipc.cpp
+================================================================================
+gatekeeper_ipc.cpp
+
+main:
+	(1) device = new TrustyGateKeeper();
+	(2) gatekeeper_ipc_init()
+	(3) handle_t port = (handle_t) rc;
+	(4) enter main event loop:
+		while (true): 
+			rc = wait_any(&event, -1);
+			//got an event
+            if (event.handle == port) {
+                gatekeeper_handle_port(&event);
+            } else {
+                gatekeeper_handle_channel(&event);
+            }
+
+================================================================================
+trusty/lib/include/trusty_ipc.h
+/*
+ *  Is used by wait and wait_any calls to return information
+ *  about event.
+ */
+typedef struct uevent {
+	uint32_t	handle;  /* handle this event is related too */
+	uint32_t	event;   /* combination of IPC_HANDLE_POLL_XXX flags */
+	void		*cookie; /* cookie aasociated with handle */
+} uevent_t;
+
+================================================================================
+TrustyGateKeeper:
+
+TrustyGateKeeper::OpenSession() //trusty/app/gatekeeper/trusty_gatekeeper.cpp
+|-> DeriveMasterKey
+	|-> hwkey_open	 --+	//trusty/lib/lib/hwkey/hwkey.c
+	|-> hwkey_derive   |
+	|-> hwkey_close    |
+                       |
++----------------------+ <trusty_std.h> -> "trusty_syscalls.h"
+|                      
++-> connect
+=> sys_connect
+----
+system call handling framework see:
+trusty/note/syscall_handling_framework.txt
+================================================================================
+sys_connect:
+
+
+
+
+
+
+================================================================================
+
+
+
+
+
+
+
+	

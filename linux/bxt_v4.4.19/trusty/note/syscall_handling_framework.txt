@@ -1,0 +1,150 @@
+libsyscall: A system call handling framework
+================================================================================
+[trusty/lib]
+--------------------------------------------------------------------------------
+系统调用号对应syscall_table数组的元素下表
+	trusty_syscalls.h 中，声明系统调用和系统调用号
+
+	//trusty/lib/include/trusty_syscalls.h
+	#define __NR_connect		0x11
+	long connect (const char *path, uint flags);
+
+--------------------------------------------------------------------------------
+connect 系统调用
+----
+c 库函数
+	connect 标号下的汇编代码， 会将系统调用号保存到rax寄存器，传递参数，
+	然后调用sysenter指令，进入lk的内核态(ring 0?)
+	//trusty/lib/lib/libc-trusty/arch/x86/64/trusty_syscall.S
+
+	#include <trusty_syscalls.h>
+	FUNCTION(connect)
+		PROLOG
+		movq $__NR_connect, %rax
+		MOV_PARAMS
+		sysenter
+		EPILOG
+		ret
+
+	FUNCTION 定义一个全局标号.
+	//trusty/external/lk/include/asm.h
+	#define FUNCTION(x) .global x; .type x,STT_FUNC; x:
+
+
+--------------------------------------------------------------------------------
+trusty lk的内核:
+[trusty/lk/trusty/lib/]
+(1) syscall_table 数组的编译时初始化, 
+	syscall_table.c/h 
+
+	a table of function pointers defined using the DEF_SYSCALL macro:
+	// [trusty/lk/trusty/lib/]trusty/include/syscall_table.h
+	DEF_SYSCALL(0x11, connect, long , 2, const char *path, uint flags)
+	
+	//[trusty/lk/trusty/lib/]syscall/syscall.c
+		产生sys_xx 函数原型(先定义为函数原型)，初始化 syscall_table
+		表(再定义为数组元素复制)。
+	#ifdef WITH_SYSCALL_TABLE
+	
+	/* Generate fake function prototypes */
+	#define DEF_SYSCALL(nr, fn, rtype, nr_args, ...) rtype sys_##fn (void);
+	#include <syscall_table.h>
+	#undef DEF_SYSCALL
+	
+	#endif
+	
+	#define DEF_SYSCALL(nr, fn, rtype, nr_args, ...) [(nr)] = (unsigned long) (sys_##fn),
+	const unsigned long syscall_table [] = {
+	
+	#ifdef WITH_SYSCALL_TABLE
+	#include <syscall_table.h>
+	#endif
+	
+	};
+
+-----
+(2) 怎么找到的sys_connect?
+syscall handler
+x86_syscall 中， syscall_table 的地址加系统调用号偏移量，的到系统调用服务例程
+[trusty/lk/trusty/lib/]syscall/arch/x86/64/syscall.S
+
+FUNCTION (x86_syscall)
+	...
+    movq $syscall_table, %r14
+    add %r14, %rax
+    movq %r9,%rdx
+    call *(%rax)
+	...
+
+----
+(3)系统调用服务例程
+	//[trusty/lk/trusty/lib/]trusty/ipc.c
+	long __SYSCALL sys_connect(user_addr_t path, uint flags)
+	
+================================================================================
+trusty:
+
+syscall 0x3 "read" causes sys_read() to be called,
+and syscall 0x4 causes sys_write() to be called by the syscall handler.
+
+
+                  +-------------------+
+				  | connect 系统调用  |
+                  +---------+---------+
+                            |
+                            v
+                  +-------------------+
+                  |    c 库函数       |
+                  +---------+---------+
+user space(ring3)           |
+          ------------------|---------------------
+lk kernel(ring0)            | sysenter
+                            v
+                  +-------------------+ 
+                  |  syscall handler  | x86_syscall
+                  +---------+---------+
+                            |
+                            v
+             +------------------------------+
+             | sys_connect 系统调用服务例程 |
+             +------------------------------+
+
+see:
+	trusty/lk/trusty/lib/syscall/README
+
+
+================================================================================
+x86_syscall
+
+[trusty/lk/trusty/lib/]
+
+LK_INIT_HOOK(libuthread, uthread_init, LK_INIT_LEVEL_ARCH_EARLY);
+
+uthread_init //[trusty/lk/trusty/lib/uthread/uthread.c]
+|-> arch_uthread_init	//[trusty/lk/trusty/lib/uthread/arch/x86/64/uthread.c]
+	|-> setup_syscall_percpu //uthread/arch/x86/64/uthread.c
+		|-> write_msr(SYSENTER_EIP_MSR, (uint64_t)(x86_syscall)); /* eip_addr */
+
+----
+LK_INIT_HOOK
+
+//[trusty/external/lk/include/lk/init.h],LK's init system
+
+typedef void (*lk_init_hook)(uint level);
+
+struct lk_init_struct {
+    uint level;
+    uint flags;
+    lk_init_hook hook;
+    const char *name;
+};
+
+#define LK_INIT_HOOK_FLAGS(_name, _hook, _level, _flags) \
+    const struct lk_init_struct _init_struct_##_name __ALIGNED(8) __SECTION(".lk_init") = { \
+        .level = _level, \
+        .flags = _flags, \
+        .hook = _hook, \
+        .name = #_name, \
+
+#define LK_INIT_HOOK(_name, _hook, _level) \
+    LK_INIT_HOOK_FLAGS(_name, _hook, _level, LK_INIT_FLAG_PRIMARY_CPU)

@@ -1,0 +1,24 @@
+From 26e2c90bf4ac1b11a8db1a6a4f78b0b0a9aa4881 Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Thu, 02 Nov 2017 17:14:39 +0800
+Subject: [PATCH] diable VTD
+
+Change-Id: Iac4a68d1f4ca8f220e13eb9a7fdb5de1fd440e61
+Tracked-On:
+---
+
+diff --git a/bxt/product/gordon_peak.cfg b/bxt/product/gordon_peak.cfg
+index f253880..156aa73 100644
+--- a/bxt/product/gordon_peak.cfg
++++ b/bxt/product/gordon_peak.cfg
+@@ -9,10 +9,6 @@
+ include $(PROJS)/product/feature/suspend.cfg
+ EVMM_CMPL_FLAGS += \
+  -DMODULE_MSR_MONITOR \
+- -DMODULE_VTD \
+-	-DDMAR_MAX_ENGINE=4 \
+-	-DSKIP_DMAR_GPU \
+-	-DMULTI_GUEST_DMA \
+  -DMODULE_TSC \
+  -DMODULE_VMEXIT_INIT \
+  -DLAUNCH_ANDROID_FIRST \

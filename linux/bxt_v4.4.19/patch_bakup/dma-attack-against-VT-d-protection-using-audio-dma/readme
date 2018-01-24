@@ -1,0 +1,23 @@
+framework
+
+Android o:
+Patches required by buildbot(EB):
+#[system/core]
+	#[system][dma attack] Add security
+	test (tipc-test32/64: need local build and adb push)
+#[kernel]
+	#[kernel] add sysfs node for audio dma test
+#[device:mixins]
+	#[device][mixins] Disable KM, GK and SS
+#[trusty]
+	#[trusty]enable ipc-unittest
+    #[trusty] Add security test case
+    #[trusty] add new syscall virt_to_phys(part1)
+	#[trusty] add new syscall virt_to_phys (part2)
+#[evmm]
+	  #[dma_attack][evmm] add vmcall for security test
+	  #[evmm][security_test] enable security_test module
+
+
+#optional: To disable VTD( according to if need to disable VTD!! )
+	 #[evmm] disable VTD

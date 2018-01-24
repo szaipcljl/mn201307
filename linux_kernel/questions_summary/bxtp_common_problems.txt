@@ -2,21 +2,48 @@ bxtp questions
 
 ================================================================================
 2018.1.20
-bxtp
-1. lk 和 android 是如何通信的? 经过kernel 吗?
+bxtp - Apollo Lake 
+1. trusty 和 android 是如何通信的? 经过kernel 吗?
 	vmcall, 经过vmm
 
+	(1) trusty 的应用通过端口(ports) 和通道(channels)与android中相应的应用交互。
+	(2) 端口用于trusty OS 中的应用向android暴露自己的服务。
+		每个服务都有自己的端口ID, 当android中的某个应用需要与trusty OS中的相应的
+		服务交互时，就作为客户端向相应的端口ID发起请求。
+	(3) trusty OS 中的服务接受请求后，会与客户端协商建立两个通道，用于全双工通信。
+
 2. 所有硬件都由vmm 控制，kernel 怎么访问到硬件? 
+	VMM,Virtual Machine Monitor, 虚拟机监控器。
+	虚拟化层是运行在虚拟机监控器上面，负责管理所有虚拟机的软件。是hypervisor
+	直接运行在硬件上。
+	硬件辅助虚拟化
 
 3. kernel 如何通过vmm分配内存? lk如何通过vmm 来分配内存?
 
-4 有vmm 系统启动时间多少？
-	
+4 有 vmm 系统启动时间多少？
+	刷 ioc 和 fw 第一次慢，之后7秒能进入 shell
 
-5. dma 传输的关键问题？如何分配到内存
+5. dma 如何分配到内存? 建立DMA的关键问题？
+
+	一致性DMA映射: dma_alloc_coherent
+	流式DMA映射: dma_map_single
+	分散/聚集映射: dma_map_sg
+	回弹缓冲区:
+	DMA池: dma_pool_create
+
+	建立DMA映射的关键点有两个：
+		(1) 确保CPU侧的虚拟地址所对应的物理地址能够被设备DMA正确访问，
+		(2) 确保cache一致性问题。
+
 
 6. emmc 和 rpmb 分区， rpmp 分区有多大？
 
-7. lk 里都实现了哪些功能？
+7. trusty 里都实现了哪些功能？
+	实现了5个TA
+	(1) KM TA  
+	(2) GK TA  
+	(3) FP TA  
+	(4) SS TA  
+	(5) CryptoS rv. TA   
 
-
+8. dma cache?

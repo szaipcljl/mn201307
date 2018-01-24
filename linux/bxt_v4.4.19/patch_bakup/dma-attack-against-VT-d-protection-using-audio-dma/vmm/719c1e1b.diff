@@ -1,0 +1,22 @@
+From 719c1e1b51df7fdd6c5c2a85b14bddab6929e61c Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Mon, 06 Nov 2017 13:51:31 +0800
+Subject: [PATCH] [security_test] enable security_test module
+
+Change-Id: I94cdce778450b3ad11574b23abf928cf376b11c7
+Tracked-On:
+Signed-off-by: nma1x <ningx.ma@intel.com>
+---
+
+diff --git a/bxt/product/gordon_peak.cfg b/bxt/product/gordon_peak.cfg
+index 3158956..2553e72 100644
+--- a/bxt/product/gordon_peak.cfg
++++ b/bxt/product/gordon_peak.cfg
+@@ -8,6 +8,7 @@
+ include $(PROJS)/product/feature/isolation.cfg
+ include $(PROJS)/product/feature/suspend.cfg
+ EVMM_CMPL_FLAGS += \
++ -DMODULE_SECURITY_TEST \
+  -DMODULE_MSR_MONITOR \
+  -DMODULE_VTD \
+ 	-DDMAR_MAX_ENGINE=4 \

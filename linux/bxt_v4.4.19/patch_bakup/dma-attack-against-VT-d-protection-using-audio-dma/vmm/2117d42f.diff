@@ -1,18 +1,56 @@
-From 8fa286dc7b8132bb372d194614f934d9dd40141c Mon Sep 17 00:00:00 2001
-From: Chen Chen <chen.chen@intel.com>
-Date: Tue, 14 Mar 2017 09:38:35 +0000
-Subject: [PATCH] Debug - add vmcall for security test.
+From 2117d42fb54a90dccdd914be3e0fa4c54fa8da6e Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Thu, 27 Jul 2017 12:13:02 +0800
+Subject: [PATCH] [dma_attack][evmm] add vmcall for security test.
 
-Change-Id: Iccc451337a28a2ba3658a7fca54d6b1ff121757d
-Signed-off-by: Chen Chen <chen.chen@intel.com>
+It is a debug module for internal use only.
+
+Change-Id: Idcb8b010278011185bac91d7b510c7408dd45bfa
+Tracked-On:
 ---
 
-diff --git a/bxt/core/include/modules/security_test.h b/bxt/core/include/modules/security_test.h
+diff --git a/bxt/.gitignore b/bxt/.gitignore
 new file mode 100644
-index 0000000..79e65de
+index 0000000..b8e21d6
 --- /dev/null
-+++ b/bxt/core/include/modules/security_test.h
-@@ -0,0 +1,31 @@
++++ b/bxt/.gitignore
+@@ -0,0 +1,3 @@
++cscope.*
++tags
++tags.*
+diff --git a/bxt/Makefile b/bxt/Makefile
+index d5666ca..4eb850c 100644
+--- a/bxt/Makefile
++++ b/bxt/Makefile
+@@ -58,7 +58,7 @@
+ # add warning checks as much as possible.
+ # -Wconversion option will cause a warning like i += 1, so we strip this
+ # warning option
+-CFLAGS += -Wall -Wextra -Werror -Wbad-function-cast -Wpacked -Wpadded \
++CFLAGS += -Wall -Wextra -Werror -Wpacked \
+ 	-Winit-self -Wswitch-default -Wtrampolines -Wdeclaration-after-statement \
+ 	-Wredundant-decls -Wnested-externs -Winline -Wstack-protector \
+ 	-Woverlength-strings -Wlogical-op -Waggregate-return \
+diff --git a/bxt/readme.txt b/bxt/readme.txt
+index 728947d..f644631 100644
+--- a/bxt/readme.txt
++++ b/bxt/readme.txt
+@@ -145,6 +145,9 @@
+ 	- MODULE_MSR_MONITOR
+ 		Description: Provide api to monitor MSR access.
+ 
++	- MODULE_SECURITY_TEST
++		Description: It is a debug module for internal use only.
++
+ 	- MODULE_TRUSTY_GUEST
+ 		Description: Enable Trusty.
+ 		Dependency:
+diff --git a/bxt/vmm/include/modules/security_test.h b/bxt/vmm/include/modules/security_test.h
+new file mode 100644
+index 0000000..4d9519c
+--- /dev/null
++++ b/bxt/vmm/include/modules/security_test.h
+@@ -0,0 +1,29 @@
 +/*******************************************************************************
 + * Copyright (c) 2015 Intel Corporation
 + *
@@ -32,8 +70,6 @@ index 0000000..79e65de
 +#ifndef _SECURITY_TEST_
 +#define _SECURITY_TEST_
 +
-+#include "common_types.h"
-+#include "vmm_defs.h"
 +#include "vmm_objects.h"
 +#include "vmexit.h"
 +
@@ -41,45 +77,40 @@ index 0000000..79e65de
 +#error "MODULE_SECURITY_TEST is not defined"
 +#endif
 +
-+void security_test_handler(guest_cpu_handle_t gcpu);
++void init_security_test(void);
 +
 +#endif /* _SECURITY_TEST_H_*/
-diff --git a/bxt/core/include/modules/vmcall.h b/bxt/core/include/modules/vmcall.h
-index d78d66c..763ac07 100644
---- a/bxt/core/include/modules/vmcall.h
-+++ b/bxt/core/include/modules/vmcall.h
-@@ -34,7 +34,10 @@
- 	TRUSTY_VMCALL_PENDING_INTR    = 0x74727505,
- 	TRUSTY_VMCALL_IRQ_DONE        = 0x74727506,
- 	TRUSTY_VMCALL_DUMP_INIT       = 0x74727507,
--	TRUSTY_VMCALL_GET_HOST_CPU_ID = 0x74727508
-+	TRUSTY_VMCALL_GET_HOST_CPU_ID = 0x74727508,
+diff --git a/bxt/vmm/main.c b/bxt/vmm/main.c
+index facece6..f74f30e 100644
+--- a/bxt/vmm/main.c
++++ b/bxt/vmm/main.c
+@@ -59,6 +59,10 @@
+ #include "modules/trusty_guest.h"
+ #endif
+ 
 +#ifdef MODULE_SECURITY_TEST
-+	TRUSTY_VMCALL_SECURITY_TEST   = 0x74727509,
++#include "modules/security_test.h"
 +#endif
- }vmcall_id_t;
- 
- 
-diff --git a/bxt/core/modules/Makefile b/bxt/core/modules/Makefile
-index 7b52f44..9d67fa4 100644
---- a/bxt/core/modules/Makefile
-+++ b/bxt/core/modules/Makefile
-@@ -66,6 +66,10 @@
- SUBDIRS += device_prot
- endif
- 
-+ifneq ($(findstring MODULE_SECURITY_TEST,$(EVMM_CMPL_FLAGS)), )
-+SUBDIRS += security_test
-+endif
 +
- ifneq ($(findstring MODULE_IO_MONITOR,$(EVMM_CMPL_FLAGS)), )
- SUBDIRS += io_monitor
- endif
-diff --git a/bxt/core/modules/security_test/Makefile b/bxt/core/modules/security_test/Makefile
+ #ifdef MODULE_SUSPEND
+ #include "modules/suspend.h"
+ #endif
+@@ -430,6 +434,10 @@
+ 		init_trusty_guest(evmm_desc);
+ #endif
+ 
++#ifdef MODULE_SECURITY_TEST
++		init_security_test();
++#endif
++
+ 		BSP_SET_STAGE(STAGE_INIT_GUEST);
+ 
+ #ifdef MODULE_VTD
+diff --git a/bxt/vmm/modules/security_test/Makefile b/bxt/vmm/modules/security_test/Makefile
 new file mode 100644
 index 0000000..ed31d18
 --- /dev/null
-+++ b/bxt/core/modules/security_test/Makefile
++++ b/bxt/vmm/modules/security_test/Makefile
 @@ -0,0 +1,18 @@
 +################################################################################
 +# Copyright (c) 2015 Intel Corporation
@@ -99,12 +130,12 @@ index 0000000..ed31d18
 +
 +CSOURCES = $(wildcard *.c)
 +include $(PROJS)/rule.linux
-diff --git a/bxt/core/modules/security_test/security_test.c b/bxt/core/modules/security_test/security_test.c
+diff --git a/bxt/vmm/modules/security_test/security_test.c b/bxt/vmm/modules/security_test/security_test.c
 new file mode 100644
-index 0000000..a347b74
+index 0000000..dbbc93f
 --- /dev/null
-+++ b/bxt/core/modules/security_test/security_test.c
-@@ -0,0 +1,248 @@
++++ b/bxt/vmm/modules/security_test/security_test.c
+@@ -0,0 +1,269 @@
 +/*******************************************************************************
 +* Copyright (c) 2015 Intel Corporation
 +*
@@ -121,16 +152,26 @@ index 0000000..a347b74
 +* limitations under the License.
 +*******************************************************************************/
 +
-+#include "gpm_api.h"
-+#include "vmm_dbg.h"
 +#include "guest.h"
-+#include "event_mgr.h"
-+#include "guest_cpu.h"
-+#include "vmm_phys_mem_types.h"
-+#include "host_memory_manager.h"
++#include <gcpu.h>
++#include <vmm_base.h>
 +#include "lib/util.h"
++#include <heap.h>
++#include <hmm.h>
++#include <gpm.h>
++#include "modules/vmcall.h"
++#include "modules/security_test.h"
++
++#define TRUSTY_VMCALL_SECURITY_TEST 0x53544400 //0x535444 = 'STD'(SECURITY_TEST_DEBUG)
 +
 +#define SIN_STEPS 1000
++
++#define RET_SUCCESS 0
++#define RET_ERROR 1
++#define RET_CHECK_FAILED 2
++
++typedef uint64_t hva_t;
++typedef uint64_t hpa_t;
 +
 +struct security_test_mem {
 +	uint64_t vir_addr;
@@ -262,9 +303,9 @@ index 0000000..a347b74
 +		v_dmaarea[i] = sample_table[(i * 10) % SIN_STEPS];
 +}
 +
-+void security_test_handler(guest_cpu_handle_t gcpu)
++static void security_test_handler(guest_cpu_handle_t gcpu)
 +{
-+	uint64_t r_esi = 0;
++	/*uint64_t r_esi = 0;*/
 +	struct security_test_msg *r_edi;
 +	struct security_test_msg *test_msg_hva;
 +	struct security_test_mem *test_alloc_gva;
@@ -272,12 +313,13 @@ index 0000000..a347b74
 +	hva_t hva;
 +	hpa_t hpa;
 +	uint8_t *p_test_mem;
-+	int i;
++	uint32_t i;
++	pf_ec_t pfec;
 +
-+	r_edi = (struct security_test_msg *)gcpu_get_gp_reg(gcpu, IA32_REG_RDI);
++	r_edi = (struct security_test_msg *)gcpu_get_gp_reg(gcpu, REG_RDI);
 +
 +	print_info("%s: msg_gva = 0x%lx\n", __FUNCTION__, (uint64_t)r_edi);
-+	if (!gcpu_gva_to_hva(gcpu, (uint64_t)r_edi, (hva_t *)&test_msg_hva)) {
++	if (!gcpu_gva_to_hva(gcpu, (uint64_t)r_edi, GUEST_CAN_READ | GUEST_CAN_WRITE, (hva_t *)&test_msg_hva, &pfec)) {
 +		print_panic(
 +			"%s: Failed to convert gva=%P to hva\n",
 +			__FUNCTION__,
@@ -292,7 +334,7 @@ index 0000000..a347b74
 +	test_alloc_gva = (struct security_test_mem *)(test_msg_hva->msg_params);
 +
 +	print_info("%s: mem_gva = 0x%lx\n", __FUNCTION__, (uint64_t)test_alloc_gva);
-+	if (!gcpu_gva_to_hva(gcpu, (uint64_t)test_alloc_gva, (hva_t *)&test_alloc_hva)) {
++	if (!gcpu_gva_to_hva(gcpu, (uint64_t)test_alloc_gva, GUEST_CAN_READ | GUEST_CAN_WRITE, (hva_t *)&test_alloc_hva, &pfec)) {
 +		print_panic(
 +			"%s: Failed to convert gva=%P to hva\n",
 +			__FUNCTION__,
@@ -306,13 +348,13 @@ index 0000000..a347b74
 +			print_info("%s To alloc_size = 0x%x\n", __func__, test_alloc_hva->size);
 +			hva = (hva_t)mem_alloc(test_alloc_hva->size);
 +			fill_dmaarea_with_16khz((uint16_t*)hva, test_alloc_hva->size);
-+			hmm_hva_to_hpa(hva, &hpa);
++			hmm_hva_to_hpa(hva, &hpa, NULL);
 +			print_info("%s: Got hpa = %p\n",
 +				__FUNCTION__,
 +				hpa);
 +			test_alloc_hva->vir_addr = hva;
 +			test_alloc_hva->phy_addr = hpa;
-+			test_msg_hva->ret_code = 0;
++			test_msg_hva->ret_code = RET_SUCCESS;
 +			print_info("allocated vir = 0x%x, phy = 0x%x\n", test_alloc_hva->vir_addr,
 +					test_alloc_hva->phy_addr);
 +			break;
@@ -326,12 +368,12 @@ index 0000000..a347b74
 +					print_info("%s alloc_size = 0x%x\n", __func__, test_alloc_hva->size);
 +					hva = (hva_t)mem_alloc(test_alloc_hva->size);
 +					fill_dmaarea_with_16khz((uint16_t*)hva, test_alloc_hva->size);
-+					test_msg_hva->ret_code = 0;
++					test_msg_hva->ret_code = RET_SUCCESS;
 +					p_test_mem = (uint8_t *)test_alloc_hva->vir_addr;
 +					for (i = 0; i < test_alloc_hva->size; i++) {
 +						if (p_test_mem[i] != ((uint8_t *)hva)[i]) {
 +							print_info("%s mem check failed at 0x%x\n", __func__, i);
-+							test_msg_hva->ret_code = 1;
++							test_msg_hva->ret_code = RET_CHECK_FAILED;
 +						}
 +					}
 +					mem_free((void *)hva);
@@ -341,10 +383,10 @@ index 0000000..a347b74
 +						mem_free((void *)test_alloc_hva->vir_addr);
 +					test_alloc_hva->vir_addr = 0;
 +					test_alloc_hva->phy_addr = 0;
-+					test_msg_hva->ret_code = 0;
++					test_msg_hva->ret_code = RET_SUCCESS;
 +				}
 +			} else {
-+				test_msg_hva->ret_code = 1;
++				test_msg_hva->ret_code = RET_ERROR;
 +			}
 +				break;
 +
@@ -353,48 +395,13 @@ index 0000000..a347b74
 +	}
 +	print_info("%s ret_code = 0x%x\n", __func__, test_msg_hva->ret_code);
 +}
-diff --git a/bxt/core/modules/trusty_guest/trusty_guest.c b/bxt/core/modules/trusty_guest/trusty_guest.c
-index ece3cf3..d0c3400 100644
---- a/bxt/core/modules/trusty_guest/trusty_guest.c
-+++ b/bxt/core/modules/trusty_guest/trusty_guest.c
-@@ -42,6 +42,10 @@
- #include "modules/device_prot.h"
- #endif
- 
-+#ifdef MODULE_SECURITY_TEST
-+#include "modules/security_test.h"
-+#endif
 +
- /* 0x31 is not used in Android (in CHT, BXT, GSD simics) */
- #define LK_TIMER_INTR	0x31
- 
-@@ -439,6 +443,10 @@
- 	vmcall_register(guest_id, TRUSTY_VMCALL_SMC, smc_vmcall_exit);
- 	vmcall_register(guest_id, TRUSTY_VMCALL_PENDING_INTR, trusty_vmcall_set_pending_intr);
- 
-+#ifdef MODULE_SECURITY_TEST
-+	vmcall_register(guest_id, TRUSTY_VMCALL_SECURITY_TEST, security_test_handler);
-+#endif
++static void security_test_register_vmcall_services()
++{
++	vmcall_register(0, TRUSTY_VMCALL_SECURITY_TEST, security_test_handler);
++}
 +
- 	/* only for the second guest : LK */
- 	if (guest_id != 0) {
- 		vmcall_register(guest_id, TRUSTY_VMCALL_PUTS, vmm_io_vmcall_puts_handler);
-diff --git a/bxt/product/bxtp_abl.cfg b/bxt/product/bxtp_abl.cfg
-index fe10b28..7925e0c 100644
---- a/bxt/product/bxtp_abl.cfg
-+++ b/bxt/product/bxtp_abl.cfg
-@@ -1,5 +1,5 @@
- EVMM_CMPL_FLAGS :=
--#EVMM_CMPL_FLAGS += -DDEBUG
-+EVMM_CMPL_FLAGS += -DDEBUG
- #EVMM_CMPL_FLAGS += -DTRUSTY_USE_DEVICE_IO
- 
- EVMM_CMPL_FLAGS += -DLOG_LEVEL=2
-@@ -29,6 +29,7 @@
-  -DMODULE_MSR_ISOLATION \
-  -DMODULE_MSR_MONITOR \
-  -DMODULE_IO_MONITOR \
-+ -DMODULE_SECURITY_TEST \
-  -DMAX_ISOLATED_MSR_COUNT=5 \
-  -DPRODUCT_BXTP_ABL \
-  -DEPT_POLICY=0x80000000 \
++void init_security_test(void)
++{
++	security_test_register_vmcall_services();
++}

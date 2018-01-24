@@ -1,0 +1,77 @@
+linux 内存管理之DMA
+
+================================================================================
+1、DMA：直接内存访问
+用于在主存贮器和设备内存之间的大量数据的交换，无须CPU参与，可以提高系统效率。
+
+2、内核中的DMA层
+
+	struct dma_map_ops:
+		alloc_coherent
+		free_coherent
+		map_page
+		unmap_page
+		map_sg
+		unmap_sg
+		sync_single_for_cpu
+		sync_single_for_device
+		sync_sg_for_cpu
+		sync_sg_for_device
+		mapping_error
+		dma_supported
+		set_dma_mask
+
+3、DMA的地址
+	dma_addr_t
+
+4、dma_set_mask
+	查询DMA寻址范围
+
+5、DMA映射
+
+	a、一致性DMA映射
+		分配一组连续的物理页面，适合于驱动程序自己分配，自己释放的DMA操作。
+		dma_alloc_coherent
+		dma_free_coherent
+
+
+	b、流式DMA映射
+		用于不是由驱动程序自己分配的DMA区域。
+		dma_map_single
+
+		建立DMA映射的关键点有两个：
+			(1) 确保CPU侧的虚拟地址所对应的物理地址能够被设备DMA正确访问，
+			(2) 确保cache一致性问题。
+
+		如果第一点不满足，可用回弹缓冲区解决。
+
+		第二点可用struct dma_map_ops函数来处理：
+			sync_single_for_cpu
+			sync_single_for_device
+			sync_sg_for_cpu
+			sync_sg_for_device
+
+	c、分散/聚集映射
+		struct scatterlist
+		dma_map_sg
+
+
+	d、回弹缓冲区
+		CPU侧俄虚拟地址对应的物理地址不适合设备的DMA操作，需要建立回弹缓冲区。
+
+	e、DMA池
+		struct dma_pool
+		一致性DMA映射只能映射页面的整数倍的DMA缓冲区，如果需要更小的DMA缓冲区，
+		则要在DMA一致性映射的基础上的DMA池机制。
+
+		在DMA一致性映射基础上，将页面分成块大小的DMA缓冲区。
+
+
+		DMA池的建立/销毁：
+			dma_pool_create
+			dma_pool_destroy
+
+		DMA缓冲块的分配/释放：
+			dma_pool_alloc
+			dma_pool_free
+
