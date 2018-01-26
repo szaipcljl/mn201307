@@ -1,0 +1,52 @@
+vmcall
+
+trusty's vmcall:
+trusty/platform/sand/vmcall.c
+================================================================================
+vmcall.c
+(1) vmcall id
+	#define TRUSTY_VMCALL_SMC               0x74727500 /* "tru" is 0x747275 */
+
+	this vmcall id is also defined in evmm/vmm/modules/trusty_guest/trusty_guest.c,
+	like this:
+	typedef enum {
+		TRUSTY_VMCALL_SMC             = 0x74727500,
+		TRUSTY_VMCALL_PENDING_INTR    = 0x74727505,
+		TRUSTY_VMCALL_DUMP_INIT       = 0x74727507,
+	}vmcall_id_t;
+(2) make_smc_vmcall
+
+
+sm_handle_fiq	//trusty/lk/trusty/lib/sm/sm.c
+|-> sm_sched_nonsecure //trusty/platform/sand/entry.c
+	|-> make_smc_vmcall
+
+--------------------------------------------------------------------------------
+
+LK_INIT_HOOK_FLAGS(libsm_cpu, sm_secondary_init, LK_INIT_LEVEL_PLATFORM - 2, LK_INIT_FLAG_ALL_CPUS); //sm.c
+
+sm_secondary_init //sm.c
+|-> nsirqthreads[cpu] = thread_create(name, sm_irq_loop, (void *)(uintptr_t)cpu,
+					  HIGHEST_PRIORITY, DEFAULT_STACK_SIZE);
+	=> sm_irq_loop
+		|-> sm_irq_return_ns
+			|-> sm_return_and_wait_for_next_stdcall
+				|-> sm_sched_nonsecure
+
+x86_exception_handler // trusty/external/lk/arch/x86/faults.c
+/* top level x86 exception handler for most exceptions and irqs */
+|-> platform_irq	//trusty/platform/sand/interrupts.c
+	|-> sm_handle_irq //sm.c
+		|-> sm_irq_return_ns
+			|-> sm_return_and_wait_for_next_stdcall
+				|-> sm_sched_nonsecure
+
+---
+sm_secondary_init	//sm.c
+|-> nsidlethreads[cpu] = thread_create(name,
+			(thread_start_routine)sm_wait_for_smcall,
+			NULL, LOWEST_PRIORITY + 1, DEFAULT_STACK_SIZE);
+	=> sm_wait_for_smcall
+		|-> sm_return_and_wait_for_next_stdcall
+			|-> sm_sched_nonsecure
+================================================================================

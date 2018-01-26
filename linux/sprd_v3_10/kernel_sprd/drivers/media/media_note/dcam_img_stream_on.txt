@@ -1,3 +1,22 @@
 dcam img stream on
 
 ================================================================================
+parse_baseaddress
+	|-> of_address_to_resource
+	|-> ioremap_nocache
+
+dcam_regbase
+isp_regbase
+--------------------------------------------------------------------------------
+把内存映射到CPU空间
+ioremap_nocache     -   map bus memory into CPU space
+@phys_addr:    bus address of the memory
+@size:      size of the resource to map
+
+ioremap_nocache performs a platform specific sequence of operations to
+make bus memory CPU accessible via the readb/readw/readl/writeb/
+writew/writel functions and the other mmio helpers. The returned
+address is not guaranteed to be usable directly as a virtual
+address.
+--------------------------------------------------------------------------------
+

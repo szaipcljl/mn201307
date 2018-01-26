@@ -17,3 +17,52 @@ cmr_grab_init
 cmr_grab_cap_start
 	(1) ioctl: SPRD_IMG_IO_SET_SKIP_NUM
 	(2) ioctl: SPRD_IMG_IO_STREAM_ON
+
+
+----
+cmr_grab_if_cfg
+	MIPI interface
+	ioctl: SPRD_IMG_IO_SET_SENSOR_IF
+
+----
+cmr_grab_sn_cfg
+	(1) ioctl: SPRD_IMG_IO_SET_MODE
+	(2) ioctl: SPRD_IMG_IO_SET_SENSOR_SIZE
+	(3) ioctl: SPRD_IMG_IO_SET_SENSOR_TRIM
+
+----
+cmr_grab_cap_cfg_common
+	(1) ioctl: SPRD_IMG_IO_SET_SHRINK
+	(2) ioctl: SPRD_IMG_IO_PATH_FRM_DECI
+	(3) ioctl: SPRD_IMG_IO_SET_CROP
+	(4) ioctl: SPRD_IMG_IO_GET_FMT
+	(5) ioctl: SPRD_IMG_IO_CHECK_FMT
+
+----
+cmr_grab_cap_cfg
+	(1) ioctl: SPRD_IMG_IO_SET_OUTPUT_SIZE
+	(2) ioctl: SPRD_IMG_IO_GET_CH_ID
+	(3) cmr_grab_cap_cfg_common
+
+
+----
+cmr_grab_get_4cc
+	switch (img_type)
+	IMG_DATA_TYPE_YUV422
+	IMG_DATA_TYPE_RGB565
+	IMG_DATA_TYPE_RAW
+
+================================================================================
+[HAL3]SprdCamera3OEMIf::startCameraIfNecessary	//SprdCamera3OEMIf.cpp
+|-> camera_init //SprdOEMCamera.c	[oem]
+	|-> camera_local_int //cmr_oem.c
+		|-> camera_init_internal //cmr_oem.c
+			|-> camera_res_init //cmr_oem.c
+				|-> cmr_thread_create
+					=> camera_init_thread_proc //cmr_oem.c
+					|-> camera_res_init_internal //cmr_oem.c
+						|-> camera_preview_init //cmr_oem.c
+
+
+
+

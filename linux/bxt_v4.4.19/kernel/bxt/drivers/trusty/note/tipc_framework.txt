@@ -1,0 +1,95 @@
+tipc - trusty ipc
+
+drivers/trusty/trusty-ipc.c
+================================================================================
+
+
+android                                  | trusty
+                 +--------------+        |
+                 | tipc_connect |        |
+                 +-------+------+        |
+user space               | open, ioctl   |
+ ------------------------|-------------- | ---------------------------------------
+kernel space             v               |
+              +----------------------+   |
+              | /dev/trusty-ipc-dev0 |   |
+              | struct virtio_device |   |
+              +----------------------+   |
+       //channel                         |
+                                         |
+                                         |
+                                         |
+                                         |
+                                         |
+                                         |
+                                         |
+ ---------------------------------------------------------------------------------
+vmm
+
+
+
+
+================================================================================
+
+subsys_initcall(tipc_init);
+tipc_init:
+	(1) alloc_chrdev_region
+	(2) class_create
+	(3) register_virtio_driver
+		//register struct virtio_driver
+
+probe:
+	static struct virtio_driver virtio_tipc_driver = {
+		...
+		.probe		= tipc_virtio_probe,
+	}
+	|-> vq_callback_t *vq_cbs[] = {_rxvq_cb, _txvq_cb};
+		...
+		err = vdev->config->find_vqs(vdev, 2, vqs, vq_cbs, vq_names);
+
+----
+_rxvq_cb
+|-> _handle_rxbuf
+	|-> _handle_ctrl_msg
+		|-> case TIPC_CTRL_MSGTYPE_GO_ONLINE:
+				_go_online(vds);
+				|-> create_cdev_node
+					|-> _create_cdev_node
+						|-> cdev_init(&cdn->cdev, &tipc_fops);
+
+================================================================================
+
+static const struct file_operations tipc_fops = {
+	.unlocked_ioctl	= tipc_ioctl,
+	...
+};
+
+tipc_ioctl:
+|-> dn_connect_ioctl //TIPC_IOC_CONNECT
+	|-> strncpy_from_user //copy in service name from user space
+		name[sizeof(name)-1] = '\0';
+	|-> tipc_chan_connect //send connect request
+	|-> dn_wait_for_reply //and wait for reply
+
+
+----
+tipc_chan_connect	//will check channel state
+|-> vds_queue_txbuf //channel state is TIPC_DISCONNECTED
+	|-> sg_init_one //lib/scatterlist.c
+	|-> virtqueue_add_outbuf //drivers/virtio/virtio_ring.c
+		//expose output buffers to other end
+		|-> virtqueue_add //virtio_ring.c
+			|=> dma_addr_t addr = vring_map_one_sg(vq, sg, DMA_FROM_DEVICE);
+
+----
+dn_wait_for_reply
+
+================================================================================
+struct tipc_msg_buf {
+	void *buf_va;
+	phys_addr_t buf_pa;
+	size_t buf_sz;
+	size_t wpos;
+	size_t rpos;
+	struct list_head node;
+};

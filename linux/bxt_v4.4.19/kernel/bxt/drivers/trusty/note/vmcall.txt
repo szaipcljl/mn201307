@@ -1,0 +1,64 @@
+vmcall
+
+drivers/trusty/trusty.c
+================================================================================
+trusty.c
+
+(1) vmcall id
+	#define TRUSTY_VMCALL_SMC 0x74727500
+
+	//this vmcall id is also define in vmm/modules/trusty_guest/trusty_guest.c
+	 typedef enum {
+         TRUSTY_VMCALL_SMC             = 0x74727500,
+         TRUSTY_VMCALL_PENDING_INTR    = 0x74727505,
+         TRUSTY_VMCALL_DUMP_INIT       = 0x74727507,
+     }vmcall_id_t;
+
+
+(2) vmcall
+	static inline ulong smc(ulong r0, ulong r1, ulong r2, ulong r3)
+	{
+		__asm__ __volatile__(
+		"vmcall; \n"
+		: "=D"(r0)	/*output*/
+		: "a"(TRUSTY_VMCALL_SMC), "D"(r0), "S"(r1), "d"(r2), "b"(r3)
+		);
+		return r0;
+	}
+
+--------------------------------------------------------------------------------
+vmcall id
+guest id:
+	0	-> android
+	1	-> trusty
+
+
+================================================================================
+drivers/trusty/trusty-irq.c:60:#define TRUSTY_VMCALL_PENDING_INTR 0x74727505
+vmcall id
+
+static inline void set_pending_intr_to_lk(uint8_t vector)
+{
+	__asm__ __volatile__(
+		"vmcall"
+		::"a"(TRUSTY_VMCALL_PENDING_INTR), "b"(vector)
+		);
+}
+
+================================================================================
+./drivers/trusty/trusty-log.c:216:#define TRUSTY_VMCALL_DUMP_INIT  0x74727507
+
+#define TRUSTY_VMCALL_DUMP_INIT  0x74727507
+static int trusty_vmm_dump_init(void *gva)
+{
+	int ret = -1;
+
+	__asm__ __volatile__(
+		"vmcall"
+		: "=a"(ret)
+		: "a"(TRUSTY_VMCALL_DUMP_INIT), "D"(gva)
+	);
+
+	return ret;
+}
+

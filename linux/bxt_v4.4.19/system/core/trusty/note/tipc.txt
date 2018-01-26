@@ -1,0 +1,35 @@
+tipc
+
+android 通过 tipc_connect 与 trusty 的 TA 建立连接，
+tipc_connect 实际上是 (1) 通过 open trusty-ipc-dev0 设备节点，打开tipc 设备，
+	(2) 通过 ioctl 的TIPC_IOC_CONNECT 命令，连接 trusty 的名为 srv_name的 service
+================================================================================
+gatekeeper, storage, proxy, keymaster:
+
+./gatekeeper/trusty_gatekeeper_ipc.c:36:    int rc = tipc_connect(TRUSTY_DEVICE_NAME, GATEKEEPER_PORT);
+./storage/lib/storage.c:130:    int rc = tipc_connect(device, port);
+./storage/proxy/ipc.c:43:        rc = tipc_connect(device, port);
+./keymaster/trusty_keymaster_ipc.cpp:37:    int rc = tipc_connect(TRUSTY_DEVICE_NAME, KEYMASTER_PORT);
+
+--------------------------------------------------------------------------------
+./gatekeeper/trusty_gatekeeper_ipc.c:31:#define TRUSTY_DEVICE_NAME "/dev/trusty-ipc-dev0"
+/keymaster/trusty_keymaster_ipc.cpp:32:#define TRUSTY_DEVICE_NAME "/dev/trusty-ipc-dev0"
+
+--------------------------------------------------------------------------------
+libtrusty/trusty.c
+----
+tipc_connect
+|-> //open tipc device
+	fd = open(dev_name, O_RDWR);
+|-> //connect to tipc service
+	rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
+
+----
+tipc_close
+|-> close
+
+================================================================================
+see kernel/bxt/drivers/trusty/note/tipc_framework.txt
+
+
+
