@@ -1,0 +1,18 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := lowmap_test
+LOCAL_CLANG := false
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := \
+	lowmap_test.c
+
+LOCAL_PROPRIETARY_MODULE := true
+
+#LOCAL_FLAGS += -std=99
+
+#LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+
+INTERNAL_LOCAL_CLANG_EXCEPTION_PROJECTS += $(LOCAL_PATH)
+
+include $(BUILD_EXECUTABLE)
