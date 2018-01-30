@@ -1,2 +1,0 @@
-
-host address and guest address : EPT table

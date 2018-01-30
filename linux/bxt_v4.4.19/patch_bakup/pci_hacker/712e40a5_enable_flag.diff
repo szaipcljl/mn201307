@@ -1,0 +1,20 @@
+From 712e40a5bcd8c805d92a2db9bb0d76f3783b82d8 Mon Sep 17 00:00:00 2001
+From: nma1x <ningx.ma@intel.com>
+Date: Tue, 31 Oct 2017 16:08:29 +0800
+Subject: [PATCH] [debug] enable pcihacker flag
+
+Change-Id: I60c8f244ecd9bdc492d8837133fc13b27fe22a02
+Tracked-On:
+Signed-off-by: nma1x <ningx.ma@intel.com>
+---
+
+diff --git a/v4.9/bxt/android/x86_64_defconfig b/v4.9/bxt/android/x86_64_defconfig
+index a9b7ad5..ccebded 100644
+--- a/v4.9/bxt/android/x86_64_defconfig
++++ b/v4.9/bxt/android/x86_64_defconfig
+@@ -5708,3 +5708,5 @@
+ CONFIG_ARCH_HAS_MMIO_FLUSH=y
+ CONFIG_SBITMAP=y
+ # CONFIG_PRIME_NUMBERS is not set
++# pci hacker for Security test
++CONFIG_PCIHACKER=y

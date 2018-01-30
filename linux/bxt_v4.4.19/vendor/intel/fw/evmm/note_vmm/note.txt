@@ -1,0 +1,105 @@
+vmm
+
+================================================================================
+host address and guest address : EPT table
+
+================================================================================
+vmm/main.c
+
+stage 5: init gcpu
+ept_gcpu_init //vmm/guest/ept.c
+================================================================================
+evmm_desc_t
+================================================================================
+vmm/main.c
+
+THE MAIN !!!!
+Started in parallel for all available processors
+vmm_main_continue:
+	stage 1: setup host
+
+		Initializing all data structures.(1)~(7)
+		(1) Stacks are successfully initialized
+			stack_get_details
+		(2) Initialize Heap
+			vmm_heap_initialize
+			vmm_pool_initialize
+		(3) Prepare guest0 gcpu initial state
+			prepare_g0gcpu_init_state
+		(4) Initialize GDT for all cpus
+			gdt_setup
+		(5) Initialize IDT for all cpus
+			idt_setup
+		(6) isr_setup
+		(7) Initialize Host Memory Manager
+			hmm_setup
+			mtrr_init
+			page_walk_init
+
+		(8) gdt_load
+			idt_load
+			hmm_enable
+
+	stage 2: setup vmx
+		(1) vmx_cap_init
+		(2) init CR0/CR4 to the VMX compatible values
+			asm_set_cr0(get_init_cr0());
+			asm_set_cr4(get_init_cr4());
+		(3) host_cpu_vmx_on();
+
+
+	stage 3: init module
+		(1) fxsave_enable
+		(2) lapic_id_init
+		(3) vmx_timer_init
+		(4) ipc_init();
+		(5) msr_isolation_init
+		(6) cr_write_init
+		(7) msr_monitor_init
+		(8) msr_perf_ctrl_isolation_init
+		(9) tsc_init();
+		(10) vmenter_check_init
+		(11) vmexit_task_switch_init
+		(12) io_monitor_init
+		(13) device_block_init
+		(14) dr_isolation_init
+		(15) cr_isolation_init
+		(16) vmcall_init
+		(17) vtd_init();
+		(18) ext_intr_init();
+		(19) vmexit_register_init_event
+		(20) suspend_bsp_init
+		(21) profile_init
+		(22) interrupt_ipi_init
+		...
+
+	stage 4: create guest
+		(1) Initialize GPM
+			gpm_init
+		(2) create_guest
+		(3) init_trusty_guest
+		(4) vtd_done
+
+	stage 5: init gcpu
+		do while loop: (1)~(7)
+		(1) get_current_gcpu
+		(2) gcpu_set_host_state
+		(3) gcpu_set_ctrl_state
+		(4) event_raise
+		(5) cr_write_gcpu_init
+		(6) ept_gcpu_init
+		(7) event_raise
+
+		(8) schedule_initial_gcpu
+
+	stage 6: launch guest
+		(1) gcpu_resume
+	
+================================================================================
+stage1_main 	//evmm/loader/stage1/stage1.c
+|-> vmm_main //vmm/main.c
+	//launch vmm on BSP
+	|-> hw_set_stack_pointer(new_stack_pointer - (REG_GP_COUNT * sizeof(uint64_t)),
+			(func_main_continue_t)vmm_main_continue, &input_params);
+	
+
