@@ -1,10 +1,14 @@
 diff --git a/target/product/core.mk b/target/product/core.mk
-index a2b0f1c..3f9e55a 100644
+index a2b0f1c..bacf977 100644
 --- a/target/product/core.mk
 +++ b/target/product/core.mk
-@@ -21,6 +21,7 @@
+@@ -20,7 +20,11 @@
+ # core_minimal.mk instead. If you care about wearables, you need to modify
  # core_tiny.mk in addition to core_minimal.mk.
  
++PRODUCT_COPY_FILES += \
++	system/core/meltdown-exploit/run_on_android.sh:system/bin/run_on_android.sh
++
  PRODUCT_PACKAGES += \
 +	meltdown \
      BasicDreams \

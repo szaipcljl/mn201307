@@ -1,0 +1,130 @@
+tipc struct
+
+================================================================================
+
+	  struct tipc_chan
+      +----------------------------------+
+ +----+ struct tipc_virtio_dev *vds;     |              struct tipc_chan_ops
+ |    | const struct tipc_chan_ops *ops; +------------->+---------------+   
+ |    +----------------------------------+              | vandle_event  |   
+ |                                                      | handle_msg    |   
+ |                                                       +---------------+   
+ |    struct tipc_virtio_dev                           
+ +--->+----------------------------------+                struct virtio_device                              
+      | struct virtio_device *vdev;      +--------------->+------------------------------------------------+
+      | struct virtqueue *rxvq;          |                | struct device dev;                             |
+      | struct virtqueue *txvq;          +------------+   | struct virtio_device_id id;                    |
+      | struct list_head free_buf_list;  |            |   | const struct virtio_config_ops *config;        |
+      | struct idr addr_idr;             |            |   | const struct vringh_config_ops *vringh_config; |
+ +----+ struct tipc_cdev_node cdev_node; |            |   | struct list_head vqs;                          |
+ |    +----------------------------------+            |   | void *priv;                                    |
+ |                                                    |   +------------------------------------------------+
+ |                                                    |   
+ |                                                    |   
+ |    struct tipc_cdev_node                           |   	
+ +--->+---------------------+                         |   	
+      | struct cdev cdev;   |                         |   struct virtqueue                         
+      | struct device *dev; |                         +-->+-----------------------------+
+      | unsigned int minor; |                             | struct list_head list;      |           
+      +---------------------+                             | callback                    |
+                                                          | struct virtio_device *vdev; |           
+                                                          | void *priv;                 |           
+                                                          +-----------------------------+
+
+
+
+
+
+       
+       
+       
+       
+       
+       
+================================================================================
+
+struct tipc_chan {
+	struct mutex lock; /* protects channel state  */
+	struct kref refcount;
+	enum tipc_chan_state state;
+	struct tipc_virtio_dev *vds;
+	const struct tipc_chan_ops *ops;
+	void *ops_arg;
+	u32 remote;
+	u32 local;
+	u32 max_msg_size;
+	u32 max_msg_cnt;
+	char srv_name[MAX_SRV_NAME_LEN];
+};
+
+----
+struct tipc_virtio_dev {
+	struct kref refcount;
+	struct mutex lock; /* protects access to this device */
+	struct virtio_device *vdev;
+	struct virtqueue *rxvq;
+	struct virtqueue *txvq;
+	uint msg_buf_cnt;
+	uint msg_buf_max_cnt;
+	size_t msg_buf_max_sz;
+	uint free_msg_buf_cnt;
+	struct list_head free_buf_list;
+	wait_queue_head_t sendq;
+	struct idr addr_idr;
+	enum tipc_device_state state;
+	struct tipc_cdev_node cdev_node;
+	char   cdev_name[MAX_DEV_NAME_LEN];
+};
+----
+//include/linux/virtio.h
+struct virtio_device {
+	int index;
+	bool failed;
+	bool config_enabled;
+	bool config_change_pending;
+	spinlock_t config_lock;
+	struct device dev;
+	struct virtio_device_id id;
+	const struct virtio_config_ops *config;
+	const struct vringh_config_ops *vringh_config;
+	struct list_head vqs;
+	u64 features;
+	void *priv;
+};
+
+//include/linux/virtio.h
+struct virtqueue {
+	struct list_head list;
+	void (*callback)(struct virtqueue *vq);
+	const char *name;
+	struct virtio_device *vdev;
+	unsigned int index;
+	unsigned int num_free;
+	void *priv;
+};
+
+----
+struct tipc_cdev_node {
+	struct cdev cdev;
+	struct device *dev;
+	unsigned int minor;
+};
+----
+struct tipc_chan_ops {
+	void (*handle_event)(void *cb_arg, int event);
+	struct tipc_msg_buf *(*handle_msg)(void *cb_arg,
+					   struct tipc_msg_buf *mb);
+};
+----
+
+
+struct tipc_msg_buf {
+	void *buf_va;
+	phys_addr_t buf_pa;
+	size_t buf_sz;
+	size_t wpos;
+	size_t rpos;
+	struct list_head node;
+};
+================================================================================
+

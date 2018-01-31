@@ -85,11 +85,5 @@ tipc_chan_connect	//will check channel state
 dn_wait_for_reply
 
 ================================================================================
-struct tipc_msg_buf {
-	void *buf_va;
-	phys_addr_t buf_pa;
-	size_t buf_sz;
-	size_t wpos;
-	size_t rpos;
-	struct list_head node;
-};
+chan_trigger_event
+|-> chan->ops->handle_event

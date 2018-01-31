@@ -9,3 +9,4 @@ rm a b c
 
 #将文本行倒序排列
 sed '1!G;h;$!d' ./sed_test.txt
+echo "      123" | sed 's/ //g'
