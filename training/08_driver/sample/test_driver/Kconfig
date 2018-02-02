@@ -1,0 +1,10 @@
+#
+# Test module configuration
+#
+
+
+config TEST_MODULE
+	tristate "test module"
+	default n
+	help
+	  This is the test module driver.

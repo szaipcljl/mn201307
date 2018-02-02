@@ -1,0 +1,91 @@
+diff --git a/drivers/test_driver/test_driver.c b/drivers/test_driver/test_driver.c
+index aa90f18..e5d63dd 100644
+--- a/drivers/test_driver/test_driver.c
++++ b/drivers/test_driver/test_driver.c
+@@ -4,6 +4,9 @@
+ #include <linux/cdev.h>
+ #include <linux/uaccess.h>
+ #include "head.h"
++#include <linux/kthread.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
+ 
+ #define CLASS_DEV_CREATE
+ #ifdef CLASS_DEV_CREATE
+@@ -99,10 +102,67 @@ static struct file_operations hello_ops = {
+ 	.unlocked_ioctl = hello_unlocked_ioctl,
+ };
+ 
++
++typedef struct magic_heap {
++	char * name;
++	int magic[100];
++} magic_heap_t;
++
++void test_thread(void)
++{
++	printk("test_driver: enter %s\n", __func__);
++	magic_heap_t *magic_heap_p;
++
++	int magic_data[] = {
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++		0xdeadbeef,
++	};
++	printk("test_driver magic_data addr: 0x%llx\n", magic_data);
++
++	magic_heap_p = (magic_heap_t *)kmalloc(sizeof(magic_heap_t), GFP_KERNEL);
++	magic_heap_p->name = "my_magic_heap";
++	int i;
++	for (i = 0; i < 100; i++) {
++		magic_heap_p->magic[i] = 0xdeadbeef;
++	}
++	printk("test_driver magic_heap_p: 0x%llx\n", magic_heap_p);
++
++
++	i = 0;
++	while(1) {
++		printk("test_driver: magic_data %x\n", magic_data[i % 20]);
++		printk("test_driver: magic_heap_p->magic %x\n", magic_heap_p->magic[i % 100]);
++		msleep(5000);
++		i++;
++	}
++}
++
+ static int hello_init(void)
+ {
+ 	int ret;
+ 
++	printk("hello_init\n");
+ 	dev_t devno = MKDEV(major, minor);
+ 	ret = register_chrdev_region(devno, 1, DEV_NAME);
+ 	if (0 != ret) {
+@@ -124,6 +184,8 @@ static int hello_init(void)
+ #endif
+ 
+ 	printk("hello_init\n");
++
++	kthread_run(test_thread, NULL, "my_test_thread");
+ 	return 0;
+ }
+ 

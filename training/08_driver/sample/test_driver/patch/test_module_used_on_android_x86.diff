@@ -1,0 +1,329 @@
+commit a4aa1bfe96a4377f6ccedc312b7db7aacc69aef1
+Author: nma1x <ningx.ma@intel.com>
+Date:   Fri Feb 2 13:19:57 2018 +0800
+
+    test module driver sample
+    
+    add a driver dir need to modify the following:
+    (1) Kconfig, Makefile and source code in dir
+        drivers/test_driver/Kconfig
+        drivers/test_driver/Makefile
+    
+        src code:
+        drivers/test_driver/head.h
+        drivers/test_driver/test_driver.c
+    
+    (2) Kconfig and Makefile in parent dir
+        drivers/Kconfig
+        drivers/Makefile
+    
+    (3) config flags
+        arch/x86/configs/x86_64_defconfig
+    
+    Change-Id: Iba31f859ad3cfa067e0a9223d2041a0454a9dbb2
+    Tracked-On:
+
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 7e84418..e213568 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -4581,3 +4581,6 @@ CONFIG_UCS2_STRING=y
+ CONFIG_FONT_SUPPORT=y
+ CONFIG_FONT_8x16=y
+ CONFIG_FONT_AUTOSELECT=y
++
++# test module
++CONFIG_TEST_MODULE=y
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index 577e818..8337d64 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -172,5 +172,7 @@ source "drivers/phy/Kconfig"
+ 
+ source "drivers/powercap/Kconfig"
+ 
++source "drivers/test_driver/Kconfig"
++
+ endmenu
+ source "drivers/external_drivers/Kconfig"
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 7da0693..8fcad5d 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -157,3 +157,5 @@ obj-$(CONFIG_NTB)		+= ntb/
+ obj-$(CONFIG_FMC)		+= fmc/
+ obj-$(CONFIG_POWERCAP)		+= powercap/
+ obj-$(CONFIG_EXTERNAL_DRIVERS)+= external_drivers/
++
++obj-$(CONFIG_TEST_MODULE)	+= test_driver/
+diff --git a/drivers/test_driver/Kconfig b/drivers/test_driver/Kconfig
+new file mode 100644
+index 0000000..878b278
+--- /dev/null
++++ b/drivers/test_driver/Kconfig
+@@ -0,0 +1,10 @@
++#
++# Test module configuration
++#
++
++
++config TEST_MODULE
++	tristate "test module"
++	default n
++	help
++	  This is the test module driver.
+diff --git a/drivers/test_driver/Makefile b/drivers/test_driver/Makefile
+new file mode 100644
+index 0000000..0f589e0
+--- /dev/null
++++ b/drivers/test_driver/Makefile
+@@ -0,0 +1,18 @@
++obj-$(CONFIG_TEST_MODULE)		+= test_driver.o
++##KERNELDIR ?=/lib/modules/$(shell uname -r)/build
++#KERNELDIR ?=$(HOME)/disk2/cht_r2/out/target/product/r2_cht_mrd/obj/kernel/lib/modules/3.14.79-x86_64-gb1e6894/build/
++## Documentation/kbuild/kbuild.txt
++
++#module:
++	#$(MAKE) -C $(KERNELDIR) M=$(shell pwd) modules
++	#rm -rf *.c~
++	#rm -rf *.mod*
++	#rm -rf *.o
++	#rm -rf modules.order
++	#rm -rf Module.symvers
++
++#clean:
++	##rm -rf *.ko *.o *.mod* modules* Mo* .*.cmd .tmp_versions
++	#make -C $(KERNELDIR) M=`pwd` clean
++
++#obj-m=test_driver.o
+diff --git a/drivers/test_driver/head.h b/drivers/test_driver/head.h
+new file mode 100644
+index 0000000..6e90fcd
+--- /dev/null
++++ b/drivers/test_driver/head.h
+@@ -0,0 +1,7 @@
++#ifndef __HEAD_H__
++#define __HEAD_H__
++
++#define LED_ON _IO('K',0)
++#define LED_OFF _IO('K',1)
++
++#endif
+diff --git a/drivers/test_driver/test_app/auto_create_device_file.txt b/drivers/test_driver/test_app/auto_create_device_file.txt
+new file mode 100644
+index 0000000..7b33c35
+--- /dev/null
++++ b/drivers/test_driver/test_app/auto_create_device_file.txt
+@@ -0,0 +1,15 @@
++在加载驱动程序时自动创建：
++Linux内核提供了一组函数，可以在模块加载时自动在/dev目录下创建相对应的设备节点，
++并在卸载模块时删除该节点，能实现这样操作的前提是用户空间已经移植了udev（简化版本的mdev）。
++
++相关的函数和结构：
++(1)struct class，是一个设备结构体，
++	注册一个类结构，会在/sys/class目录下创建对应的文件夹，
++	/dev目录下有自动生成设备节点的信息。
++
++(2)struct class_device结构体。
++	class_create()
++	class_device_create()
++
++在成功挂载驱动程序之后，在/sys/class下就产生了一个led文件夹，里面有一个leds文件的包含信息；
++并且已经自动在/dev目录下创建好了leds字符设备文件，不用手动创建。
+diff --git a/drivers/test_driver/test_app/test.c b/drivers/test_driver/test_app/test.c
+new file mode 100644
+index 0000000..91fbfb1
+--- /dev/null
++++ b/drivers/test_driver/test_app/test.c
+@@ -0,0 +1,39 @@
++#include <stdio.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include "../head.h"
++#include <sys/ioctl.h>
++
++int main(int argc, const char *argv[])
++{
++	int fd;
++	int nbyte;
++	char buff[20] = "hello world";
++#if 0
++	if(0 != chmod("/dev/hello_class",0666)){
++		perror();
++	}
++#endif
++	fd = open("/dev/hello_class", O_RDWR, 0664);
++	if (0 > fd) {
++		printf("test : open : error\n");
++		return -1;
++	}
++
++	write(fd, buff, 20);
++    nbyte = read(fd, buff, sizeof(buff));
++
++	printf("test : buff[] = %s\n", buff);
++	printf("test : nbyte = %d\n", nbyte);
++
++	ioctl(fd,LED_ON);
++	sleep(1);
++	ioctl(fd,LED_OFF);
++
++//	while(1);
++	close(fd);
++
++	return 0;
++}
+diff --git a/drivers/test_driver/test_driver.c b/drivers/test_driver/test_driver.c
+new file mode 100644
+index 0000000..aa90f18
+--- /dev/null
++++ b/drivers/test_driver/test_driver.c
+@@ -0,0 +1,146 @@
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/fs.h>
++#include <linux/cdev.h>
++#include <linux/uaccess.h>
++#include "head.h"
++
++#define CLASS_DEV_CREATE
++#ifdef CLASS_DEV_CREATE
++#include <linux/device.h>
++#endif
++
++
++#define N 128
++#define DEV_NAME "hello_class"
++MODULE_LICENSE("GPL");
++
++char data[N];
++
++static int major = 220;
++static int minor = 1;
++
++#ifdef CLASS_DEV_CREATE
++static struct class *cls;
++static struct device *device;
++#endif
++
++static int hello_open(struct inode *inode, struct file *fl)
++{
++	printk("hello_open\n");
++	return 0;
++}
++
++static int hello_release(struct inode *inode, struct file *file)
++{
++	printk("hello_release\n");
++
++	return 0;
++}
++
++static ssize_t hello_read(struct file *file, char __user *buf,
++		size_t size, loff_t *loff)
++{
++	if (size > N)
++		size = N;
++	if (size < 0)
++		return -EINVAL;
++
++	if (copy_to_user(buf, data, size))
++		return -ENOMEM;
++
++	printk("hello_read\n");
++	return size;
++}
++
++static ssize_t hello_write(struct file *file, const char __user *buff,
++		size_t size, loff_t *loff)
++{
++	if (size > N)
++		size = N;
++	if (size < 0)
++		return -EINVAL;
++
++	memset(data, '\0', sizeof(data));
++
++	if (0 != copy_from_user(data, buff, size))
++		return -ENOMEM;
++
++	printk("hello_write\n");
++	printk("data = %s\n", data);
++
++	return size;
++}
++
++static long hello_unlocked_ioctl(struct file *file, unsigned int cmd,
++		unsigned long arg)
++{
++	switch(cmd) {
++	case LED_ON:
++		printk("LED_ON\n");
++		break;
++	case LED_OFF:
++		printk("LED_OFF\n");
++		break;
++	}
++
++	printk("hello_unlocked_ioctl\n");
++
++	return 0;
++}
++
++static struct cdev cdev;
++static struct file_operations hello_ops = {
++	.owner = THIS_MODULE,
++	.open = hello_open,
++	.read = hello_read,
++	.write = hello_write,
++	.release = hello_release,
++	.unlocked_ioctl = hello_unlocked_ioctl,
++};
++
++static int hello_init(void)
++{
++	int ret;
++
++	dev_t devno = MKDEV(major, minor);
++	ret = register_chrdev_region(devno, 1, DEV_NAME);
++	if (0 != ret) {
++		//alloc_chrdev_region(&devno,0,1,DEV_NAME);
++		printk("register_chrdev_region : error\n");
++	}
++
++	cdev_init(&cdev, &hello_ops);
++	ret = cdev_add(&cdev, devno, 1);
++	if (0 != ret) {
++		printk("cdev_add\n");
++		unregister_chrdev_region(devno, 1);
++		return -1;
++	}
++
++#ifdef CLASS_DEV_CREATE
++	cls = class_create(THIS_MODULE, DEV_NAME);
++	device_create(cls, device, devno, NULL, DEV_NAME);
++#endif
++
++	printk("hello_init\n");
++	return 0;
++}
++
++static void hello_exit(void)
++{
++	dev_t devno = MKDEV(major, minor);
++
++#ifdef CLASS_DEV_CREATE
++	device_destroy(cls, devno);
++	class_destroy(cls);
++#endif
++
++	cdev_del(&cdev);
++	unregister_chrdev_region(devno, 1);
++
++	printk("hello_exit\n");
++}
++
++module_init(hello_init);
++module_exit(hello_exit);

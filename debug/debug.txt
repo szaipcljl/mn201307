@@ -79,3 +79,15 @@ cat /proc/sys/kernel/core_pattern
 time ./binary
 ================================================================================
 ubuntu 上用gcc -static 编译静态链接的binary,可以在 android 上运行
+You can check if module is signed or not using command
+================================================================================
+kernel config on android devices:
+zcat /proc/config.gz >/data/.config
+
+================================================================================
+查看设备中的ko文件信息:
+hexdump -C ../../out/target/product/r2_cht_mrd/root/lib/modules/ov2722.ko | tail
+下面是输出（内核签名后会把签名信息附在模块的最后面）
+00008940  14 00 00 00 00 00 02 02  7e 4d 6f 64 75 6c 65 20  |........~Module |
+00008950  73 69 67 6e 61 74 75 72  65 20 61 70 70 65 6e 64  |signature append|
+
