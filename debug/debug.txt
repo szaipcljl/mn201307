@@ -77,3 +77,5 @@ grep core_pattern /proc/kallsyms
 cat /proc/sys/kernel/core_pattern
 ----------
 time ./binary
+================================================================================
+ubuntu 上用gcc -static 编译静态链接的binary,可以在 android 上运行

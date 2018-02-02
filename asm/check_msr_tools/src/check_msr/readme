@@ -1,0 +1,6 @@
+
+(1) you can copy check_msr/ to android_root_dir/system/core, and build binary
+using command 'mm'
+
+(2) or you can build it on unbuntu using gcc command:
+	gcc -static check_msr.c

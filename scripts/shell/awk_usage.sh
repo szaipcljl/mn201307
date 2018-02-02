@@ -19,4 +19,6 @@ sed -n '/46 bits/p' /proc/cpuinfo | sed 's/\t/ /g' | cut -d ' ' -f3
 echo "---(3)---"
 #多个空格替换成一个空格
 echo "a  b   c d     f" | sed 's/  */ /g' | cut  -d ' ' -f3
+i=3
+echo "a  b   c d     f" | sed 's/  */ /g' | cut  -d ' ' -f$i
 
