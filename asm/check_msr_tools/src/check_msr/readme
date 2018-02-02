@@ -4,3 +4,5 @@ using command 'mm'
 
 (2) or you can build it on unbuntu using gcc command:
 	gcc -static check_msr.c
+
+(3) https://01.org/zh/msr-tools/overview
