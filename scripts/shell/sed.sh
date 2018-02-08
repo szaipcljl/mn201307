@@ -7,6 +7,8 @@ sed -i '/^\s*$/d' c  #删除所有空行
 cat c | while read line; do echo ./checksec --output xml -ff $line; done
 rm a b c
 
-#将文本行倒序排列
+# 将文本行倒序排列
 sed '1!G;h;$!d' ./sed_test.txt
 echo "      123" | sed 's/ //g'
+# 将多行文件转换为一行
+sed ':a;N;s/\n/ /;ta;'

@@ -1,0 +1,100 @@
+diff --git a/drivers/test_driver/head.h b/drivers/test_driver/head.h
+index 6e90fcd..d704f06 100644
+--- a/drivers/test_driver/head.h
++++ b/drivers/test_driver/head.h
+@@ -1,7 +1,7 @@
+ #ifndef __HEAD_H__
+ #define __HEAD_H__
+ 
+-#define LED_ON _IO('K',0)
++#define MSR_IA32_ARCH_CAPABILITIES_IS_EXIST _IO('K',0)
+ #define LED_OFF _IO('K',1)
+ 
+ #endif
+diff --git a/drivers/test_driver/test_app/test.c b/drivers/test_driver/test_app/test.c
+index 91fbfb1..fb60bff 100644
+--- a/drivers/test_driver/test_app/test.c
++++ b/drivers/test_driver/test_app/test.c
+@@ -11,6 +11,7 @@ int main(int argc, const char *argv[])
+ 	int fd;
+ 	int nbyte;
+ 	char buff[20] = "hello world";
++	unsigned int val=0x55;
+ #if 0
+ 	if(0 != chmod("/dev/hello_class",0666)){
+ 		perror();
+@@ -22,13 +23,14 @@ int main(int argc, const char *argv[])
+ 		return -1;
+ 	}
+ 
+-	write(fd, buff, 20);
+-    nbyte = read(fd, buff, sizeof(buff));
++	//write(fd, buff, 20);
++	//nbyte = read(fd, buff, sizeof(buff));
+ 
+-	printf("test : buff[] = %s\n", buff);
+-	printf("test : nbyte = %d\n", nbyte);
++	//printf("test : buff[] = %s\n", buff);
++	//printf("test : nbyte = %d\n", nbyte);
+ 
+-	ioctl(fd,LED_ON);
++	ioctl(fd, MSR_IA32_ARCH_CAPABILITIES_IS_EXIST, &val);
++	printf("val=%x\n", val);
+ 	sleep(1);
+ 	ioctl(fd,LED_OFF);
+ 
+diff --git a/drivers/test_driver/test_driver.c b/drivers/test_driver/test_driver.c
+index 7171233..4fb4423 100644
+--- a/drivers/test_driver/test_driver.c
++++ b/drivers/test_driver/test_driver.c
+@@ -12,7 +12,29 @@
+ #ifdef CLASS_DEV_CREATE
+ #include <linux/device.h>
+ #endif
++/*
++ * bit29 is set, msr exist
++ * */
++static int get_msr_bit(char which_bit)
++{
++	int ret;
+ 
++	__asm__ (
++			"mov $0x07, %%eax\n\t"
++			"mov $0x0, %%ecx\n\t"
++			"cpuid\n\t"
++			"mov %%edx, %0\n\t"
++			: "=r" (ret) /*output*/
++			: "0" (0) /*input*/
++			: "%eax", "%ebx","%ecx", "%edx");
++
++	printk("edx = %x\n", ret);
++	//ret = (ret >> 29) & 1;
++	ret = (ret >> which_bit) & 1;
++	printk("edx[29] = %x\n", ret);
++
++	return ret; //bit29
++}
+ 
+ #define N 128
+ #define DEV_NAME "hello_class"
+@@ -98,9 +120,17 @@ static long hello_unlocked_ioctl(struct file *file, unsigned int cmd,
+ 		unsigned long arg)
+ {
+ 	switch(cmd) {
+-	case LED_ON:
+-		printk("LED_ON\n");
+-		break;
++	case MSR_IA32_ARCH_CAPABILITIES_IS_EXIST:
++		{
++			unsigned int bit_val;
++#define WHICH_BIT 29 //bit29
++			bit_val = (unsigned int)get_msr_bit(WHICH_BIT);
++			//bit_val = 1; //test for user space
++			copy_to_user((unsigned long *)arg, &bit_val, sizeof(unsigned int));
++
++			printk("MSR_IA32_ARCH_CAPABILITIES_IS_EXIST\n");
++			break;
++		}
+ 	case LED_OFF:
+ 		printk("LED_OFF\n");
+ 		break;

@@ -4,6 +4,11 @@ KERNELDIR ?=/lib/modules/$(shell uname -r)/build
 
 module:
 	$(MAKE) -C $(KERNELDIR) M=$(shell pwd) modules
+	rm -rf *.c~
+	rm -rf *.mod*
+	rm -rf *.o
+	rm -rf modules.order
+	rm -rf Module.symvers
 
 clean:
 	#rm -rf *.ko *.o *.mod* modules* Mo* .*.cmd .tmp_versions

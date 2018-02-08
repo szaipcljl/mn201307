@@ -1,2 +1,4 @@
 sudo apt-get install putty
 sudo apt-get install minicom
+
+https://www.busybox.net/downloads/binaries/1.27.1-i686/

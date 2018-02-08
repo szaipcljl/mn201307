@@ -1,0 +1,19 @@
+arm64 startup
+
+v4.14
+================================================================================
+_head	//Kernel startup entry point, arch/arm64/kernel/head.S
+|-> |->stext
+		|-> __primary_switch
+			|-> __primary_switched //arch/arm64/kernel/head.S
+				|-> b	start_kernel	//init/main.c
+
+================================================================================
+start_kernel
+
+(1) set_task_stack_end_magic	//kernel/fork.c
+	set init_task's stack field to STACK_END_MAGIC for overflow detection
+
+(2) 
+Symmetric Multiple Processor
+

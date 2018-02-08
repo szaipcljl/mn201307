@@ -12,8 +12,8 @@ int main(int argc, const char *argv[])
 	int nbyte;
 	char buff[20] = "hello world";
 #if 0
-	if(0 != chmod("/dev/hello_class",0666)){
-		perror();
+	if(0 != chmod("/dev/hello_class", 0666)){
+		perror("chmod failed"); //chmod failed: Operation not permitted
 	}
 #endif
 	fd = open("/dev/hello_class", O_RDWR, 0664);
