@@ -1,0 +1,171 @@
+diff --git a/drivers/test_driver/head.h b/drivers/test_driver/head.h
+index 1a5d1e6..46a103b 100644
+--- a/drivers/test_driver/head.h
++++ b/drivers/test_driver/head.h
+@@ -3,5 +3,18 @@
+ 
+ #define MSR_IA32_ARCH_CAPABILITIES_IS_EXIST _IO('K',0)
+ #define GET_MSR_REG_VAL _IO('K',1)
++#define READ_CPUID _IO('K',3)
++
++typedef struct exx_reg_val{
++	int eax_val;
++	int ebx_val;
++	int ecx_val;
++	int edx_val;
++
++	int eax_ret_val;
++	int ebx_ret_val;
++	int ecx_ret_val;
++	int edx_ret_val;
++} exx_reg_val_t;
+ 
+ #endif
+diff --git a/drivers/test_driver/test_app/.gitignore b/drivers/test_driver/test_app/.gitignore
+new file mode 100644
+index 0000000..9daeafb
+--- /dev/null
++++ b/drivers/test_driver/test_app/.gitignore
+@@ -0,0 +1 @@
++test
+diff --git a/drivers/test_driver/test_app/Makefile b/drivers/test_driver/test_app/Makefile
+index 542007d..e89d9b6 100644
+--- a/drivers/test_driver/test_app/Makefile
++++ b/drivers/test_driver/test_app/Makefile
+@@ -3,6 +3,7 @@
+ LDFLAGS += -static
+ 
+ all: test
++	rm test.o
+ 
+ test: test.o
+ 
+diff --git a/drivers/test_driver/test_app/test.c b/drivers/test_driver/test_app/test.c
+index f365bd4..a6477b3 100644
+--- a/drivers/test_driver/test_app/test.c
++++ b/drivers/test_driver/test_app/test.c
+@@ -3,6 +3,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <fcntl.h>
++#include <stdlib.h>
+ #include "../head.h"
+ #include <sys/ioctl.h>
+ 
+@@ -14,14 +15,28 @@ int msr_ia32_arch_capabilities_is_exist(int fd)
+ 	return val;
+ }
+ 
++int read_cpuid(int fd, exx_reg_val_t *reg)
++{
++	int ret = 0;
++
++	ioctl(fd, READ_CPUID, (unsigned int *)reg);
++	printf("%s: eax_ret_val=%x, ebx_ret_val=0x%x, ecx_ret_val=0x%x, edx_ret_val=0x%x\n",\
++			__func__, reg->eax_ret_val, reg->ebx_ret_val, reg->ecx_ret_val, reg->edx_ret_val);
++	return ret;
++}
++
+ int read_msr(int fd, unsigned long msr_reg, unsigned long msr_val)
+ {
+ 	int ret = 0;
++	unsigned long msr_register = msr_reg;
++	//msr_reg pass msr register to kernel space, and kernel space pass
++	//msr value to msr_reg. So, after ioctl, msr_reg store msr val. 
++	//~0x0 is error code
+ 	ioctl(fd, GET_MSR_REG_VAL, (unsigned int *)&msr_reg);
+ 	if (msr_reg == ~0x0)
+ 		ret = -1;
+ 	msr_val = msr_reg;
+-	printf("%s: msr_val=0x%lx, ret=%d\n", __func__, (unsigned long)msr_reg, ret);
++	printf("%s: msr_reg=%lx, msr_val=0x%lx, ret=%d\n", __func__, msr_register, (unsigned long)msr_reg, ret);
+ 	return ret; //return msr val
+ }
+ 
+@@ -56,8 +71,19 @@ int main(int argc, const char *argv[])
+ 	//printf("test : buff[] = %s\n", buff);
+ 	//printf("test : nbyte = %d\n", nbyte);
+ 
++#if 1 //read cpuid test
++	exx_reg_val_t reg = {0};
++	reg.eax_val = 0x7;
++	reg.ecx_val = 0;
++	read_cpuid(fd, &reg);
++#endif
++
+ #if 1 //read_msr test
+ 	msr_reg = 0x17; //test
++	/*msr_reg = 0x48; //test*/
++	if (argc > 1)
++		msr_reg = (unsigned long)atoi(argv[1]);
++	printf("%s: test msr_reg=0x%lx\n", __func__, msr_reg);
+ 	ret = read_msr(fd, msr_reg, msr_val);
+ 	if (ret < 0) {
+ 		printf("%s: read_msr:read msr failed, ret=%d\n", __func__, ret);
+diff --git a/drivers/test_driver/test_driver.c b/drivers/test_driver/test_driver.c
+index 886a5a8..1c7a24c 100644
+--- a/drivers/test_driver/test_driver.c
++++ b/drivers/test_driver/test_driver.c
+@@ -13,6 +13,37 @@
+ #ifdef CLASS_DEV_CREATE
+ #include <linux/device.h>
+ #endif
++
++static int read_cpuid(exx_reg_val_t *reg)
++{
++	int ret;
++
++	__asm__ (
++			"mov %4, %%eax\n\t"
++			"mov %6, %%ecx\n\t"
++			"cpuid\n\t"
++			"mov %%eax, %0\n\t"
++			"mov %%ebx, %1\n\t"
++			"mov %%ecx, %2\n\t"
++			"mov %%edx, %3\n\t"
++
++			: "=r" (reg->eax_ret_val),\
++			"=r" (reg->ebx_ret_val),\
++			"=r" (reg->ecx_ret_val),\
++			"=r" (reg->edx_ret_val)/*output*/
++
++			: "r" (reg->eax_val), \
++			"r"(reg->ebx_val),\
++			"r"(reg->ecx_val), \
++			"r"(reg->edx_val),"0" (0) /*input*/
++			: "%eax", "%ebx","%ecx", "%edx");
++
++	printk("eax:0x%x, ecx:0x%x\n", reg->eax_val, reg->ecx_val);
++	printk("edx_ret:0x%x\n", reg->edx_ret_val);
++
++	return 0;
++}
++
+ /*
+  * bit29 is set, msr exist
+  * */
+@@ -161,6 +192,24 @@ static long hello_unlocked_ioctl(struct file *file, unsigned int cmd,
+ 			printk("GET_MSR_REG_VAL\n");
+ 			break;
+ 		}
++	case READ_CPUID:
++		{
++			exx_reg_val_t reg = {0};
++			copy_from_user(&reg, (unsigned long *)arg, sizeof(exx_reg_val_t));
++			//reg.eax_val = 0x7;
++			//reg.ecx_val = 0;
++
++			read_cpuid(&reg);
++
++			copy_to_user((unsigned long *)arg, &reg, sizeof(exx_reg_val_t));
++			printk("eax_tet_val = 0x%x\n", reg.eax_ret_val);
++			printk("ebx_tet_val = 0x%x\n", reg.ebx_ret_val);
++			printk("ecx_tet_val = 0x%x\n", reg.ecx_ret_val);
++			printk("edx_tet_val = 0x%x\n", reg.edx_ret_val);
++			printk("READ_CPUID\n");
++			break;
++		}
++
+ 	default:
+ 		printk("enter default\n");
+ 		break;

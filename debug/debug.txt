@@ -96,3 +96,9 @@ hexdump -C ../../out/target/product/r2_cht_mrd/root/lib/modules/ov2722.ko | tail
 Makefile:
 statically linked
 LDFLAGS += -static
+================================================================================
+objdump -dS vmlinux > vmlinux.asm.S
+man objdump:
+	[-d|--disassemble]
+	[-D|--disassemble-all]
+	[-S|--source]

@@ -1,0 +1,156 @@
+diff --git a/drivers/test_driver/head.h b/drivers/test_driver/head.h
+index d704f06..1a5d1e6 100644
+--- a/drivers/test_driver/head.h
++++ b/drivers/test_driver/head.h
+@@ -2,6 +2,6 @@
+ #define __HEAD_H__
+ 
+ #define MSR_IA32_ARCH_CAPABILITIES_IS_EXIST _IO('K',0)
+-#define LED_OFF _IO('K',1)
++#define GET_MSR_REG_VAL _IO('K',1)
+ 
+ #endif
+diff --git a/drivers/test_driver/test_app/test.c b/drivers/test_driver/test_app/test.c
+index fb60bff..f365bd4 100644
+--- a/drivers/test_driver/test_app/test.c
++++ b/drivers/test_driver/test_app/test.c
+@@ -6,12 +6,39 @@
+ #include "../head.h"
+ #include <sys/ioctl.h>
+ 
++int msr_ia32_arch_capabilities_is_exist(int fd)
++{
++	int val;
++	ioctl(fd, MSR_IA32_ARCH_CAPABILITIES_IS_EXIST, &val);
++	printf("%s: val=0x%x\n", __func__, val);
++	return val;
++}
++
++int read_msr(int fd, unsigned long msr_reg, unsigned long msr_val)
++{
++	int ret = 0;
++	ioctl(fd, GET_MSR_REG_VAL, (unsigned int *)&msr_reg);
++	if (msr_reg == ~0x0)
++		ret = -1;
++	msr_val = msr_reg;
++	printf("%s: msr_val=0x%lx, ret=%d\n", __func__, (unsigned long)msr_reg, ret);
++	return ret; //return msr val
++}
++
+ int main(int argc, const char *argv[])
+ {
+ 	int fd;
+-	int nbyte;
++	int nbyte, ret;
+ 	char buff[20] = "hello world";
+ 	unsigned int val=0x55;
++	unsigned long msr_reg = 0x17; //test: reg:0x17, display cpu model
++	unsigned long msr_val;
++	/*
++	 * $ peeknpoke s r 0 17
++	 * MSR value of 0x17 offset is 0xf09804184f
++	 */
++
++	// TO FIX
+ #if 0
+ 	if(0 != chmod("/dev/hello_class",0666)){
+ 		perror();
+@@ -19,7 +46,7 @@ int main(int argc, const char *argv[])
+ #endif
+ 	fd = open("/dev/hello_class", O_RDWR, 0664);
+ 	if (0 > fd) {
+-		printf("test : open : error\n");
++		printf("%s: test : open : error\n", __func__);
+ 		return -1;
+ 	}
+ 
+@@ -29,13 +56,31 @@ int main(int argc, const char *argv[])
+ 	//printf("test : buff[] = %s\n", buff);
+ 	//printf("test : nbyte = %d\n", nbyte);
+ 
+-	ioctl(fd, MSR_IA32_ARCH_CAPABILITIES_IS_EXIST, &val);
+-	printf("val=%x\n", val);
+-	sleep(1);
+-	ioctl(fd,LED_OFF);
++#if 1 //read_msr test
++	msr_reg = 0x17; //test
++	ret = read_msr(fd, msr_reg, msr_val);
++	if (ret < 0) {
++		printf("%s: read_msr:read msr failed, ret=%d\n", __func__, ret);
++		close(fd);
++		return -1;
++	}
++#endif
+ 
+-//	while(1);
+-	close(fd);
++	if (!msr_ia32_arch_capabilities_is_exist(fd)) {
++		printf("%s: msr ia32_arch_capabilities is not exist\n", __func__);
++		close(fd);
++		return -1;
++	}
+ 
++	msr_reg = 0x10a;
++	ret = read_msr(fd, msr_reg, msr_val);
++	if (ret < 0) {
++		printf("%s: read_msr:read msr failed, ret=%d\n", __func__, ret);
++		close(fd);
++		return -1;
++	}
++
++	//ioctl(fd, GET_MSR_REG_VAL);
++	close(fd);
+ 	return 0;
+ }
+diff --git a/drivers/test_driver/test_driver.c b/drivers/test_driver/test_driver.c
+index 4fb4423..886a5a8 100644
+--- a/drivers/test_driver/test_driver.c
++++ b/drivers/test_driver/test_driver.c
+@@ -7,6 +7,7 @@
+ #include <linux/kthread.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <asm/msr.h>
+ 
+ #define CLASS_DEV_CREATE
+ #ifdef CLASS_DEV_CREATE
+@@ -131,8 +132,37 @@ static long hello_unlocked_ioctl(struct file *file, unsigned int cmd,
+ 			printk("MSR_IA32_ARCH_CAPABILITIES_IS_EXIST\n");
+ 			break;
+ 		}
+-	case LED_OFF:
+-		printk("LED_OFF\n");
++	case GET_MSR_REG_VAL:
++		{
++			unsigned long msr_reg;
++			unsigned long msr_val;
++			int err = -1;
++			u32 val_low = 0x55, val_high = 0x55;
++			//msr_reg = 0x17; //test: display cpu model
++
++			copy_from_user(&msr_reg, (unsigned long *)arg, sizeof(unsigned long));
++			printk("msr_reg=0x%x\n", msr_reg);
++
++			err = rdmsr_safe(msr_reg, &val_low, &val_high);
++			if (err < 0)
++			{
++				printk("rdmsr_safe: read msr 0x%x failed\n", msr_reg);
++				msr_val = ~0x0;
++			} else {
++				msr_val = (unsigned long)val_high;
++				msr_val <<=32;
++				msr_val |= (unsigned long)val_low;
++			}
++
++			printk("val_low=0x%x, val_high=0x%x, msr_val=0x%llx; err=0x%x\n", val_low, val_high, msr_val, err);
++
++			copy_to_user((unsigned long *)arg, &msr_val, sizeof(unsigned long));
++
++			printk("GET_MSR_REG_VAL\n");
++			break;
++		}
++	default:
++		printk("enter default\n");
+ 		break;
+ 	}
+ 

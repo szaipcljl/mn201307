@@ -1,0 +1,13 @@
+readme
+
+patch
+(1) add test module to android x86
+	test_module_used_on_android_x86.diff  
+(2) create a kthread
+	add_kthread.diff    
+	//generate_test_driver_with_kthread.sh
+(3) cpuid and read msr
+	use_ioctl_to_check_msr.diff
+	read_msr.diff
+(4) read cpuid
+	read_cpuid.git_diff
