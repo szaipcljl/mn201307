@@ -72,6 +72,9 @@ linux驱动加载命令和驱动模块信息查看
 ================================================================================
 peeknpoke
 ----
+man rdmsr
+rdmsr - tool for reading CPU machine specific registers (MSR)
+----
 s root, determine where the core_pattern is in the kernel:
 grep core_pattern /proc/kallsyms
 cat /proc/sys/kernel/core_pattern
@@ -102,3 +105,4 @@ man objdump:
 	[-d|--disassemble]
 	[-D|--disassemble-all]
 	[-S|--source]
+================================================================================
