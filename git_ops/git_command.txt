@@ -34,3 +34,22 @@ git diff v1.0 v2.0  显示两个版本之间差异的统计数字
 git diff v1.0 v2.0 -- file.c   显示file.c在两个版本之间的比对结果 
 git diff master...dev  创建分支dev之后，在这条分支上的差异对比 ，用dev与
                     master 所交的分岐点和现在dev分支上最后一个快照比对
+
+================================================================================
+git commit --signoff
+git commit -s
+
+Sign-off is a requirement for getting patches into the Linux kernel and a few
+other projects, but most projects don't actually use it.
+
+It was introduced in the wake of the SCO lawsuit, (and other accusations of
+copyright infringement from SCO, most of which they never actually took
+to court), as a Developers Certificate of Origin. It is used to say that
+you certify that you have created the patch in question, or that you certify
+that to the best of your knowledge, it was created under an appropriate
+open-source license, or that it has been provided to you by someone else under
+those terms. This can help establish a chain of people who take responsibility
+for the copyright status of the code in question, to help ensure that
+copyrighted code not released under an appropriate free software (open source)
+license is not included in the kernel.
+----

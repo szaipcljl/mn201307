@@ -1,0 +1,29 @@
+How can I apply a patch
+
+================================================================================
+Note: You can first preview what your patch will do:
+(1) First the stats:
+
+	git apply --stat a_file.patch
+
+(2) Then a dry run to detect errors:
+
+	git apply --check a_file.patch
+
+(3) Finally, you can use git am to apply your patch: it allows you to sign off
+	an applied patch.  This can be useful for later reference.
+
+	git am --signoff < a_file.patch
+
+	In you git log, you’ll find that the commit messages contain a “Signed-off-by”
+	tag. This tag will be read by Github and others to provide useful info about
+	how the commit ended up in the code.
+
+	If you want to apply it as a commit, use git am.
+----
+git apply name-of-file.patch
+
+----
+Or, if you're kicking it old school:
+	cd /path/to/other/repository
+	patch -p1 < 0001-whatever.patch
