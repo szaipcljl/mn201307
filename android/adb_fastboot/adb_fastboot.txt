@@ -4,3 +4,16 @@ fastboot flashing [unlock | lock]
 
 gordon_peak:/ $ getprop | grep build
 
+----------------------
+open apk on adb shell:
+	adb shell am start -n com.android.camera2/com.android.camera.CameraActivity
+after run the command, you will see the camera has been opened on screen.
+
+adb shell am start -n package_name/activity_name
+
+how to get package name and activity name?
+packages/apps/Camera2/AndroidManifest.xml:
+	package="com.android.camera2">
+	...
+	<activity
+             android:name="com.android.camera.CameraActivity"
