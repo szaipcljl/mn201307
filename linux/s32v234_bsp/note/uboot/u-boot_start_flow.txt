@@ -1,0 +1,240 @@
+u-boot start Flow
+========
+/*
+ * _main execution sequence is:
+ *
+ * 1. Set up initial environment for calling board_init_f().
+ *    This environment only provides a stack and a place to store
+ *    the GD ('global data') structure, both located in some readily
+ *    available RAM (SRAM, locked cache...). In this context, VARIABLE
+ *    global data, initialized or not (BSS), are UNAVAILABLE; only
+ *    CONSTANT initialized data are available. GD should be zeroed
+ *    before board_init_f() is called.
+ *
+ * 2. Call board_init_f(). This function prepares the hardware for
+ *    execution from system RAM (DRAM, DDR...) As system RAM may not
+ *    be available yet, , board_init_f() must use the current GD to
+ *    store any data which must be passed on to later stages. These
+ *    data include the relocation destination, the future stack, and
+ *    the future GD location.
+ *
+ * 3. Set up intermediate environment where the stack and GD are the
+ *    ones allocated by board_init_f() in system RAM, but BSS and
+ *    initialized non-const data are still not available.
+ *
+ * 4a.For U-Boot proper (not SPL), call relocate_code(). This function
+ *    relocates U-Boot from its current location into the relocation
+ *    destination computed by board_init_f().
+ *
+ * 4b.For SPL, board_init_f() just returns (to crt0). There is no
+ *    code relocation in SPL.
+ *
+ * 5. Set up final environment for calling board_init_r(). This
+ *    environment has BSS (initialized to 0), initialized non-const
+ *    data (initialized to their intended value), and stack in system
+ *    RAM (for SPL moving the stack and GD into RAM is optional - see
+ *    CONFIG_SPL_STACK_R). GD has retained values set by board_init_f().
+ *
+ * TODO: For SPL, implement stack relocation on AArch64.
+ *
+ * 6. For U-Boot proper (not SPL), some CPUs have some work left to do
+ *    at this point regarding memory, so call c_runtime_cpu_setup.
+ *
+ * 7. Branch to board_init_r().
+ */
+
+====
+log:
+
+U-Boot 2016.01-g5eadcd6-dirty (Mar 08 2018 - 11:58:14 +0800)
+
+CPU:   NXP S32V234 at 1000 MHz
+Reset cause: unknown reset
+Board: rda600
+I2C:   ready
+DRAM:  2 GiB
+All (4) cores are up.
+MMC:   FSL_SDHC: 0
+*** Warning - bad CRC, using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   FEC
+Hit any key to stop autoboot:  3  2  1  0 
+switch to partitions #0, OK
+mmc0 is current device
+reading Image
+7176864 bytes read in 617 ms (11.1 MiB/s)
+Booting from mmc ...
+reading s32v234-evb.dtb
+23077 bytes read in 17 ms (1.3 MiB/s)
+## Flattened Device Tree blob at 82000000
+   Booting using the fdt blob at 0x82000000
+   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff7000, end 000000009ffffa24 ... OK
+
+Starting kernel ...
+=================
+
+arch/arm/cpu/armv8/start.S
+arch/arm/cpu/armv8/s32v234/lowlevel.S
+arch/arm/cpu/armv8/s32v234/ddr3.c, lpddr2.c
+arch/arm/lib/crt0_64.S => _main
+	// crt0 - C-runtime startup Code for AArch64 U-Boot
+arch/arm/lib/relocate_64.S
+----------------
+arch/arm/cpu/armv8/u-boot.lds
+|
+| ENTRY(_start)
+|
+v
+start.S
+|
+| bl	_main
+v
+crt0_64.S
+|-> 1. Set up initial environment for calling board_init_f().
+	2. Call board_init_f()
+|-> 3. Set up intermediate environment 
+	4a.call relocate_code()
+|-> 5. Set up final environment for calling board_init_r().
+	6. some call c_runtime_cpu_setup
+	7. Branch to board_init_r().
+
+=================
+(1) arch/arm/cpu/armv8/u-boot.lds
+	ENTRY(_start)
+
+(2) arch/arm/cpu/armv8/start.S
+	bl	_main
+
+(3) arch/arm/lib/crt0_64.S
+	ENTRY(_main)
+
+board_init_f //common/board_f.c
+|-> initcall_run_list(init_sequence_f)
+	
+initcall_run_list //lib/initcall.c
+init_sequence_f //common/board_f.c
+=================================
+u-boot/include/configs/s32v.h:141:#define CONFIG_BOARD_EARLY_INIT_F
+
+//common/board_f.c
+static init_fnc_t init_sequence_f[] = {
+	...
+#if defined(CONFIG_BOARD_EARLY_INIT_F)
+	board_early_init_f,
+#endif
+};
+
+
+===================================
+log:
+switch to partitions #0, OK
+mmc0 is current device
+----
+u-boot/common/cmd_mmc.c:476:	printf("switch to partitions #%d, %s\n",
+
+U_BOOT_CMD(	//common/cmd_mmc.c
+	mmc, 29, 1, do_mmcops,
+	...
+);
+|-> do_mmcops //common/cmd_mmc.c
+		//cp = find_cmd_tbl(argv[1], cmd_mmc, ARRAY_SIZE(cmd_mmc)); //defined in common/command.c
+		|-> static cmd_tbl_t cmd_mmc[] = { //common/cmd_mmc.c
+				...
+				U_BOOT_CMD_MKENT(dev, 3, 0, do_mmc_dev, "", ""),
+				...
+			};
+			|-> do_mmc_dev //common/cmd_mmc.c
+				|-> init_mmc_device //cmd_mmc.c
+					|-> find_mmc_device //drivers/mmc/mmc.c
+					|-> mmc_init //drivers/mmc/mmc.c
+						|-> mmc_start_init //mmc.c
+						|-> mmc_complete_init //mmc.c
+				|-> mmc_select_hwpart //drivers/mmc/mmc.c
+					|-> find_mmc_device
+					|-> mmc_switch_part //drivers/mmc/mmc.c
+						|-> find_mmc_device
+						|-> mmc_switch //mmc.c
+						|-> mmc_set_capacity //mmc.c
+
+
+
+arch/arm/cpu/armv8/s32v234/soc.c <<do_sdhc_setup>
+ret = mmc_init(mmc);
+
+
+/* sdhc setup */
+U_BOOT_CMD(
+	sdhcsetup, 1, 1, do_sdhc_setup,
+	...
+);
+
+
+==================================
+u-boot/common/console.c:754:	puts("In:    ");
+===================================
+
+===================================
+../../bootloader/u-boot/common/autoboot.c:230:		printf("Hit any key to stop autoboot: %2d ", bootdelay);
+
+main_loop //common/main.c
+|-> s = bootdelay_process(); //common/autoboot.c
+|-> autoboot_command(s) //common/autoboot.c
+	|-> abortboot //common/autoboot.c
+		|-> abortboot_normal //common/autoboot.c
+	|-> run_command_list //common/cli.c
+
+==================================
+arch/arm/lib/crt0_64.S:
+	b	relocate_code //arch/arm/lib/relocate_64.S
+
+relocate_code //common relocation function for AArch64 U-Boot
+
+=================================
+reading Image
+-----
+../../bootloader/u-boot/fs/fat/fat.c:1329:	printf("reading %s\n", filename);
+
+fs_set_blk_dev //fs/fs.c
+	// for (i = 0, info = fstypes; i < ARRAY_SIZE(fstypes); i++, info++) {
+	...
+	// fs_type = info->fstype;
+
+static struct fstype_info fstypes[] = { //fs/fs.c
+	...
+	.read = fat_read_file,
+	...
+};
+fat_read_file //fs/fat/fat.c
+|-> file_fat_read_at
+	|-> printf("reading %s\n", filename); 
+	|-> do_fat_read_at
+
+------
+file_read //fs/fat/file.c
+|-> return filesystems[current_filesystem].read(arg, buffer, maxsize);
+
+-----
+fs_read
+|-> struct fstype_info *info = fs_get_info(fs_type);
+	...
+	ret = info->read(filename, buf, offset, len, actread);
+
+=====================
+./common/board_r.c:731:		main_loop();
+
+u-boot/arch/arm/lib/crt0_64.S:125:	b	board_init_r
+board_init_r //common/board_r.c
+|-> if (initcall_run_list(init_sequence_r))
+		hang();
+
+init_fnc_t init_sequence_r[] = { //common/board_r.c
+	...
+	run_main_loop,
+};
+run_main_loop //common/board_r.c
+|-> for (;;)
+		main_loop();

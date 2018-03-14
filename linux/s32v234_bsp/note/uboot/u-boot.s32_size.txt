@@ -1,0 +1,5 @@
+uboot.s32 size
+
+Mar  8
+out/rda600/bootloader/u-boot/u-boot.s32:
+	282624(276K)

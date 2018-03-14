@@ -1,0 +1,115 @@
+u-boot 2016.01
+
+armv8
+
+
+Configuration settings
+================================================================================
+1. config/s32v234evb_defconfig
+	CONFIG_S32V234EVB_29288
+	Kconfig
+
+----
+mlinux@ubuntu:~/roadefend/rda600/bootloader$ grep -nsR "S32V234EVB_29288" u-boot/
+
+u-boot/configs/s32v234evb29288_defconfig:3:CONFIG_S32V234EVB_29288=y
+u-boot/configs/s32v234evb_defconfig:3:CONFIG_S32V234EVB_29288=y
+
+u-boot/arch/arm/include/asm/arch-s32v234/src.h:77:#ifdef CONFIG_S32V234EVB_29288
+u-boot/arch/arm/include/asm/arch-s32v234/src.h:107:#ifdef CONFIG_S32V234EVB_29288
+u-boot/arch/arm/include/asm/arch-s32v234/ddr3.h:84:#if defined(CONFIG_S32V234EVB_29288) || defined(CONFIG_S32V234BBMINI_29406)
+u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:43:	default S32V234EVB_29288
+u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:50:config S32V234EVB_29288
+u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:51:	bool "S32V234EVB_29288"
+
+u-boot/board/freescale/s32v234evb/Kconfig:10:	default "s32v234evb29288" if S32V234EVB_29288
+u-boot/board/freescale/s32v234evb/s32v234evb.c:146:#if defined(CONFIG_S32V234EVB_29288) && defined(CONFIG_DCU_QOS_FIX)
+u-boot/board/freescale/s32v234evb/s32v234evb.c:163:#ifdef CONFIG_S32V234EVB_29288
+
+------
+(1) defconfig
+	CONFIG_S32V234EVB_29288
+(2) arch/arm/
+	arch/arm/cpu/armv8/s32v234/Kconfig
+	arch/arm/include/asm/arch-s32v234/src.h
+									 /ddr3.h
+(3) board/freescale/s32v234evb/
+	board/freescale/s32v234evb/Kconfig
+	board/freescale/s32v234evb/s32v234evb.c
+
+-----
+architecture-related (cpu's) Kconfig source board's Kconfig
+	arch/arm/cpu/armv8/s32v234/Kconfig will source the Kconfig in board/freescale/s32v234evb/:
+		source "board/freescale/s32v234evb/Kconfig"
+--------------------------------------------------------------------------------
+2. Configuration settings for Freescale S32V234 boards. 
+	include/configs/s32v234evb29288.h
+	|-> it includes s32v234evb_2016q4.h:
+		#include <configs/s32v234evb_2016q4.h>
+		|-> and it includes s32v234_common.h
+			#include <configs/s32v234_common.h>
+			//Configuration settings for all the Freescale S32V234 boards.
+
+================================================================================
+u-boot/arch/arm/cpu/armv8/start.S
+_main // arch/arm/lib/crt0_64.S
+|-> board_init_f
+|-> relocate_code
+|-> board_init_r
+
+
+--------------------------------------------------------------------------------
+u-boot/make.inc
+$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) ARCH=aarch64 -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot s32v234evb_defconfig
+
+
+
+
+
+================================================================================
+System Reset Controller(SRC)
+
+Boot Mode Register 1 (SRC_BMR1)
+./arch/arm/include/asm/arch-s32v234/src.h
+/*
+ * SRC_BMR1 bit fields
+ */
+#define SRC_BMR1_CFG1_MASK					(0xC0 << 0x0)
+#define SRC_BMR1_CFG1_BOOT_SHIFT				(6)
+#define SRC_BMR1_CFG1_QuadSPI					(0x0)
+#define SRC_BMR1_CFG1_SD					(0x2)
+#define SRC_BMR1_CFG1_eMMC					(0x3)
+
+----
+General Purpose Register 1 For Boot (SRC_GPR1_BOOT)
+	Address: 0h base + 8h offset = 8h
+	PERSIST_BOOT_DISABLE_FAST_REBOOT(bit0):
+		Indicates the state of Fast Reboot from DDR
+		0 Fast reboot is disabled
+		1 Fast reboot is enabled
+
+--------------------------------------------------------------------------------
+detect boot interface
+mmc_initialize //drivers/mmc/mmc.c
+|-> mmc_probe //drivers/mmc/mmc.c
+	|-> board_mmc_init // arch/arm/cpu/armv8/s32v234/soc.c
+		|-> detect_boot_interface // soc.c
+
+--------------------------------------------------------------------------------
+System Boot
+The boot process begins when the MC_RGM reaches the 'idle' state where the hardware
+reset logic forces the ARM core to begin execution starting from the on-chip Boot ROM.
+
+Boot ROM supports the following boot devices:
+• SD/MMC
+• QuadSPI
+
+The boot process can be summarized in the following steps:
+1. Reset.
+2. Begin execution of Boot ROM code. The boot process depends on SRC_BMR2[BMOD], and the SRC_BMR1 register.
+3. Read the Image Vector Table and boot data structures. Optionally, download image to memory.
+4. Execute image, i.e., the user code.
+
+The Boot ROM uses the state of the SRC_BMR1, SRC_BMR2 and eFuses to determine
+the boot device. For development purposes, there is also an option to use GPIO
+pin inputs to override the fuse values to determine the boot device.

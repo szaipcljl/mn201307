@@ -1,0 +1,401 @@
+diff --git a/arch/arm/cpu/armv8/s32v234/Kconfig b/arch/arm/cpu/armv8/s32v234/Kconfig
+index 36626dc..756bc2c 100644
+--- a/arch/arm/cpu/armv8/s32v234/Kconfig
++++ b/arch/arm/cpu/armv8/s32v234/Kconfig
+@@ -22,6 +22,9 @@ choice
+ 	help
+ 	  S32V234 Target Board Selection
+ 
++config TARGET_RDA600
++	bool "Support rda600"
++
+ config TARGET_S32V234EVB
+ 	bool "Support s32v234evb"
+ 
+@@ -81,6 +84,7 @@ config DDR_HANDSHAKE_AT_RESET
+ 	help
+ 	  Enable DDR handshake after functional reset
+ 
++source "board/freescale/rda600/Kconfig"
+ source "board/freescale/s32v234evb/Kconfig"
+ source "board/freescale/s32v234fvb/Kconfig"
+ source "board/freescale/s32v234pcie/Kconfig"
+diff --git a/board/freescale/rda600/Kconfig b/board/freescale/rda600/Kconfig
+new file mode 100644
+index 0000000..253d33d
+--- /dev/null
++++ b/board/freescale/rda600/Kconfig
+@@ -0,0 +1,31 @@
++if TARGET_RDA600
++
++config SYS_BOARD
++	string
++	default "rda600"
++
++config SYS_CONFIG_NAME
++	string
++	default "rda600"
++
++# S32V234EVB rev. A board with DDR3 has 4x512 MB DDR chips
++# DDR0(1024MB) and DDR1(1024MB).
++# S32V234EVB rev. D board with LPDDR2 has 2x256 MB DDR chips
++# DDR0(256MB) and DDR1(256MB).
++# U-boot uses only one DDR slot for the boards which don't have
++# the DDR slots mapped as contiguous memory, otherwise uses
++# both DDR slots.
++
++config SYS_DDR_SIZE
++	int
++	default 2147483648 if S32V234_DDR3
++	default 268435456 if S32V234_LPDDR2
++
++config PHY_RGMII_DIRECT_CONNECTED
++	bool "Enable fixed PHY for MDIO Bus/PHY emulation with fixed speed/link PHYs"
++	default n
++	help
++	  Adds the platform "fixed" MDIO Bus to cover the boards that
++	  use PHYs that are not connected to the real MDIO bus.
++
++endif
+diff --git a/board/freescale/rda600/MAINTAINERS b/board/freescale/rda600/MAINTAINERS
+new file mode 100644
+index 0000000..ce44f7e
+--- /dev/null
++++ b/board/freescale/rda600/MAINTAINERS
+@@ -0,0 +1,6 @@
++RDA600 BOARD
++M:	-
++S:	Maintained
++F:	board/freescale/rda600/
++F:	include/configs/rda600.h
++F:	configs/rda600_defconfig
+diff --git a/board/freescale/rda600/Makefile b/board/freescale/rda600/Makefile
+new file mode 100644
+index 0000000..ce788c0
+--- /dev/null
++++ b/board/freescale/rda600/Makefile
+@@ -0,0 +1,9 @@
++#
++# (C) Copyright 2013-2015 Freescale Semiconductor, Inc.
++#
++# SPDX-License-Identifier:	GPL-2.0+
++#
++
++obj-y   := rda600.o
++
++#########################################################################
+diff --git a/board/freescale/rda600/rda600.c b/board/freescale/rda600/rda600.c
+new file mode 100644
+index 0000000..03fd520
+--- /dev/null
++++ b/board/freescale/rda600/rda600.c
+@@ -0,0 +1,196 @@
++/*
++ * (C) Copyright 2013-2016 Freescale Semiconductor, Inc.
++ * (C) Copyright 2016-2017 NXP
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++
++#include <common.h>
++#include <asm/io.h>
++#include <asm/arch/soc.h>
++#include <fdt_support.h>
++#include <libfdt.h>
++#include <miiphy.h>
++#include <netdev.h>
++#include <i2c.h>
++
++DECLARE_GLOBAL_DATA_PTR;
++
++static void setup_iomux_uart(void)
++{
++	/* Muxing for linflex0 and linflex1 */
++
++	/* set PA12 - MSCR[12] - for UART0 TXD */
++	writel(SIUL2_MSCR_PORT_CTRL_UART_TXD, SIUL2_MSCRn(SIUL2_MSCR_PA12));
++
++	/* set PA11 - MSCR[11] - for UART0 RXD */
++	writel(SIUL2_MSCR_PORT_CTRL_UART_RXD, SIUL2_MSCRn(SIUL2_MSCR_PA11));
++	/* set UART0 RXD - IMCR[200] - to link to PA11 */
++	writel(SIUL2_IMCR_UART_RXD_to_pad, SIUL2_IMCRn(SIUL2_IMCR_UART0_RXD));
++
++	/* set PA14 - MSCR[14] - for UART1 TXD*/
++	writel(SIUL2_MSCR_PORT_CTRL_UART_TXD, SIUL2_MSCRn(SIUL2_MSCR_PA14));
++
++	/* set PA13 - MSCR[13] - for UART1 RXD */
++	writel(SIUL2_MSCR_PORT_CTRL_UART_RXD, SIUL2_MSCRn(SIUL2_MSCR_PA13));
++	/* set UART1 RXD - IMCR[202] - to link to PA13 */
++	writel(SIUL2_IMCR_UART_RXD_to_pad, SIUL2_IMCRn(SIUL2_IMCR_UART1_RXD));
++}
++
++static void setup_iomux_i2c(void)
++{
++	/* I2C0 - Serial Data Input */
++	writel(SIUL2_PAD_CTRL_I2C0_MSCR_SDA, SIUL2_MSCRn(99));
++	writel(SIUL2_PAD_CTRL_I2C0_IMCR_SDA, SIUL2_IMCRn(269));
++
++	/* I2C0 - Serial Clock Input */
++	writel(SIUL2_PAD_CTRL_I2C0_MSCR_SCLK, SIUL2_MSCRn(100));
++	writel(SIUL2_PAD_CTRL_I2C0_IMCR_SCLK, SIUL2_IMCRn(268));
++
++	/* I2C1 - Serial Data Input */
++	writel(SIUL2_PAD_CTRL_I2C1_MSCR_SDA, SIUL2_MSCRn(101));
++	writel(SIUL2_PAD_CTRL_I2C1_IMCR_SDA, SIUL2_IMCRn(271));
++
++	/* I2C1 - Serial Clock Input */
++	writel(SIUL2_PAD_CTRL_I2C1_MSCR_SCLK, SIUL2_MSCRn(102));
++	writel(SIUL2_PAD_CTRL_I2C1_IMCR_SCLK, SIUL2_IMCRn(270));
++
++	/* I2C2 - Serial Data Input */
++	writel(SIUL2_PAD_CTRL_I2C2_MSCR_SDA, SIUL2_MSCRn(19));
++	writel(SIUL2_PAD_CTRL_I2C2_IMCR_SDA, SIUL2_IMCRn(273));
++
++	/* I2C2 - Serial Clock Input */
++	writel(SIUL2_PAD_CTRL_I2C2_MSCR_SCLK, SIUL2_MSCRn(20));
++	writel(SIUL2_PAD_CTRL_I2C2_IMCR_SCLK, SIUL2_IMCRn(272));
++}
++
++#ifdef CONFIG_SYS_USE_NAND
++void setup_iomux_nfc(void)
++{
++	/*TODO: Implement nfc iomux when it is activated.*/
++}
++#endif
++
++static void mscm_init(void)
++{
++	struct mscm_ir *mscmir = (struct mscm_ir *)MSCM_BASE_ADDR;
++	int i;
++
++	for (i = 0; i < MSCM_IRSPRC_NUM; i++)
++		writew(MSCM_IRSPRC_CPn_EN, &mscmir->irsprc[i]);
++}
++
++int board_phy_config(struct phy_device *phydev)
++{
++	if (phydev->drv->config)
++		phydev->drv->config(phydev);
++
++	return 0;
++}
++
++void setup_xrdc(void)
++{
++	writel(XRDC_ADDR_MIN, XRDC_MRGD_W0_16);
++	writel(XRDC_ADDR_MAX, XRDC_MRGD_W1_16);
++	writel(XRDC_VALID, XRDC_MRGD_W3_16);
++
++	writel(XRDC_ADDR_MIN, XRDC_MRGD_W0_17);
++	writel(XRDC_ADDR_MAX, XRDC_MRGD_W1_17);
++	writel(XRDC_VALID, XRDC_MRGD_W3_17);
++
++	writel(XRDC_ADDR_MIN, XRDC_MRGD_W0_18);
++	writel(XRDC_ADDR_MAX, XRDC_MRGD_W1_18);
++	writel(XRDC_VALID, XRDC_MRGD_W3_18);
++
++	writel(XRDC_ADDR_MIN, XRDC_MRGD_W0_19);
++	writel(XRDC_ADDR_MAX, XRDC_MRGD_W1_19);
++	writel(XRDC_VALID, XRDC_MRGD_W3_19);
++}
++
++#ifdef CONFIG_DCU_QOS_FIX
++int board_dcu_qos(void)
++{
++	writel(0x0, 0x40012380);
++	writel(0x0, 0x40012384);
++	writel(0x0, 0x40012480);
++	writel(0x0, 0x40012484);
++	writel(0x0, 0x40012580);
++	writel(0x0, 0x40012584);
++	writel(0x0, 0x40012680);
++	writel(0x0, 0x40012684);
++	writel(0x0, 0x40012780);
++	writel(0x0, 0x40012784);
++	writel(0x0, 0x40012880);
++	writel(0x0, 0x40012884);
++	writel(0x0, 0x40012980);
++	writel(0x0, 0x40012984);
++	writel(0x0, 0x40012A80);
++	writel(0x0, 0x40012A84);
++	writel(0x0, 0x40012B80);
++	writel(0x0, 0x40012B84);
++	writel(0x0, 0x40012C80);
++	writel(0x0, 0x40012C84);
++	writel(0x0, 0x40012D80);
++	writel(0x0, 0x40012D84);
++	writel(0x0, 0x40012E80);
++	writel(0x0, 0x40012E84);
++	writel(0x0, 0x40012F80);
++	writel(0x0, 0x40012F84);
++
++	return 0;
++}
++#endif
++
++int board_early_init_f(void)
++{
++#if defined(CONFIG_S32V234EVB_29288) && defined(CONFIG_DCU_QOS_FIX)
++	struct src *src_regs = (struct src *)SRC_SOC_BASE_ADDR;
++#endif
++	clock_init();
++	mscm_init();
++
++	setup_iomux_uart();
++	setup_iomux_enet();
++	setup_iomux_i2c();
++#ifdef CONFIG_SYS_USE_NAND
++	setup_iomux_nfc();
++#endif
++	setup_iomux_dcu();
++
++#ifdef CONFIG_DCU_QOS_FIX
++	board_dcu_qos();
++
++#ifdef CONFIG_S32V234EVB_29288
++	/* Set minimum value of 2D-ACE QoS. */
++	writel(0x8 << SRC_GPR8_2D_ACE_QOS_OFFSET, &src_regs->gpr8);
++#endif
++
++#endif
++
++	setup_xrdc();
++	return 0;
++}
++
++int board_init(void)
++{
++	/* address of boot parameters */
++	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
++
++	return 0;
++}
++
++int checkboard(void)
++{
++	printf("Board: %s\n", CONFIG_SYS_CONFIG_NAME);
++
++	return 0;
++}
++
++
++#if defined(CONFIG_OF_FDT) && defined(CONFIG_OF_BOARD_SETUP)
++int ft_board_setup(void *blob, bd_t *bd)
++{
++	ft_cpu_setup(blob, bd);
++	return 0;
++}
++#endif /* defined(CONFIG_OF_FDT) && defined(CONFIG_OF_BOARD_SETUP) */
+diff --git a/board/freescale/rda600/rda600.cfg b/board/freescale/rda600/rda600.cfg
+new file mode 100644
+index 0000000..9107968
+--- /dev/null
++++ b/board/freescale/rda600/rda600.cfg
+@@ -0,0 +1,47 @@
++/*
++ * (C) Copyright 2013-2015 Freescale Semiconductor, Inc.
++ * (C) Copyright 2017 NXP
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++
++/*
++ * Refer docs/README.imxmage for more details about how-to configure
++ * and create imximage boot image
++ *
++ * The syntax is taken as close as possible with the kwbimage
++ */
++#include <asm/imx-common/imximage.cfg>
++
++/* image version */
++IMAGE_VERSION 3
++BOOT_FROM sd_v3
++
++/* SECURE_CALLBACK 0x70 */
++
++/*
++ * Boot Device : one of qspi, sd:
++ * qspi:   flash_offset: 0x1000
++ * sd/mmc: flash_offset: 0x1000
++ */
++
++
++#ifdef CONFIG_SECURE_BOOT
++SECURE_BOOT
++#endif
++
++/*
++ * Device Configuration Data (DCD)
++ *
++ * Each entry must have the format:
++ * Addr-type           Address        Value
++ *
++ * where:
++ *      Addr-type register length (1,2 or 4 bytes)
++ *      Address   absolute address of the register
++ *      value     value to be stored in the register
++ */
++DATA 4 0x4003C280 0x018020F0
++DATA 4 0x4004A02C 0x00000021
++DATA 4 0x4004A004 0x30005AF0
++DATA 4 0x4004A004 0x3000A50F
+diff --git a/configs/rda600_defconfig b/configs/rda600_defconfig
+new file mode 100644
+index 0000000..0ee5996
+--- /dev/null
++++ b/configs/rda600_defconfig
+@@ -0,0 +1,10 @@
++CONFIG_ARM=y
++CONFIG_ARCH_S32V234=y
++CONFIG_TARGET_RDA600=y
++CONFIG_S32V234EVB_29288=y
++CONFIG_S32V234_DDR3=y
++CONFIG_ARMV8_MULTIENTRY=y
++CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/rda600/rda600.cfg"
++CONFIG_CMD_DHCP=y
++CONFIG_CMD_PING=y
++CONFIG_FSL_LINFLEXUART=y
+diff --git a/include/configs/rda600.h b/include/configs/rda600.h
+new file mode 100644
+index 0000000..07fd060
+--- /dev/null
++++ b/include/configs/rda600.h
+@@ -0,0 +1,26 @@
++/*
++ * (C) Copyright 2015-2016 Freescale Semiconductor, Inc.
++ * (C) Copyright 2016-2017 NXP
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++
++/*
++ * Configuration settings for the Freescale S32V234 EVB board,
++ * Schematics 29288.
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++/* The configurations of this board depend on the definitions in this file and
++* the ones in the header included at the end, configs/s32v234evb_2016q4.h */
++
++#define	FDT_FILE s32v234-evb.dtb
++
++/* #define CONFIG_CMD_PCI */
++
++/* we include this file here because it depends on the above definitions */
++#include <configs/s32v234evb_2016q4.h>
++
++#endif
+diff --git a/make.inc b/make.inc
+index f9f183e..422f03a 100644
+--- a/make.inc
++++ b/make.inc
+@@ -5,6 +5,6 @@ LOCAL_PATH:=$(call my-dir)
+ uboot: $(DOT_CONFIG)
+ 	@mkdir -p $(BOOTLOADER_OUT_DIR)/u-boot
+ 	@echo "Build uboot ... "
+-	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) ARCH=aarch64 -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot s32v234evb_defconfig
++	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) ARCH=aarch64 -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot rda600_defconfig
+ 	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot 
+ 

@@ -1,0 +1,36 @@
+how to build RDA600
+=============================
+
+
+1. Download the wuji's tools
+----------------------------
+	<1> Create your-project-root-folder
+	mkdir your-project-root-folder
+	cd your-project-root-folder
+
+	git clone git@121.196.213.107:wuji/tools.git
+	cd tools/engineering 
+	source install your-project-root-folder
+
+2. Download the RDA600 & wuji source code
+-----------------------------------------
+	cd your-project-root-folder
+	
+	repo init -u git@121.196.213.107:RDA600/manifest.git
+	repo sync
+
+3. Build the RDA600 project
+---------------------------
+	source build/env/aarch64-linaro-gcc.env
+
+	cd boards/rda600
+	make sync_build_mkcfg
+	make rda600_config
+	make defconfig_public_linux
+	make menuconfig_public_linux
+
+	make -j8
+
+build result
+------------
+//The binary built is in the your-project-root-folder/out folder

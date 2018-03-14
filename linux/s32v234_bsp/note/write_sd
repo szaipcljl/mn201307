@@ -1,0 +1,84 @@
+
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo umount /media/mlinux/rootfs
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo fdisk ${DEVSD}
+
+Welcome to fdisk (util-linux 2.27.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): d
+Partition number (1,2, default 2): 
+
+Partition 2 has been deleted.
+
+Command (m for help): d
+Selected partition 1
+Partition 1 has been deleted.
+
+Command (m for help): 
+
+
+Command (m for help): d
+No partition is defined yet!
+Could not delete partition 1
+
+Command (m for help): n
+Partition type
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (1-4, default 1): 
+First sector (2048-122142719, default 2048): 
+Last sector, +sectors or +size{K,M,G,T,P} (2048-122142719, default 122142719): +255M
+
+Created a new partition 1 of type 'Linux' and of size 255 MiB.
+
+Command (m for help): n
+Partition type
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (2-4, default 2): 
+First sector (524288-122142719, default 524288): 
+Last sector, +sectors or +size{K,M,G,T,P} (524288-122142719, default 122142719): 
+
+Created a new partition 2 of type 'Linux' and of size 58 GiB.
+
+Command (m for help): t
+Partition number (1,2, default 2): 1
+Partition type (type L to list all types): c
+
+Changed type of partition 'Linux' to 'W95 FAT32 (LBA)'.
+
+Command (m for help): t
+Partition number (1,2, default 2): 2
+Partition type (type L to list all types): 83
+
+Changed type of partition 'Linux' to 'Linux'.
+
+Command (m for help): w
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+# remove and put SD Card back into its slot.
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ df
+Filesystem     1K-blocks     Used Available Use% Mounted on
+udev             1981780        0   1981780   0% /dev
+tmpfs             401644     6476    395168   2% /run
+/dev/sda1      408588720 39841088 347969496  11% /
+tmpfs            2008200      284   2007916   1% /dev/shm
+tmpfs               5120        4      5116   1% /run/lock
+tmpfs            2008200        0   2008200   0% /sys/fs/cgroup
+vmhgfs-fuse    976629756 61647992 914981764   7% /mnt/hgfs
+tmpfs             401644       76    401568   1% /run/user/1000
+/dev/sdb1            110        0       110   0% /media/mlinux/boot
+/dev/sdb2       60809212    89700  60719512   1% /media/mlinux/3A50647A50643F2F
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo umount /media/mlinux/boot
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo umount /media/mlinux/3A50647A50643F2F
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo mkfs.vfat -n boot ${DEVSD}1
+mkfs.fat 3.0.28 (2015-05-16)
+mkfs.fat: warning - lowercase labels might not work properly with DOS or Windows
+mlinux@ubuntu:~/roadefend/rda600/bootloader/u-boot[master]$ sudo mkfs.ext3 -L rootfs ${DEVSD}2
+

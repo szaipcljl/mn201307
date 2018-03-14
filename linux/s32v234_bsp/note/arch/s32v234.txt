@@ -1,0 +1,4 @@
+
+S32V234 is a vision processing MPU, consisting of multiple ARM® Cortex®-A53, one
+Cortex-M4, dedicated modules and processors for acceleration of image vision
+processing tasks.

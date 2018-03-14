@@ -1,0 +1,15 @@
+u-boot.lds
+
+how to specify a u-boot.lds used by us?
+# Rule to link u-boot?
+
+./out/rda600/bootloader/u-boot/.u-boot.lds.cmd:3:source_u-boot.lds := /home/mlinux/roadefend/rda600/bootloader/u-boot/arch/arm/cpu/armv8/u-boot.lds
+
+./bootloader/u-boot/README:4190:source code will make it necessary to adapt <board>/u-boot.lds*
+./bootloader/u-boot/doc/README.m54418twr:15:- board/freescale/m54418twr/u-boot.lds	Linker description
+./bootloader/u-boot/doc/README.commands:31:by writing in u-boot.lds ($(srctree)/board/boardname/u-boot.lds) these
+
+
+-------------------------
+bootloader/u-boot/Makefile
+search u-boot.lda

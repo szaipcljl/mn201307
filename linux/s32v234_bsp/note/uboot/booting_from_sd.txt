@@ -1,0 +1,4 @@
+booting from sd
+
+
+export DEVSD=/dev/sdb

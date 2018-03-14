@@ -1,0 +1,129 @@
+u-boot porting 
+
+----
+how to get board directory name?
+[out/board_name]
+
+CONFIG_BSP_BOARD_RDA600=y => RDA600 => rda600:
+	build/core/configure.mk:124:BOOTLOADER_OUT_DIR  := $(AMB_BOARD_OUT)/bootloader
+	build/core/configure.mk:119:AMB_BOARD_OUT		:= $(AMB_TOPDIR)/out/$(AMB_BOARD)
+	build/core/configure.mk:
+		AMB_BOARD		:= $(shell grep ^CONFIG_BSP_BOARD $(DOT_CONFIG) | \
+						sed -e s/^CONFIG_BSP_BOARD_// | \
+						sed -e s/=y// | \
+						tr [:upper:] [:lower:])
+
+
+$(DOT_CONFIG) is boards/rda600/.config:
+	build/core/configure.mk:30:DOT_CONFIG		:= $(AMB_BOARD_DIR)/.config
+	build/core/configure.mk:29:AMB_BOARD_DIR		:= $(shell pwd)
+	that is why we should enter board's directory to run 'make ...'
+
+
+----
+boards/
+	boards/rda600/config/rda600_config:
+		CONFIG_KERNEL_DEFCONFIG_STRING="s32v234_defconfig"
+
+Automatically generated C config:
+	boards/rda600/config.h:
+		#define CONFIG_KERNEL_DEFCONFIG_STRING "s32v234_defconfig"
+Automatically generated make config:
+	boards/rda600/.config:
+		CONFIG_KERNEL_DEFCONFIG_STRING="s32v234_defconfig"
+
+mkdir boards/rda600
+cp boards/s32v234evb
+
+----
+make sync_build_mkcfg
+	build/core/menuconfig.mk:69:.PHONY: sync_build_mkcfg
+	build/core/menuconfig.mk:70:sync_build_mkcfg: create_boards create_private_mkcfg
+	build/core/menuconfig.mk:71:sync_build_mkcfg: $(AMB_TOPDIR)/build/bin/create_root_mkcfg
+
+================================================================================
+u-boot
+----
+(1) u-boot/configs/xxx_defconfig
+cp s32v234evb29288_defconfig rda600_defconfig
+ln -sf rda600_defconfig s32v234evb_defconfig 
+
+configs/s32v234evb_defconfig:
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/s32v234evb/s32v234evb.cfg"
+=>
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/roadefend/rda600/rda600.cfg"
+
+(2)
+u-boot/arch/arm/cpu/armv8[rda600]$ cp s32v234/ rda600 -raf
+Kconfig
+Makefile
+
+./arch/arm/Kconfig:579:config ARCH_S32V234
+
+
+(3)
+u-boot/board[rda600]$ cp freescale/s32v234evb/* roadefend/rda600/ -raf
+u-boot/board/roadefend/rda600[rda600]$ mv s32v234evb.c rda600.c
+u-boot/board/roadefend/rda600[rda600]$ mv s32v234evb.cfg rda600.cfg
+Makefile:
+	obj-y   := s32v234evb.o
+	=> 
+	obj-y   := rda600.o 
+
+Kconfig
+	if TARGET_S32V234EVB => if TARGET_RDA600
+	
+
+(3)
+u-boot/include/configs[rda600]$ cp s32v234evb29288.h rda600.h
+
+(4)
+bootloader/u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:21:        default TARGET_S32V234EVB
+bootloader/u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:25:config TARGET_S32V234EVB
+bootloader/u-boot/arch/arm/cpu/armv8/s32v234/Kconfig:39:if TARGET_S32V234EVB
+bootloader/u-boot/board/freescale/s32v234evb/Kconfig:1:if TARGET_S32V234EVB
+
+================================================================================
+u-boot
+----
+how to add a board
+(1) crate a directory name rda600 in board/freescale/ 
+	u-boot/board[rda600]$ cp freescale/s32v234evb/* roadefend/rda600/ -raf
+	u-boot/board/roadefend/rda600[rda600]$ mv s32v234evb.c rda600.c
+	u-boot/board/roadefend/rda600[rda600]$ mv s32v234evb.cfg rda600.cfg
+
+	Makefile:
+		obj-y   := s32v234evb.o => obj-y   := rda600.o 
+
+	Kconfig
+		if TARGET_S32V234EVB => if TARGET_RDA600
+													
+(2) 
+
+copy from u-boot/README
+================================================================================
+If the system board that you have is not listed, then you will need
+to port U-Boot to your hardware platform. To do this, follow these
+steps:
+
+1.  Add a new configuration option for your board to the toplevel
+    "boards.cfg" file, using the existing entries as examples.
+    Follow the instructions there to keep the boards in order.
+2.  Create a new directory to hold your board specific code. Add any
+    files you need. In your board directory, you will need at least
+    the "Makefile", a "<board>.c", "flash.c" and "u-boot.lds".
+3.  Create a new configuration file "include/configs/<board>.h" for
+    your board
+3.  If you're porting U-Boot to a new CPU, then also create a new
+    directory to hold your CPU specific code. Add any files you need.
+4.  Run "make <board>_defconfig" with your new name.
+5.  Type "make", and you should get a working "u-boot.srec" file
+    to be installed on your target system.
+6.  Debug and solve any problems that might arise.
+    [Of course, this last step is much harder than it sounds.]
+
+================================================================================
+out/rda600/bootloader/u-boot/u-boot.cfg
+#define CONFIG_TARGET_RDA600 1
+#define CONFIG_SYS_EXTRA_OPTIONS "IMX_CONFIG=board/freescale/rda600/rda600.cfg"
+#define CONFIG_SYS_BOARD "rda600"

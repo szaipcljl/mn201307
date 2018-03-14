@@ -1,0 +1,163 @@
+
+u-boot/arch/arm/
+├── cpu
+│   └── armv8
+│       ├── cache.o
+│       ├── cache_v8.o
+│       ├── cpu.o
+│       ├── exceptions.o
+│       ├── generic_timer.o
+│       ├── s32v234
+│       │   ├── clock.o
+│       │   ├── cpu.o
+│       │   ├── cse.o
+│       │   ├── ddr3.o
+│       │   ├── fdt.o
+│       │   ├── lowlevel.o
+│       │   ├── mp.o
+│       │   ├── qspi_common.o
+│       │   ├── qspi_driver.o
+│       │   └── soc.o
+│       ├── start.o
+│       ├── tlb.o
+│       └── transition.o
+└── lib
+    ├── asm-offsets.s
+    ├── bootm-fdt.o
+    ├── bootm.o
+    ├── cache.o
+    ├── ccn504.o
+    ├── crt0_64.o
+    ├── gic_64.o
+    ├── interrupts_64.o
+    ├── lib.a
+    ├── relocate_64.o
+    ├── reset.o
+    ├── sections.o
+    └── stack.o
+
+--------------------------------------------------------------------------------
+u-boot/drivers/
+├── crypto
+│   └── fsl
+│       └── sec.o
+├── i2c
+│   ├── i2c_core.o
+│   └── mxc_i2c.o
+│
+├── input
+│   └── input.o
+│
+├── mmc
+│   ├── fsl_esdhc.o
+│   ├── mmc.o
+│   └── mmc_write.o
+│
+├── net
+│   ├── fec_mxc.o
+│   └── phy
+│       ├── micrel.o
+│       └── phy.o
+│
+├── pcmcia
+│   └── tqm8xx_pcmcia.o
+│
+├── rtc
+│   └── date.o
+│
+├── serial
+│   ├── serial_linflexuart.o
+│   └── serial.o
+│
+└── spi
+    └── spi.o
+----
+u-boot/drivers/mmc/Makefile:
+
+obj-$(CONFIG_FSL_ESDHC) += fsl_esdhc.o
+obj-$(CONFIG_GENERIC_MMC) += mmc.o
+
+ifdef CONFIG_SPL_BUILD
+else
+obj-$(CONFIG_GENERIC_MMC) += mmc_write.o
+endif
+
+--------------------------------------------------------------------------------
+u-boot/board/freescale/
+└── s32v234evb
+    ├── s32v234evb.cfg.cfgtmp
+    └── s32v234evb.o
+
+--------------------------------------------------------------------------------
+u-boot/common/
+├── autoboot.o
+├── board_f.o
+├── board_info.o
+├── board_r.o
+├── bootm.o
+├── bootm_os.o
+├── built-in.o
+├── cli_hush.o
+├── cli.o
+├── cli_readline.o
+├── cli_simple.o
+├── cmd_bdinfo.o
+├── cmd_bootm.o
+├── cmd_boot.o
+├── cmd_cache.o
+├── cmd_console.o
+├── cmd_disk.o
+├── cmd_echo.o
+├── cmd_elf.o
+├── cmd_exit.o
+├── cmd_fat.o
+├── cmd_fdt.o
+├── cmd_help.o
+├── cmd_i2c.o
+├── cmd_itest.o
+├── cmd_load.o
+├── cmd_mdio.o
+├── cmd_mem.o
+├── cmd_mii.o
+├── cmd_misc.o
+├── cmd_mmc.o
+├── cmd_mp.o
+├── cmd_net.o
+├── cmd_nvedit.o
+├── cmd_pcmcia.o
+├── cmd_setexpr.o
+├── cmd_source.o
+├── cmd_test.o
+├── cmd_version.o
+├── cmd_ximg.o
+├── command.o
+├── console.o
+├── dlmalloc.o
+├── env_attr.o
+├── env_callback.o
+├── env_common.o
+├── env_flags.o
+├── env_mmc.o
+├── exports.o
+├── fdt_support.o
+├── flash.o
+├── hash.o
+├── hwconfig.o
+├── image-fdt.o
+├── image.o
+├── init
+│   └── board_init.o
+├── main.o
+├── memsize.o
+├── miiphyutil.o
+├── splash.o
+├── s_record.o
+├── stdio.o
+└── xyzModem.o
+
+--------------------------------------------------------------------------------
+bootloader/u-boot/fs/
+├── fat
+│   ├── fat.o
+│   └── file.o
+└── fs.o
