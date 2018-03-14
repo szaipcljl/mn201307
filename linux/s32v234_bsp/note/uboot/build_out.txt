@@ -1,4 +1,8 @@
+build out
+===============
+out/rda600/bootloader/u-boot/u-boot.cfg
 
+================
 u-boot/arch/arm/
 ├── cpu
 │   └── armv8
