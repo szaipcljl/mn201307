@@ -1,0 +1,16 @@
+
+u-boot/Makefile:562:KBUILD_CFLAGS	+= -O2
+
+==============================
+load binary to sdram
+
+----
+Hit any key to stop autoboot:  0
+=> loady 0xB0000000 115200
+//ctrl-A Z切换到minicom选项，选S依照提示选择要传输的文件
+## Ready for binary (ymodem) download to 0xB0000000 at 115200 bps...
+CCAN) packets, 4 retries
+## Total Size      = 0x000434f8 = 275704 Bytes
+=> go 0xB0000000
+----
+

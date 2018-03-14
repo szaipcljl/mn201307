@@ -1,0 +1,6 @@
+mkfs
+====
+$ sudo umount /media/mlinux/3A50647A50643F2F
+$ sudo umount /media/mlinux/BOOT
+$ sudo mkfs -t ext4 /dev/sdb
+
