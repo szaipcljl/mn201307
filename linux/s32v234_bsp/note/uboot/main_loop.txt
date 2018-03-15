@@ -1,0 +1,132 @@
+main_loop
+========
+1. bootstage_mark_name(BOOTSTAGE_ID_MAIN_LOOP, "main_loop");
+//mark a boot stage
+
+----------
+A list of boot stages
+include/bootstage.h
+enum bootstage_id {
+	BOOTSTAGE_ID_START = 0,
+	...
+
+	BOOTSTAGE_ID_MAIN_LOOP,
+	...
+};
+
+===============================
+//2. modem_init();
+	//do nothing
+
+===============================
+3. cli_init(); //common/cli.c (command list init)
+
+#ifdef CONFIG_SYS_HUSH_PARSER
+	u_boot_hush_start(); //common/cli_hush.c
+	//init a struct variables named top_vars
+#endif
+-------------
+include/configs/s32.h
+#define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
+
+================================
+//4. run_preboot_environment_command();
+	//do nothing
+
+================================
+5.  s = bootdelay_process(); //common/autoboot.c
+
+	(1) s = getenv("bootdelay");
+		bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
+		//get the value of bootdelay: 3
+
+	(2) bootretry_init_cmd_timeout();
+		//common/bootretry.c
+		//initialize command line timeout
+
+	(3) s = getenv("bootcmd");
+		//get env bootcmd
+
+	//(4) process_fdt_options(gd->fdt_blob);
+		//do nothing
+
+	(5) stored_bootdelay = bootdelay;
+		return env bootcmd
+
+======================================
+//6.  if (cli_process_fdt(&s)) //do nothing, always return false;
+			cli_secure_boot_cmd(s);
+
+=======================================
+7. autoboot_command(s);
+	//common/autoboot.c
+
+	if (stored_bootdelay != -1 && s && !abortboot(stored_bootdelay)) {
+
+		run_command_list(s, -1, 0);
+	}
+--------------------
+	abortboot
+	|-> abortboot_normal //common/autoboot.c
+
+abortboot_normal
+{
+	...
+	if (bootdelay >= 0)
+		printf("Hit any key to stop autoboot: %2d ", bootdelay);
+
+	while ((bootdelay > 0) && (!abort)) {
+		--bootdelay;
+		/* delay 1000 ms */
+		ts = get_timer(0);
+		do {
+			if (tstc()) {	/* we got a key press	*/
+				abort  = 1;	/* don't auto boot	*/
+				bootdelay = 0;	/* no more delay	*/
+
+				(void) getc();  /* consume input	*/
+			}
+			udelay(10000);
+		} while (!abort && get_timer(ts) < 1000);
+		printf("\b\b\b%2d ", bootdelay);
+	}
+
+	putc('\n');
+	return abort;
+}
+
+//if any key is hit, return to main_loop, and run cli_loop to enter uboot
+command line mode
+----------------------------
+//if no key is hit, run_command_list will be run.
+run_command_list
+parse bootcmd
+================================================================================
+run_command_list(s, -1, 0);
+
+run_command_list //common/cli.c
+|-> parse_string_outer //common/cli_hush.c
+	|-> parse_stream_outer //cli_hush.c
+		|-> parse_stream //cli_hush.c
+		|-> run_list //cli_hush.c
+			|-> run_list_real //cli_hush.c
+				|-> run_pipe_real //cli_hush.c
+					//Process the command
+					|-> cmd_process //command.c
+						|-> cmd_call
+
+
+=====================
+bootcmd
+
+=> printenv
+
+bootcmd=mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcboot; else run netboot; fi; else run netboot; fi
+
+mmcdev=0
+
+loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}
+
+mmcboot=echo Booting from mmc ...; run mmcargs; if test ${boot_fdt} = yes || test ${boot_fdt} = try; then if run loadfdt; then ${boot_mtd} ${loadaddr} - ${fdt_addr}; else if test ${boot_fdt} = try; then ${boot_mtd}; else echo WARN: Cannot load the DT; fi; fi; else ${boot_mtd}; fi;
+
+//see printenv_log.txt

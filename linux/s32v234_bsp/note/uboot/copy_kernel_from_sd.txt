@@ -78,3 +78,8 @@ include/configs/s32v.h
 #define CONFIG_LOADADDR		LOADADDR
 
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_LOADADDR
+================================
+
+
+
+
