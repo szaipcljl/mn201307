@@ -65,3 +65,23 @@ update_sd_firmware_filename=u-boot.s32
 
 Environment size: 3417/8188 bytes
 => 
+
+=======================================================================================
+
+Hit any key to stop autoboot:  0 
+=> printenv bootcmd
+bootcmd=mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcboot; else run netboot; fi; else run netboot; fi
+=> run bootcmd 
+switch to partitions #0, OK
+mmc0 is current device
+reading Image
+7176864 bytes read in 742 ms (9.2 MiB/s)
+Booting from mmc ...
+reading s32v234-evb.dtb
+23077 bytes read in 19 ms (1.2 MiB/s)
+## Flattened Device Tree blob at 82000000
+   Booting using the fdt blob at 0x82000000
+   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff7000, end 000000009ffffa24 ... OK
+
+Starting kernel ...

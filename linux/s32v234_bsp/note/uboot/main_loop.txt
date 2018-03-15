@@ -130,3 +130,12 @@ loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}
 mmcboot=echo Booting from mmc ...; run mmcargs; if test ${boot_fdt} = yes || test ${boot_fdt} = try; then if run loadfdt; then ${boot_mtd} ${loadaddr} - ${fdt_addr}; else if test ${boot_fdt} = try; then ${boot_mtd}; else echo WARN: Cannot load the DT; fi; fi; else ${boot_mtd}; fi;
 
 //see printenv_log.txt
+--------------------------------------
+include/configs/s32v.h
+#define CONFIG_BOOTCOMMAND \
+	   "mmc dev ${mmcdev}; if mmc rescan; then " \
+		   "if run loadimage; then " \
+			   "run mmcboot; " \
+		   "else run netboot; " \
+		   "fi; " \
+	   "else run netboot; fi"

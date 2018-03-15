@@ -1,0 +1,9 @@
+
+
+include/configs/rda600.h
+|-> configs/s32v234evb_2016q4.h
+	|-> onfigs/s32v234_common.h
+		|-> configs/s32v.h    ---------+
+		|-> asm/arch/imx-regs.         |
+                                       +-> asm/arch/imx-regs.h
+                                       +-> generated/autoconf.h
