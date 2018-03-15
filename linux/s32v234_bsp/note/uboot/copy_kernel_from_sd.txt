@@ -1,7 +1,8 @@
+copy kernel from sd card
 
 ====================
-log:
-Hit any key to stop autoboot:  0 
+1. log:
+Hit any key to stop autoboot:  0
 switch to partitions #0, OK
 mmc0 is current device
 reading Image
@@ -15,24 +16,24 @@ reading s32v234-evb.dtb
    Loading Device Tree to 000000009fff7000, end 000000009ffffa24 ...  OK
 
 Starting kernel ...
-			 
+
 =====================
-out/rda600/bootloader/u-boot/u-boot.cfg
+2. out/rda600/bootloader/u-boot/u-boot.cfg
 #define IMAGE_NAME Image
 
 include/configs/s32v.h:207:#define IMAGE_NAME Image
 include/configs/s32v.h:237:	"image=" __stringify(IMAGE_NAME) "\0" \
 
 
-Hit any key to stop autoboot:  0 
-=> printenv 
+Hit any key to stop autoboot:  0
+=> printenv
 ...
 image=Image
 ...
 
 ------------------------------------
 include/configs/s32v.h:270:	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-	
+
 u-boot/common/cmd_pxe.c:162:	fs_argv[0] = "fatload";
 u-boot/common/cmd_fat.c:42:	fatload,	7,	0,	do_fat_fsload,
 ------------------------------------
@@ -78,8 +79,124 @@ include/configs/s32v.h
 #define CONFIG_LOADADDR		LOADADDR
 
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_LOADADDR
+
 ================================
+3. the bootcmd environment variable
+
+=> printenv bootcmd
+bootcmd=mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcboot; else run netboot; fi; else run netboot; fi
+
+mmcdev=0
+mmcpart=1
+loadaddr=0x8007FFC0
+image=Image
+loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}
 
 
+mmcboot=echo Booting from mmc ...; run mmcargs; if test ${boot_fdt} = yes || test ${boot_fdt} = try; then if run loadfdt; then ${boot_mtd} ${loadaddr} - ${fdt_addr}; else if test ${boot_fdt} = try; then ${boot_mtd}; else echo WARN: Cannot load the DT; fi; fi; else ${boot_mtd}; fi;
+
+fdt_addr=0x82000000
+fdt_file=s32v234-evb.dtb
+loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}
+
+--------------------------------------------------------------------------------
+3.1 commands:
+	(1) mmc dev 0
+	(2) mmc rescan
+	(3) loadimage
+		//mmc0 is available, so run loadimage
+	(4) mmcboot
+----------
+
+--------------------------------------------------------------------------------
+//CONFIG_GENERIC_MMC is defined
+U_BOOT_CMD(
+	mmc, 29, 1, do_mmcops,
+	...
+);
 
 
+static cmd_tbl_t cmd_mmc[] = {
+	...
+	U_BOOT_CMD_MKENT(read, 4, 1, do_mmc_read, "", ""),
+	...
+	U_BOOT_CMD_MKENT(rescan, 1, 1, do_mmc_rescan, "", ""),
+	...
+	U_BOOT_CMD_MKENT(dev, 3, 0, do_mmc_dev, "", ""),
+	...
+	U_BOOT_CMD_MKENT(setdsr, 2, 0, do_mmc_setdsr, "", ""),
+};
+
+
+U_BOOT_CMD(
+	mmc, 29, 1, do_mmcops,
+	...
+);
+
+------------
+do_mmcops
+(1) find cmd from cmd table
+	find_cmd_tbl
+(2) get mmc num
+	get_mmc_num
+(3) p->cmd(cmdtp, flag, argc, argv)
+
+===========================================
+3.1 (1) mmc dev 0
+	set the current mmc device to mmc0.
+
+do_mmcops
+|
+| find cmd from cmd table
+V
+do_mmc_dev
+|-> mmc = init_mmc_device(dev, true);
+	ret = mmc_select_hwpart(dev, part);
+
+--------------------------------------------------------------------------------
+3.1 (2) mmc rescan
+	rescan mmc device, used to check whether mmc0 is available
+
+do_mmcops
+|
+| find cmd from cmd table
+V
+do_mmc_rescan
+|-> init_mmc_device
+	|-> mmc = find_mmc_device(dev);
+	|-> mmc_init
+
+//see mmc_ops.txt for more info about mmc
+
+--------------------------------------------------------------------------------
+3.1 (3) loadimage
+	loadimage=fatload mmc 0:1 0x8007FFC0 Image
+
+=> fatload
+fatload - load binary file from a dos filesystem
+
+U_BOOT_CMD(
+	fatload,	7,	0,	do_fat_fsload,
+	...
+);
+----------
+//include/configs/s32v.h
+#define CONFIG_CMD_FAT  /* FAT support */
+----------
+
+do_fat_fsload //common/cmd_fat.c
+|-> return do_load(cmdtp, flag, argc, argv, FS_TYPE_FAT); //fs/fs.c
+// see fs.txt for more info about fs
+
+how to get fstype?
+fatload => do_fat_fsload
+fstype: FS_TYPE_FAT (hard code)
+
+
+------
+a similar example:
+//common/cmd_ext4.c
+ext4load => do_ext4_load
+fstype: FS_TYPE_EXT
+--------------------------------------------------------------------------------
+3.1	(4) mmcboot
