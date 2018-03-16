@@ -1,0 +1,15 @@
+
+
+
+zip --encrypt -r kernelflinger.zip kernelflinger/
+================================================================================
+ubuntu下分解大压缩文件或解压拆分后的文件
+
+假设当前目录下有proc目录。
+
+tar -czf - proc | split -b 2m -d - proc.tar.gz
+#分卷压缩proc目录，并保持每个压缩包的大小不超过2m字节。命令执行后，会生成proc.tar.gz00、proc.tar.gz01等文件
+
+cat proc.tar.gz* | tar -xzf - #将各个分卷压缩包解压到当前目录
+
+cat proc.tar.gz* > proc.tar.gz #将各个分卷压缩包合成为一个proc.tar.gz文件

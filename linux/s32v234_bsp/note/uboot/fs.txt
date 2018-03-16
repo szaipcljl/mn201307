@@ -1,1 +1,114 @@
 fs.txt
+
+==============
+copy image from SD card
+fatload mmc 0:1 0x8007FFC0 Image
+
+argc = 5;
+
+argv[1]: mmc
+argv[2]: 0:1
+argv[3]: 0x8007FFC0
+argv[4]: Image
+
+
+-------------------
+
+//fs/fs.c
+int do_load(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
+		int fstype)
+--------------------
+========================================
+do_load
+
+(1) fs set block device
+	fs_set_blk_dev(argv[1], (argc >= 3) ? argv[2] : NULL, fstype) //fs.c
+	//it will set fs_type: fs_type = info->fstype;
+
+(2)
+	addr = simple_strtoul(argv[3], &ep, 16); //argc >= 4
+
+(3)
+	filename = argv[4]; //argc >= 5
+
+(4) 
+	argc not >=6, so:
+	bytes = 0; //len==0 means read the whole file.
+	pos = 0;
+
+(5)
+	time = get_timer(0);
+	ret = fs_read(filename, addr, pos, bytes, &len_read);
+	time = get_timer(time);
+
+	puts(" (");
+	print_size(div_u64(len_read, time) * 1000, "/s");
+	puts(")");
+
+(6)
+
+	setenv_hex("fileaddr", addr);
+	setenv_hex("filesize", len_read);
+
+==================================================
+fs/fs.c
+
+fstype_info is saved an array name fstypes
+static struct fstype_info fstypes[] = {
+#ifdef CONFIG_FS_FAT
+	{
+		.fstype = FS_TYPE_FAT,
+		.name = "fat",
+		.null_dev_desc_ok = false,
+		.probe = fat_set_blk_dev,
+		.close = fat_close,
+		.ls = file_fat_ls,
+		.exists = fat_exists,
+		.size = fat_size,
+		.read = fat_read_file,
+#ifdef CONFIG_FAT_WRITE
+		.write = file_fat_write,
+#else
+		.write = fs_write_unsupported,
+#endif
+		.uuid = fs_uuid_unsupported,
+	},
+#endif
+	...
+};
+
+==================================================
+fs_read
+fs/fs.c 
+
+(1) get the pointer to the fat fs object from the array 'fstypes'
+	struct fstype_info *info = fs_get_info(fs_type);
+
+(2)
+
+	buf = map_sysmem(addr, len);
+	ret = info->read(filename, buf, offset, len, actread);
+	unmap_sysmem(buf); //a null map_sysmem() 
+
+(3)
+	fs_close();
+
+----------------------------------------
+info->read
+=> fat_read_file //fs/fat/fat.c
+	|-> ret = file_fat_read_at(filename, offset, buf, len, actread);
+		|-> printf("reading %s\n", filename);
+			return do_fat_read_at(filename, pos, buffer, maxsize, LS_NO, 0,
+						  actread);
+
+
+----------------------------------------
+ do_fat_read_at
+
+
+
+
+
+
+
+
