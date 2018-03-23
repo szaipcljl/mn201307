@@ -1,0 +1,36 @@
+# Path to private key thar matches your public key
+IdentityFile ~/.ssh/id_rsa
+
+# Gerrit https://intelpedia.intel.com/ACH_Gerrit
+host android.intel.com
+port 29418
+user nma1x
+
+
+# Global load balancer which redirects to closest
+# mirror, depending where the request originates
+host android-mirror.devtools.intel.com
+port 29418
+user nma1x
+StrictHostKeyChecking no
+
+# Example for Oregon: host android-mirror-or.devtools.intel.com
+#host <YOUR_LOCAL_MIRROR>
+host android-mirror-sh.devtools.intel.com
+
+port 29418
+user nma1x
+
+host jfumg-gcrmirror.jf.intel.com
+port 29418
+user nma1x
+StrictHostKeyChecking no
+
+
+host ctegerrit.sh.intel.com
+port 29418
+user nma1x
+
+host *
+ControlMaster auto
+ControlPath ~/.ssh/ssh_mux_%h_%p_%r

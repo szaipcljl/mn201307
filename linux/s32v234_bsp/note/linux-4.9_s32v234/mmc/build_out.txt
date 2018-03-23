@@ -1,0 +1,126 @@
+
+===========================
+linux-4.9_rda600/drivers/mmc/
+├── card
+│   ├── block.o
+│   ├── mmc_block.o
+│   └── queue.o
+├── core
+│   ├── bus.o
+│   ├── core.o
+│   ├── debugfs.o
+│   ├── host.o
+│   ├── mmc_core.o
+│   ├── mmc.o
+│   ├── mmc_ops.o
+│   ├── pwrseq_emmc.o
+│   ├── pwrseq.o
+│   ├── pwrseq_simple.o
+│   ├── quirks.o
+│   ├── sdio_bus.o
+│   ├── sdio_cis.o
+│   ├── sdio_io.o
+│   ├── sdio_irq.o
+│   ├── sdio.o
+│   ├── sdio_ops.o
+│   ├── sd.o
+│   ├── sd_ops.o
+│   └── slot-gpio.o
+└── host
+    ├── sdhci-esdhc-imx.o
+    ├── sdhci.o
+    └── sdhci-pltfm.o
+
+========================================
+arch/arm64/boot/dts/freescale/s32v234.dtsi
+
+/ {
+	compatible = "fsl,s32v234", "arm,vexpress";
+	interrupt-parent = <&gic>;
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	...
+	soc {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "simple-bus";
+		interrupt-parent = <&gic>;
+		ranges;
+
+			...
+			usdhc0: usdhc@4005D000 {
+				compatible = "fsl,s32v234-usdhc", "fsl,sac85r-usdhc";
+				reg = <0x0 0x4005D000 0x0 0x1000>;
+				interrupts = <0 28 4>;
+				clocks = <&clks S32V234_CLK_SDHC_IPS>,
+					 <&clks S32V234_CLK_SDHC_AHB>,
+					 <&clks S32V234_CLK_SDHC>;
+				clock-names = "ipg", "ahb", "per";
+				bus-width = <8>;
+				status = "disabled";
+			};
+			...
+		};
+};
+
+--------------------------------------------------
+arch/arm64/boot/dts/freescale/s32v234-evb2016q4.dtsi
+
+&pinctrl {
+	status = "okay";
+
+	s32v234-evb {
+		...
+		pinctrl_usdhc0: usdhc0grp {
+			fsl,pins = <
+				S32V234_PAD_PK6__USDHC_CLK_OUT
+				S32V234_PAD_PK6__USDHC_CLK_IN
+				S32V234_PAD_PK7__USDHC_CMD_OUT
+				S32V234_PAD_PK7__USDHC_CMD_IN
+				S32V234_PAD_PK8__USDHC_DAT0_OUT
+				S32V234_PAD_PK8__USDHC_DAT0_IN
+				S32V234_PAD_PK9__USDHC_DAT1_OUT
+				S32V234_PAD_PK9__USDHC_DAT1_IN
+				S32V234_PAD_PK10__USDHC_DAT2_OUT
+				S32V234_PAD_PK10__USDHC_DAT2_IN
+				S32V234_PAD_PK11__USDHC_DAT3_OUT
+				S32V234_PAD_PK11__USDHC_DAT3_IN
+				S32V234_PAD_PK15__USDHC_DAT4_OUT
+				S32V234_PAD_PK15__USDHC_DAT4_IN
+				S32V234_PAD_PL0__USDHC_DAT5_OUT
+				S32V234_PAD_PL0__USDHC_DAT5_IN
+				S32V234_PAD_PL1__USDHC_DAT6_OUT
+				S32V234_PAD_PL1__USDHC_DAT6_IN
+				S32V234_PAD_PL2__USDHC_DAT7_OUT
+				S32V234_PAD_PL2__USDHC_DAT7_IN
+			>;
+		};
+	};
+};
+	
+
+&usdhc0 {
+	no-1-8-V;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc0>;
+	status = "okay";
+};
+
+----------------------------------------
+
+========================================
+S32V234_Memory_Map.xlsx
+Peripheral Bridge map
++---------+--------+-----------+---------------------+--------------------+--
+|start 	  | offset |	End    |	Size in Kbytes 	 |  PBRIDCE assignment|
++---------+--------+-----------+---------------------+--------------------+--
+|4005D000 | 5D000  | 4005DFFF  |		4			 |  	0             |
++---------+--------+-----------+---------------------+--------------------+--
+ ------------------------+------------------------+--------------------------+
+ PBRIDGC slot assignment | MC_ME PCTRL assignment | configuration bus   name |
+ ------------------------+------------------------+--------------------------+
+    93                   |          0             |        IPS 	       USDHC |
+ ------------------------+------------------------+--------------------------+
+
+========================================

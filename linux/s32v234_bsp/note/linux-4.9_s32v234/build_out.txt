@@ -1,0 +1,1562 @@
+out/rda600/kernel/linux-4.9_s32v234/
+├── arch
+│   ├── arm
+│   │   └── kernel
+│   │       └── opcodes.o
+│   └── arm64
+│       ├── boot
+│       │   ├── dts
+│       │   │   ├── arm
+│       │   │   │   ├── A53.dtb
+│       │   │   │   ├── foundation-v8.dtb
+│       │   │   │   ├── juno.dtb
+│       │   │   │   └── rtsm_ve-aemv8a.dtb
+│       │   │   ├── freescale
+│       │   │       ├── s32g275-simulator.dtb
+│       │   │       ├── s32r45x-simulator.dtb
+│       │   │       ├── s32v234-bbmini.dtb
+│       │   │       ├── s32v234-evb28899.dtb
+│       │   │       ├── s32v234-evbbcm.dtb
+│       │   │       ├── s32v234-evb.dtb
+│       │   │       ├── s32v234-palladium.dtb
+│       │   │       ├── s32v234-pciebcm.dtb
+│       │   │       ├── s32v234-pcie.dtb
+│       │   │       ├── s32v234-simulator.dtb
+│       │   │       ├── s32v234-tmdp.dtb
+│       │   │       └── s32v244-simulator.dtb
+│       │   ├── Image
+│       │   └── Image.gz
+│       ├── kernel
+│       │   ├── acpi.o
+│       │   ├── alternative.o
+│       │   ├── arm64ksyms.o
+│       │   ├── asm-offsets.s
+│       │   ├── cacheinfo.o
+│       │   ├── cpu_errata.o
+│       │   ├── cpufeature.o
+│       │   ├── cpuidle.o
+│       │   ├── cpuinfo.o
+│       │   ├── cpu_ops.o
+│       │   ├── debug-monitors.o
+│       │   ├── entry32.o
+│       │   ├── entry-fpsimd.o
+│       │   ├── entry.o
+│       │   ├── fpsimd.o
+│       │   ├── head.o
+│       │   ├── hw_breakpoint.o
+│       │   ├── hyp-stub.o
+│       │   ├── insn.o
+│       │   ├── io.o
+│       │   ├── irq.o
+│       │   ├── jump_label.o
+│       │   ├── kuser32.o
+│       │   ├── module.o
+│       │   ├── pci.o
+│       │   ├── perf_event.o
+│       │   ├── perf_regs.o
+│       │   ├── process.o
+│       │   ├── psci-call.o
+│       │   ├── psci.o
+│       │   ├── ptrace.o
+│       │   ├── return_address.o
+│       │   ├── setup.o
+│       │   ├── signal32.o
+│       │   ├── signal.o
+│       │   ├── sleep.o
+│       │   ├── smp.o
+│       │   ├── smp_spin_table.o
+│       │   ├── stacktrace.o
+│       │   ├── suspend.o
+│       │   ├── sys32.o
+│       │   ├── sys_compat.o
+│       │   ├── sys.o
+│       │   ├── time.o
+│       │   ├── topology.o
+│       │   ├── traps.o
+│       │   ├── vdso
+│       │   │   ├── gettimeofday.o
+│       │   │   ├── note.o
+│       │   │   ├── sigreturn.o
+│       │   │   ├── vdso.lds
+│       │   │   ├── vdso.o
+│       │   │   ├── vdso-offsets.h
+│       │   │   ├── vdso.so
+│       │   │   └── vdso.so.dbg
+│       │   ├── vdso.o
+│       │   └── vmlinux.lds
+│       ├── lib
+│       │   ├── bitops.o
+│       │   ├── clear_page.o
+│       │   ├── clear_user.o
+│       │   ├── copy_from_user.o
+│       │   ├── copy_in_user.o
+│       │   ├── copy_page.o
+│       │   ├── copy_to_user.o
+│       │   ├── delay.o
+│       │   ├── lib.a
+│       │   ├── memchr.o
+│       │   ├── memcmp.o
+│       │   ├── memcpy.o
+│       │   ├── memmove.o
+│       │   ├── memset.o
+│       │   ├── strchr.o
+│       │   ├── strcmp.o
+│       │   ├── strlen.o
+│       │   ├── strncmp.o
+│       │   ├── strnlen.o
+│       │   └── strrchr.o
+│       ├── mm
+│           ├── cache.o
+│           ├── context.o
+│           ├── copypage.o
+│           ├── dma-mapping.o
+│           ├── extable.o
+│           ├── fault.o
+│           ├── flush.o
+│           ├── hugetlbpage.o
+│           ├── init.o
+│           ├── ioremap.o
+│           ├── mmap.o
+│           ├── mmu.o
+│           ├── pageattr.o
+│           ├── pgd.o
+│           └── proc.o
+├── block
+│   ├── bio.o
+│   ├── blk-core.o
+│   ├── blk-exec.o
+│   ├── blk-flush.o
+│   ├── blk-ioc.o
+│   ├── blk-iopoll.o
+│   ├── blk-lib.o
+│   ├── blk-map.o
+│   ├── blk-merge.o
+│   ├── blk-mq-cpumap.o
+│   ├── blk-mq-cpu.o
+│   ├── blk-mq.o
+│   ├── blk-mq-sysfs.o
+│   ├── blk-mq-tag.o
+│   ├── blk-settings.o
+│   ├── blk-softirq.o
+│   ├── blk-sysfs.o
+│   ├── blk-tag.o
+│   ├── blk-timeout.o
+│   ├── bounce.o
+│   ├── bsg.o
+│   ├── cfq-iosched.o
+│   ├── compat_ioctl.o
+│   ├── deadline-iosched.o
+│   ├── elevator.o
+│   ├── genhd.o
+│   ├── ioctl.o
+│   ├── ioprio.o
+│   ├── noop-iosched.o
+│   ├── partition-generic.o
+│   ├── partitions
+│   │   ├── check.o
+│   │   ├── efi.o
+│   │   └── msdos.o
+│   └── scsi_ioctl.o
+├── crypto
+│   ├── aes_generic.o
+│   ├── ahash.o
+│   ├── algapi.o
+│   ├── api.o
+│   ├── cipher.o
+│   ├── compress.o
+│   ├── crc32c_generic.o
+│   ├── crct10dif_common.o
+│   ├── crct10dif_generic.o
+│   ├── crypto_algapi.o
+│   ├── crypto_hash.o
+│   ├── crypto.o
+│   ├── memneq.o
+│   ├── proc.o
+│   ├── scatterwalk.o
+│   └── shash.o
+├── drivers
+│   ├── acpi
+│   │   ├── acpi_apd.o
+│   │   ├── acpica
+│   │   │   ├── acpi.o
+│   │   │   ├── dsargs.o
+│   │   │   ├── dscontrol.o
+│   │   │   ├── dsfield.o
+│   │   │   ├── dsinit.o
+│   │   │   ├── dsmethod.o
+│   │   │   ├── dsmthdat.o
+│   │   │   ├── dsobject.o
+│   │   │   ├── dsopcode.o
+│   │   │   ├── dsutils.o
+│   │   │   ├── dswexec.o
+│   │   │   ├── dswload2.o
+│   │   │   ├── dswload.o
+│   │   │   ├── dswscope.o
+│   │   │   ├── dswstate.o
+│   │   │   ├── evevent.o
+│   │   │   ├── evglock.o
+│   │   │   ├── evgpeblk.o
+│   │   │   ├── evgpeinit.o
+│   │   │   ├── evgpe.o
+│   │   │   ├── evgpeutil.o
+│   │   │   ├── evhandler.o
+│   │   │   ├── evmisc.o
+│   │   │   ├── evregion.o
+│   │   │   ├── evrgnini.o
+│   │   │   ├── evsci.o
+│   │   │   ├── evxface.o
+│   │   │   ├── evxfevnt.o
+│   │   │   ├── evxfgpe.o
+│   │   │   ├── evxfregn.o
+│   │   │   ├── exconfig.o
+│   │   │   ├── exconvrt.o
+│   │   │   ├── excreate.o
+│   │   │   ├── exdebug.o
+│   │   │   ├── exdump.o
+│   │   │   ├── exfield.o
+│   │   │   ├── exfldio.o
+│   │   │   ├── exmisc.o
+│   │   │   ├── exmutex.o
+│   │   │   ├── exnames.o
+│   │   │   ├── exoparg1.o
+│   │   │   ├── exoparg2.o
+│   │   │   ├── exoparg3.o
+│   │   │   ├── exoparg6.o
+│   │   │   ├── exprep.o
+│   │   │   ├── exregion.o
+│   │   │   ├── exresnte.o
+│   │   │   ├── exresolv.o
+│   │   │   ├── exresop.o
+│   │   │   ├── exstoren.o
+│   │   │   ├── exstore.o
+│   │   │   ├── exstorob.o
+│   │   │   ├── exsystem.o
+│   │   │   ├── exutils.o
+│   │   │   ├── hwacpi.o
+│   │   │   ├── hwesleep.o
+│   │   │   ├── hwgpe.o
+│   │   │   ├── hwpci.o
+│   │   │   ├── hwregs.o
+│   │   │   ├── hwsleep.o
+│   │   │   ├── hwvalid.o
+│   │   │   ├── hwxface.o
+│   │   │   ├── hwxfsleep.o
+│   │   │   ├── nsaccess.o
+│   │   │   ├── nsalloc.o
+│   │   │   ├── nsarguments.o
+│   │   │   ├── nsconvert.o
+│   │   │   ├── nsdump.o
+│   │   │   ├── nseval.o
+│   │   │   ├── nsinit.o
+│   │   │   ├── nsload.o
+│   │   │   ├── nsnames.o
+│   │   │   ├── nsobject.o
+│   │   │   ├── nsparse.o
+│   │   │   ├── nspredef.o
+│   │   │   ├── nsprepkg.o
+│   │   │   ├── nsrepair2.o
+│   │   │   ├── nsrepair.o
+│   │   │   ├── nssearch.o
+│   │   │   ├── nsutils.o
+│   │   │   ├── nswalk.o
+│   │   │   ├── nsxfeval.o
+│   │   │   ├── nsxfname.o
+│   │   │   ├── nsxfobj.o
+│   │   │   ├── psargs.o
+│   │   │   ├── psloop.o
+│   │   │   ├── psobject.o
+│   │   │   ├── psopcode.o
+│   │   │   ├── psopinfo.o
+│   │   │   ├── psparse.o
+│   │   │   ├── psscope.o
+│   │   │   ├── pstree.o
+│   │   │   ├── psutils.o
+│   │   │   ├── pswalk.o
+│   │   │   ├── psxface.o
+│   │   │   ├── rsaddr.o
+│   │   │   ├── rscalc.o
+│   │   │   ├── rscreate.o
+│   │   │   ├── rsdumpinfo.o
+│   │   │   ├── rsdump.o
+│   │   │   ├── rsinfo.o
+│   │   │   ├── rsio.o
+│   │   │   ├── rsirq.o
+│   │   │   ├── rslist.o
+│   │   │   ├── rsmemory.o
+│   │   │   ├── rsmisc.o
+│   │   │   ├── rsserial.o
+│   │   │   ├── rsutils.o
+│   │   │   ├── rsxface.o
+│   │   │   ├── tbdata.o
+│   │   │   ├── tbfadt.o
+│   │   │   ├── tbfind.o
+│   │   │   ├── tbinstal.o
+│   │   │   ├── tbprint.o
+│   │   │   ├── tbutils.o
+│   │   │   ├── tbxface.o
+│   │   │   ├── tbxfload.o
+│   │   │   ├── tbxfroot.o
+│   │   │   ├── utaddress.o
+│   │   │   ├── utalloc.o
+│   │   │   ├── utbuffer.o
+│   │   │   ├── utcopy.o
+│   │   │   ├── utdebug.o
+│   │   │   ├── utdecode.o
+│   │   │   ├── utdelete.o
+│   │   │   ├── uterror.o
+│   │   │   ├── uteval.o
+│   │   │   ├── utexcep.o
+│   │   │   ├── utglobal.o
+│   │   │   ├── uthex.o
+│   │   │   ├── utids.o
+│   │   │   ├── utinit.o
+│   │   │   ├── utlock.o
+│   │   │   ├── utmath.o
+│   │   │   ├── utmisc.o
+│   │   │   ├── utmutex.o
+│   │   │   ├── utobject.o
+│   │   │   ├── utosi.o
+│   │   │   ├── utownerid.o
+│   │   │   ├── utpredef.o
+│   │   │   ├── utresrc.o
+│   │   │   ├── utstate.o
+│   │   │   ├── utstring.o
+│   │   │   ├── utxface.o
+│   │   │   ├── utxferror.o
+│   │   │   ├── utxfinit.o
+│   │   │   └── utxfmutex.o
+│   │   ├── acpi_lpat.o
+│   │   ├── acpi_lpss.o
+│   │   ├── acpi_memhotplug.o
+│   │   ├── acpi.o
+│   │   ├── acpi_platform.o
+│   │   ├── acpi_pnp.o
+│   │   ├── acpi_processor.o
+│   │   ├── bus.o
+│   │   ├── button.o
+│   │   ├── container.o
+│   │   ├── debugfs.o
+│   │   ├── device_pm.o
+│   │   ├── ec.o
+│   │   ├── event.o
+│   │   ├── glue.o
+│   │   ├── gsi.o
+│   │   ├── int340x_thermal.o
+│   │   ├── nvs.o
+│   │   ├── osl.o
+│   │   ├── pci_irq.o
+│   │   ├── pci_link.o
+│   │   ├── pci_root.o
+│   │   ├── power.o
+│   │   ├── processor_core.o
+│   │   ├── property.o
+│   │   ├── reboot.o
+│   │   ├── resource.o
+│   │   ├── scan.o
+│   │   ├── sysfs.o
+│   │   ├── tables.o
+│   │   ├── utils.o
+│   │   └── wakeup.o
+│   ├── amba
+│   │   └── bus.o
+│   ├── base
+│   │   ├── attribute_container.o
+│   │   ├── bus.o
+│   │   ├── cacheinfo.o
+│   │   ├── class.o
+│   │   ├── component.o
+│   │   ├── container.o
+│   │   ├── core.o
+│   │   ├── cpu.o
+│   │   ├── dd.o
+│   │   ├── devres.o
+│   │   ├── devtmpfs.o
+│   │   ├── dma-coherent.o
+│   │   ├── dma-contiguous.o
+│   │   ├── dma-mapping.o
+│   │   ├── driver.o
+│   │   ├── firmware_class.o
+│   │   ├── firmware.o
+│   │   ├── init.o
+│   │   ├── map.o
+│   │   ├── module.o
+│   │   ├── pinctrl.o
+│   │   ├── platform.o
+│   │   ├── power
+│   │   │   ├── clock_ops.o
+│   │   │   ├── common.o
+│   │   │   ├── generic_ops.o
+│   │   │   ├── qos.o
+│   │   │   ├── runtime.o
+│   │   │   └── sysfs.o
+│   │   ├── property.o
+│   │   ├── regmap
+│   │   │   ├── regcache-flat.o
+│   │   │   ├── regcache-lzo.o
+│   │   │   ├── regcache.o
+│   │   │   ├── regcache-rbtree.o
+│   │   │   ├── regmap-debugfs.o
+│   │   │   ├── regmap-mmio.o
+│   │   │   └── regmap.o
+│   │   ├── syscore.o
+│   │   ├── topology.o
+│   │   └── transport_class.o
+│   ├── block
+│   │   └── loop.o
+│   ├── bus
+│   │   ├── arm-cci.o
+│   │   └── vexpress-config.o
+│   ├── char
+│   │   ├── hw_random
+│   │   │   ├── core.o
+│   │   │   └── rng-core.o
+│   │   ├── mem.o
+│   │   ├── misc.o
+│   │   └── random.o
+│   ├── clk
+│   │   ├── clk-composite.o
+│   │   ├── clk-conf.o
+│   │   ├── clkdev.o
+│   │   ├── clk-devres.o
+│   │   ├── clk-divider.o
+│   │   ├── clk-fixed-factor.o
+│   │   ├── clk-fixed-rate.o
+│   │   ├── clk-fractional-divider.o
+│   │   ├── clk-gate.o
+│   │   ├── clk-gpio-gate.o
+│   │   ├── clk-mux.o
+│   │   ├── clk.o
+│   │   ├── clk-xgene.o
+│   │   ├── s32
+│   │   │   ├── clk-dfs.o
+│   │   │   ├── clk-gate2.o
+│   │   │   ├── clk.o
+│   │   │   ├── clk-plldig.o
+│   │   │   └── clk-s32v234.o
+│   │   └── versatile
+│   │       ├── clk-sp810.o
+│   │       └── clk-vexpress-osc.o
+│   ├── clocksource
+│   │   ├── arm_arch_timer.o
+│   │   ├── clksrc-of.o
+│   │   ├── dummy_timer.o
+│   │   └── mmio.o
+│   ├── cpuidle
+│   │   ├── cpuidle.o
+│   │   ├── driver.o
+│   │   ├── governor.o
+│   │   ├── governors
+│   │   │   ├── ladder.o
+│   │   │   └── menu.o
+│   │   └── sysfs.o
+│   ├── dma
+│   │   ├── acpi-dma.o
+│   │   ├── dmaengine.o
+│   │   ├── fsl-edma.o
+│   │   ├── of-dma.o
+│   │   └── virt-dma.o
+│   ├── gpio
+│   │   ├── devres.o
+│   │   ├── gpio-generic.o
+│   │   ├── gpiolib-acpi.o
+│   │   ├── gpiolib-legacy.o
+│   │   ├── gpiolib.o
+│   │   ├── gpiolib-of.o
+│   │   ├── gpiolib-sysfs.o
+│   │   └── gpio-siul2.o
+│   ├── gpu
+│   │   └── vga
+│   │       └── vgaarb.o
+│   ├── hid
+│   │   ├── hid-core.o
+│   │   ├── hid-debug.o
+│   │   ├── hid-generic.o
+│   │   ├── hid-input.o
+│   │   └── hid.o
+│   ├── hwmon
+│   │   └── hwmon.o
+│   ├── i2c
+│   │   ├── busses
+│   │   │   └── i2c-imx.o
+│   │   ├── i2c-boardinfo.o
+│   │   ├── i2c-core.o
+│   │   └── i2c-dev.o
+│   ├── input
+│   │   ├── evdev.o
+│   │   ├── ff-core.o
+│   │   ├── input-compat.o
+│   │   ├── input-core.o
+│   │   ├── input-mt.o
+│   │   ├── input.o
+│   │   ├── keyboard
+│   │   │   └── atkbd.o
+│   │   ├── misc
+│   │   │   └── uinput.o
+│   │   └── serio
+│   │       ├── ambakmi.o
+│   │       ├── libps2.o
+│   │       ├── serio.o
+│   │       └── serport.o
+│   ├── iommu
+│   │   ├── arm-smmu.o
+│   │   ├── iommu.o
+│   │   ├── iommu-sysfs.o
+│   │   ├── iommu-traces.o
+│   │   ├── io-pgtable-arm.o
+│   │   ├── io-pgtable.o
+│   │   └── of_iommu.o
+│   ├── irqchip
+│   │   ├── irqchip.o
+│   │   ├── irq-gic-common.o
+│   │   ├── irq-gic.o
+│   │   ├── irq-gic-v2m.o
+│   │   ├── irq-gic-v3-its.o
+│   │   └── irq-gic-v3.o
+│   ├── mfd
+│   │   ├── mfd-core.o
+│   │   ├── syscon.o
+│   │   └── vexpress-sysreg.o
+│   ├── misc
+│   │   │   ├── sdio_cis.o
+│   │   │   ├── sdio_io.o
+│   │   │   ├── sdio_irq.o
+│   │   │   ├── sdio.o
+│   │   │   ├── sdio_ops.o
+│   │   │   ├── sd.o
+│   │   │   ├── sd_ops.o
+│   │   │   └── slot-gpio.o
+│   │   ├── host
+│   │       ├── sdhci-esdhc-imx.o
+│   │       ├── sdhci.o
+│   │       └── sdhci-pltfm.o
+│   ├── net
+│   │   ├── can
+│   │   │   ├── can-dev.o
+│   │   │   ├── dev.o
+│   │   │   ├── flexcan.o
+│   │   │   ├── slcan.o
+│   │   │   └── vcan.o
+│   │   ├── ethernet
+│   │   │   ├── freescale
+│   │   │       ├── fec_main.o
+│   │   │       ├── fec.o
+│   │   │       └── fec_ptp.o
+│   │   ├── loopback.o
+│   │   ├── phy
+│   │   │   ├── bcm7xxx.o
+│   │   │   ├── bcm87xx.o
+│   │   │   ├── bcm89xxx.o
+│   │   │   ├── broadcom.o
+│   │   │   ├── fixed_phy.o
+│   │   │   ├── libphy.o
+│   │   │   ├── mdio_bus.o
+│   │   │   ├── micrel.o
+│   │   │   ├── nxp
+│   │   │   │   ├── nxp.ko
+│   │   │   │   └── nxp.o
+│   │   │   ├── phy_device.o
+│   │   │   └── phy.o
+│   │   ├── Space.o
+│   │   └── tun.o
+│   ├── of
+│   │   ├── address.o
+│   │   ├── base.o
+│   │   ├── device.o
+│   │   ├── fdt_address.o
+│   │   ├── fdt.o
+│   │   ├── irq.o
+│   │   ├── of_mdio.o
+│   │   ├── of_net.o
+│   │   ├── of_pci_irq.o
+│   │   ├── of_pci.o
+│   │   ├── of_reserved_mem.o
+│   │   └── platform.o
+│   ├── pci
+│   │   ├── access.o
+│   │   ├── bus.o
+│   │   ├── host-bridge.o
+│   │   ├── irq.o
+│   │   ├── msi.o
+│   │   ├── of.o
+│   │   ├── pci-acpi.o
+│   │   ├── pci-driver.o
+│   │   ├── pci-label.o
+│   │   ├── pci.o
+│   │   ├── pci-sysfs.o
+│   │   ├── probe.o
+│   │   ├── proc.o
+│   │   ├── quirks.o
+│   │   ├── remove.o
+│   │   ├── rom.o
+│   │   ├── search.o
+│   │   ├── setup-bus.o
+│   │   ├── setup-res.o
+│   │   ├── slot.o
+│   │   ├── syscall.o
+│   │   ├── vc.o
+│   │   └── vpd.o
+│   ├── pinctrl
+│   │   ├── core.o
+│   │   ├── devicetree.o
+│   │   ├── freescale
+│   │   │   ├── pinctrl-imx.o
+│   │   │   ├── pinctrl-s32v234.o
+│   │   │   └── pinctrl-s32v-core.o
+│   │   ├── pinconf.o
+│   │   ├── pinctrl-utils.o
+│   │   └── pinmux.o
+│   ├── pnp
+│   │   ├── card.o
+│   │   ├── core.o
+│   │   ├── driver.o
+│   │   ├── interface.o
+│   │   ├── manager.o
+│   │   ├── pnpacpi
+│   │   │   ├── core.o
+│   │   │   ├── pnp.o
+│   │   │   └── rsparser.o
+│   │   ├── pnp.o
+│   │   ├── quirks.o
+│   │   ├── resource.o
+│   │   ├── support.o
+│   │   └── system.o
+│   ├── power
+│   │   ├── power_supply_core.o
+│   │   ├── power_supply.o
+│   │   ├── power_supply_sysfs.o
+│   │   └── reset
+│   │       ├── s32v-reboot.o
+│   │       └── vexpress-poweroff.o
+│   ├── pps
+│   │   ├── kapi.o
+│   │   ├── pps_core.o
+│   │   ├── pps.o
+│   │   └── sysfs.o
+│   ├── ptp
+│   │   ├── ptp_chardev.o
+│   │   ├── ptp_clock.o
+│   │   ├── ptp.o
+│   │   └── ptp_sysfs.o
+│   ├── reset
+│   │   └── core.o
+│   ├── rtc
+│   │   └── rtc-lib.o
+│   ├── spi
+│   │   ├── spidev.o
+│   │   ├── spi-fsl-dspi.o
+│   │   └── spi.o
+│   ├── tty
+│   │   ├── n_tty.o
+│   │   ├── pty.o
+│   │   ├── serial
+│   │   │   ├── fsl_linflexuart.o
+│   │   │   └── serial_core.o
+│   │   ├── tty_buffer.o
+│   │   ├── tty_ioctl.o
+│   │   ├── tty_io.o
+│   │   ├── tty_ldisc.o
+│   │   ├── tty_ldsem.o
+│   │   ├── tty_mutex.o
+│   │   ├── tty_port.o
+│   │   └── vt
+│   │       ├── consolemap_deftbl.c
+│   │       ├── consolemap_deftbl.o
+│   │       ├── consolemap.o
+│   │       ├── defkeymap.c
+│   │       ├── defkeymap.o
+│   │       ├── keyboard.o
+│   │       ├── selection.o
+│   │       ├── vc_screen.o
+│   │       ├── vt_ioctl.o
+│   │       └── vt.o
+│   ├── usb
+│   │   └── host
+│   │       └── pci-quirks.o
+│   ├── video
+│   │   ├── console
+│   │   │   └── dummycon.o
+│   │   ├── display_timing.o
+│   │   ├── fbdev
+│   │   │   ├── core
+│   │   │   │   ├── cfbcopyarea.o
+│   │   │   │   ├── cfbfillrect.o
+│   │   │   │   ├── cfbimgblt.o
+│   │   │   │   ├── fbcmap.o
+│   │   │   │   ├── fb_cmdline.o
+│   │   │   │   ├── fbcvt.o
+│   │   │   │   ├── fbmem.o
+│   │   │   │   ├── fbmon.o
+│   │   │   │   ├── fb_notify.o
+│   │   │   │   ├── fb.o
+│   │   │   │   ├── fbsysfs.o
+│   │   │   │   └── modedb.o
+│   │   │   ├── mxsfb.o
+│   │   │   └── simplefb.o
+│   │   ├── fsl_dcu_core.o
+│   │   ├── fsl_dcu_linux.o
+│   │   ├── fsl_dcu.o
+│   │   ├── fsl_fb.o
+│   │   ├── mxc
+│   │   │   ├── mxc_edid.o
+│   │   │   └── mxsfb_sii902x.o
+│   │   ├── of_display_timing.o
+│   │   ├── of_videomode.o
+│   │   └── videomode.o
+│   ├── virtio
+│   │   ├── virtio_mmio.o
+│   │   ├── virtio.o
+│   │   └── virtio_ring.o
+│   └── watchdog
+│       ├── sac58r_wdt.o
+│       ├── watchdog_core.o
+│       ├── watchdog_dev.o
+│       └── watchdog.o
+├── fs
+│   ├── aio.o
+│   ├── anon_inodes.o
+│   ├── attr.o
+│   ├── autofs4
+│   │   ├── autofs4.o
+│   │   ├── dev-ioctl.o
+│   │   ├── expire.o
+│   │   ├── init.o
+│   │   ├── inode.o
+│   │   ├── root.o
+│   │   ├── symlink.o
+│   │   └── waitq.o
+│   ├── bad_inode.o
+│   ├── binfmt_elf.o
+│   ├── binfmt_script.o
+│   ├── block_dev.o
+│   ├── buffer.o
+│   ├── char_dev.o
+│   ├── compat_binfmt_elf.o
+│   ├── compat_ioctl.o
+│   ├── compat.o
+│   ├── coredump.o
+│   ├── dcache.o
+│   ├── debugfs
+│   │   ├── debugfs.o
+│   │   ├── file.o
+│   │   └── inode.o
+│   ├── devpts
+│   │   ├── devpts.o
+│   │   └── inode.o
+│   ├── direct-io.o
+│   ├── drop_caches.o
+│   ├── eventfd.o
+│   ├── eventpoll.o
+│   ├── exec.o
+│   ├── exportfs
+│   │   ├── expfs.o
+│   │   └── exportfs.o
+│   ├── ext2
+│   │   ├── acl.o
+│   │   ├── balloc.o
+│   │   ├── dir.o
+│   │   ├── ext2.o
+│   │   ├── file.o
+│   │   ├── ialloc.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── namei.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_security.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── ext3
+│   │   ├── acl.o
+│   │   ├── balloc.o
+│   │   ├── bitmap.o
+│   │   ├── dir.o
+│   │   ├── ext3_jbd.o
+│   │   ├── ext3.o
+│   │   ├── file.o
+│   │   ├── fsync.o
+│   │   ├── hash.o
+│   │   ├── ialloc.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── namei.o
+│   │   ├── resize.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_security.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── ext4
+│   │   ├── acl.o
+│   │   ├── balloc.o
+│   │   ├── bitmap.o
+│   │   ├── block_validity.o
+│   │   ├── dir.o
+│   │   ├── ext4_jbd2.o
+│   │   ├── ext4.o
+│   │   ├── extents.o
+│   │   ├── extents_status.o
+│   │   ├── file.o
+│   │   ├── fsync.o
+│   │   ├── hash.o
+│   │   ├── ialloc.o
+│   │   ├── indirect.o
+│   │   ├── inline.o
+│   │   ├── inode.o
+│   │   ├── ioctl.o
+│   │   ├── mballoc.o
+│   │   ├── migrate.o
+│   │   ├── mmp.o
+│   │   ├── move_extent.o
+│   │   ├── namei.o
+│   │   ├── page-io.o
+│   │   ├── readpage.o
+│   │   ├── resize.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── xattr.o
+│   │   ├── xattr_security.o
+│   │   ├── xattr_trusted.o
+│   │   └── xattr_user.o
+│   ├── fat
+│   │   ├── cache.o
+│   │   ├── dir.o
+│   │   ├── fatent.o
+│   │   ├── fat.o
+│   │   ├── file.o
+│   │   ├── inode.o
+│   │   ├── misc.o
+│   │   ├── namei_vfat.o
+│   │   ├── nfs.o
+│   │   └── vfat.o
+│   ├── fcntl.o
+│   ├── fhandle.o
+│   ├── file.o
+│   ├── filesystems.o
+│   ├── file_table.o
+│   ├── fs_pin.o
+│   ├── fs_struct.o
+│   ├── fs-writeback.o
+│   ├── fuse
+│   │   ├── control.o
+│   │   ├── dev.o
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── fuse.o
+│   │   └── inode.o
+│   ├── hugetlbfs
+│   │   ├── hugetlbfs.o
+│   │   └── inode.o
+│   ├── inode.o
+│   ├── ioctl.o
+│   ├── jbd
+│   │   ├── checkpoint.o
+│   │   ├── commit.o
+│   │   ├── jbd.o
+│   │   ├── journal.o
+│   │   ├── recovery.o
+│   │   ├── revoke.o
+│   │   └── transaction.o
+│   ├── jbd2
+│   │   ├── checkpoint.o
+│   │   ├── commit.o
+│   │   ├── jbd2.o
+│   │   ├── journal.o
+│   │   ├── recovery.o
+│   │   ├── revoke.o
+│   │   └── transaction.o
+│   ├── kernfs
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── inode.o
+│   │   ├── mount.o
+│   │   └── symlink.o
+│   ├── libfs.o
+│   ├── lockd
+│   │   ├── clnt4xdr.o
+│   │   ├── clntlock.o
+│   │   ├── clntproc.o
+│   │   ├── clntxdr.o
+│   │   ├── host.o
+│   │   ├── lockd.o
+│   │   ├── mon.o
+│   │   ├── procfs.o
+│   │   ├── svc4proc.o
+│   │   ├── svclock.o
+│   │   ├── svc.o
+│   │   ├── svcproc.o
+│   │   ├── svcshare.o
+│   │   ├── svcsubs.o
+│   │   ├── xdr4.o
+│   │   └── xdr.o
+│   ├── locks.o
+│   ├── mbcache.o
+│   ├── mpage.o
+│   ├── namei.o
+│   ├── namespace.o
+│   ├── nfs
+│   │   ├── client.o
+│   │   ├── direct.o
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── getroot.o
+│   │   ├── inode.o
+│   │   ├── mount_clnt.o
+│   │   ├── namespace.o
+│   │   ├── nfs2super.o
+│   │   ├── nfs2xdr.o
+│   │   ├── nfs3client.o
+│   │   ├── nfs3proc.o
+│   │   ├── nfs3super.o
+│   │   ├── nfs3xdr.o
+│   │   ├── nfs.o
+│   │   ├── nfsroot.o
+│   │   ├── nfstrace.o
+│   │   ├── nfsv2.o
+│   │   ├── nfsv3.o
+│   │   ├── pagelist.o
+│   │   ├── proc.o
+│   │   ├── read.o
+│   │   ├── super.o
+│   │   ├── symlink.o
+│   │   ├── sysctl.o
+│   │   ├── unlink.o
+│   │   └── write.o
+│   ├── nfs_common
+│   │   └── grace.o
+│   ├── nls
+│   │   ├── nls_base.o
+│   │   ├── nls_cp437.o
+│   │   └── nls_iso8859-1.o
+│   ├── notify
+│   │   ├── dnotify
+│   │   │   └── dnotify.o
+│   │   ├── fanotify
+│   │   │   ├── fanotify.o
+│   │   │   └── fanotify_user.o
+│   │   ├── fdinfo.o
+│   │   ├── fsnotify.o
+│   │   ├── group.o
+│   │   ├── inode_mark.o
+│   │   ├── inotify
+│   │   │   ├── inotify_fsnotify.o
+│   │   │   └── inotify_user.o
+│   │   ├── mark.o
+│   │   ├── notification.o
+│   │   └── vfsmount_mark.o
+│   ├── nsfs.o
+│   ├── open.o
+│   ├── pipe.o
+│   ├── pnode.o
+│   ├── posix_acl.o
+│   ├── proc
+│   │   ├── array.o
+│   │   ├── base.o
+│   │   ├── cmdline.o
+│   │   ├── consoles.o
+│   │   ├── cpuinfo.o
+│   │   ├── devices.o
+│   │   ├── fd.o
+│   │   ├── generic.o
+│   │   ├── inode.o
+│   │   ├── interrupts.o
+│   │   ├── kmsg.o
+│   │   ├── loadavg.o
+│   │   ├── meminfo.o
+│   │   ├── namespaces.o
+│   │   ├── page.o
+│   │   ├── proc_net.o
+│   │   ├── proc.o
+│   │   ├── proc_sysctl.o
+│   │   ├── proc_tty.o
+│   │   ├── root.o
+│   │   ├── self.o
+│   │   ├── softirqs.o
+│   │   ├── stat.o
+│   │   ├── task_mmu.o
+│   │   ├── thread_self.o
+│   │   ├── uptime.o
+│   │   └── version.o
+│   ├── proc_namespace.o
+│   ├── ramfs
+│   │   ├── file-mmu.o
+│   │   ├── inode.o
+│   │   └── ramfs.o
+│   ├── readdir.o
+│   ├── read_write.o
+│   ├── select.o
+│   ├── seq_file.o
+│   ├── signalfd.o
+│   ├── splice.o
+│   ├── stack.o
+│   ├── statfs.o
+│   ├── stat.o
+│   ├── super.o
+│   ├── sync.o
+│   ├── sysfs
+│   │   ├── dir.o
+│   │   ├── file.o
+│   │   ├── group.o
+│   │   ├── mount.o
+│   │   └── symlink.o
+│   ├── timerfd.o
+│   ├── utimes.o
+│   └── xattr.o
+├── init
+│   ├── calibrate.o
+│   ├── do_mounts.o
+│   ├── init_task.o
+│   ├── main.o
+│   ├── mounts.o
+│   ├── noinitramfs.o
+│   └── version.o
+├── ipc
+│   ├── compat_mq.o
+│   ├── compat.o
+│   ├── ipc_sysctl.o
+│   ├── mq_sysctl.o
+│   ├── mqueue.o
+│   ├── msg.o
+│   ├── msgutil.o
+│   ├── namespace.o
+│   ├── sem.o
+│   ├── shm.o
+│   ├── syscall.o
+│   └── util.o
+├── kernel
+│   ├── acct.o
+│   ├── async.o
+│   ├── bounds.s
+│   ├── bpf
+│   │   └── core.o
+│   ├── capability.o
+│   ├── cgroup.o
+│   ├── compat.o
+│   ├── config_data.gz
+│   ├── config_data.h
+│   ├── configs.o
+│   ├── cpu.o
+│   ├── cpu_pm.o
+│   ├── cred.o
+│   ├── delayacct.o
+│   ├── elfcore.o
+│   ├── events
+│   │   ├── callchain.o
+│   │   ├── core.o
+│   │   ├── hw_breakpoint.o
+│   │   └── ring_buffer.o
+│   ├── exec_domain.o
+│   ├── exit.o
+│   ├── extable.o
+│   ├── fork.o
+│   ├── futex_compat.o
+│   ├── futex.o
+│   ├── groups.o
+│   ├── irq
+│   │   ├── autoprobe.o
+│   │   ├── chip.o
+│   │   ├── devres.o
+│   │   ├── dummychip.o
+│   │   ├── handle.o
+│   │   ├── irqdesc.o
+│   │   ├── irqdomain.o
+│   │   ├── manage.o
+│   │   ├── msi.o
+│   │   ├── proc.o
+│   │   ├── resend.o
+│   │   └── spurious.o
+│   ├── irq_work.o
+│   ├── jump_label.o
+│   ├── kallsyms.o
+│   ├── kmod.o
+│   ├── ksysfs.o
+│   ├── kthread.o
+│   ├── locking
+│   │   ├── lglock.o
+│   │   ├── mutex.o
+│   │   ├── osq_lock.o
+│   │   ├── rtmutex.o
+│   │   ├── rwsem.o
+│   │   ├── rwsem-xadd.o
+│   │   ├── semaphore.o
+│   │   └── spinlock.o
+│   ├── module.o
+│   ├── notifier.o
+│   ├── nsproxy.o
+│   ├── panic.o
+│   ├── params.o
+│   ├── pid_namespace.o
+│   ├── pid.o
+│   ├── power
+│   │   ├── main.o
+│   │   └── qos.o
+│   ├── printk
+│   │   └── printk.o
+│   ├── ptrace.o
+│   ├── range.o
+│   ├── rcu
+│   │   ├── srcu.o
+│   │   ├── tree.o
+│   │   └── update.o
+│   ├── reboot.o
+│   ├── resource.o
+│   ├── sched
+│   │   ├── clock.o
+│   │   ├── completion.o
+│   │   ├── core.o
+│   │   ├── cpudeadline.o
+│   │   ├── cpupri.o
+│   │   ├── cputime.o
+│   │   ├── deadline.o
+│   │   ├── debug.o
+│   │   ├── fair.o
+│   │   ├── idle.o
+│   │   ├── idle_task.o
+│   │   ├── proc.o
+│   │   ├── rt.o
+│   │   ├── stats.o
+│   │   ├── stop_task.o
+│   │   ├── wait.o
+│   │   ├── wait-simple.o
+│   │   └── work-simple.o
+│   ├── signal.o
+│   ├── smpboot.o
+│   ├── smp.o
+│   ├── softirq.o
+│   ├── stacktrace.o
+│   ├── stop_machine.o
+│   ├── sysctl_binary.o
+│   ├── sysctl.o
+│   ├── sys_ni.o
+│   ├── sys.o
+│   ├── taskstats.o
+│   ├── task_work.o
+│   ├── time
+│   │   ├── alarmtimer.o
+│   │   ├── clockevents.o
+│   │   ├── clocksource.o
+│   │   ├── hrtimer.o
+│   │   ├── hz.bc
+│   │   ├── itimer.o
+│   │   ├── jiffies.o
+│   │   ├── ntp.o
+│   │   ├── posix-clock.o
+│   │   ├── posix-cpu-timers.o
+│   │   ├── posix-timers.o
+│   │   ├── sched_clock.o
+│   │   ├── tick-broadcast-hrtimer.o
+│   │   ├── tick-broadcast.o
+│   │   ├── tick-common.o
+│   │   ├── tick-oneshot.o
+│   │   ├── tick-sched.o
+│   │   ├── timeconst.h
+│   │   ├── timeconv.o
+│   │   ├── timecounter.o
+│   │   ├── timekeeping_debug.o
+│   │   ├── timekeeping.o
+│   │   ├── time.o
+│   │   ├── timer_list.o
+│   │   ├── timer.o
+│   │   └── timer_stats.o
+│   ├── tsacct.o
+│   ├── uid16.o
+│   ├── user.o
+│   ├── utsname.o
+│   ├── utsname_sysctl.o
+│   └── workqueue.o
+├── lib
+│   ├── argv_split.o
+│   ├── assoc_array.o
+│   ├── bcd.o
+│   ├── bitmap.o
+│   ├── bitrev.o
+│   ├── bsearch.o
+│   ├── bust_spinlocks.o
+│   ├── checksum.o
+│   ├── clz_ctz.o
+│   ├── cmdline.o
+│   ├── cpumask.o
+│   ├── cpu_rmap.o
+│   ├── crc16.o
+│   ├── crc32.o
+│   ├── crc32table.h
+│   ├── crc7.o
+│   ├── crc-ccitt.o
+│   ├── crc-itu-t.o
+│   ├── crc-t10dif.o
+│   ├── ctype.o
+│   ├── debug_locks.o
+│   ├── dec_and_lock.o
+│   ├── decompress.o
+│   ├── devres.o
+│   ├── div64.o
+│   ├── dump_stack.o
+│   ├── dynamic_queue_limits.o
+│   ├── earlycpio.o
+│   ├── extable.o
+│   ├── fdt_empty_tree.o
+│   ├── fdt.o
+│   ├── fdt_ro.o
+│   ├── fdt_rw.o
+│   ├── fdt_strerror.o
+│   ├── fdt_sw.o
+│   ├── fdt_wip.o
+│   ├── find_bit.o
+│   ├── flex_array.o
+│   ├── flex_proportions.o
+│   ├── gcd.o
+│   ├── genalloc.o
+│   ├── gen_crc32table
+│   ├── halfmd4.o
+│   ├── hexdump.o
+│   ├── hweight.o
+│   ├── idr.o
+│   ├── int_sqrt.o
+│   ├── iomap_copy.o
+│   ├── iommu-common.o
+│   ├── iommu-helper.o
+│   ├── ioremap.o
+│   ├── iov_iter.o
+│   ├── irq_regs.o
+│   ├── is_single_threaded.o
+│   ├── kasprintf.o
+│   ├── kfifo.o
+│   ├── klist.o
+│   ├── kobject.o
+│   ├── kobject_uevent.o
+│   ├── kstrtox.o
+│   ├── lcm.o
+│   ├── lib.a
+│   ├── libcrc32c.o
+│   ├── list_sort.o
+│   ├── llist.o
+│   ├── lockref.o
+│   ├── lzo
+│   │   ├── lzo1x_compress.o
+│   │   ├── lzo1x_decompress_safe.o
+│   │   ├── lzo_compress.o
+│   │   └── lzo_decompress.o
+│   ├── md5.o
+│   ├── memweight.o
+│   ├── net_utils.o
+│   ├── nlattr.o
+│   ├── parser.o
+│   ├── pci_iomap.o
+│   ├── percpu_counter.o
+│   ├── percpu_ida.o
+│   ├── percpu-refcount.o
+│   ├── plist.o
+│   ├── proportions.o
+│   ├── radix-tree.o
+│   ├── random32.o
+│   ├── ratelimit.o
+│   ├── rbtree.o
+│   ├── reciprocal_div.o
+│   ├── rhashtable.o
+│   ├── scatterlist.o
+│   ├── seq_buf.o
+│   ├── sha1.o
+│   ├── show_mem.o
+│   ├── smp_processor_id.o
+│   ├── sort.o
+│   ├── string_helpers.o
+│   ├── string.o
+│   ├── strncpy_from_user.o
+│   ├── strnlen_user.o
+│   ├── swiotlb.o
+│   ├── syscall.o
+│   ├── timerqueue.o
+│   ├── uuid.o
+│   └── vsprintf.o
+├── Makefile
+├── mm
+│   ├── backing-dev.o
+│   ├── cma.o
+│   ├── compaction.o
+│   ├── debug.o
+│   ├── dmapool.o
+│   ├── early_ioremap.o
+│   ├── fadvise.o
+│   ├── filemap.o
+│   ├── gup.o
+│   ├── highmem.o
+│   ├── hugetlb.o
+│   ├── init-mm.o
+│   ├── interval_tree.o
+│   ├── list_lru.o
+│   ├── maccess.o
+│   ├── madvise.o
+│   ├── memblock.o
+│   ├── memory.o
+│   ├── mempool.o
+│   ├── migrate.o
+│   ├── mincore.o
+│   ├── mlock.o
+│   ├── mmap.o
+│   ├── mm_init.o
+│   ├── mmu_context.o
+│   ├── mmzone.o
+│   ├── mprotect.o
+│   ├── mremap.o
+│   ├── msync.o
+│   ├── nobootmem.o
+│   ├── oom_kill.o
+│   ├── page_alloc.o
+│   ├── page_io.o
+│   ├── page_isolation.o
+│   ├── pagewalk.o
+│   ├── page-writeback.o
+│   ├── percpu.o
+│   ├── pgtable-generic.o
+│   ├── process_vm_access.o
+│   ├── readahead.o
+│   ├── rmap.o
+│   ├── shmem.o
+│   ├── slab_common.o
+│   ├── slab.o
+│   ├── sparse.o
+│   ├── sparse-vmemmap.o
+│   ├── swapfile.o
+│   ├── swap.o
+│   ├── swap_state.o
+│   ├── truncate.o
+│   ├── util.o
+│   ├── vmacache.o
+│   ├── vmalloc.o
+│   ├── vmscan.o
+│   ├── vmstat.o
+│   └── workingset.o
+├── Module.symvers
+├── net
+│   ├── can
+│   │   ├── af_can.o
+│   │   ├── bcm.o
+│   │   ├── can-bcm.o
+│   │   ├── can-gw.o
+│   │   ├── can.o
+│   │   ├── can-raw.o
+│   │   ├── gw.o
+│   │   ├── proc.o
+│   │   └── raw.o
+│   ├── compat.o
+│   ├── core
+│   │   ├── datagram.o
+│   │   ├── dev_addr_lists.o
+│   │   ├── dev_ioctl.o
+│   │   ├── dev.o
+│   │   ├── dst.o
+│   │   ├── ethtool.o
+│   │   ├── fib_rules.o
+│   │   ├── filter.o
+│   │   ├── flow_dissector.o
+│   │   ├── flow.o
+│   │   ├── gen_estimator.o
+│   │   ├── gen_stats.o
+│   │   ├── link_watch.o
+│   │   ├── neighbour.o
+│   │   ├── netevent.o
+│   │   ├── net_namespace.o
+│   │   ├── net-procfs.o
+│   │   ├── net-sysfs.o
+│   │   ├── ptp_classifier.o
+│   │   ├── request_sock.o
+│   │   ├── rtnetlink.o
+│   │   ├── scm.o
+│   │   ├── secure_seq.o
+│   │   ├── skbuff.o
+│   │   ├── sock_diag.o
+│   │   ├── sock.o
+│   │   ├── stream.o
+│   │   ├── sysctl_net_core.o
+│   │   ├── tso.o
+│   │   └── utils.o
+│   ├── dns_resolver
+│   │   ├── dns_key.o
+│   │   ├── dns_query.o
+│   │   └── dns_resolver.o
+│   ├── ethernet
+│   │   └── eth.o
+│   ├── ipv4
+│   │   ├── af_inet.o
+│   │   ├── arp.o
+│   │   ├── datagram.o
+│   │   ├── devinet.o
+│   │   ├── fib_frontend.o
+│   │   ├── fib_semantics.o
+│   │   ├── fib_trie.o
+│   │   ├── gre_offload.o
+│   │   ├── icmp.o
+│   │   ├── igmp.o
+│   │   ├── inet_connection_sock.o
+│   │   ├── inet_diag.o
+│   │   ├── inet_fragment.o
+│   │   ├── inet_hashtables.o
+│   │   ├── inetpeer.o
+│   │   ├── inet_timewait_sock.o
+│   │   ├── ipconfig.o
+│   │   ├── ip_forward.o
+│   │   ├── ip_fragment.o
+│   │   ├── ip_input.o
+│   │   ├── ipmr.o
+│   │   ├── ip_options.o
+│   │   ├── ip_output.o
+│   │   ├── ip_sockglue.o
+│   │   ├── ip_tunnel_core.o
+│   │   ├── ip_tunnel.o
+│   │   ├── netfilter.o
+│   │   ├── ping.o
+│   │   ├── proc.o
+│   │   ├── protocol.o
+│   │   ├── raw.o
+│   │   ├── route.o
+│   │   ├── sysctl_net_ipv4.o
+│   │   ├── tcp_cong.o
+│   │   ├── tcp_cubic.o
+│   │   ├── tcp_diag.o
+│   │   ├── tcp_fastopen.o
+│   │   ├── tcp_input.o
+│   │   ├── tcp_ipv4.o
+│   │   ├── tcp_metrics.o
+│   │   ├── tcp_minisocks.o
+│   │   ├── tcp.o
+│   │   ├── tcp_offload.o
+│   │   ├── tcp_output.o
+│   │   ├── tcp_timer.o
+│   │   ├── tunnel4.o
+│   │   ├── udplite.o
+│   │   ├── udp.o
+│   │   ├── udp_offload.o
+│   │   ├── xfrm4_input.o
+│   │   ├── xfrm4_output.o
+│   │   ├── xfrm4_policy.o
+│   │   ├── xfrm4_protocol.o
+│   │   └── xfrm4_state.o
+│   ├── ipv6
+│   │   ├── addrconf_core.o
+│   │   ├── addrconf.o
+│   │   ├── addrlabel.o
+│   │   ├── af_inet6.o
+│   │   ├── anycast.o
+│   │   ├── datagram.o
+│   │   ├── exthdrs_core.o
+│   │   ├── exthdrs.o
+│   │   ├── exthdrs_offload.o
+│   │   ├── fib6_rules.o
+│   │   ├── icmp.o
+│   │   ├── inet6_connection_sock.o
+│   │   ├── inet6_hashtables.o
+│   │   ├── ip6_checksum.o
+│   │   ├── ip6_fib.o
+│   │   ├── ip6_flowlabel.o
+│   │   ├── ip6_icmp.o
+│   │   ├── ip6_input.o
+│   │   ├── ip6mr.o
+│   │   ├── ip6_offload.o
+│   │   ├── ip6_output.o
+│   │   ├── ipv6.o
+│   │   ├── ipv6_sockglue.o
+│   │   ├── mcast.o
+│   │   ├── ndisc.o
+│   │   ├── netfilter.o
+│   │   ├── output_core.o
+│   │   ├── ping.o
+│   │   ├── proc.o
+│   │   ├── protocol.o
+│   │   ├── raw.o
+│   │   ├── reassembly.o
+│   │   ├── route.o
+│   │   ├── sit.o
+│   │   ├── sysctl_net_ipv6.o
+│   │   ├── tcp_ipv6.o
+│   │   ├── tcpv6_offload.o
+│   │   ├── udplite.o
+│   │   ├── udp.o
+│   │   ├── udp_offload.o
+│   │   ├── xfrm6_input.o
+│   │   ├── xfrm6_mode_beet.o
+│   │   ├── xfrm6_mode_transport.o
+│   │   ├── xfrm6_mode_tunnel.o
+│   │   ├── xfrm6_output.o
+│   │   ├── xfrm6_policy.o
+│   │   ├── xfrm6_protocol.o
+│   │   └── xfrm6_state.o
+│   ├── netfilter
+│   │   ├── core.o
+│   │   ├── netfilter.o
+│   │   ├── nf_log.o
+│   │   ├── nf_queue.o
+│   │   └── nf_sockopt.o
+│   ├── netlink
+│   │   ├── af_netlink.o
+│   │   └── genetlink.o
+│   ├── packet
+│   │   └── af_packet.o
+│   ├── sched
+│   │   ├── sch_generic.o
+│   │   └── sch_mq.o
+│   ├── socket.o
+│   ├── sunrpc
+│   │   ├── addr.o
+│   │   ├── auth_generic.o
+│   │   ├── auth_null.o
+│   │   ├── auth.o
+│   │   ├── auth_unix.o
+│   │   ├── cache.o
+│   │   ├── clnt.o
+│   │   ├── rpcb_clnt.o
+│   │   ├── rpc_pipe.o
+│   │   ├── sched.o
+│   │   ├── socklib.o
+│   │   ├── stats.o
+│   │   ├── sunrpc.o
+│   │   ├── sunrpc_syms.o
+│   │   ├── svcauth.o
+│   │   ├── svcauth_unix.o
+│   │   ├── svc.o
+│   │   ├── svcsock.o
+│   │   ├── svc_xprt.o
+│   │   ├── sysctl.o
+│   │   ├── timer.o
+│   │   ├── xdr.o
+│   │   ├── xprt.o
+│   │   └── xprtsock.o
+│   ├── sysctl_net.o
+│   ├── unix
+│   │   ├── af_unix.o
+│   │   ├── garbage.o
+│   │   ├── sysctl_net_unix.o
+│   │   └── unix.o
+│   └── xfrm
+│       ├── xfrm_hash.o
+│       ├── xfrm_input.o
+│       ├── xfrm_output.o
+│       ├── xfrm_policy.o
+│       ├── xfrm_replay.o
+│       ├── xfrm_state.o
+│       └── xfrm_sysctl.o
+├── security
+│   ├── capability.o
+│   ├── commoncap.o
+│   ├── inode.o
+│   ├── integrity
+│   │   ├── iint.o
+│   │   └── integrity.o
+│   ├── keys
+│   │   ├── gc.o
+│   │   ├── keyctl.o
+│   │   ├── key.o
+│   │   ├── keyring.o
+│   │   ├── permission.o
+│   │   ├── process_keys.o
+│   │   ├── proc.o
+│   │   ├── request_key_auth.o
+│   │   ├── request_key.o
+│   │   ├── sysctl.o
+│   │   └── user_defined.o
+│   ├── min_addr.o
+│   └── security.o
+├── System.map
+├── vmlinux
+└── vmlinux.o
+

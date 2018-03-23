@@ -9,7 +9,7 @@ root_folder=$PWD
 echo "$root_folder"
 
 git clone git@121.196.213.107:wuji/tools.git
-cd tools/engineering 
+cd tools/engineering
 ./install $root_folder
 
 ########################################

@@ -1,0 +1,40 @@
+configuring devicetree for booting from sd card
+
+=================================
+1. uart
+2. sd card
+
+
+=================================
+make sync_build_mkcfg
+
+=================================
+make rda600_config
+use " boards/rda600/config/rda600_config" to set build config
+
+---------------------------------
+defconfig:
+boards/rda600/config/rda600_config
+CONFIG_KERNEL_DEFCONFIG_STRING="s32v234_defconfig"
+
+default configuration "arch/arm64/configs/rda600_defconfig"
+
+
+-----------
+arch/arm64/configs[rda600]$ cp s32v234_defconfig rda600_defconfig
+
+build:
+boards/rda600/config/rda600_config
+CONFIG_KERNEL_DEFCONFIG_STRING="s32v234_defconfig" => "rda600_defconfig"
+
+=================================
+arch/arm64/boot/dts/include/dt-bindings -> ../../../../../include/dt-bindings/
+
+include/dt-bindings/clock/s32v234-clock.h
+include/dt-bindings/pinctrl/s32v234-pinctrl.h
+-----------------------------------
+cd arch/arm64/boot/dts/freescale/
+
+
+-----------------
+

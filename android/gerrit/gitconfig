@@ -1,0 +1,41 @@
+[merge]
+	tool = vimdiff
+[mergetool]
+	prompt = false
+[core]
+	editor = /usr/bin/vim
+[push]
+	default = simple
+[alias]
+	lg = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+
+# Romania uses android-mirror-rb.devtools.intel.com --> [url
+;"ssh://YOUR_IDSID@android-mirror-rb.devtools.intel.com:29418/"]
+# Oregon uses android-mirror-or.devtools.intel.com --> [url
+;"ssh://YOUR_IDSID@android-mirror-or.devtools.intel.com:29418/"]
+# Mexico uses android-mirror-gm.devtools.intel.com --> [url
+;"ssh://YOUR_IDSID@android-mirror-gm.devtools.intel.com:29418/"]
+# and so on...
+[url "ssh://nma1x@android-mirror-sh.devtools.intel.com:29418/"]
+insteadOf=git://android.intel.com/
+insteadOf=ssh://android.intel.com/
+insteadOf=ssh://android.intel.com:29418/
+insteadOf=git://android-mirror.devtools.intel.com/
+insteadOf=ssh://android-mirror.devtools.intel.com/
+insteadOf=ssh://android-mirror.devtools.intel.com:29418/
+insteadOf=git://android-mirror-sh.devtools.intel.com/
+insteadOf=ssh://android-mirror-sh.devtools.intel.com/
+insteadOf=ssh://android-mirror-sh.devtools.intel.com:29418/
+[url "ssh://nma1x@android.intel.com:29418/"]
+pushInsteadOf=ssh://android.intel.com/
+pushInsteadOf=ssh://android.intel.com:29418/
+pushInsteadOf=ssh://android-mirror.devtools.intel.com/
+pushInsteadOf=ssh://android-mirror.devtools.intel.com:29418/
+pushInsteadOf=ssh://android-mirror-sh.devtools.intel.com/
+pushInsteadOf=ssh://android-mirror-sh.devtools.intel.com:29418/
+[user]
+	email = ningx.ma@intel.com
+	name = nma1x
+[color]
+	ui = auto
