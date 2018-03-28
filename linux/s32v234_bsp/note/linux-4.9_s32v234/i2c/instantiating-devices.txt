@@ -1,0 +1,15 @@
+
+The necessary client fields have already been setup before
+the probe function is called.
+
+========================================
+of_platform_populate(NULL, NULL, NULL, NULL)
+
+quote from Documentation/devicetree/usage-model.txt
+
+For Linux DT support, the generic behaviour
+is for child devices to be registered by the parent's device driver at
+driver .probe() time.  So, an i2c bus device driver will register a
+i2c_client for each child node, i2c_client for each child node,
+
+========================================

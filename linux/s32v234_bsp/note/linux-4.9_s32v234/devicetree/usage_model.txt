@@ -1,0 +1,74 @@
+
+
+quote from Documentation/devicetree/usage-model.txt
+
+2.1 High Level View
+-------------------
+the DT is simply a data structure that describes the hardware. 
+
+Ideally, data driven platform setup should result in less code
+duplication and make it easier to support a wide range of hardware
+with a single kernel image.
+
+Linux uses DT data for three major purposes:
+1) platform identification,
+2) runtime configuration, and
+3) device population.
+
+2.2 Platform Identification
+---------------------------
+
+In the majority of cases, the machine identity is irrelevant, and the
+kernel will instead select setup code based on the machine's core
+CPU or SoC.  On ARM for example, setup_arch() in
+arch/arm/kernel/setup.c will call setup_machine_fdt() in
+arch/arm/kernel/devtree.c which searches through the machine_desc
+table and selects the machine_desc which best matches the device tree
+data.  It determines the best match by looking at the 'compatible'
+property in the root device tree node, and comparing it with the
+dt_compat list in struct machine_desc (which is defined in
+arch/arm/include/asm/mach/arch.h if you're curious).
+
+2.3 Runtime configuration
+-------------------------
+
+Most of this data is contained in the /chosen node, and when booting
+Linux it will look something like this:
+
+	chosen {
+		bootargs = "console=ttyS0,115200 loglevel=8";
+		initrd-start = <0xc8000000>;
+		initrd-end = <0xc8200000>;
+	};
+
+2.4 Device population
+---------------------
+Linux board support code calls of_platform_populate(NULL, NULL, NULL, NULL)
+to kick off discovery of devices at the root of the tree.  The
+parameters are all NULL because when starting from the root of the
+tree, there is no need to provide a starting node (the first NULL), a
+parent struct device (the last NULL), and we're not using a match
+table (yet).  For a board that only needs to register devices,
+.init_machine() can be completely empty except for the
+of_platform_populate() call.
+
+For Linux DT support, the generic behaviour
+is for child devices to be registered by the parent's device driver at
+driver .probe() time.  So, an i2c bus device driver will register a
+i2c_client for each child node, i2c_client for each child node, an SPI bus 
+driver will register its spi_device children, and similarly for other bus_types.
+According to that model, a driver could be written that binds to the
+SoC node and simply registers platform_devices for each of its
+children.  The board support code would allocate and register an SoC
+device, a (theoretical) SoC device driver could bind to the SoC device,
+and register platform_devices for /soc/interrupt-controller, /soc/serial,
+/soc/i2s, and /soc/i2c in its .probe() hook.  Easy, right?
+
+Actually, it turns out that registering children of some
+platform_devices as more platform_devices is a common pattern, and the
+device tree support code reflects that and makes the above example
+simpler.  The second argument to of_platform_populate() is an
+of_device_id table, and any node that matches an entry in that table
+will also get its child nodes registered. 
+
+========================================

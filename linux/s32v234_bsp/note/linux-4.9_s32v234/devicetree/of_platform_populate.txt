@@ -1,0 +1,39 @@
+
+
+
+arch/arm64/kernel/setup.c:442:	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+
+arch/arm64/setup.c
+==================
+
+arch_initcall_sync(arm64_device_init);
+    				  |
++---------------------+
+|
+|
++--> of_iommu_init();
+|     
++--> of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+// this function walks the device tree and creates devices from nodes. 
+
+----------------------------------
+//drivers/of/platform.c
+
+of_platform_populate
+|
+|-> root = root ? of_node_get(root) : of_find_node_by_path("/");
+|
+|-> for_each_child_of_node(root, child) {
+		rc = of_platform_bus_create(child, matches, lookup, parent, true);
+		if (rc)
+			break;
+	}
+|
+|-> of_node_set_flag(root, OF_POPULATED_BUS);
+|-> of_node_put(root);
+
+----------------------------------
+of_platform_bus_create
+// Create a device for a node and its children.
+// * Creates a platform_device for the provided device_node, and optionally
+// * recursively create devices for all the child nodes.

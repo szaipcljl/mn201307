@@ -1,0 +1,115 @@
+i2c_add_driver
+
+================================================================================
+sha204_module_init
+|-> rc = i2c_add_driver(&sha204_i2c_driver);
+
+================================================================================
+i2c_add_driver
+(1) 
+	//include/linux/i2c.h
+	/* use a define to avoid include chaining to get THIS_MODULE */
+	#define i2c_add_driver(driver) \
+		i2c_register_driver(THIS_MODULE, driver)
+
+(2) 
+	//drivers/i2c/i2c-core.c
+	i2c_register_driver
+
+	a. 
+		/* add the driver to the list of i2c drivers in the driver core */
+		driver->driver.owner = owner;
+		driver->driver.bus = &i2c_bus_type;
+	
+	b. 
+
+		/* When registration returns, the driver core
+		 * will have called probe() for all matching-but-unbound devices.
+		 */
+		res = driver_register(&driver->driver);
+	
+	c. 
+		INIT_LIST_HEAD(&driver->clients);
+	
+	d. 
+		/* Walk the adapters that are already present */
+		i2c_for_each_dev(driver, __process_new_driver);
+
+--------------------------------------------------------------------------------
+driver_register //drivers/base/driver.c
+(1) locate driver on a bus by its name.
+	other = driver_find(drv->name, drv->bus);
+	//if already registered, return -EBUS
+
+	* Call kset_find_obj() to iterate over list of drivers on
+	* a bus to find driver by name. Return driver if found.
+	a. 
+		struct kobject *k = kset_find_obj(bus->p->drivers_kset, name);
+	b.
+		/* Drop reference added by kset_find_obj() */
+		kobject_put(k);
+		priv = to_driver(k);
+		return priv->driver;
+(2) Add a driver to the bus.
+
+	ret = bus_add_driver(drv);
+
+	a. 
+		bus = bus_get(drv->bus);
+	
+	b. 
+		struct driver_private *priv;
+		priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+
+		klist_init(&priv->klist_devices, NULL, NULL); //Initialize a klist structure.
+		priv->driver = drv;
+		drv->p = priv;
+		priv->kobj.kset = bus->p->drivers_kset;
+		error = kobject_init_and_add(&priv->kobj, &driver_ktype, NULL,
+						 "%s", drv->name); //initialize a kobject structure and add it to the kobject hierarchy
+
+	c. Initialize a klist_node and add it to back
+		klist_add_tail(&priv->knode_bus, &bus->p->klist_drivers);
+
+	d. 
+		module_add_driver(drv->owner, drv);
+	
+	e. create sysfs file for driver.
+		error = driver_create_file(drv, &driver_attr_uevent);
+
+	f.
+		error = driver_add_groups(drv, bus->drv_groups);
+
+	g.
+		if (!drv->suppress_bind_attrs) {
+			error = add_bind_files(drv);
+		}
+	 
+
+(3) 
+	ret = driver_add_groups(drv, drv->groups);
+
+(4) notify userspace by sending an uevent.
+	kobject_uevent(&drv->p->kobj, KOBJ_ADD); //lib/kobject.
+
+--------------------------------------------------------------------------------
+
+include/linux/kobject.h
+ * The actions here must match the index to the string array
+ * in lib/kobject_uevent.c
+
+enum kobject_action {
+	KOBJ_ADD,
+	KOBJ_REMOVE,
+	KOBJ_CHANGE,
+	KOBJ_MOVE,
+	KOBJ_ONLINE,
+	KOBJ_OFFLINE,
+	KOBJ_MAX
+};
+
+-----------
+lib/kobject.c
+
+kobject_uevent //notify userspace by sending an uevent.
+|-> kobject_uevent_env //send an uevent with environmental data

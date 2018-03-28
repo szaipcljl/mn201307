@@ -1,0 +1,42 @@
+adapter
+
+================================================================================
+private/drivers/sha204-i2c/sha204-i2c.c
+
+//To determine what functionality is present
+
+a204_i2c_probe:
+i2c_check_functionality(client->adapter, I2C_FUNC_I2C)
+
+-----
+//linux/include/linux/i2c.h
+/* Return the functionality mask */
+static inline u32 i2c_get_functionality(struct i2c_adapter *adap)
+{
+	return adap->algo->functionality(adap);
+}
+
+/* Return 1 if adapter supports everything we need, 0 if not. */
+static inline int i2c_check_functionality(struct i2c_adapter *adap, u32 func)
+{
+	return (func & i2c_get_functionality(adap)) == func;
+
+
+================================================================================
+drivers/i2c/busses/i2c-imx.c
+
+static u32 i2c_imx_func(struct i2c_adapter *adapter)
+{
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL
+		| I2C_FUNC_SMBUS_READ_BLOCK_DATA;
+}
+
+static struct i2c_algorithm i2c_imx_algo = {
+	.master_xfer	= i2c_imx_xfer,
+	.functionality	= i2c_imx_func,
+};
+
+i2c_imx_probe:
+	i2c_imx->adapter.algo		= &i2c_imx_algo;
+
+-----
