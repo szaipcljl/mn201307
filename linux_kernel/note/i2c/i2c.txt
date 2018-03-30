@@ -21,6 +21,8 @@ i2c 基本知识总结
 
 ==================
 1.1.3  I2C总线协议(硬件时序)
+see: Documentation/i2c/i2c-protocol
+	drivers/i2c/algos/i2c-algo-bit.c
 
 空闲状态: SCL和SDA都保持高电平
 起始条件: SCL为高电平, SDA由高到低	(空闲到起始)
