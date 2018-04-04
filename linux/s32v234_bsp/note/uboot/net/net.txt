@@ -1,0 +1,24 @@
+u-boot/drivers/net
+
+=========
+fec_mxc.c
+
+phy/phy.c
+phy/micrel.c
+
+-----------
+Makefile
+obj-$(CONFIG_FEC_MXC) += fec_mxc.o
+------------
+phy/Makefile
+obj-$(CONFIG_PHY_MICREL) += micrel.o
+obj-$(CONFIG_PHYLIB) += phy.o
+
+================================
+fec_mxc.c
+
+fecmxc_initialize_multi
+|-> fec_probe
+
+initialize eth_device struct pointed to by edev and fec_priv struct pointed to by fec.
+

@@ -21,6 +21,7 @@ Starting kernel ...
 2. out/rda600/bootloader/u-boot/u-boot.cfg
 #define IMAGE_NAME Image
 
+how to specify kernel image name?
 include/configs/s32v.h:207:#define IMAGE_NAME Image
 include/configs/s32v.h:237:	"image=" __stringify(IMAGE_NAME) "\0" \
 
@@ -193,6 +194,8 @@ fatload => do_fat_fsload
 fstype: FS_TYPE_FAT (hard code)
 
 
+fatload will call do_fat_fsload, and fstype is hard coded to FS_TYPE_FAT
+when further calling do_load which is required to specify the fstype.
 ------
 a similar example:
 //common/cmd_ext4.c
@@ -202,4 +205,15 @@ fstype: FS_TYPE_EXT
 3.1	(4) mmcboot
 
 
+============================
+u-boot/include/env_default.h
 
+const uchar default_environment[] = {
+	...
+
+#ifdef	CONFIG_BOOTCOMMAND
+	"bootcmd="	CONFIG_BOOTCOMMAND		"\0"
+#endif
+	..
+
+}

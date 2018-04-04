@@ -1,0 +1,121 @@
+FEC(Fast Ethernet Controller)
+==============================
+drivers/net/ethernet/freescale/
+fec_main.c
+fec_ptp.c
+
+=============================
+s32v234.dtsi
+	soc {
+		...
+			fec: ethernet@40032000 {
+				compatible = "fsl,s32v234-fec";
+				reg = <0x0 0x40032000 0x0 0x1000>;
+				interrupts = <0 35 4>,
+					     <0 36 4>,
+					     <0 37 4>,
+					     <0 38 4>;
+				clocks = <&clks S32V234_CLK_SYS6>,
+					 <&clks S32V234_CLK_SYS3>,
+					 <&clks S32V234_CLK_ENET_TIME>,
+					 <&clks S32V234_CLK_ENET>,
+					 <&clks	S32V234_CLK_ENET_TIME>;
+				clock-names = "ipg", "ahb", "ptp",
+					      "enet_clk_ref",
+					      "enet_out";
+				fsl,num-tx-queues=<3>;
+				fsl,num-rx-queues=<3>;
+				status = "disabled";
+			};
+		...
+	};
+
+
+------
+s32v234-evb.dts
+&fec {
+	phy-mode = "rgmii";
+	phy-handle = <&phy0>;
+	status = "okay";
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		phy0: ethernet-phy@3 {
+			reg = <3>;
+		};
+		/* S32V234EVB, rev 29288, has 6 NXP TJA1102 PHYs.*/
+		phy1: ethernet-phy@4 {
+			reg = <4>;
+			max-speed = <100>;
+		};
+		phy2: ethernet-phy@5 {
+			reg = <5>;
+			max-speed = <100>;
+		};
+		phy3: ethernet-phy@6 {
+			reg = <6>;
+			max-speed = <100>;
+		};
+		phy4: ethernet-phy@7 {
+			reg = <7>;
+			max-speed = <100>;
+		};
+		/*
+		 * This assumes that a HW fix was done on S32V234EVB,
+		 * rev 29288 in order to avoid the address conflict
+		 * with Micrel PHY.
+		 */
+		phy5: ethernet-phy@10 {
+			reg = <10>;
+			max-speed = <100>;
+		};
+		phy6: ethernet-phy@11 {
+			reg = <11>;
+			max-speed = <100>;
+		};
+	};
+};
+
+=============================
+module_platform_driver(fec_driver);
+
+fec_probe
+
+(1) 
+	/* Init network device */
+	ndev = alloc_etherdev_mqs(sizeof(struct fec_enet_private),
+				  num_tx_qs, num_rx_qs); //linux/net/ethernet/eth.c
+(2) 
+	SET_NETDEV_DEV(ndev, &pdev->dev);
+
+	/* setup board info structure */
+	fep = netdev_priv(ndev);
+
+(4)
+	of_id = of_match_device(fec_dt_ids, &pdev->dev);
+
+
+
+
+
+
+
+=============================
+macaddr
+fec_get_mac
+
+try to get mac address in following order:
+
+1) module parameter via kernel command line in form
+	fec.macaddr=0x00,0x04,0x9f,0x01,0x30,0xe0
+2) from device tree data
+3) from flash or fuse (via platform data)
+4) FEC mac registers set by bootloader
+5) random mac address
+
+
+=================================
+static const struct net_device_ops fec_netdev_ops = {
+ 
+
+

@@ -53,7 +53,7 @@ do_load
 ==================================================
 fs/fs.c
 
-fstype_info is saved an array name fstypes
+//fstype_info is saved as an array named fstypes
 static struct fstype_info fstypes[] = {
 #ifdef CONFIG_FS_FAT
 	{
