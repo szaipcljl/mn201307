@@ -1,0 +1,5 @@
+ddr3
+
+code path:
+
+u-boot/arch/arm/cpu/armv8/s32v234/ddr3.c

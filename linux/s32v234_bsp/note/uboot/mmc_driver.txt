@@ -1,0 +1,68 @@
+mmc driver
+
+code path
+===============
+u-boot/drivers/
+├── mmc
+    ├── fsl_esdhc.o
+    ├── mmc.o
+    └── mmc_write.o
+
+arch/arm/cpu/armv8/s32v234/soc.
+
+=====================
+fsl_esdhc_initialize
+drivers/mmc/fsl_esdhc.c
+
+|--	do_sdhc_setup //soc.c <= sdhcsetup //boot cmd
+|--	board_mmc_init //soc.c
+|
+|
+|-----> sdhc_setup //soc.c
+		|-> setup_iomux_sdhc()
+		|-> fsl_esdhc_initialize //fsl_esdhc.c
+			|-> mmc_create //mmc.c
+
+------------------
+detect pin
+pin9 CD
+
+sdhcsetup //boot cmd
+|-> do_sdhc_setup
+	|-> init_mmc_device
+ 
+
+rescan //cmd_mmc[]
+|-> do_mmc_rescan //cmd_mmc.c
+	|
+	|-- init_mmc_device //common/cmd_mmc.c  
+	|
+	|-> mmc_init //mmc.c
+		|-> mmc_start_init
+			|-> mmc_getcd //mmc/mmc.c
+				|-> board_mmc_getcd //soc.c
+					|-> return 1; //eSDHC1 is always present
+
+mmc rescan //in bootcmmd
+	rescan mmc device, used to check whether mmc0 is available
+
+refer: http://patchwork.ozlabs.org/patch/132398/
+
+=====================
+init_mmc_device
+(1) find_mmc_device(dev)
+	from list named mmc_devices
+(2) mmc_init(mmc)
+
+------------------------
+mmc->cfg->ops->init(mmc)
+
+static const struct mmc_ops esdhc_ops = { //fsl_esdhc.c
+	.send_cmd	= esdhc_send_cmd,
+	.set_ios	= esdhc_set_ios,
+	.init		= esdhc_init,
+	.getcd		= esdhc_getcd,
+};
+
+=====================
+esdhc_getcd

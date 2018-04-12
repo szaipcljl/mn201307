@@ -1,4 +1,6 @@
 build out
+
+you can serach fucntion in binary, check if it was build in.(not stript)
 ===============
 out/rda600/bootloader/u-boot/u-boot.cfg
 
