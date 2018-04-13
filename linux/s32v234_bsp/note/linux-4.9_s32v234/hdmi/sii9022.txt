@@ -1,0 +1,23 @@
+sii9022a
+
+RGB to HDMI
+i2c1 slave
+
+=================================
+drivers/video/mxc/mxsfb_sii902x.c
+drivers/video/fsl_dcu_linux.c  //Freescale fsl-DCU driver
+
+====================================================
+arch/arm64/boot/dts/freescale/s32v234-evb2016q4.dtsi
+&i2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c1>;
+	status = "okay";
+
+	hdmi: sii9022a@39 {
+		compatible = "fsl,sii902x";
+		reg = <0x39>;
+	};
+};
+
+====================================================

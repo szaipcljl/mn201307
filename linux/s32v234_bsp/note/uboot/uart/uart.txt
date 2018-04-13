@@ -1,0 +1,93 @@
+
+
+u-boot/drivers/
+├── serial
+    ├── serial_linflexuart.o
+    └── serial.o
+
+================================================================================
+common/board_f.c
+
+static init_fnc_t init_sequence_f[] = {
+	...
+
+	init_baud_rate,		/* initialze baudrate settings */
+	serial_init,		/* serial communications setup */
+	console_init_f,		/* stage 1 init of console */
+	...
+};
+
+board_init_f //board_f.c
+|-> ...
+|-> initcall_run_list(init_sequence_f)
+
+
+--------
+board_r.c
+
+init_fnc_t init_sequence_r[] = {
+	...
+	run_main_loop,
+};
+
+board_init_r
+|-> ...
+|-> initcall_run_list(init_sequence_r)
+
+================================================================================
+init_baud_rate //board_f.c
+|-> gd->baudrate = getenv_ulong("baudrate", 10, CONFIG_BAUDRATE);
+
+arch/arm/include/asm/global_data.h
+#ifdef CONFIG_ARM64
+#define DECLARE_GLOBAL_DATA_PTR		register volatile gd_t *gd asm ("x18")
+#else
+#define DECLARE_GLOBAL_DATA_PTR		register volatile gd_t *gd asm ("r9")
+#endif
+#endif
+
+gd_t:
+include/asm-generic/global_data.h
+typedef struct global_data {
+	...
+} gd_t;
+
+
+================================================================================
+serial_init //drivers/serial/serials.c
+
+int serial_init(void)
+{
+	gd->flags |= GD_FLG_SERIAL_READY;
+	return get_current()->start();
+}
+
+get_current
+|-> default_serial_console //serial_linflexuart.c
+	|-> return &linflex_serial_drv;
+
+//serial_linflexuart.c
+static struct serial_device linflex_serial_drv = {
+	.name = "linflex_serial",
+	.start = linflex_serial_init,
+	.stop = NULL,
+	.setbrg = linflex_serial_setbrg,
+	.putc = linflex_serial_putc,
+	.puts = default_serial_puts,
+	.getc = linflex_serial_getc,
+	.tstc = linflex_serial_tstc,
+};
+
+-------------
+linflex_serial_init
+//Initialise the serial port
+
+------------
+__raw_writel
+arch/arm/include/asm/io.h
+Generic virtual read/write.
+#define __arch_putl(v,a)		(*(volatile unsigned int *)(a) = (v))
+#define __raw_writel(v,a)	__arch_putl(v,a)
+//here is differnt from x86, the latter use inline assembly
+
+

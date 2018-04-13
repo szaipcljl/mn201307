@@ -516,19 +516,36 @@ out/rda600/kernel/linux-4.9_s32v234/
 │   │   ├── mfd-core.o
 │   │   ├── syscon.o
 │   │   └── vexpress-sysreg.o
-│   ├── misc
-│   │   │   ├── sdio_cis.o
-│   │   │   ├── sdio_io.o
-│   │   │   ├── sdio_irq.o
-│   │   │   ├── sdio.o
-│   │   │   ├── sdio_ops.o
-│   │   │   ├── sd.o
-│   │   │   ├── sd_ops.o
-│   │   │   └── slot-gpio.o
-│   │   ├── host
-│   │       ├── sdhci-esdhc-imx.o
-│   │       ├── sdhci.o
-│   │       └── sdhci-pltfm.o
+│   ├── mmc
+│   │	├── card
+│   │	│   ├── block.o
+│   │	│   ├── mmc_block.o
+│   │	│   └── queue.o
+│   │	├── core
+│   │	│   ├── bus.o
+│   │	│   ├── core.o
+│   │	│   ├── debugfs.o
+│   │	│   ├── host.o
+│   │	│   ├── mmc_core.o
+│   │	│   ├── mmc.o
+│   │	│   ├── mmc_ops.o
+│   │	│   ├── pwrseq_emmc.o
+│   │	│   ├── pwrseq.o
+│   │	│   ├── pwrseq_simple.o
+│   │	│   ├── quirks.o
+│   │	│   ├── sdio_bus.o
+│   │	│   ├── sdio_cis.o
+│   │	│   ├── sdio_io.o
+│   │	│   ├── sdio_irq.o
+│   │	│   ├── sdio.o
+│   │	│   ├── sdio_ops.o
+│   │	│   ├── sd.o
+│   │	│   ├── sd_ops.o
+│   │	│   └── slot-gpio.o
+│   │	├── host
+│   │	    ├── sdhci-esdhc-imx.o
+│   │	    ├── sdhci.o
+│   │		    └── sdhci-pltfm.o
 │   ├── net
 │   │   ├── can
 │   │   │   ├── can-dev.o
