@@ -1,0 +1,58 @@
+fec
+fast ethernet controller
+
+==============================
+u-boot/net/eth.c
+
+u-boot/drivers/net/fec_mxc.c
+
+u-boot/drivers/net/phy/micrel.c
+u-boot/drivers/net/phy/phy.c
+
+=============================
+//common/board_r.c
+init_fnc_t init_sequence_r[] = {
+	...
+	initr_net,
+	...
+	run_main_loop,
+};
+
+initr_net //common/board_r.c
+|-> eth_initialize //net/eth.c
+	|-> eth_common_init //u-boot/net/eth.c
+		|-> miiphy_init(); //common/miiphyutil.c
+		|-> phy_init(); //drivers/net/phy/phy.c
+		|-> cpu_eth_init //arch/arm/cpu/armv8/s32v234/soc.c
+			|-> fecmxc_initialize //drivers/net/fec_mxc.c
+
+=============================
+fecmxc_initialize
+|-> fecmxc_initialize_multi //fec_mxc.c
+	|-> fec_get_miibus	//fec_mxc.c
+	|-> phy_find_by_mask	//phy.c
+	|-> fec_probe	//fec_mxc.c
+
+=============================
+fec_probe
+
+=============================
+fec_get_hwaddr	//fec_mxc.c
+|-> imx_get_mac_from_fuse //soc.c
+	|-> mac[0] = 0x00;
+		mac[1] = 0x1B;
+		mac[2] = 0xC3;
+		mac[3] = 0x12;
+		mac[4] = 0x34;
+		mac[5] = 0x22;
+
+---------------------
+fec_probe
+|-> edev->recv = fec_recv;
+
+fec_recv
+|-> fec_init	//fec_mxc.c
+	|-> // Initialize MAC address 
+		fec_set_hwaddr	//fec_mxc.c
+
+
