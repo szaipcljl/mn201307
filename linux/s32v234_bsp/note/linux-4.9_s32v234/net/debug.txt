@@ -1,0 +1,36 @@
+
+=====================
+etc/rc5.d/
+etc/init.d/
+==============================
+s32v234evb board: 192.168.2.1
+pc: 192.168.2.2
+(1) make (pc ip addr and s32v234evb board) two IP addresses belong to the same network segment
+(2) select Use bridged networking in VMware
+	Bridged networking connects a virtual machine to a network using the host
+	computer's Ethernet adapter. 
+(3) ping 192.168,2.2 (pc)
+	root@s32v234evb:~# ifconfig eth0 down
+	root@s32v234evb:~# ifconfig eth0 up
+
+(4) start inetd
+	root@s32v234evb:~# inetd
+
+(5) download and install filezilla in pc
+
+	root@s32v234evb:/var/volatile/tmp# cat /etc/inetd.conf 
+	21 stream tcp nowait root ftpd ftpd -w /tmp
+
+
+=====================
+s32v234evb
+sja1105 is auto Ethernet switch
+Documentation/devicetree/bindings/net/nxp,sja11050switch.txt
+
+etc/init.d/sja1105.sh
+
+root@s32v234evb:/etc/rc5.d# rm S90sja1105.sh 
+root@s32v234evb:/etc/rc5.d# sync
+
+etc/rc5.d/S90sja1105.sh -> ../init.d/sja1105.sh*
+------------------------------

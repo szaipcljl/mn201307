@@ -1,0 +1,88 @@
+socket
+
+net/socket.c
+NET		An implementation of the SOCKET network access protocol.
+
+=======================================
+static const struct file_operations socket_file_ops = {
+	...
+};
+
+static const struct super_operations sockfs_ops = {
+	.alloc_inode	= sock_alloc_inode,
+	.destroy_inode	= sock_destroy_inode,
+	.statfs		= simple_statfs,
+};
+
+static const struct dentry_operations sockfs_dentry_operations = {
+	.d_dname  = sockfs_dname,
+};
+
+static struct file_system_type sock_fs_type = {
+	.name =		"sockfs",
+	.mount =	sockfs_mount,
+	.kill_sb =	kill_anon_super,
+};
+
+static const struct inode_operations sockfs_inode_ops = {
+	.getxattr = sockfs_getxattr,
+	.listxattr = sockfs_listxattr,
+};
+
+
+=======================================
+core_initcall(sock_init);	/* early initcall */
+
+//The real protocol initialization is performed in later initcalls
+
+=======================================
+move_addr_to_kernel	-	copy a socket address into kernel space
+
+SYSCALL_DEFINE3(sendmsg, int, fd, struct user_msghdr __user *, msg, unsigned int, flags)
+|-> return __sys_sendmsg(fd, msg, flags);
+	|-> ___sys_sendmsg(sock, msg, &msg_sys, flags, NULL);
+		|-> copy_msghdr_from_user(msg_sys, msg, NULL, &iov);
+			|-> move_addr_to_kernel(uaddr, kmsg->msg_namelen,
+						  kmsg->msg_name);
+
+SYSCALL_DEFINE3(recvmsg, int, fd, struct user_msghdr __user *, msg,
+		unsigned int, flags)
+--------------------------------------
+
+SYSCALL_DEFINE3(socket, int, family, int, type, int, protocol)
+
+SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
+
+SYSCALL_DEFINE2(listen, int, fd, int, backlog)
+
+SYSCALL_DEFINE4(accept4, int, fd, struct sockaddr __user *, upeer_sockaddr,
+		int __user *, upeer_addrlen, int, flags)
+
+SYSCALL_DEFINE3(accept, int, fd, struct sockaddr __user *, upeer_sockaddr,
+		int __user *, upeer_addrlen)
+
+SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
+		int, addrlen)
+
+SYSCALL_DEFINE3(getsockname, int, fd, struct sockaddr __user *, usockaddr,
+		int __user *, usockaddr_len)
+
+SYSCALL_DEFINE6(sendto, int, fd, void __user *, buff, size_t, len,
+		unsigned int, flags, struct sockaddr __user *, addr,
+		int, addr_len)
+
+SYSCALL_DEFINE4(send, int, fd, void __user *, buff, size_t, len,
+		unsigned int, flags)
+
+SYSCALL_DEFINE6(recvfrom, int, fd, void __user *, ubuf, size_t, size,
+		unsigned int, flags, struct sockaddr __user *, addr,
+		int __user *, addr_len)
+
+SYSCALL_DEFINE4(recv, int, fd, void __user *, ubuf, size_t, size,
+		unsigned int, flags)
+
+=======================================
+inet_init //net/ipv4/af_inet.c
+|-> sock_register - add a socket protocol handler
+
+=======================================

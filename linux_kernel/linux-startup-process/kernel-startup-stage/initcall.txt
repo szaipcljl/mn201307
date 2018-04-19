@@ -1,0 +1,54 @@
+initcall_start
+
+============================================
+
+============================================
+start_kernel	//init/main.c
+|-> rest_init
+	|-> kernel_thread(kernel_init, NULL, CLONE_FS);
+                          |
+                          |
++-------------------------+
+|
+|
+v
+kernel_init
+|-> kernel_init_freeable
+	|-> do_pre_smp_initcalls
+		|-> for (fn = __initcall_start; fn < __initcall0_start; fn++)
+				do_one_initcall(*fn);
+
+-------------------------
+include/asm-generic/vmlinux.lds.h
+
+#define INIT_CALLS							\
+		VMLINUX_SYMBOL(__initcall_start) = .;			\
+		*(.initcallearly.init)					\
+		INIT_CALLS_LEVEL(0)					\
+		INIT_CALLS_LEVEL(1)					\
+		INIT_CALLS_LEVEL(2)					\
+		INIT_CALLS_LEVEL(3)					\
+		INIT_CALLS_LEVEL(4)					\
+		INIT_CALLS_LEVEL(5)					\
+		INIT_CALLS_LEVEL(rootfs)				\
+		INIT_CALLS_LEVEL(6)					\
+		INIT_CALLS_LEVEL(7)					\
+		VMLINUX_SYMBOL(__initcall_end) = .;
+
+init/main.c
+static initcall_t *initcall_levels[] __initdata = {
+	__initcall0_start,
+	__initcall1_start,
+	__initcall2_start,
+	__initcall3_start,
+	__initcall4_start,
+	__initcall5_start,
+	__initcall6_start,
+	__initcall7_start,
+	__initcall_end,
+};
+
+include/linux/init.h
+typedef int (*initcall_t)(void);
+
+============================================

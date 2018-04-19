@@ -1,0 +1,26 @@
+
+
+
+etc/udev/rules.d/
+etc/udev/udev.conf
+
+----------------
+run udevd after kernel started
+
+etc/init.d/rcS
+
+--------------------
+Start udevd, populate /dev and load drivers.
+./etc/init.d/udev:123:    start-stop-daemon --stop --name udevd --quiet
+
+=====================
+network
+
+rootfs/make.inc
+@@ -193,7 +193,8 @@ $(call add-target-into-build, configure_profile)
+ 
+ configure_network: add_board_rootfs
+        @NETCONF=$(FAKEROOT_DIR)/etc/network/interfaces; \
+-       cp -dpRf $(PRE_BUSYBOX_DIR)/etc/network/interfaces $(FAKEROOT_DIR)/etc/network/interfaces; \
++       #cp -dpRf $(PRE_BUSYBOX_DIR)/etc/network/interfaces $(FAKEROOT_DIR)/etc/network/interfaces; \
++       cp -dpRf $(PREBUILD_3RD_PARTY_DIR)/init-ifupdown/etc/network/interfaces $(FAKEROOT_DIR)/etc/network/interfaces; \
