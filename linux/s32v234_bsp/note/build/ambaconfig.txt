@@ -30,3 +30,33 @@ source prebuild/AmbaConfig
 
 ##### rootfs
 source rootfs/AmbaConfig
+
+=============================================================
+1. source build/env/aarch64-linaro-gcc.env
+
+------
+2. cd boards/rda600
+   make sync_build_mkcfg
+
+
+------
+3. make rda600_config
+
+build/core/menuconfig.mk:
+%_config: $(AMB_BOARD_DIR)/config/%_config prepare_public_linux $(AMB_TOPDIR)/build/kconfig/conf
+	@cp -f $< $(DOT_CONFIG)
+	@AMBABUILD_SRCTREE=$(AMB_TOPDIR) $(AMB_TOPDIR)/build/kconfig/conf --defconfig=$< $(AMB_TOPDIR)/AmbaConfig
+
+------
+4. make defconfig_public_linux
+	kernel/linux/make.inc
+
+------
+5. make menuconfig_public_linux
+	kernel/linux/make.inc
+
+------
+6. make -j$(nproc)
+	boards/rda600/Makefile
+
+
