@@ -1,0 +1,18 @@
+SJA1105
+5-port automotive Ethernet switch
+
+1. General description
+
+6.Functional description
+The host controller manages access to the internal configuration and programming space
+via the SPI.
+
+11.
+Port 1 to Port 4 are configured for MII/RMII operation
+
+SJA1105 devices can be cascaded
+
+Note that Ethernet
+connectivity to the host processor is only needed if the system has to support AVB
+operation or other bridge management protocols such as STP/RSTP. If such operations
+are not needed, all the ports can be used for data traffic.

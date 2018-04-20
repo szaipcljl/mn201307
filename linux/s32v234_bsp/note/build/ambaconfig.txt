@@ -1,0 +1,32 @@
+Ambaconfig
+
+===========================
+.repo/manifests/default.xml
+  <project path="device/s32v/config" name="device/s32v/config.git" remote="wuji" >
+  	  <linkfile src="AmbaConfig" dest="device/AmbaConfig" />
+  </project>
+
+ll device/AmbaConfig 
+lrwxrwxrwx 1 mlinux mlinux 22 Mar 15 15:18 device/AmbaConfig -> s32v/config/AmbaConfig
+
+-----------------
+device/AmbaConfig
+menu "Roadefend Board Configuration"
+source boards/AmbaConfig
+
+==========
+AmbaConfig
+##### device
+source device/AmbaConfig
+
+
+##### kernel
+source kernel/AmbaConfig
+
+
+##### prebuild
+source prebuild/AmbaConfig
+
+
+##### rootfs
+source rootfs/AmbaConfig

@@ -1,0 +1,9 @@
+
+kernel/private/drivers/nxp-sja1105x/drivers/modules
+
+./sja1105_spi.c:128:module_param(verbosity, int, S_IRUGO);
+./sja1105.sh:2:OPT="max_hz=5000 verbosity=1"
+
+
+
+verbosity > 3, print debug infor
