@@ -1,0 +1,15 @@
+dcu
+
+=======
+1. arch/arm64/boot/dts/freescale/s32v234.dtsi
+	dcu0: dcu@40028000 {
+		compatible = "fsl,s32v234-dcu";
+
+2. grep driver
+	$ grep -nsR "s32v234-dcu" drivers/video/ 
+	drivers/video/fsl_dcu_linux.c:1658:		.compatible = "fsl,s32v234-dcu",
+
+3. check build result
+	tree ../../../out/rda600/kernel/linux-4.9_s32v234/drivers/video/
+
+4. device node

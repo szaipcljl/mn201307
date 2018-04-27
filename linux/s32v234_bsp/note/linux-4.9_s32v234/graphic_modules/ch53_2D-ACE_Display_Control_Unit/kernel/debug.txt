@@ -1,0 +1,13 @@
+
+
+ramebuffer的设备文件一般是 /dev/fb0、/dev/fb1 等等。
+
+可以用命令: #dd if=/dev/zero of=/dev/fb0 清空屏幕.
+
+dd if=/dev/urandom of=/dev/fb0  产生随机色，刷屏
+
+如果显示模式是 1024x768-8 位色，用命令：$ dd if=/dev/zero of=/dev/fb0 bs=1024 count=768 清除屏幕内容
+
+用命令: #dd if=/dev/fb of=fbfile 可以将fb中的内容保存下来；
+
+可以重新写回屏幕: #dd if=fbfile of=/dev/fb；
