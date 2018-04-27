@@ -1,0 +1,23 @@
+
+================================
+gpio-beeper
+
+root@s32v234evb:~# echo 83 > /sys/class/gpio/export 
+root@s32v234evb:~# echo "out" > /sys/class/gpio/gpio83/direction 
+root@s32v234evb:~# echo "1" > /sys/class/gpio/gpio83/value 
+
+================================
+cat /sys/kernel/debug/gpio
+
+
+================================
+root@s32v234evb:~# cat /proc/bus/input/devices 
+I: Bus=0019 Vendor=0001 Product=0001 Version=0100
+N: Name="beeper"
+P: Phys=
+S: Sysfs=/devices/platform/beeper/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=2

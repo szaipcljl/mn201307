@@ -545,7 +545,7 @@ out/rda600/kernel/linux-4.9_s32v234/
 │   │	├── host
 │   │	    ├── sdhci-esdhc-imx.o
 │   │	    ├── sdhci.o
-│   │		    └── sdhci-pltfm.o
+│   │		└── sdhci-pltfm.o
 │   ├── net
 │   │   ├── can
 │   │   │   ├── can-dev.o

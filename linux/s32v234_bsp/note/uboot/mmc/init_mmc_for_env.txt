@@ -1,0 +1,19 @@
+
+
+======================
+common/env_mmc.c
+
+init_mmc_for_env
+|-> if (mmc_init(mmc))
+		return "!MMC init failed";
+
+===============
+common/env_common.c
+
+set_default_env
+|-> if (*s == '!') {
+		printf("*** Warning - %s, "
+			"using default environment\n\n",
+			s + 1);
+	} else {...
+

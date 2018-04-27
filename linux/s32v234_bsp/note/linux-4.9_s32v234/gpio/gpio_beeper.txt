@@ -1,0 +1,60 @@
+
+
+drivers/input/misc/gpio-beer.c
+drivers/input/input.c
+drivers/input/evdev.c
+
+=====================
+evdev_release //evdev.c
+|-> evdev_close_device //evdev.c
+	|-> input_close_device //input.c
+
+======= log1 =============
+[   66.536668] work: [gpio_beeper_work]
+[   66.540524] #mn: on = 1 [gpio_beeper_toggle]
+[   66.545247] #mn: [gpiod_set_value_cansleep]
+[   66.549776] #mng2: [_gpiod_set_raw_value]
+[   67.545341] #mn[evdev_release
+]#mn[evdev_close_device
+
+
+======= log2 =============
+root@s32v234evb:/var/volatile/tmp# ./beeper_test 
+[  241.063771] #mn: [evdev_open]
+[  241.066654] #mn: evdev->open:0, [evdev_open_device]
+[  241.071990] #mn: open:0, users:1 [input_open_device]
+[  241.077487] #mn: open:0, users:1 [input_open_device]
+[  241.082919] ###[input_open_device 607] [dump_stack start]
+[  241.088778] CPU: 1 PID: 817 Comm: beeper_test Tainted: G      D    O    4.1.26-rt29 #19
+[  241.097547] Hardware name: Freescale S32V234 (DT)
+[  241.102697] Call trace:
+[  241.105377] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[  241.111284] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[  241.116818] [<ffffffc000523f0c>] dump_stack+0x88/0xa8
+[  241.122348] [<ffffffc0003bf8d0>] input_open_device+0xbc/0x13c
+[  241.128641] [<ffffffc0003c4b08>] evdev_open+0x1cc/0x1fc
+[  241.134364] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[  241.140086] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[  241.146189] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[  241.151530] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[  241.157728] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[  241.163450] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[  241.169173] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[  241.174991] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[  241.180565] ###[input_open_device 609] [dump_stack end]
+[  241.186264] users:2 [input_open_device]
+#m -24r.1t05e3]0#1n:c[eede0_wr tel
+:  x41.193918] #mn-2: type:12, code:1, value:1 [gpio_beeper_event]
+[  241.200364] work: [gpio_beeper_work]
+[  241.204282] #mn: on = 1 [gpio_beeper_toggle]
+[  241.204311] #mn: [evdev_write]
+[  241.204316] #mn-2: type:12, code:1, value:0 [gpio_beeper_event]
+[  241.218772] #mn: [gpiod_set_value_cansleep]
+[  241.223349] #mng2: [_gpiod_set_raw_value]
+[  241.227728] work: [gpio_beeper_work]
+[  241.231637] #mn: on = 0 [gpio_beeper_toggle]
+[  241.236330] #mn: [gpiod_set_value_cansleep]
+[  241.240888] #mng2: [_gpiod_set_raw_value]
+[  242.204432] #mn[evdev_release
+]#mn[evdev_close_device
+]#mn-27: dev->users:2 [input_close_device]

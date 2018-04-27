@@ -1,0 +1,12 @@
+
+drivers/clk/s32/clk-s32v234.c
+include/dt-bindings/clock/s32v234-clock.h
+
+=========================
+drivers/clk/s32/clk-s32v234.c
+s32v234_clocks_init
+init clk[0]~clk[S32V234_CLK_XXX]
+
+
+=================
+include/dt-bindings/clock/s32v234-clock.h

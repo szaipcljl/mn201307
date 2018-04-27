@@ -1,0 +1,52 @@
+watchdog
+
+2018.4.24
+==================
+include/watchdog.h
+drivers/watchdog/imx_watchdog.c
+
+==================
+include/watchdog.h
+WATCHDOG_RESET //pet the watchdog
+
+/*
+ * Hardware watchdog
+ */
+#ifdef CONFIG_HW_WATCHDOG
+	#if defined(__ASSEMBLY__)
+		#define WATCHDOG_RESET bl hw_watchdog_reset
+	#else
+		extern void hw_watchdog_reset(void);
+
+		#define WATCHDOG_RESET hw_watchdog_reset
+	#endif /* __ASSEMBLY__ */
+#else
+	/*
+	 * Maybe a software watchdog?
+	 */
+	#if defined(CONFIG_WATCHDOG)
+		#if defined(__ASSEMBLY__)
+			#define WATCHDOG_RESET bl watchdog_reset
+		#else
+			extern void watchdog_reset(void);
+
+			#define WATCHDOG_RESET watchdog_reset
+		#endif
+	#else
+		/*
+		 * No hardware or software watchdog.
+		 */
+		#if defined(__ASSEMBLY__)
+			#define WATCHDOG_RESET /*XXX DO_NOT_DEL_THIS_COMMENT*/
+		#else
+			#define WATCHDOG_RESET() {}
+		#endif /* __ASSEMBLY__ */
+	#endif /* CONFIG_WATCHDOG && !__ASSEMBLY__ */
+#endif /* CONFIG_HW_WATCHDOG */
+
+==================
+drivers/watchdog/imx_watchdog.c
+hw_watchdog_reset
+hw_watchdog_init
+
+==================

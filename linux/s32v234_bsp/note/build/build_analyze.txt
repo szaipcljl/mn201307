@@ -1,0 +1,16 @@
+
+
+board/rda600/Makefile:
+all: $(ALL_TARGETS)
+	@$(MAKE) $(AMBA_MAKE_PARA) build_fsimage
+	@$(MAKE) $(AMBA_MAKE_PARA) uboot
+	@echo "Build Done"
+
+
+------------------
+echo "$(ALL_TARGETS)"
+
+echo " basic_fs configure_inittab configure_fstab configure_profile configure_network add_board_rootfs remove_initsh libcsidrv.a libcamdrv.a libfdmadrv.a libviudrv.a libseqdrv.a libh264decdrv.a libh264encdrv.a libjpegdecdrv.a liboal.a libumat.a liblog.a libframe_io.a libsdi.a prebuild_s32v-driver prepare_platform_drivers build_platform_drivers prebuild_net-tool prebuild_kmod prebuild_netbase prebuild_readline prebuild_i2c-tools prebuild_shadow prebuild_inetd prebuild_opencv prebuild_sysvinit prebuild_zlib prebuild_init-ifupdown prebuild_dbus prebuild_procps prebuild_bb prebuild_openssl prebuild_initscripts prebuild_glib2 prebuild_xinetd prebuild_tcp-wrapper prebuild_freetype prebuild_dbus-glib prebuild_ncurses prebuild_util-linux prebuild_basefiles prebuild_udev prebuild_libjpeg_turbo prebuild_expat prepare_private_drivers build_private_drivers linux libmipi_simple.a"
+ basic_fs configure_inittab configure_fstab configure_profile configure_network add_board_rootfs remove_initsh libcsidrv.a libcamdrv.a libfdmadrv.a libviudrv.a libseqdrv.a libh264decdrv.a libh264encdrv.a libjpegdecdrv.a liboal.a libumat.a liblog.a libframe_io.a libsdi.a prebuild_s32v-driver prepare_platform_drivers build_platform_drivers prebuild_net-tool prebuild_kmod prebuild_netbase prebuild_readline prebuild_i2c-tools prebuild_shadow prebuild_inetd prebuild_opencv prebuild_sysvinit prebuild_zlib prebuild_init-ifupdown prebuild_dbus prebuild_procps prebuild_bb prebuild_openssl prebuild_initscripts prebuild_glib2 prebuild_xinetd prebuild_tcp-wrapper prebuild_freetype prebuild_dbus-glib prebuild_ncurses prebuild_util-linux prebuild_basefiles prebuild_udev prebuild_libjpeg_turbo prebuild_expat prepare_private_drivers build_private_drivers linux libmipi_simple.a
+#@make -s uboot
+------------------
