@@ -1,0 +1,24 @@
+data flow
+-- linux device drivers note
+
+==============
+struct sk_buff
+
+
+==============
+rx
+
+(1) snull_regular_interrupt	=> 
+(2) snull_rx => 
+(3) netif_rx
+
+---------
+netif_rx [net/core/dev.c]
+|-> etif_rx_internal [net/core/dev.c]
+	|-> //queue an skb to a per CPU backlog queue
+		enqueue_to_backlog [net/core/dev.c]
+
+
+
+==============
+poll

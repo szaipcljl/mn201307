@@ -13,3 +13,9 @@ dcu
 	tree ../../../out/rda600/kernel/linux-4.9_s32v234/drivers/video/
 
 4. device node
+
+============
+display_timings
+
+drivers/video/fsl_fb.c //Freescale fsl-FB device driver
+ers/video/of_display_timing.c
