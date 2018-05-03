@@ -1,0 +1,2 @@
+
+[    0.000000] Kernel command line: console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw

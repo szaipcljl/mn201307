@@ -1,0 +1,21 @@
+
+
+=> run nfsboot
+====================================
+linux@mlinux:/tftpboot/rfs$ cp ~/roadefend/rda600_clean/out/rda600/bootloader/u-boot/u-boot.s32 home/root/
+mlinux@mlinux:/tftpboot/rfs$ cp ~/roadefend/rda600_clean/out/rda600/kernel/Image home/root/
+mlinux@mlinux:/tftpboot/rfs$ cp ~/roadefend/rda600_clean/out/rda600/kernel/linux-4.9_s32v234/arch/arm64/boot/dts/freescale/rda600.dtb home/root/
+mlinux@mlinux:/tftpboot/rfs$ cp -raf ~/roadefend/rda600_clean/out/rda600/fakeroot/ home/root/
+====================================
+root@s32v234evb:~# dd if=u-boot.s32 of=/dev/mmcblk0 seek=8 bs=512
+
+root@s32v234evb:~# fdisk /dev/mmcblk0
+
+Welcome to fdisk (util-linux 2.25.2).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table.
+Created a new DOS disklabel with disk identifier 0xbad2e508.
+
+Command (m for help): 

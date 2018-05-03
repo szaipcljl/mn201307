@@ -1,0 +1,6 @@
+
+
+mlinux@mlinux:~/roadefend/bsp15.0_1st/yocto_auto_linux_bsp15.0$ cp ./build_s32v234evb_release/tmp/work/aarch64-fsl-linux/e2fsprogs/1.42.9-r0/package/sbin/mkfs.ext3 /tftpboot/rfs/sbin/
+cp ./build_s32v234evb_release/tmp/work/s32v234evb-fsl-linux/fsl-image-s32v2xx/1.0-r0/rootfs/lib/libext2fs.so.2 /tftpboot/rfs/lib/
+cp ./build_s32v234evb_release/tmp/work/s32v234evb-fsl-linux/fsl-image-s32v2xx/1.0-r0/rootfs/lib/libcom_err.so.2 /tftpboot/rfs/lib/
+cp ./build_s32v234evb_release/tmp/work/s32v234evb-fsl-linux/fsl-image-s32v2xx/1.0-r0/rootfs/lib/libe2p.so.2 /tftpboot/rfs/lib/

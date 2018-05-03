@@ -1,0 +1,59 @@
+tftp and nfs
+
+======================
+turn off the firewall
+sudo ufw disable
+
+tftp boot
+==============================================================
+1. host pc: 
+	disable host WLAN
+
+2. (1) VMware bridge mode,
+	Edit connections
+	add a "Ethernet connection 1"
+	edit 
+	IPv4 Settings: Method Manual
+	add addresses:
+		192.168.2.5
+
+	(2) setup tftp server
+
+3. uboot command line
+	(1) set up and ping
+	=> setenv ipaddr 192.168.2.1
+	=> setenv serverip 192.168.2.5
+	=> ping 192.168.2.5
+	Using FEC device
+	host 192.168.2.5 is alive
+
+	(2) load Image, dtb via tftp and specify the location of rootfs
+	=> tftp ${loadaddr} Image	//tftpboot Image
+	=> tftp ${fdt_addr} rda600.dtb
+	=> run mmcargs		//specify rootfs
+
+	(3) boot Linux Image stored in memory
+	=> booti ${loadaddr} - ${fdt_addr}
+
+---------
+=> printenv mmcargs 
+mmcargs=setenv bootargs console=${console},${baudrate} root=${mmcroot}
+
+
+nfs boot
+==============================================================
+(1) install and setup NFS server
+configure /etc
+sudo vi /etc/exports
+添加下面一行: 
+/tftpboot/rfs	*(insecure,rw,sync,no_root_squash,no_subtree_check)
+
+(2) //tftp boot + set up a NFS filesystem
+=> run nfsboot
+
+---
+ps:
+nfsboot=echo Booting from net using tftp and nfs...; run nfsbootargs;run loadtftpimage; run loadtftpfdt;${boot_mtd} ${loadaddr} - ${fdt_addr};
+nfsbootargs=setenv bootargs console=${console},${baudrate} root=/dev/nfs rw ip=${ipaddr}:${serverip}::${netmask}::eth0:off nfsroot=${serverip}:/tftpboot/rfs,nolock 
+
+==============================================================
