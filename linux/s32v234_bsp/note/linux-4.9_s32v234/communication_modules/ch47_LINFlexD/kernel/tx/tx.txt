@@ -1,0 +1,51 @@
+
+
+drivers/tty/serial/fsl_linflexuart.c
+===============================
+data flow
+
+SyS_write
+=> vfs_write
+=> __vfs_write
+=> redirected_tty_write
+=> tty_write
+=> n_tty_write 
+=> uart_write
+=> __uart_start
+=> linflex_start_tx
+
+--------------------
+n_tty_write	[n_tty.c]
+<=> tty_ldisc_N_TTY.write (Line discipline)
+
+tty_ldisc_begin
+|-> (void) tty_register_ldisc(N_TTY, &tty_ldisc_N_TTY);
+
+------- log ------------
+[    0.000320] ###mn:[tty_ldisc_begin 826] [dump_stack start]
+[    0.000330] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.1.26-rt29 #20
+[    0.000335] Hardware name: Freescale S32V234 (DT)
+[    0.000340] Call trace:
+[    0.000354] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    0.000363] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    0.000373] [<ffffffc000523d00>] dump_stack+0x88/0xa8
+[    0.000383] [<ffffffc000369024>] tty_ldisc_begin+0x30/0x60
+[    0.000393] [<ffffffc0006f3d5c>] console_init+0x20/0x40
+[    0.000401] [<ffffffc0006dc860>] start_kernel+0x294/0x334
+[    0.000406] ###mn:[tty_ldisc_begin 828] [dump_stack end]
+
+
+================================
+tx use dma
+
+linflex_start_tx	[fsl_linflexuart.c]
+|-> linflex_prepare_tx
+	|-> linflex_dma_tx
+
+======================
+data flow:
+
+linflex_dma_tx:
+	struct circ_buf *xmit = &sport->port.state->xmit;
+	sport->dma_tx_buf_bus
+

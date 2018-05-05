@@ -1,0 +1,19 @@
+Chapter 47
+LINFlexD
+
+47.1.1
+2 LINFlexD instances
+support Master mode only
+
+47.2
+designed to manage a high number of LIN messages efficiently with a minimum of CPU load.
+
+support:
+LIN protocol version 1.3, 2.0, 2.1, and 2.2.
+basic UART transfers of 8-bit, 9-bit frames.
+multi-channels and parametric DMA Tx/Rx interface in LIN/UART operating mode.
+
+47.2.1
+LIN local interconnect network
+
+
