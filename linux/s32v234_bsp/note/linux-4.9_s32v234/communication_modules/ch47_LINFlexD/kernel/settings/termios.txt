@@ -1,0 +1,9 @@
+
+
+
+
+static const struct uart_ops linflex_pops = { [fsl_linflexuart.c]
+	...
+	.set_termios	= linflex_set_termios,
+	...
+};

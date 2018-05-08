@@ -1,0 +1,121 @@
+
+
+=========================================
+tty_driver
+uart_driver
+
+=========================================
+
+fsl_linflexuart.c
+==========================================
+module_init(linflex_serial_init);
+|-> ret = uart_register_driver(&linflex_reg);
+|-> ret = platform_driver_register(&linflex_driver);
+
+----------------------------
+static struct uart_driver linflex_reg;
+static struct console linflex_console = {
+	.name		= DEV_NAME,
+	.write		= linflex_console_write,
+	.device		= uart_console_device,
+	.setup		= linflex_console_setup,
+	.flags		= CON_PRINTBUFFER,
+	.index		= -1,
+	.data		= &linflex_reg,
+};
+
+static struct uart_driver linflex_reg = {
+	.owner		= THIS_MODULE,
+	.driver_name	= DRIVER_NAME,
+	.dev_name	= DEV_NAME,
+	.nr		= ARRAY_SIZE(linflex_ports),
+	.cons		= LINFLEX_CONSOLE,
+};
+
+
+
+
+
+
+
+    struct console
+   +-----------------+
+   |                 |
+   |                 |         
+   | .data           +--------> struct uart_driver  
+   +-----------------+          +------------------+
+                                |                  |
+                                |                  |
+                                |                  |
+                                +------------------+
+
+uart_register_driver - register a driver with the uart core layer:
+
+(1)
+uart_driver => tty_driver
+                     
+    struct tty_driver            struct uart_driver <--------+
+    +---------------+            +-----------------+         |
+    | driver_name	|----------->| driver_name;    |         |
+    | name		    |----------->| dev_name;       |         |
+    | major		    |----------->| major;          |         |
+    | minor_start	|----------->| minor;          |         |
+    | type		    |            +-----------------+         |
+    | subtype		|                                        |
+    | init_termios  |                                        |
+    | init_termios  |                                        |
+    | init_termios  |                                        |
+    | flags		    |                                        |
+    | driver_state  | ---------------------------------------+
+    | ops           |------(a)------> struct tty_operations
+    |               |
+    |               |
+    +---------------+ 
+(2)
+	 * Initialise the UART state(s).
+
+        loop(0~drv->nr):
+		tty_port_init(port);
+		port->ops = &uart_port_ops;
+
+(3) tty_register_driver [tty/tty_io.c]
+
+
+
+
+
+
+-----------
+(a)tty_set_operations
+
+--------------------------------------
+ linflex_probe
+
+	sport->port.ops = &linflex_pops;
+
+
+    struct linflex_port
+    +------------------+
+    |  port            +--------->struct uart_port
+    |                  |          +---------------+
+    |                  |          |               |
+    |                  |          |  .ops         +------> struct uart_ops
+    |                  |          |               |        +---------------+
+    |                  |          |               |        |               |
+    |                  |          |               |        |               |
+    |                  |          |               |        |               |
+    |                  |          +---------------+        +---------------+
+    +------------------+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+==========================================
+serial_core.c

@@ -1,0 +1,162 @@
+
+
+tty/serial/fsl_linflexuart.c
+tty/serial/serial_core.c
+drivers/tty/tty_io.c:tty_open()
+==============
+
+kernel_init
+=> kernel_init_freeable
+=> SyS_open
+=> do_sys_open
+=> do_filp_open
+=> path_openat
+=> do_last.isra.33
+=> vfs_open
+=> do_dentry_open
+=> chrdev_open
+=> tty_open
+=> uart_open
+=> uart_startup
+=> linflex_startup
+
+------------------
+
+struct tty_driver {
+	...
+	const struct tty_operations *ops;
+	...
+};
+
+int uart_register_driver(struct uart_driver *drv)
+{
+	...
+	tty_set_operations(normal, &uart_ops);
+	...
+}
+
+static const struct tty_operations uart_ops = {
+	.open		= uart_open,
+	...
+};
+
+uart_open [serial_core.c]
+|-> uart_startup	[serial_core.c]
+	|-> uart_port_startup 	[serial_core.c]
+		|-> retval = uport->ops->startup(uport);
+			<=> linflex_startup [fsl_linflexuart.c]
+
+==========================
+
+static const struct uart_ops linflex_pops = { [fsl_linflexuart.c]
+	...
+	.startup	= linflex_startup,
+	...
+};
+
+
+static int linflex_probe(struct platform_device *pdev)
+{
+	struct linflex_port *sport;
+	...
+	sport->port.ops = &linflex_pops;
+	...
+
+}
+
+
+struct linflex_port {
+	struct uart_port	port;
+	...
+};
+
+
+struct uart_port {
+	...
+	const struct uart_ops	*ops;
+	...
+};
+
+
+/*
+ * This structure describes all the operations that can be done on the
+ * physical hardware.  See Documentation/serial/driver for details.
+ */
+struct uart_ops {
+	...
+};
+
+The uart_ops structure is the main interface between serial_core and the
+hardware specific driver.  It contains all the methods to control the
+hardware.
+
+------------------
+
+ * Startup the port.  This will be called once per open.  All calls
+ * will be serialised by the per-port mutex.
+static int uart_port_startup(struct tty_struct *tty, struct uart_state *state,
+		int init_hw)
+{
+	...
+	retval = uport->ops->startup(uport);
+	...
+}
+
+==============================================
+open 'ttyLF1' everytime, '0x20' will be send to TX
+or call uart_change_speed everytime, '0x20' will be send to TX
+issues log(soc):
+
+[ 1142.992105] #mn: [uart_set_termios]
+[ 1143.010272] #mn: [uart_change_speed]
+[ 1143.013903] #mn: 3, [linflex_set_termios][953]
+[ 1143.018679] #mn: 7, [linflex_set_termios][984]
+[ 1143.023587] #mn: baud:115200, [linflex_set_termios][1016]
+[ 1143.029458] #mn: hw_stopped:0, [uart_change_speed]
+[ 1143.034739] #mn: init_hw:0, [uart_port_startup]
+
+[ 1143.039700] #mn: [uart_set_termios]
+[ 1143.043557] #mn: [uart_change_speed]
+[ 1143.047386] #mn: 3, [linflex_set_termios][953]
+[ 1143.052287] #mn: 7, [linflex_set_termios][984]
+[ 1143.057114] #mn: baud:9600, [linflex_set_termios][1016]
+[ 1143.062873] #mn: hw_stopped:0, [uart_change_speed]
+
+[ 1143.068089] #mn: [uart_set_termios]
+[ 1143.071895] #mn: [uart_change_speed]
+[ 1143.075838] #mn: 3, [linflex_set_termios][953]
+[ 1143.080670] #mn: 7, [linflex_set_termios][984]
+[ 1143.085563] #mn: baud:115200, [linflex_set_termios][1016]
+[ 1143.091448] #mn: hw_stopped:0, [uart_change_speed]
+
+
+MCU log:
+
+0x20-$
+0x00-$
+0x00-$
+0x20-$
+------------------------------------------
+static const struct uart_ops linflex_pops = { 	[fsl_linflexuart.c]
+	...
+	.set_termios	= linflex_set_termios,
+	...
+}
+
+
+static int linflex_probe(struct platform_device *pdev)	[fsl_linflexuart.c]
+{
+	...
+	sport->port.ops = &linflex_pops;
+	...
+}
+
+
+//Initialise the hardware port settings.
+static void uart_change_speed(struct tty_struct *tty, struct uart_state *state,
+					struct ktermios *old_termios)		[serial_core.c]
+{
+	....
+	uport->ops->set_termios(uport, termios, old_termios);
+	...
+}

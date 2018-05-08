@@ -1,0 +1,308 @@
+
+
+[    0.254819] ###mn:[linflex_set_termios 909] [dump_stack start]
+[    0.254828] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #22
+[    0.254833] Hardware name: Freescale S32V234 (DT)
+[    0.254839] Call trace:
+[    0.254850] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    0.254859] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    0.254869] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[    0.254879] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[    0.254888] [<ffffffc000379c18>] uart_set_options+0xe0/0x15c
+[    0.254897] [<ffffffc0006f4ae4>] linflex_console_setup+0x114/0x124
+[    0.254905] [<ffffffc0000d6e04>] register_console+0x254/0x328
+[    0.254913] [<ffffffc00037b720>] uart_add_one_port+0x3d4/0x454
+[    0.254920] [<ffffffc00037e7c8>] linflex_probe+0x1e4/0x344
+[    0.254928] [<ffffffc00038fbb4>] platform_drv_probe+0x4c/0xb8
+[    0.254936] [<ffffffc00038e4b8>] driver_probe_device+0x16c/0x2a4
+[    0.254944] [<ffffffc00038e6e0>] __driver_attach+0x9c/0xa0
+[    0.254952] [<ffffffc00038c768>] bus_for_each_dev+0x58/0x98
+[    0.254960] [<ffffffc00038df08>] driver_attach+0x20/0x28
+[    0.254968] [<ffffffc00038db94>] bus_add_driver+0x150/0x204
+[    0.254976] [<ffffffc00038eafc>] driver_register+0x60/0x11c
+[    0.254984] [<ffffffc00038fae8>] __platform_driver_register+0x60/0x68
+[    0.254992] [<ffffffc0006f4b2c>] linflex_serial_init+0x38/0x60
+[    0.255000] [<ffffffc00008102c>] do_one_initcall+0x8c/0x1a0
+[    0.255008] [<ffffffc0006dca48>] kernel_init_freeable+0x148/0x1e8
+[    0.255017] [<ffffffc000521ee0>] kernel_init+0x10/0xd8
+[    0.255022] ###mn:[linflex_set_termios 911] [dump_stack end]
+
+[    1.129054] console [ttyLF0] enabled
+
+...
+
+[    5.661909] ###mn:[linflex_set_termios 909] [dump_stack start]
+[    5.667955] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #22
+[    5.674983] Hardware name: Freescale S32V234 (DT)
+[    5.680133] Call trace:
+[    5.682812] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    5.688720] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    5.694253] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[    5.699784] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[    5.706268] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[    5.713229] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[    5.719809] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[    5.725342] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[    5.730779] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[    5.736502] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[    5.742604] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[    5.747944] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[    5.754143] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[    5.759865] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[    5.765588] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[    5.771406] [<ffffffc000164bac>] SyS_open+0x1c/0x24
+[    5.776748] [<ffffffc0006dca70>] kernel_init_freeable+0x170/0x1e8
+[    5.783423] [<ffffffc000521ee0>] kernel_init+0x10/0xd8
+[    5.789136] ###mn:[linflex_set_termios 911] [dump_stack en黓
+
+...
+
+[    6.458268] ###mn:[linflex_set_termios 909] [dump_stack start]
+[    6.464344] CPU: 1 PID: 1 Comm: init Not tainted 4.1.26-rt29 #22
+[    6.470869] Hardware name: Freescale S32V234 (DT)
+[    6.476018] Call trace:
+[    6.478698] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    6.484605] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    6.490138] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[    6.495669] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[    6.502154] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[    6.509114] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[    6.515694] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[    6.521227] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[    6.526663] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[    6.532386] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[    6.538489] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[    6.543829] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[    6.550028] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[    6.555751] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[    6.561473] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[    6.567290] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[    6.572875] ###mn:[linflex_set_termios 911] [dump_stack en]
+[
+[    6.579141] ###mn:[linflex_set_termios 909] [dump_stack start]
+[    6.585656] CPU: 1 PID: 1 Comm: init Not tainted 4.1.26-rt29 #22
+[    6.592212] Hardware name: Freescale S32V234 (DT)
+[    6.597361] Call trace:
+[    6.600038] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    6.605948] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    6.611480] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[    6.617011] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[    6.623496] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[    6.630457] [<ffffffc00037be60>] uart_set_termios+0x74/0x198
+[    6.636659] [<ffffffc000367104>] tty_set_termios+0x160/0x20c
+[    6.642856] [<ffffffc0003677f8>] set_termios+0x2c8/0x2e0
+[    6.648673] [<ffffffc000367d30>] tty_mode_ioctl+0x4b4/0x558
+[    6.654778] [<ffffffc000367e38>] n_tty_ioctl_helper+0x30/0x114
+[    6.661167] [<ffffffc000363804>] n_tty_ioctl+0x9c/0x16c
+[    6.666889] [<ffffffc0003612e4>] tty_ioctl+0x278/0xc68
+[    6.672516] [<ffffffc000177628>] do_vfs_ioctl+0x36c/0x5b0
+[    6.678428] [<ffffffc0001778f0>] SyS_ioctl+0x84/0x98
+[    6.683911] ###mn:[linflex_set_termios 911] [dump_stack en]
+[
+[    6.793105] ###mn:[linflex_set_termios 909] [dump_stack start]
+[    6.799600] CPU: 0 PID: 1 Comm: init Not tainted 4.1.26-rt29 #22
+[    6.806176] Hardware name: Freescale S32V234 (DT)
+[    6.811326] Call trace:
+[    6.814006] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    6.819913] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    6.825446] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[    6.830977] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[    6.837461] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[    6.844422] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[    6.851002] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[    6.856535] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[    6.861971] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[    6.867693] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[    6.873796] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[    6.879137] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[    6.885335] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[    6.891057] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[    6.896780] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[    6.902598] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[    6.908189] ###mn:[linflex_set_termios 911] [dump_stack en⺌
+
+...
+
+[   28.169323] ###mn:[linflex_set_termios 909] [dump_stack start]
+[   28.175544] CPU: 0 PID: 1 Comm: init Not tainted 4.1.26-rt29 #22
+[   28.182110] Hardware name: Freescale S32V234 (DT)
+[   28.187260] Call trace:
+[   28.189937] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   28.195847] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   28.201381] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   28.206910] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   28.213395] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   28.220356] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[   28.226936] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[   28.232469] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[   28.237905] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[   28.243627] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[   28.249730] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[   28.255072] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[   28.261270] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[   28.266991] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[   28.272714] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[   28.278532] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[   28.284101] ###mn:[linflex_set_termios 911] [dump_stack en]
+[version 2.88 booting
+[   28.302516] ###mn:[linflex_set_termios 909] [dump_stack start]
+[   28.308724] CPU: 1 PID: 1 Comm: init Not tainted 4.1.26-rt29 #22
+[   28.315301] Hardware name: Freescale S32V234 (DT)
+[   28.320450] Call trace:
+[   28.323128] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   28.329037] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   28.334570] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   28.340101] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   28.346585] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   28.353547] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[   28.360127] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[   28.365659] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[   28.371096] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[   28.376818] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[   28.382921] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[   28.388261] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[   28.394460] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[   28.400182] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[   28.405905] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[   28.411723] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[   28.417312] ###mn:[linflex_set_termios 911] [dump_stack en⺌
+[
+
+[   28.549140] ###mn:[linflex_set_termios 909] [dump_stack start]
+[   28.555486] CPU: 2 PID: 560 Comm: init Not tainted 4.1.26-rt29 #22
+[   28.562116] Hardware name: Freescale S32V234 (DT)
+[   28.567266] Call trace:
+[   28.569946] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   28.575853] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   28.581386] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   28.586918] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   28.593401] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   28.600362] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[   28.606942] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[   28.612475] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[   28.617912] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[   28.623633] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[   28.629736] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[   28.635077] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[   28.641275] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[   28.646997] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[   28.652720] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[   28.658538] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[   28.664119] ###mn:[linflex_set_termios 911] [dump_stack en]
+
+...
+
+[   34.090551] ###mn:[linflex_set_termios 909] [dump_stack start]
+[ 785 Comm: init Tainted: G      D    O    4.1.26-rt29 #22
+[   34.096647] Hardware name: Freescale S32V234 (DT)
+[   34.096650] Call trace:
+[   34.096662] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   34.096668] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   34.096676] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   34.096683] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   34.096689] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   34.096694] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[   34.096699] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[   34.096705] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[   34.096711] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[   34.096717] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[   34.096722] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[   34.096727] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[   34.096732] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[   34.096737] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[   34.096742] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[   34.096747] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[   34.096750] ###mn:[linflex_set_termios 911] [dump_stack end]
+[   34.096754] #mn: 3, [linflex_set_termios][953]#mn: 7, [linflex_set_termios][984]#mn: baud:115200, [linflex_set_termios][1016]
+[   34.222847] ###mn:[linflex_set_termios 909] [dump_stack start]
+[   34.229249] CPU: 3 PID: 787 Comm: init Tainted: G      D    O    4.1.26-rt29 #22
+[   34.237349] Hardware name: Freescale S32V234 (DT)
+[   34.242499] Call trace:
+[   34.245179] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   34.251086] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   34.256619] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   34.262150] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   34.268634] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   34.275595] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[   34.282175] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[   34.287708] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[   34.293145] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[   34.298866] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[   34.304969] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[   34.310311] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[   34.316509] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[   34.322231] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[164aac>] do_sys_open+0x140/0x224
+[   34.327964] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[   34.328032] ###mn:[linflex_set_termios 911] [dump_stack end]
+[   34.328037] #mn: 3, [linflex_set_termios][953]#mn: 7, [linflex_set_termios][984]#mn: baud:115200, [linflex_set_termios][1016]
+[   34.362406] ###mn:[linflex_set_termios 909] [dump_stack start]
+[   34.368617] CPU: 0 PID: 785 Comm: getty Tainted: G      D    O    4.1.26-rt29 #22
+[   34.376814] Hardware name: Freescale S32V234 (DT)
+[   34.381964] Call trace:
+[   34.384643] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[   34.390550] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[   34.396084] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[   34.401615] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[   34.408099] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[   34.415059] [<ffffffc00037be60>] uart_set_termios+0x74/0x198
+[   34.421260] [<ffffffc000367104>] tty_set_termios+0x160/0x20c
+[   34.427458] [<ffffffc0003677f8>] set_termios+0x2c8/0x2e0
+[   34.433276] [<ffffffc000367d30>] tty_mode_ioctl+0x4b4/0x558
+[   34.439380] [<ffffffc000367e38>] n_tty_ioctl_helper+0x30/0x114
+[   34.445769] [<ffffffc000363804>] n_tty_ioctl+0x9c/0x16c
+[   34.451491] [<ffffffc0003612e4>] tty_ioctl+0x278/0xc68
+[   34.457119] [<ffffffc000177628>] do_vfs_ioctl+0x36c/0x5b0
+[   34.463030] [<ffffffc0001778f0>] SyS_ioctl+0x84/0x98
+[   34.468542] ###mn:[linflex_set_termios 911] [dump_stack en⺌
+[
+Poky (Yocto Project Reference Distro) 1.8 s32v234evb /dev/ttyLF0
+
+====================================================================
+
+root@s32v234evb:~# ./uart_test 
+[  586.399058] ###mn:[linflex_set_termios 909] [dump_stack start]
+[  586.405175] CPU: 0 PID: 790 Comm: uart_test Tainted: G      D    O    4.1.26-rt29 #22
+[  586.413662] Hardware name: Freescale S32V234 (DT)
+[  586.418812] Call trace:
+[  586.421492] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[  586.427398] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[  586.432932] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[  586.438464] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[  586.444947] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[  586.451907] [<ffffffc00037c958>] uart_startup.part.18+0xa8/0x1ac
+[  586.458488] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[  586.464021] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[  586.469457] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[  586.475179] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[  586.481282] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[  586.486623] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[  586.492821] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[  586.498543] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[  586.504266] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[  586.510084] [<ffffffc000164bc4>] SyS_openat+0x10/0x18
+[  586.515674] ###mn:[linflex_set_termios 911] [dump_stack end]
+[  586.521813] #mn: 3, [linflex_set_termios][953]#mn: 7, [linflex_set_termios][984]#mn: baud:9600, [linflex_set_termios][1016]
+[  586.533911] ###mn:[linflex_set_termios 909] [dump_stack start]
+[  586.540412] CPU: 0 PID: 790 Comm: uart_test Tainted: G      D    O    4.1.26-rt29 #22
+[  586.548992] Hardware name: Freescale S32V234 (DT)
+[  586.554141] Call trace:
+[  586.556816] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[  586.562728] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[  586.568260] [<ffffffc000523e34>] dump_stack+0x88/0xa8
+[  586.573791] [<ffffffc00037e9d8>] linflex_set_termios+0x58/0x4a4
+[  586.580276] [<ffffffc00037bd38>] uart_change_speed.isra.9+0x4c/0x100
+[  586.587237] [<ffffffc00037be60>] uart_set_termios+0x74/0x198
+[  586.593438] [<ffffffc000367104>] tty_set_termios+0x160/0x20c
+[  586.599636] [<ffffffc0003677f8>] set_termios+0x2c8/0x2e0
+[  586.605454] [<ffffffc000367d30>] tty_mode_ioctl+0x4b4/0x558
+[  586.611557] [<ffffffc000367e38>] n_tty_ioctl_helper+0x30/0x114
+[  586.617947] [<ffffffc000363804>] n_tty_ioctl+0x9c/0x16c
+[  586.623669] [<ffffffc0003612e4>] tty_ioctl+0x278/0xc68
+[  586.629296] [<ffffffc000177628>] do_vfs_ioctl+0x36c/0x5b0
+[  586.635208] [<ffffffc0001778f0>] SyS_ioctl+0x84/0x98
+[  586.640688] ###mn:[linflex_set_termios 911] [dump_stack end]
+[  586.646855] #mn: 3, [linflex_set_termios][953]#mn: 7, [linflex_set_termios][984]#mn: baud:115200, [linflex_set_termios][1016]uart_write start!
+uart_read start!
+^C
+root@s32v234evb:~# 
