@@ -106,3 +106,10 @@ man objdump:
 	[-D|--disassemble-all]
 	[-S|--source]
 ================================================================================
+read bin file
+hexdump cse.bin
+
+================================================================================
+compute and check MD5 message digest
+md5sum cse.bin
+check fat file system, compare result

@@ -1,0 +1,9 @@
+
+======================================
+1.uboot: reduce the U-boot image size
+    create release version config
+    remove most of commands from u-boot
+    minimal system init
+
+=> printenv 
+bootdelay=3

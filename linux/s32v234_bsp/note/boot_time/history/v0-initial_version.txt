@@ -1,0 +1,45 @@
+inital version boot time log
+
+u-boot.s32 size: 282624 (269K)
+u-boot.bin size: 275408 (276K)
+
+Image size: 7177056 bytes  (6.9M)
+dtb size: 23347 bytes	(23k)
+
+emmc boot time log
+==============================================================
+boot to root shell: 9-3=6s
+--------------------------------------------------------------
+(1)
+reading Image
+7177056 bytes read in 381 ms (18 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+23347 bytes read in 14 ms (1.6 MiB/s)
+
+
+(2) kernel init
+[    0.000000] Booting Linux on physical CPU 0x0
+[    2.876040] SEQ: driver ready.
+[    3.536411] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+
+
+[    3.580947] random: dbus-uuidgen urandom read with 51 bits of entropy available
+
+
+sd boot time log
+==============================================================
+boot to root shell: 11-3=8s
+--------------------------------------------------------------
+(1)
+reading Image
+7177056 bytes read in 611 ms (11.2 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+23347 bytes read in 16 ms (1.4 MiB/s)
+
+(2) kernel init
+[    0.000000] Booting Linux on physical CPU 0x0
+[    1.920509] Freeing alternatives memory: 4K (ffffffc000711000 - ffffffc000712000)
+INIT: version 2.88 booting
+==============================================================

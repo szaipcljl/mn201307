@@ -1,0 +1,2 @@
+
+load uboot to sram via uart

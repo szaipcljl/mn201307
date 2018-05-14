@@ -1,0 +1,12 @@
+
+build/core/configure.mk
+
+########################## DRIVER FLAGS ###################################
+
+KERNEL_DEFCONFIG	:= $(shell echo $(CONFIG_KERNEL_DEFCONFIG_STRING))
+...
+LINUX_OUT_DIR		:= $(KERNEL_OUT_DIR)/linux-$(LINUX_VERSION)_$(strip \
+				$(shell echo $(KERNEL_DEFCONFIG) | \
+				sed -e s/ambarella_// -e s/_defconfig// -e s/$(AMB_BOARD)_// -e s/_kernel_config//))
+
+=>  out/rda600/kernel/linux-4.9_rda600

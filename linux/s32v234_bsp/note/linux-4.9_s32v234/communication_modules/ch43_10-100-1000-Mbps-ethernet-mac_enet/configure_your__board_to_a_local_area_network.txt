@@ -1,0 +1,71 @@
+Configure your rda600 board to  a local area network
+
+set static IP Address
+============================================================================
+1.Plug one end of an Ethernet cable into your cocmputer, andd  auto obtain an
+IP address on Windows
+
+192.168.50.35
+255.255.255.0
+192.168.50.1
+
+
+2. Plug one end of an Ethernet cable into your rda600 board, adn configure rda600 board
+
+ifconfig eth0 192.168.50.240
+route add default gw 192.168.50.1
+
+// ifconfig eth0 down
+// ifconfig eth0 up
+
+// ifdown eth0
+// ifup eth0
+
+Or:
+To assign a static IP you need to edit /etc/network/interfaces.
+The interface will probably be called eth0.
+The current entry will look something like
+
+auto eth0
+iface eth0 inet dhcp
+
+You will need you need to change this to:
+
+auto eth0
+iface eth0 inet static
+   address 10.253.0.50
+   netmask 255.255.255.0
+   network 10.253.0.0
+   gateway 10.253.0.1
+   dns-nameservers 8.8.8.8
+
+
+3.
+ping 192.168.50.70  (eth)
+ping 192.168.30.120 (WLAN)   
+
+obtain IP Address automatically 
+===============================
+sudo vi /etc/network/interfaces
+
+For the primary interface, which is usually eth0, you will see these lines:
+
+    auto eth0
+    iface eth0 inet dhcp
+
+
+------------
+inetd
+
+**********************************************
+in uboot:
+Windows WLAN IP: 192.168.30.120
+ehternet gatewayip: 192.168.50.1
+
+=> setenv ipaddr 192.168.50.240
+=> setenv gatewayip 192.168.50.1
+=> ping 192.168.30.120
+Using FEC device
+host 192.168.30.120 is alive
+=> setenv serverip 192.168.30.215
+=> run nfsboot

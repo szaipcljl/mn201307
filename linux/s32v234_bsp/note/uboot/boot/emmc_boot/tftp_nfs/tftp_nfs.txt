@@ -4,7 +4,7 @@ tftp and nfs
 turn off the firewall
 sudo ufw disable
 
-tftp boot
+tftp boot: load kernel image and dtb with u-boot via tftp
 ==============================================================
 1. host pc: 
 	disable host WLAN
@@ -40,7 +40,7 @@ tftp boot
 mmcargs=setenv bootargs console=${console},${baudrate} root=${mmcroot}
 
 
-nfs boot
+nfs boot: load kernel image and dtb with u-boot via TFTP; mount rootfs using NFS
 ==============================================================
 (1) install and setup NFS server
 configure /etc
@@ -56,4 +56,14 @@ ps:
 nfsboot=echo Booting from net using tftp and nfs...; run nfsbootargs;run loadtftpimage; run loadtftpfdt;${boot_mtd} ${loadaddr} - ${fdt_addr};
 nfsbootargs=setenv bootargs console=${console},${baudrate} root=/dev/nfs rw ip=${ipaddr}:${serverip}::${netmask}::eth0:off nfsroot=${serverip}:/tftpboot/rfs,nolock 
 
+-------------
+boot_mtd=booti
+loadtftpimage=tftp ${loadaddr} ${image};
+loadtftpfdt=tftp ${fdt_addr} ${fdt_file};
+loadaddr=0x8007FFC0
+fdt_addr=0x82000000
+serverip=192.168.2.5
+
+image=Image
+fdt_file=rda600.dtb
 ==============================================================

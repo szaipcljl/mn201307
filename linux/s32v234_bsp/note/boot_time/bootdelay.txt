@@ -1,0 +1,5 @@
+
+common/Makefile
+ifdef CONFIG_BOOTDELAY
+obj-y += autoboot.o
+endif

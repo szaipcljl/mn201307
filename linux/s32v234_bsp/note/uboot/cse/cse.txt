@@ -1,0 +1,11 @@
+
+
+kernel log:
+[    2.788716] Bad mode in Error handler detected, code 0xbf000002 -- SError
+[    2.796152] CPU: 1 PID: 647 Comm: insmod Tainted: G           O    4.1.26-rt29 #21
+[    2.804444] Hardware name: Freescale S32V234 (DT)
+[    2.809596] task: ffffffc077786340 ti: ffffffc077608000 task.ti: ffffffc077608000
+[    2.817799] PC is at 0x7f82b35f84
+[    2.821420] LR is at 0x410068
+[    2.824663] pc : [<0000007f82b35f84>] lr : [<0000000000410068>] pstate: 80000000
+[    2.832768] sp : ffffffc07760bff0

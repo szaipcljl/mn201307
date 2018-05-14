@@ -1,0 +1,5 @@
+
+1. sudo minicome
+2. uboot command line
+=> loadx
+3. ctrl-A+z

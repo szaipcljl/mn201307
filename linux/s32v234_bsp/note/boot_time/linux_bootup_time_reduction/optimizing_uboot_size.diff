@@ -1,0 +1,264 @@
+commit 8a5fa64a0e065321f8607dea98c00a8ae04851d7
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Thu May 10 14:07:52 2018 +0800
+
+    [boot_time] create release version config; remove i2c/net/flash in release version
+    
+    (1) building release version:
+    add CONFIG_BUILD_RELEASE_VERSION to your configs/your-boardrelease_defconfig
+    
+    (2) use #ifdef CONFIG_BUILD_RELEASE_VERSION in include/configs/your-board.h to
+    differentiate varieties versions.
+    
+    one board has one header in include/configs/, has two or more defconfig in configs/
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/arch/arm/cpu/armv8/s32v234/Kconfig b/arch/arm/cpu/armv8/s32v234/Kconfig
+index 756bc2c..ca38c8f 100644
+--- a/arch/arm/cpu/armv8/s32v234/Kconfig
++++ b/arch/arm/cpu/armv8/s32v234/Kconfig
+@@ -39,6 +39,20 @@ config TARGET_S32V234TMDP
+ 
+ endchoice
+ 
++choice
++	prompt "Select S32V234 Target Board Build Version"
++	default BUILD_ENG_VERSION
++	help
++	  S32V234 Target Board Build Version Selection
++
++config BUILD_RELEASE_VERSION
++	bool "rda600 release version"
++
++config BUILD_ENG_VERSION
++	bool "rda600 eng version"
++
++endchoice
++
+ if TARGET_S32V234EVB
+ 
+ choice
+diff --git a/common/Kconfig b/common/Kconfig
+index e218218..060d644 100644
+--- a/common/Kconfig
++++ b/common/Kconfig
+@@ -404,8 +404,6 @@ menu "Network commands"
+ 
+ config CMD_NET
+ 	bool "bootp, tftpboot"
+-        select NET
+-	default y
+ 	help
+ 	  Network commands.
+ 	  bootp - boot image via network using BOOTP/TFTP protocol
+@@ -433,7 +431,6 @@ config CMD_DHCP
+ 
+ config CMD_NFS
+ 	bool "nfs"
+-	default y
+ 	help
+ 	  Boot image via network using NFS protocol.
+ 
+diff --git a/common/autoboot.c b/common/autoboot.c
+index c11fb31..d2fb2ec 100644
+--- a/common/autoboot.c
++++ b/common/autoboot.c
+@@ -319,8 +319,12 @@ const char *bootdelay_process(void)
+ 	bootlimit = getenv_ulong("bootlimit", 10, 0);
+ #endif /* CONFIG_BOOTCOUNT_LIMIT */
+ 
+-	s = getenv("bootdelay");
+-	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
++	if (CONFIG_BOOTDELAY == -2)
++		bootdelay = CONFIG_BOOTDELAY;
++	else {
++		s = getenv("bootdelay");
++		bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
++	}
+ 
+ #ifdef CONFIG_OF_CONTROL
+ 	bootdelay = fdtdec_get_config_int(gd->fdt_blob, "bootdelay",
+diff --git a/configs/rda600release_defconfig b/configs/rda600release_defconfig
+new file mode 100644
+index 0000000..24a5415
+--- /dev/null
++++ b/configs/rda600release_defconfig
+@@ -0,0 +1,9 @@
++CONFIG_ARM=y
++CONFIG_ARCH_S32V234=y
++CONFIG_TARGET_RDA600=y
++CONFIG_BUILD_RELEASE_VERSION=y
++CONFIG_S32V234EVB_29288=y
++CONFIG_S32V234_DDR3=y
++CONFIG_ARMV8_MULTIENTRY=y
++CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/rda600/rda600.cfg"
++CONFIG_FSL_LINFLEXUART=y
+diff --git a/include/configs/rda600.h b/include/configs/rda600.h
+index e664920..f33212c 100644
+--- a/include/configs/rda600.h
++++ b/include/configs/rda600.h
+@@ -14,13 +14,26 @@
+ #define __CONFIG_H
+ 
+ /* The configurations of this board depend on the definitions in this file and
+-* the ones in the header included at the end, configs/s32v234evb_2016q4.h */
++* the ones in the header included at the end, configs/s32v234evb_roadefend.h */
+ 
+ #define	FDT_FILE rda600.dtb
+ 
++#ifdef CONFIG_BUILD_RELEASE_VERSION
++//set to -2 to autoboot with no delay and not check for abort
++#define DELAY_TIME	-2
++#else
++//DEBUG VERSION
++#define DELAY_TIME	3
++#define CONFIG_ETHENET_USED
++#define CONFIG_I2C_USED
++#define CONFIG_FLASH_USED
++
++#endif
++
++
+ /* #define CONFIG_CMD_PCI */
+ 
+ /* we include this file here because it depends on the above definitions */
+-#include <configs/s32v234evb_2016q4.h>
++#include <configs/s32v234_roadefend.h>
+ 
+ #endif
+diff --git a/include/configs/s32v.h b/include/configs/s32v.h
+index 7bb1f28..890e09e 100644
+--- a/include/configs/s32v.h
++++ b/include/configs/s32v.h
+@@ -85,7 +85,7 @@
+ /* Ramdisk name */
+ #define RAMDISK_NAME		rootfs.uimg
+ 
+-/* Increase image size */                                                                                     
++/* Increase image size */
+ #define CONFIG_SYS_BOOTM_LEN    (64 << 20)
+ 
+ #ifdef CONFIG_RUN_FROM_DDR0
+@@ -165,16 +165,22 @@
+ #define CONFIG_DOS_PARTITION
+ 
+ /* Ethernet config */
++#ifdef CONFIG_ETHENET_USED
+ #define CONFIG_CMD_MII
+ #define CONFIG_FEC_MXC
+ #define CONFIG_MII
+ 
++#define CONFIG_CMD_NET
++#define CONFIG_CMD_NFS
++#endif
++
+ #ifdef CONFIG_PHY_RGMII_DIRECT_CONNECTED
+ #define CONFIG_FEC_MXC_PHYADDR (0x484a53)
+ #define CONFIG_BCM_DUPLEX_MODE	DUPLEX_FULL
+ #endif
+ 
+ /* I2C Configs */
++#ifdef CONFIG_I2C_USED
+ #define CONFIG_CMD_I2C
+ #define CONFIG_SYS_I2C
+ #define CONFIG_SYS_I2C_MXC
+@@ -182,8 +188,9 @@
+ #define CONFIG_SYS_I2C_SPEED	100000
+ #define CONFIG_SYS_I2C_SLAVE	0x8
+ #define CONFIG_SYS_SPD_BUS_NUM	0
++#endif
+ 
+-#define CONFIG_BOOTDELAY	3
++#define CONFIG_BOOTDELAY	DELAY_TIME
+ 
+ #define CONFIG_BOOTARGS		"console=ttyLF"	__stringify(CONFIG_FSL_LINFLEX_MODULE) \
+ 				" root=/dev/ram rw"
+diff --git a/include/configs/s32v234_common.h b/include/configs/s32v234_common.h
+index a5b9606..115bc2f 100644
+--- a/include/configs/s32v234_common.h
++++ b/include/configs/s32v234_common.h
+@@ -57,6 +57,7 @@
+ #define CONFIG_SYS_FSL_FLASH1_SIZE      0x10000000
+ #define QSPI_BASE_ADDR		        0x400A6000
+ 
++#ifdef CONFIG_FLASH_USED
+ /* flash related definitions */
+ #if defined(CONFIG_SPI_FLASH) && defined(CONFIG_FSL_QSPI)
+ #define CONFIG_S32V234_USES_FLASH
+@@ -86,6 +87,7 @@
+ 
+ #endif
+ #endif
++#endif /*CONFIG_FLASH_USED*/
+ 
+ 
+ #endif
+diff --git a/include/configs/s32v234_roadefend.h b/include/configs/s32v234_roadefend.h
+new file mode 100644
+index 0000000..5995e38
+--- /dev/null
++++ b/include/configs/s32v234_roadefend.h
+@@ -0,0 +1,46 @@
++/*
++ * (C) Copyright 2015-2016 Freescale Semiconductor, Inc.
++ * (C) Copyright 2016 NXP
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++
++/*
++ * Configuration settings for the Freescale S32V234 boards,
++ * 2016, quarter 4 versions.
++ */
++
++#ifndef _S32V234_ROADEFEND_H
++#define _S32V234_ROADEFEND_H
++
++/* The configurations of this board depend on the definitions in this file and
++* the ones in the header included at the end, configs/s32v234_common.h */
++
++#define CONFIG_DDR_INIT_DELAY 100
++
++#define CONFIG_FSL_USDHC
++#define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC_BASE_ADDR
++
++/* Ethernet config */
++
++#ifdef CONFIG_ETHENET_USED
++#define CONFIG_FEC_XCV_TYPE     RGMII
++#define CONFIG_PHYLIB
++
++#define CONFIG_FEC_MXC_PHYADDR  3
++#define CONFIG_PHY_MICREL
++#define CONFIG_PHY_MICREL_KSZ9031
++#endif
++
++#define CONFIG_SYS_INIT_SP_OFFSET \
++	(CONFIG_SYS_INIT_RAM_SIZE - GENERATED_GBL_DATA_SIZE - CONFIG_SYS_TEXT_OFFSET)
++
++#ifdef CONFIG_CMD_PCI
++#define CONFIG_GICSUPPORT
++#define CONFIG_USE_IRQ
++#define CONFIG_CMD_IRQ
++#endif
++/* we include this file here because it depends on the above definitions */
++#include <configs/s32v234_common.h>
++
++#endif
+diff --git a/include/configs/s32v234evb29288.h b/include/configs/s32v234evb29288.h
+index 07fd060..c1876d5 100644
+--- a/include/configs/s32v234evb29288.h
++++ b/include/configs/s32v234evb29288.h
+@@ -18,6 +18,11 @@
+ 
+ #define	FDT_FILE s32v234-evb.dtb
+ 
++#define DELAY_TIME	3
++#define CONFIG_ETHENET_USED
++#define CONFIG_I2C_USED
++#define CONFIG_FLASH_USED
++
+ /* #define CONFIG_CMD_PCI */
+ 
+ /* we include this file here because it depends on the above definitions */

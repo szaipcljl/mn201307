@@ -1,0 +1,12 @@
+
+
+inital version(v0):
+u-boot.bin 276K,	u-boot.s32 269K
+
+-----------------------------------
+remove I2C: (.bin:-18k, .s32:-5k)
+u-boot.bin 258K,	u-boot.s32 264K
+
+-----------------------------------
+remove I2C+ETHE:(.bin:-36k, .s32:-25k)
+u-boot.bin 240K,	u-boot.s32 244K
