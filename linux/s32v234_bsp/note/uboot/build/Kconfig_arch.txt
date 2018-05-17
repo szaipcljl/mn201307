@@ -1,0 +1,51 @@
+
+
+===============================================================
+Kconfig (mainmenu "U-Boot $UBOOTVERSION Configuration")
+| menu,endmenu 
+|
+|
+| source
+v
+arch/Kconfig
+|
+| (1)choice(Architecture select): ARM
+| (2) SYS_ARCH/SYS_CPU/SYS_SOC/SYS_VENDOR/SYS_BOARD/SYS_CONFIG_NAME: string
+|
+|
+|
+| source                        menu "ARM architecture"
++-------->arch/arm/Kconfig --->   depends on ARM
+          |
+          | choice(target select): ARCH_S32 <-- configs/s32v234evb_defconfig
+          |                            |
+          |                            |if
+          | source                     v
+          +--------> arch/arm/cpu/armv8/s32/Kconfig
+                       | (1)choice(select S32 Target Board Support): TARGET_S32V234EVB
+                       |                                                    if|   |
+                       |        choice(Family Member): S32V234EVB_29288  <----+   |
+                       |                                                          |
+                       | (2)choice(Select DDR type): S32_DDR3                     |
+                       |                                                          |
+                       |                                                          |
+                       |                                                          |
+                       | source                                                if |
+                       +--------> board/freescale/s32v234evb/Kconfig    <---------+
+                                   | 
+                                   |(1) SYS_BOARD
+                                   |(2) SYS_CONFIG_NAME <--if---- "Family Member"
+                                   |(3) SYS_DDR_SIZE <--if---- "DDR type" 
+                               
+
+================================================================================
+arch/arm/Kconfig:
+config ARCH_S32
+	bool "Support S32 SOCs"
+	select ARM64
+	select CUSTOM_CMD_FLASH
+
+choice prompt "Target select"
+
+----------------
+source "arch/arm/cpu/armv8/s32/Kconfig"
