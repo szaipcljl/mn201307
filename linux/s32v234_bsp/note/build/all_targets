@@ -1,0 +1,20 @@
+
+
+boards/rda600/Makefile
+
+all: $(ALL_TARGETS)
+	@$(MAKE) $(AMBA_MAKE_PARA) build_fsimage
+	@$(MAKE) $(AMBA_MAKE_PARA) uboot
+	@echo "Build Done"
+
+build/core/definition.mk
+###########################################################
+## Add target into ALL_$(CLASS)
+###########################################################
+
+define add-target-into-build
+$(eval ALL_TARGETS += $(strip $(1)))
+endef
+
+kernel/linux/make.inc
+$(call add-target-into-build, linux)

@@ -1,0 +1,14 @@
+
+(1) sudo apt-get install compizconfig-settings-manager
+
+(2)
+安装好的ccsm里面很多选项是没有的，在这里我要补全它
+sudo apt-get install compiz-fusion-*
+或 sudo apt-get install compiz-fusion-plugins-extra 
+
+(3)
+open "conpizConfig Setting Manager"
+Effects:
+	Animations
+	Fading Windows
+

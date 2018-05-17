@@ -1,0 +1,44 @@
+defconfig
+
+=======================
+scripts/kconfig/Makefile
+
+SRCARCH := ..
+
+%_defconfig: $(obj)/conf
+	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$@ $(Kconfig)
+==================
+configs/s32v234evb_defconfig
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/s32v234evb/s32v234evb.cfg"
+
+refer to: doc/README.kconfig
+
+Conversion from boards.cfg to Kconfig
+-------------------------------------
+
+Prior to Kconfig, boards.cfg was a primary database that contained Arch, CPU,
+SoC, etc. of all the supported boards.  It was deleted when switching to
+Kconfig.  Each field of boards.cfg was converted as follows:
+
+ Status      ->  "S:" entry of MAINTAINERS
+ Arch        ->  CONFIG_SYS_ARCH defined by Kconfig
+ CPU         ->  CONFIG_SYS_CPU defined by Kconfig
+ SoC         ->  CONFIG_SYS_SOC defined by Kconfig
+ Vendor      ->  CONFIG_SYS_VENDOR defined by Kconfig
+ Board       ->  CONFIG_SYS_BOARD defined by Kconfig
+ Target      ->  File name of defconfig (configs/<target>_defconfig)
+ Options     ->  CONFIG_SYS_EXTRA_OPTIONS defined by Kconfig
+ Maintainers ->  "M:" entry of MAINTAINERS
+
+TODO
+----
+
+- The option field of boards.cfg, which was used for the pre-Kconfig
+  configuration, moved to CONFIG_SYS_EXTRA_OPTIONS verbatim now.
+  Board maintainers are expected to implement proper Kconfig options
+  and switch over to them.  Eventually CONFIG_SYS_EXTRA_OPTIONS will go away.
+  CONFIG_SYS_EXTRA_OPTIONS should not be used for new boards.
+
+- Move the config macros in header files to Kconfig.
+
+

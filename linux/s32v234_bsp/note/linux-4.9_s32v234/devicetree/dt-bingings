@@ -1,0 +1,6 @@
+
+$ ls include/dt-bindings/
+arm  clk  clock  dma  gpio  iio  input  interrupt-controller  leds  media  memory  mfd  phy  pinctrl  pwm  regulator  reset  reset-controller  soc  sound  spmi  thermal
+
+$ ll  arch/arm64/boot/dts/include/
+lrwxrwxrwx  1 mlinux mlinux   34 Mar  2 15:19 dt-bindings -> ../../../../../include/dt-bindings/

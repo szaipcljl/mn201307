@@ -1,10 +1,18 @@
-diff --git a/arch/arm/cpu/armv8/s32v234/Kconfig b/arch/arm/cpu/armv8/s32v234/Kconfig
-index 36626dc..756bc2c 100644
---- a/arch/arm/cpu/armv8/s32v234/Kconfig
-+++ b/arch/arm/cpu/armv8/s32v234/Kconfig
-@@ -22,6 +22,9 @@ choice
+commit 6f38756649369215d905175058bcd09deb9c0a29
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Wed May 16 18:24:07 2018 +0800
+
+    add a board for rda600
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/arch/arm/cpu/armv8/s32/Kconfig b/arch/arm/cpu/armv8/s32/Kconfig
+index 9edd562..62f4f7a 100644
+--- a/arch/arm/cpu/armv8/s32/Kconfig
++++ b/arch/arm/cpu/armv8/s32/Kconfig
+@@ -18,6 +18,9 @@ choice
  	help
- 	  S32V234 Target Board Selection
+ 	  S32 Target Board Selection
  
 +config TARGET_RDA600
 +	bool "Support rda600"
@@ -12,7 +20,7 @@ index 36626dc..756bc2c 100644
  config TARGET_S32V234EVB
  	bool "Support s32v234evb"
  
-@@ -81,6 +84,7 @@ config DDR_HANDSHAKE_AT_RESET
+@@ -91,6 +94,7 @@ config DDR_HANDSHAKE_AT_RESET
  	help
  	  Enable DDR handshake after functional reset
  
@@ -22,7 +30,7 @@ index 36626dc..756bc2c 100644
  source "board/freescale/s32v234pcie/Kconfig"
 diff --git a/board/freescale/rda600/Kconfig b/board/freescale/rda600/Kconfig
 new file mode 100644
-index 0000000..253d33d
+index 0000000..2d7357b
 --- /dev/null
 +++ b/board/freescale/rda600/Kconfig
 @@ -0,0 +1,31 @@
@@ -46,8 +54,8 @@ index 0000000..253d33d
 +
 +config SYS_DDR_SIZE
 +	int
-+	default 2147483648 if S32V234_DDR3
-+	default 268435456 if S32V234_LPDDR2
++	default 2147483648 if S32_DDR3
++	default 268435456 if S32_LPDDR2
 +
 +config PHY_RGMII_DIRECT_CONNECTED
 +	bool "Enable fixed PHY for MDIO Bus/PHY emulation with fixed speed/link PHYs"
@@ -59,11 +67,11 @@ index 0000000..253d33d
 +endif
 diff --git a/board/freescale/rda600/MAINTAINERS b/board/freescale/rda600/MAINTAINERS
 new file mode 100644
-index 0000000..ce44f7e
+index 0000000..1681cb8
 --- /dev/null
 +++ b/board/freescale/rda600/MAINTAINERS
 @@ -0,0 +1,6 @@
-+RDA600 BOARD
++S32V234 Evaluation BOARD
 +M:	-
 +S:	Maintained
 +F:	board/freescale/rda600/
@@ -86,10 +94,10 @@ index 0000000..ce788c0
 +#########################################################################
 diff --git a/board/freescale/rda600/rda600.c b/board/freescale/rda600/rda600.c
 new file mode 100644
-index 0000000..03fd520
+index 0000000..2434dbc
 --- /dev/null
 +++ b/board/freescale/rda600/rda600.c
-@@ -0,0 +1,196 @@
+@@ -0,0 +1,249 @@
 +/*
 + * (C) Copyright 2013-2016 Freescale Semiconductor, Inc.
 + * (C) Copyright 2016-2017 NXP
@@ -106,7 +114,40 @@ index 0000000..03fd520
 +#include <netdev.h>
 +#include <i2c.h>
 +
++#ifdef CONFIG_PHY_MICREL
++#include <micrel.h>
++#endif
++
++#ifdef CONFIG_SJA1105
++#include "sja1105.h"
++#endif
++
 +DECLARE_GLOBAL_DATA_PTR;
++
++#ifdef CONFIG_FSL_DSPI
++static void setup_iomux_dspi(void)
++{
++	/* Muxing for DSPI0 */
++
++	/* Configure Chip Select Pins */
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_CS0_OUT, SIUL2_MSCRn(SIUL2_MSCR_PB8));
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_CS4_OUT, SIUL2_MSCRn(SIUL2_MSCR_PC0));
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_CS5_OUT, SIUL2_MSCRn(SIUL2_MSCR_PC1));
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_CS6_OUT, SIUL2_MSCRn(SIUL2_MSCR_PC2));
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_CS7_OUT, SIUL2_MSCRn(SIUL2_MSCR_PC3));
++
++	/* MSCR */
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_SOUT_OUT, SIUL2_MSCRn(SIUL2_MSCR_PB6));
++
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_SCK_OUT, SIUL2_MSCRn(SIUL2_MSCR_PB5));
++
++	writel(SIUL2_PAD_CTRL_DSPI0_MSCR_SIN_OUT, SIUL2_MSCRn(SIUL2_MSCR_PB7));
++
++	/* IMCR */
++	writel(SIUL2_PAD_CTRL_DSPI0_IMCR_SIN_IN,
++		SIUL2_IMCRn(SIUL2_PB7_IMCR_SPI0_SIN));
++}
++#endif
 +
 +static void setup_iomux_uart(void)
 +{
@@ -174,6 +215,17 @@ index 0000000..03fd520
 +
 +int board_phy_config(struct phy_device *phydev)
 +{
++#ifdef CONFIG_PHY_MICREL
++	/* Enable all AutoNeg capabilities */
++	ksz9031_phy_extended_write(phydev, 0x02,
++				   MII_KSZ9031_EXT_OP_MODE_STRAP_OVRD,
++				   MII_KSZ9031_MOD_DATA_NO_POST_INC,
++				   MII_KSZ9031_EXT_OMSO_RGMII_ALL_CAP_OVRD);
++
++	/* Reset the PHY so that the previous changes take effect */
++	phy_write(phydev, CONFIG_FEC_MXC_PHYADDR, MII_BMCR, BMCR_RESET);
++#endif
++
 +	if (phydev->drv->config)
 +		phydev->drv->config(phydev);
 +
@@ -235,15 +287,15 @@ index 0000000..03fd520
 +
 +int board_early_init_f(void)
 +{
-+#if defined(CONFIG_S32V234EVB_29288) && defined(CONFIG_DCU_QOS_FIX)
-+	struct src *src_regs = (struct src *)SRC_SOC_BASE_ADDR;
-+#endif
 +	clock_init();
 +	mscm_init();
 +
 +	setup_iomux_uart();
 +	setup_iomux_enet();
 +	setup_iomux_i2c();
++#ifdef CONFIG_FSL_DSPI
++	setup_iomux_dspi();
++#endif
 +#ifdef CONFIG_SYS_USE_NAND
 +	setup_iomux_nfc();
 +#endif
@@ -251,12 +303,6 @@ index 0000000..03fd520
 +
 +#ifdef CONFIG_DCU_QOS_FIX
 +	board_dcu_qos();
-+
-+#ifdef CONFIG_S32V234EVB_29288
-+	/* Set minimum value of 2D-ACE QoS. */
-+	writel(0x8 << SRC_GPR8_2D_ACE_QOS_OFFSET, &src_regs->gpr8);
-+#endif
-+
 +#endif
 +
 +	setup_xrdc();
@@ -276,6 +322,21 @@ index 0000000..03fd520
 +	printf("Board: %s\n", CONFIG_SYS_CONFIG_NAME);
 +
 +	return 0;
++}
++
++void board_net_init(void)
++{
++#ifdef CONFIG_SJA1105
++	/* Only probe the switch if we are going to use networking.
++	 * The probe has a self check so it will quietly exit if we call it
++	 * twice.
++	 */
++	sja1105_probe(SJA_1_CS, SJA_1_BUS);
++	/* The SJA switch can have its ports RX lines go out of sync. They need
++	 * to be reseted in order to allow network traffic.
++	 */
++	sja1105_reset_ports(SJA_1_CS, SJA_1_BUS);
++#endif
 +}
 +
 +
@@ -340,27 +401,31 @@ index 0000000..9107968
 +DATA 4 0x4004A004 0x30005AF0
 +DATA 4 0x4004A004 0x3000A50F
 diff --git a/configs/rda600_defconfig b/configs/rda600_defconfig
-new file mode 100644
-index 0000000..0ee5996
---- /dev/null
-+++ b/configs/rda600_defconfig
-@@ -0,0 +1,10 @@
-+CONFIG_ARM=y
-+CONFIG_ARCH_S32V234=y
-+CONFIG_TARGET_RDA600=y
-+CONFIG_S32V234EVB_29288=y
-+CONFIG_S32V234_DDR3=y
-+CONFIG_ARMV8_MULTIENTRY=y
-+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/rda600/rda600.cfg"
-+CONFIG_CMD_DHCP=y
-+CONFIG_CMD_PING=y
-+CONFIG_FSL_LINFLEXUART=y
+deleted file mode 100644
+index d2b9d81..0000000
+--- a/configs/rda600_defconfig
++++ /dev/null
+@@ -1,14 +0,0 @@
+-CONFIG_ARM=y
+-CONFIG_ARCH_S32=y
+-CONFIG_TARGET_S32V234EVB=y
+-CONFIG_S32V234EVB_29288=y
+-CONFIG_S32_DDR3=y
+-CONFIG_ARMV8_MULTIENTRY=y
+-CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/freescale/s32v234evb/s32v234evb.cfg"
+-CONFIG_CMD_DHCP=y
+-CONFIG_CMD_PING=y
+-CONFIG_CMD_SPI=y
+-CONFIG_FSL_LINFLEXUART=y
+-CONFIG_FSL_CSE3=y
+-CONFIG_FSL_DSPI=y
+-CONFIG_SJA1105=y
 diff --git a/include/configs/rda600.h b/include/configs/rda600.h
 new file mode 100644
-index 0000000..07fd060
+index 0000000..d55e274
 --- /dev/null
 +++ b/include/configs/rda600.h
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,32 @@
 +/*
 + * (C) Copyright 2015-2016 Freescale Semiconductor, Inc.
 + * (C) Copyright 2016-2017 NXP
@@ -379,23 +444,17 @@ index 0000000..07fd060
 +/* The configurations of this board depend on the definitions in this file and
 +* the ones in the header included at the end, configs/s32v234evb_2016q4.h */
 +
-+#define	FDT_FILE s32v234-evb.dtb
++#define	FDT_FILE rda600.dtb
 +
 +/* #define CONFIG_CMD_PCI */
++
++
++#define CONFIG_BOARD_USE_RAMFS_IN_NFSBOOT
++
++#define CONFIG_DSPI_CS_SCK_DELAY 100
++#define CONFIG_DSPI_SCK_CS_DELAY 100
 +
 +/* we include this file here because it depends on the above definitions */
 +#include <configs/s32v234evb_2016q4.h>
 +
 +#endif
-diff --git a/make.inc b/make.inc
-index f9f183e..422f03a 100644
---- a/make.inc
-+++ b/make.inc
-@@ -5,6 +5,6 @@ LOCAL_PATH:=$(call my-dir)
- uboot: $(DOT_CONFIG)
- 	@mkdir -p $(BOOTLOADER_OUT_DIR)/u-boot
- 	@echo "Build uboot ... "
--	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) ARCH=aarch64 -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot s32v234evb_defconfig
-+	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) ARCH=aarch64 -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot rda600_defconfig
- 	$(AMBA_MAKEFILE_V)$(MAKE) $(AMBA_MAKE_PARA) -C $(AMB_TOPDIR)/bootloader/u-boot O=$(BOOTLOADER_OUT_DIR)/u-boot 
- 

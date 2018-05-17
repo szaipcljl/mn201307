@@ -24,3 +24,9 @@ make CC=$GCC/install/bin/gcc -j$(nproc)
 # Now you should have vmlinux (kernel binary) and bzImage (packed kernel image):
 ls $KERNEL/vmlinux
 ls $KERNEL/arch/x86/boot/bzImage
+
+===============================================
+make olddefconfig
+From the help (make help in the kernel source dir)
+	olddefconfig - Same as silentoldconfig but sets new symbols to their default value
+

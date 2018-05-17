@@ -37,6 +37,7 @@ echo "CONFIG_KASAN_INLINE=y" >> $KERNEL/.config
 # some config value to leave it as default:
 
 yes "" | make oldconfig
+#make olddefconfig
 # make oldconfig
 # note!!!:
 # 'CONFIG_KASAN_INLINE=y' => follow bellow after make oldconfig
