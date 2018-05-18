@@ -1,0 +1,2 @@
+
+See tools/perf/builtin-timechart.c and tools/perf/Documentation/perf-timechart.txt in the kernel sources for details.

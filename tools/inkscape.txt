@@ -1,0 +1,3 @@
+'perf timechart' to turn a trace into a Scalable Vector Graphics file,
+	that can be viewed with popular SVG viewers such as 'Inkscape'. 
+sudo apt install inkscape

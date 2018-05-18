@@ -1,0 +1,4 @@
+perf stat
+可以看到 branche-misses 的情况比较严重
+
+https://www.ibm.com/developerworks/cn/linux/l-cn-perf1/
