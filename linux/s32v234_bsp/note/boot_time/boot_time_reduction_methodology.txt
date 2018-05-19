@@ -1,0 +1,5 @@
+
+1. measure time
+2. remove unnecessary functionality
+3. postpone, parallelize, reorder
+4. optimize neccessary functionality

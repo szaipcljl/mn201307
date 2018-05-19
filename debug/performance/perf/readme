@@ -1,0 +1,50 @@
+
+
+If you have compile linux kernel, then check the vmlinux
+(this file is in the linux kernel source code directory
+ where you build your kernel) for the perf_event_open symbol:
+
+nm vmlinux|grep perf_event_open
+ffffffff81e952b0 t __p_syscall_meta__perf_event_open
+ffffffff81c6a780 d __syscall_meta__perf_event_open
+ffffffff81163ee0 t SYSC_perf_event_open
+ffffffff81165090 T sys_perf_event_open
+ffffffff81165090 T SyS_perf_event_open
+ffffffff81c6a800 d types__perf_event_open
+
+And notice this line:
+	1.ffffffff81165090 T sys_perf_event_open
+
+the single most important entry point for the entire perf tool: it only has
+a single syscall entry point, that is the kernel address you can set break
+point, if you want to debug all the possible perf tool’s usage.
+
+2. Next, reboot your kernel into the newly compiled kernel you just built.
+(There is a lot of details involved here, which I am skipping) And to be
+sure, check /proc/kallsyms to really make sure that the symbol matches the
+address:
+    sudo cat /proc/kallsyms |grep perf_event_open
+    ffffffff81163ee0 t SYSC_perf_event_open
+    ffffffff81165090 T SyS_perf_event_open
+    ffffffff81165090 T sys_perf_event_open
+
+Now you can see the address for sys_perf_event_open() matches exactly,
+ie, the kernel just built has been booted up correctly, and therefore
+the perf tool can be used after it have been compiled.
+
+3. Now that the kernel is booted correctly, go to your kernel source’s
+tools/perf directory and do a “make”:
+linux-4.3/tools/perf>make
+
+I have truncated a lot of intermediate output, but the most important
+output is the “perf” tool binary. Now you can do a “sudo make install”
+if you want to install the binary into your /usr/local/bin directory,
+or just run it directory from the linux kernel source directory - much
+preferred option.
+
+======================================================================
+build
+
+config/Makefile:115: *** Error: flex is missing on this system, please install it.  Stop.
+sudo apt install flex
+sudo apt install bison

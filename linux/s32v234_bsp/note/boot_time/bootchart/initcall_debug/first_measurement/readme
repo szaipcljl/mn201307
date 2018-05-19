@@ -1,0 +1,20 @@
+inkscape
+
+kernel:
+printk.time=1
+initcall_debug
+loglevel
+===================
+(1) 
+cat /sys/module/printk/parameters/ignore_loglevel
+N
+echo Y > /sys/module/printk/parameters/ignore_loglevel
+
+(2)dmesg 
+(use minicom to save log which is printed by dmesg)
+
+(3)
+cat boottime.log1 | ~/rda600/kernel/linux/scripts/bootgraph.pl | tee bootlog.svg
+
+=======================
+sudo grabserial -d /dev/ttyUSB0 -t -m "^Starting kernel*" | tee kernel.log

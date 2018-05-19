@@ -1,0 +1,6 @@
+
+
+sudo apt install grabserial
+-------------------------
+sudo grabserial -d /dev/ttyUSB0 -t | tee grabserial.txt
+sudo grabserial -d /dev/ttyUSB0 -t -m "^Starting kernel*" | tee kernel.log
