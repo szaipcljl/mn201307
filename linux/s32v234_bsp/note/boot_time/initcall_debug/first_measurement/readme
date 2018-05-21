@@ -16,5 +16,10 @@ echo Y > /sys/module/printk/parameters/ignore_loglevel
 (3)
 cat boottime.log1 | ~/rda600/kernel/linux/scripts/bootgraph.pl | tee bootlog.svg
 
+-----------------------
+With a short 'sed' script, you can reorder the final 'timing' line,
+ and sort the initcalls numerically by duration
+dmesg -s 128000 | grep "initcall" | sed "s/\(.*\)after\(.*\)/\2 \1/g" | sort -n
+
 =======================
 sudo grabserial -d /dev/ttyUSB0 -t -m "^Starting kernel*" | tee kernel.log
