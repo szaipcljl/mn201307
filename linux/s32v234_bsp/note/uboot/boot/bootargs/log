@@ -1,0 +1,22 @@
+reading Image
+7177056 bytes read in 619 ms (11.1 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+23363 bytes read in 18 ms (1.2 MiB/s)
+#mn: do_bootm_states
+#mn: [bootm_os_get_boot_func]
+## Flattened Device Tree blob at 82000000
+   Booting using the fdt blob at 0x82000000
+#mn: do_bootm_states
+#mn: [bootm_os_get_boot_func]
+#mn: [do_bootm_linux]
+#mn:using: FDT
+#mn:   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff7000, end 000000009ffffb42 ... OK
+#mn: image_setup_linux
+#mn: image_setup_libfdt
+#mn: str:console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw [fdt_chosen]
+#mn: err:0 fdt_chosen
+#mn: [do_bootm_linux]
+
+Starting kernel ...

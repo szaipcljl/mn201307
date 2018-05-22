@@ -4,13 +4,28 @@ kernel:
 printk.time=1
 initcall_debug
 loglevel
+
+-----
+https://elinux.org/Initcall_Debug
+note:
+Using initcall_debug increases the amount of messages produced by the kernel
+during system boot. It's a good idea to increase the printk log buffer size
+to avoid overflowing the log buffer. To do this, increase the value of
+CONFIG_LOG_BUF_SHIFT from 14 to 18. This increases the log buffer from the
+default size of 16k to 256K.
+
+Using initcall_debug increases the amount of messages produced by the kernel
+during system boot. It's a good idea to increase the printk log buffer size
+to avoid overflowing the log buffer. To do this, increase the value of
+CONFIG_LOG_BUF_SHIFT from 14 to 18. This increases the log buffer from the
+default size of 16k to 256K.
 ===================
-(1) 
+(1)
 cat /sys/module/printk/parameters/ignore_loglevel
 N
 echo Y > /sys/module/printk/parameters/ignore_loglevel
 
-(2)dmesg 
+(2)dmesg
 (use minicom to save log which is printed by dmesg)
 
 (3)

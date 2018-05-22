@@ -1,0 +1,31 @@
+commit d0ea3d7d286aeda2a9216d76424abc285b87b7b4
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Wed Oct 22 10:00:23 2008 -0500
+
+    Make initcall_debug a core_param
+    
+    This is the one I really wanted: now it effects module loading, it
+    makes sense to be able to flip it after boot.
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+    Acked-by: Arjan van de Ven <arjan@linux.intel.com>
+
+diff --git a/init/main.c b/init/main.c
+index 3e17a3b..3d68aaa 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -697,13 +697,7 @@ asmlinkage void __init start_kernel(void)
+ }
+ 
+ static int initcall_debug;
+-
+-static int __init initcall_debug_setup(char *str)
+-{
+-	initcall_debug = 1;
+-	return 1;
+-}
+-__setup("initcall_debug", initcall_debug_setup);
++core_param(initcall_debug, initcall_debug, bool, 0644);
+ 
+ int do_one_initcall(initcall_t fn)
+ {

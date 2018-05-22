@@ -1,0 +1,35 @@
+bootargs
+
+====================
+common/fdt_support.c
+
+
+fdt_chosen
+(1) err = fdt_check_header(fdt);
+(2) /* find or create "/chosen" node. */
+	nodeoffset = fdt_find_or_add_subnode(fdt, 0, "chosen");
+(3) str = getenv("bootargs");
+(4) if str:
+		err = fdt_setprop(fdt, nodeoffset, "bootargs", str,
+				  strlen(str) + 1);
+(5) return fdt_fixup_stdout(fdt, nodeoffset);
+
+=============================
+do_bootm_states
+|-> bootm_os_get_boot_func	[common/bootm_os.c]
+	|-> do_bootm_linux	[arch/arm/lib/bootm.c]
+		|-> boot_prep_linux		[arch/arm/lib/bootm.c]
+			|-> image_setup_linux	[common/image.c] //CONFIG_OF_LIBFDT
+				|-> image_setup_libfdt	[common/image-fdt.c]
+					|-> fdt_chosen
+-----------------------------
+common/bootm_os.c
+
+static boot_os_fn *boot_os[] = {
+	[IH_OS_U_BOOT] = do_bootm_standalone,
+#ifdef CONFIG_BOOTM_LINUX
+	[IH_OS_LINUX] = do_bootm_linux,
+#endif
+	...
+};
+
