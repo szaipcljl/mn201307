@@ -2,26 +2,24 @@ phy_device.c
 ==============================
 
 ├── drivers
-    ├── net
+    └── net
         ├── ethernet
-        │   ├── freescale
-        │       ├── fec_main.o
-        │       ├── fec.o
-        │       └── fec_ptp.o
-        ├── phy
-            ├── bcm7xxx.o
-            ├── bcm87xx.o
-            ├── bcm89xxx.o
-            ├── broadcom.o
-            ├── fixed_phy.o
-            ├── libphy.o
-            ├── mdio_bus.o
-            ├── micrel.o
-            ├── nxp
-            │   ├── nxp.ko
-            │   └── nxp.o
-            ├── phy_device.o
-            └── phy.o
+        │   └── freescale
+        │       ├── fec_main.c
+        │       └── fec_ptp.c
+        └── phy
+            ├── mdio_bus.c
+            ├── micrel.c
+            ├── phy_device.c
+            └── phy.c
+
+--------------------------
+ethernet/freescale/Makefile
+obj-$(CONFIG_FEC) += fec.o
+fec-objs :=fec_main.o fec_ptp.o
+
+phy/Makefile
+libphy-objs			:= phy.o phy_device.o mdio_bus.o
 
 ==============================
 drivers/net/

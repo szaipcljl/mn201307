@@ -24,11 +24,12 @@ Application		ready to use file system
 
 
 
+with initcall_debug
 =================================================
 the time taken to get the login prompt: 3.918665
 -------------------------------------------------
 Bootstrap:
 U-Boot:
-Linux Kernel:
+Linux Kernel: 1.544727 (-> Freeing alternatives memory)
 Init:
 -------------------------------------------------

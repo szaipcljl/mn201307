@@ -1,0 +1,146 @@
+diff --git a/arch/arm/lib/bootm.c b/arch/arm/lib/bootm.c
+index a477cae..07eec7c 100644
+--- a/arch/arm/lib/bootm.c
++++ b/arch/arm/lib/bootm.c
+@@ -207,19 +207,21 @@ static void boot_prep_linux(bootm_headers_t *images)
+ 
+ 	if (IMAGE_ENABLE_OF_LIBFDT && images->ft_len) {
+ #ifdef CONFIG_OF_LIBFDT
+-		debug("using: FDT\n");
++		printf("#mn:using: FDT\n");
+ 		if (image_setup_linux(images)) {
+ 			printf("FDT creation failed! hanging...");
+ 			hang();
+ 		}
+ #endif
+ 	} else if (BOOTM_ENABLE_TAGS) {
+-		debug("using: ATAGS\n");
++		printf("using: ATAGS\n");
+ 		setup_start_tag(gd->bd);
+ 		if (BOOTM_ENABLE_SERIAL_TAG)
+ 			setup_serial_tag(&params);
+-		if (BOOTM_ENABLE_CMDLINE_TAG)
++		if (BOOTM_ENABLE_CMDLINE_TAG){
+ 			setup_commandline_tag(gd->bd, commandline);
++			printf("#mn:[%s]\n", __func__);
++		}
+ 		if (BOOTM_ENABLE_REVISION_TAG)
+ 			setup_revision_tag(&params);
+ 		if (BOOTM_ENABLE_MEMORY_TAGS)
+@@ -329,6 +331,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
+ int do_bootm_linux(int flag, int argc, char * const argv[],
+ 		   bootm_headers_t *images)
+ {
++	printf("#mn: [%s]\n", __func__);
+ 	/* No need for those on ARM */
+ 	if (flag & BOOTM_STATE_OS_BD_T || flag & BOOTM_STATE_OS_CMDLINE)
+ 		return -1;
+diff --git a/common/bootm.c b/common/bootm.c
+index 58936ca..dd4f5d0 100644
+--- a/common/bootm.c
++++ b/common/bootm.c
+@@ -655,6 +655,7 @@ int do_bootm_states(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
+ 	/* From now on, we need the OS boot function */
+ 	if (ret)
+ 		return ret;
++	printf("#mn: %s\n", __func__);
+ 	boot_fn = bootm_os_get_boot_func(images->os.os);
+ 	need_boot_fn = states & (BOOTM_STATE_OS_CMDLINE |
+ 			BOOTM_STATE_OS_BD_T | BOOTM_STATE_OS_PREP |
+diff --git a/common/bootm_os.c b/common/bootm_os.c
+index cb83f4a..1a68d41 100644
+--- a/common/bootm_os.c
++++ b/common/bootm_os.c
+@@ -281,6 +281,7 @@ void do_bootvx_fdt(bootm_headers_t *images)
+ 	char **of_flat_tree = &images->ft_addr;
+ 	struct lmb *lmb = &images->lmb;
+ 
++	printf("#mn: enter [%s]\n", __func__);
+ 	if (*of_flat_tree) {
+ 		boot_fdt_add_mem_rsv_regions(lmb, *of_flat_tree);
+ 
+@@ -293,6 +294,7 @@ void do_bootvx_fdt(bootm_headers_t *images)
+ 		ret = fdt_add_subnode(*of_flat_tree, 0, "chosen");
+ 		if ((ret >= 0 || ret == -FDT_ERR_EXISTS)) {
+ 			bootline = getenv("bootargs");
++			printf("#mn:[%s] bootline:%s\n:", __func__, bootline);
+ 			if (bootline) {
+ 				ret = fdt_find_and_setprop(*of_flat_tree,
+ 						"/chosen", "bootargs",
+@@ -506,5 +508,6 @@ boot_os_fn *bootm_os_get_boot_func(int os)
+ 		relocated = true;
+ 	}
+ #endif
++	printf("#mn: [%s]\n", __func__);
+ 	return boot_os[os];
+ }
+diff --git a/common/cmd_fdt.c b/common/cmd_fdt.c
+index 4c18962..6412553 100644
+--- a/common/cmd_fdt.c
++++ b/common/cmd_fdt.c
+@@ -601,6 +601,7 @@ static int do_fdt(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ 			initrd_end = simple_strtoul(argv[3], NULL, 16);
+ 		}
+ 
++		printf("#mn:%s\n", __func__);
+ 		fdt_chosen(working_fdt);
+ 		fdt_initrd(working_fdt, initrd_start, initrd_end);
+ 
+diff --git a/common/fdt_support.c b/common/fdt_support.c
+index a539389..d5927b4 100644
+--- a/common/fdt_support.c
++++ b/common/fdt_support.c
+@@ -304,9 +304,11 @@ int fdt_chosen(void *fdt)
+ 		return nodeoffset;
+ 
+ 	str = getenv("bootargs");
++	printf("#mn: str:%s [%s]\n", str, __FUNCTION__);
+ 	if (str) {
+ 		err = fdt_setprop(fdt, nodeoffset, "bootargs", str,
+ 				  strlen(str) + 1);
++		printf("#mn:err:%d %s", err, __func__);
+ 		if (err < 0) {
+ 			printf("WARNING: could not set bootargs %s.\n",
+ 			       fdt_strerror(err));
+diff --git a/common/image-fdt.c b/common/image-fdt.c
+index 5e4e5bd..0a5cc91 100644
+--- a/common/image-fdt.c
++++ b/common/image-fdt.c
+@@ -86,7 +86,7 @@ void boot_fdt_add_mem_rsv_regions(struct lmb *lmb, void *fdt_blob)
+ 	for (i = 0; i < total; i++) {
+ 		if (fdt_get_mem_rsv(fdt_blob, i, &addr, &size) != 0)
+ 			continue;
+-		printf("   reserving fdt memory region: addr=%llx size=%llx\n",
++		printf("#mn   reserving fdt memory region: addr=%llx size=%llx\n",
+ 		       (unsigned long long)addr, (unsigned long long)size);
+ 		lmb_reserve(lmb, addr, size);
+ 	}
+@@ -475,6 +475,7 @@ int image_setup_libfdt(bootm_headers_t *images, void *blob,
+ 		printf("ERROR: root node setup failed\n");
+ 		goto err;
+ 	}
++	printf("#mn:%s\n", __func__);
+ 	if (fdt_chosen(blob) < 0) {
+ 		printf("ERROR: /chosen node create failed\n");
+ 		goto err;
+diff --git a/common/image.c b/common/image.c
+index c36927f..ae9b8a4 100644
+--- a/common/image.c
++++ b/common/image.c
+@@ -1293,7 +1293,7 @@ int boot_get_cmdline(struct lmb *lmb, ulong *cmd_start, ulong *cmd_end)
+ 	*cmd_start = (ulong) & cmdline[0];
+ 	*cmd_end = *cmd_start + strlen(cmdline);
+ 
+-	debug("## cmdline at 0x%08lx ... 0x%08lx\n", *cmd_start, *cmd_end);
++	printf("#mn: ## cmdline at 0x%08lx ... 0x%08lx\n", *cmd_start, *cmd_end);
+ 
+ 	return 0;
+ }
+@@ -1368,6 +1368,7 @@ int image_setup_linux(bootm_headers_t *images)
+ 			return ret;
+ 	}
+ 
++	printf("#mn: %s\n", __func__);
+ 	if (IMAGE_ENABLE_OF_LIBFDT && of_size) {
+ 		ret = image_setup_libfdt(images, *of_flat_tree, of_size, lmb);
+ 		if (ret)

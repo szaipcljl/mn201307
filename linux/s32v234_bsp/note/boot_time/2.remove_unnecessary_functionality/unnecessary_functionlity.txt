@@ -1,0 +1,108 @@
+
+=========================
+
+[    0.231189] pps_core: LinuxPPS API ver. 1 registered
+[    0.231195] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+
+
+./drivers/pnp/pnpacpi/core.c:316:		printk(KERN_INFO "pnp: PnP ACPI: disabled\n");
+[    0.232487] pnp: PnP ACPI: disabled
+
+
+[    1.050220] vcan: Virtual CAN interface driver
+[    1.055183] slcan: serial line CAN interface driver
+[    1.060576] slcan: 10 dynamic interface channels.
+[    1.065795] CAN device driver interface
+[    1.070813] flexcan 40055000.flexcan: device registered (reg_base=ffffff8000076000, irq=24)
+[    1.080802] flexcan 400be000.flexcan: device registered (reg_base=ffffff8000078000, irq=44)
+[    1.090721] pps pps0: new PPS source ptp0
+
+
+
+[    2.321765] s32v234-siul2-pinctrl 4006c240.siul2-pinctrl: pin S32V234_MSCR_PF3 already requested by beeper; cannot claim for 400d0000.viulite1
+[    2.335501] s32v234-siul2-pinctrl 4006c240.siul2-pinctrl: pin-83 (400d0000.viulite1) status -22
+[    2.344978] s32v234-siul2-pinctrl 4006c240.siul2-pinctrl: could not request pin 83 (S32V234_MSCR_PF3) from group viulite1grp  on device 4006c240.siul2-pinctrl
+[    2.360539] viulite 400d0000.viulite1: Error applying setting, reverse things back
+[    2.474555] OAL region successfully mapped 5000000@8B000000, Alignment: 0x1000
+[    2.484778] OAL region successfully mapped 5000000@CB000000, Alignment: 0x1000
+[    2.538629] OAL region successfully mapped 300000@3E800000, Alignment: 0x8
+[    2.566879] OAL region successfully mapped 100000@3EB00000, Alignment: 0x8
+
+
+urandom start: failed.
+
+hwclock: Cannot access the HaINIT: Entering runlevel: 5
+
+====================================
+1. remove can
+2. disable log print: loglevel=0
+3. remove EXT2
+4. remove SPI
+
+KGDB
+acpi, pci, hid, spi, nfs, ext2, ipv6, sunrpc, can:
+6.9M -> 5.4M (5624376)
+
+-fat: 5574904
+-wlan, wireless: 5574904
+-fuse: 5492664 (5.3M)
+-ext4(+jbd2): 5113880 (4.9M)
+
+Remove features that are not used by userland:
+CONFIG_KALLSYMS, CONFIG_DEBUG_FS, CONFIG_BUG
+4490968 (4.3M)
+	uboot copy kernel form sdCard(class4): 389 m
+	uboot: 1.494808
+	kernel: 0.671471
+
+-autofs4: 4474456(4.3M)
+-phy-unused: 4465624(4.3M)
+
+
+<a> # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+4465624(4.3), 387 ms
+0.546987] ## Flattened Device Tree blob at 82000000
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	  uboot		 kernel		total
+-----------------------------------
+	1.474644	0.700334	2.175
+	1.473038	0.706434	2.179
+	1.475799	0.844166	2.320
+	1.483909	0.826816	2.3108
+	1.488061	0.672365	2.160
+-----------------------------------
+avr	1.479s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+<b> CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+4121392(4.0M), 358 ms
+0.504941] ## Flattened Device Tree blob at 82000000
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	  uboot		 kernel		total
+-----------------------------------
+	 1.403056	0.683725	2.087
+	 1.412431	0.601799	2.014
+	 1.410692	0.681829	2.093
+	 1.405762	0.676399	2.082
+	 1.403059	0.691538	2.095
+-----------------------------------
+avr	 1.406s		0.667s		2.074s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+====================================================
+eng Image
+6478432(6.2M), uboot copy: 555 ms
+
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+6035848(5.8M), uboot copy: 524 ms
+	
+
+
+-------------------
+proc ?
+
+
+arch/arm64/kernel/Makefile
+arm64-obj-$(CONFIG_COMPAT)      += sys32.o kuser32.o signal32.o     \
+                       sys_compat.o entry32.o       \
+                       ../../arm/kernel/opcodes.o                    
