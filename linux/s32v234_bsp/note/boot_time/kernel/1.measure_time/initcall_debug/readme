@@ -14,16 +14,15 @@ to avoid overflowing the log buffer. To do this, increase the value of
 CONFIG_LOG_BUF_SHIFT from 14 to 18. This increases the log buffer from the
 default size of 16k to 256K.
 
-Using initcall_debug increases the amount of messages produced by the kernel
-during system boot. It's a good idea to increase the printk log buffer size
-to avoid overflowing the log buffer. To do this, increase the value of
-CONFIG_LOG_BUF_SHIFT from 14 to 18. This increases the log buffer from the
-default size of 16k to 256K.
 ===================
 (1)
 cat /sys/module/printk/parameters/ignore_loglevel
 N
-echo Y > /sys/module/printk/parameters/ignore_loglevel
+//echo Y > /sys/module/printk/parameters/ignore_loglevel
+
+=> printenv mmcargs
+mmcargs=setenv bootargs console=${console},${baudrate} root=${mmcroot}
+=> setenv mmcargs setenv bootargs initcall_debug ignore_loglevel console=${console},${baudrate} root=${mmcroot}
 
 (2)dmesg
 (use minicom to save log which is printed by dmesg)
@@ -38,3 +37,27 @@ dmesg -s 128000 | grep "initcall" | sed "s/\(.*\)after\(.*\)/\2 \1/g" | sort -n
 
 =======================
 sudo grabserial -d /dev/ttyUSB0 -t -m "^Starting kernel*" | tee kernel.log
+
+=========================
+=> setenv mmcargs setenv bootargs loglevel=0 console=${console},${baudrate} root=${mmcroot}
+=> saveenv
+
+=========================
+mlinux@mlinux:~/rda600/kernel/linux[master]$ cat ~/debug/28/boot-0528.log  | perl scripts/bootgraph.pl | tee output.svg
+No data found in the dmesg. Make sure that 'printk.time=1' and
+'initcall_debug' are passed on the kernel command line.
+Usage:
+1) dmesg | perl scripts/bootgraph.pl [OPTION] > output.svg
+2) perl scripts/bootgraph.pl -h
+
+Options:
+	-header	Insert kernel version and date
+
+check:
+
+log:
+[    0.208296] calling  0xffffffc000473948 @ 1
+[    0.208462] initcall 0xffffffc000473948 returned 0 after 0 usecs
+
+config:
+CONFIG_KALLSYMS=y

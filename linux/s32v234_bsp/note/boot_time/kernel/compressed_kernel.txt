@@ -1,0 +1,17 @@
+
+init/Kconfig
+
+choice
+	prompt "Kernel compression mode"
+	default KERNEL_GZIP
+	depends on HAVE_KERNEL_GZIP || HAVE_KERNEL_BZIP2 || HAVE_KERNEL_LZMA || HAVE_KERNEL_XZ || HAVE_KERNEL_LZO || HAVE_KERNEL_LZ4
+
+
+config KERNEL_GZIP
+	bool "Gzip"
+	depends on HAVE_KERNEL_GZIP
+	help
+	  The old and tried gzip compression. It provides a good balance
+	  between compression ratio and decompression speed.
+
+==================

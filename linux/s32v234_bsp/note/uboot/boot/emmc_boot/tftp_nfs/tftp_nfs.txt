@@ -56,6 +56,8 @@ ps:
 nfsboot=echo Booting from net using tftp and nfs...; run nfsbootargs;run loadtftpimage; run loadtftpfdt;${boot_mtd} ${loadaddr} - ${fdt_addr};
 nfsbootargs=setenv bootargs console=${console},${baudrate} root=/dev/nfs rw ip=${ipaddr}:${serverip}::${netmask}::eth0:off nfsroot=${serverip}:/tftpboot/rfs,nolock 
 
+note:
+windows ip and ubuntu ip should not be the same, or nfs will will failed.
 -------------
 boot_mtd=booti
 loadtftpimage=tftp ${loadaddr} ${image};

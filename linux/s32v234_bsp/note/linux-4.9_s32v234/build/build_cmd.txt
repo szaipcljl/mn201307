@@ -1,0 +1,4 @@
+
+../../out/rda600/bootloader/u-boot/tools/mkimage -A arm64 -O linux -T kernel -C none -a 0x80080000 -e 0x80080000 -n "Linux" -d arch/arm64/boot/Image arch/arm64/boot/uImage
+mlinux@mlinux:~/roadefend/rda600/kernel/linux[master]$ make help ARCH=arm64
+
