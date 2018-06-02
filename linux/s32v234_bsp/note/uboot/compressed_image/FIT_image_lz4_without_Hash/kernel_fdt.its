@@ -18,12 +18,14 @@
 			compression = "lz4";
 			load = <0x80080000>;
 			entry = <0x80080000>;
+			/*
 			hash-1 {
 				algo = "crc32";
 			};
 			hash-2 {
 				algo = "sha1";
 			};
+			*/
 		};
 		fdt-1 {
 			description = "Flattened Device Tree blob";
@@ -31,12 +33,14 @@
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";
+			/*
 			hash-1 {
 				algo = "crc32";
 			};
 			hash-2 {
 				algo = "sha1";
 			};
+			*/
 		};
 	};
 
