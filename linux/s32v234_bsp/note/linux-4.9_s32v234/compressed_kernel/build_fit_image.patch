@@ -1,0 +1,19 @@
+diff --git a/rda600/Makefile b/rda600/Makefile
+index 401a731..d25aa2f 100644
+--- a/rda600/Makefile
++++ b/rda600/Makefile
+@@ -49,3 +49,14 @@ clean:
+ distclean: clean
+ 	@rm -rf $(dir $(DOT_CONFIG))/.config* $(dir $(DOT_CONFIG))/config.h
+ 
++#
++# create itb: new-style (FDT) kernel booting
++#
++MKIMAGE=${UBOOT_OUT_DIR}/tools/mkimage
++
++.PHONY: fit_image
++fit_image:
++	@cp $(LINUX_OUT_DIR)/arch/arm64/boot/Image.lz4 $(AMB_BOARD_DIR)/config/uboot
++	@cp $(LINUX_OUT_DIR)/arch/arm64/boot/dts/freescale/rda600.dtb $(AMB_BOARD_DIR)/config/uboot
++	$(MKIMAGE) -f config/uboot/kernel_fdt.its $(LINUX_OUT_DIR)/arch/arm64/boot/kernel_fdt.itb
++
