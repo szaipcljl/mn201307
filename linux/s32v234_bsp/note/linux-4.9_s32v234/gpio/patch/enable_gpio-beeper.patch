@@ -1,0 +1,77 @@
+commit cc03dad7fa80fecf636a936ee012ea255247b5b0
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Fri Apr 27 09:47:28 2018 +0800
+
+    beeper: add gpio-beeper; modifiy sha204 i2c address
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/linux/arch/arm64/boot/dts/freescale/rda600.dts b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+index 901b8f6..0b331ab 100644
+--- a/linux/arch/arm64/boot/dts/freescale/rda600.dts
++++ b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+@@ -7,13 +7,21 @@
+  * the Free Software Foundation; either version 2 of the License, or
+  * (at your option) any later version.
+  */
+-
++#include <dt-bindings/gpio/gpio.h>
+ /dts-v1/;
+ #include "s32v234-roadefend.dtsi"
+ 
+ / {
+ 	compatible = "fsl,s32v234-evb", "fsl,s32v234-evb2016q4", "fsl,s32v234",
+ 		     "arm,vexpress";
++
++	beeper: beeper {
++		compatible = "gpio-beeper";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_gpio83>;
++		gpios = <&gpioother 51 GPIO_ACTIVE_HIGH>; /*32+51=83*/
++		status = "okay";
++	};
+ };
+ 
+ &fec {
+@@ -195,9 +203,9 @@
+ 		/*interrupts = <26 IRQ_TYPE_EDGE_RISING>;*/
+ 	};
+ 
+-	sha204: sha204@63 {
++	sha204: sha204@64 {
+ 		compatible = "atmel,sha204";
+-		reg = <0x63>;
++		reg = <0x64>;
+ 		/*interrupt-parent = <&gpio>;*/
+ 		/*interrupts = <26 IRQ_TYPE_EDGE_RISING>;*/
+ 	};
+diff --git a/linux/arch/arm64/boot/dts/freescale/s32v234-roadefend.dtsi b/linux/arch/arm64/boot/dts/freescale/s32v234-roadefend.dtsi
+index 26a5851..5d8a0d5 100644
+--- a/linux/arch/arm64/boot/dts/freescale/s32v234-roadefend.dtsi
++++ b/linux/arch/arm64/boot/dts/freescale/s32v234-roadefend.dtsi
+@@ -490,6 +490,12 @@
+ 			>;
+ 		};
+ 
++		pinctrl_gpio83: gpio83grp {
++			fsl,pins = <
++				S32V234_PAD_PF3__SIUL_GPIO83
++			>;
++		};
++
+ 		pinctrl_i2c0: i2c0grp {
+ 			fsl,pins = <
+ 				S32V234_PAD_PG3__I2C0_DATA_OUT
+diff --git a/linux/arch/arm64/configs/rda600_defconfig b/linux/arch/arm64/configs/rda600_defconfig
+index d5b0c4a..a2e0a76 100644
+--- a/linux/arch/arm64/configs/rda600_defconfig
++++ b/linux/arch/arm64/configs/rda600_defconfig
+@@ -1136,7 +1136,7 @@ CONFIG_INPUT_MISC=y
+ # CONFIG_INPUT_MMA8450 is not set
+ # CONFIG_INPUT_MPU3050 is not set
+ # CONFIG_INPUT_GP2A is not set
+-# CONFIG_INPUT_GPIO_BEEPER is not set
++CONFIG_INPUT_GPIO_BEEPER=y
+ # CONFIG_INPUT_GPIO_TILT_POLLED is not set
+ # CONFIG_INPUT_KXTJ9 is not set
+ # CONFIG_INPUT_AIS328DQ is not set

@@ -1,0 +1,170 @@
+commit 3a53e6344bc841f81e5c114449f29dbcb736e221
+Author: James Christopher Adduono <jc@adduono.com>
+Date:   Fri Nov 4 14:31:53 2016 -0400
+
+    Better LZ4 compression support
+    
+    Change-Id: I2c98fa12bbd3b9e888a62efda2d647cd9cc54ba9
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 92551aa..c3e115b 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -964,20 +964,46 @@ config EFI
+ 	  allow the kernel to be booted as an EFI application. This
+ 	  is only useful on systems that have UEFI firmware.
+ 
++choice
++	prompt "Kernel compression mode"
++	default BUILD_ARM64_KERNEL_GZIP
++	help
++	  Some bootloaders are capable of booting not only uncompressed or
++	  gzip compressed kernels, but also LZ4. This option will allow you
++	  to select which format the kernel binary will be compressed to.
++
++	  If in doubt, select 'gzip'
++
++config BUILD_ARM64_KERNEL_GZIP
++	bool "Gzip"
++	help
++	  The old and tried gzip compression. It provides a good balance
++	  between compression ratio and decompression speed.
++
++config BUILD_ARM64_KERNEL_LZ4
++	bool "LZ4"
++	help
++	  LZ4 is an LZ77-type compressor with a fixed, byte-oriented encoding.
++	  A preliminary version of LZ4 de/compression tool is available at
++	  <https://code.google.com/p/lz4/>.
++
++endchoice
++
+ config BUILD_ARM64_APPENDED_DTB_IMAGE
+-	bool "Build a concatenated Image.gz/dtb by default"
++	bool "Build a concatenated Image.(gz/lz4)-dtb by default"
+ 	depends on OF
+ 	help
+-	  Enabling this option will cause a concatenated Image.gz and list of
+-	  DTBs to be built by default (instead of a standalone Image.gz.)
+-	  The image will built in arch/arm64/boot/Image.gz-dtb
++	  Enabling this option will cause a concatenated Image.gz or Image.lz4
++	  and list of DTBs to be built by default (instead of a standalone
++	  Image.gz or Image.lz4.)
++	  The image will built in arch/arm64/boot/Image.(gz/lz4)-dtb
+ 
+ config BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES
+ 	string "Default dtb names"
+ 	depends on BUILD_ARM64_APPENDED_DTB_IMAGE
+ 	help
+ 	  Space separated list of names of dtbs to append when
+-	  building a concatenated Image.gz-dtb.
++	  building a concatenated Image.(gz/lz4)-dtb.
+ 
+ config DMI
+ 	bool "Enable support for SMBIOS (DMI) tables"
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 3a583c0..a733f36 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -64,11 +64,23 @@ core-$(CONFIG_CRYPTO) += arch/arm64/crypto/
+ libs-y		:= arch/arm64/lib/ $(libs-y)
+ libs-$(CONFIG_EFI_STUB) += drivers/firmware/efi/libstub/
+ 
++
++ifeq ($(CONFIG_BUILD_ARM64_KERNEL_LZ4),y)
++KBUILD_COMPRESS_SUFFIX := lz4
++KBUILD_COMPRESS_CMD := lz4
++endif
++ifeq ($(CONFIG_BUILD_ARM64_KERNEL_GZIP),y)
++KBUILD_COMPRESS_SUFFIX := gz
++KBUILD_COMPRESS_CMD := gzip
++endif
++
++export KBUILD_COMPRESS_SUFFIX KBUILD_COMPRESS_CMD
++
+ # Default target when executing plain make
+ ifeq ($(CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE),y)
+-KBUILD_IMAGE	:= Image.gz-dtb
++KBUILD_IMAGE	:= Image.$(KBUILD_COMPRESS_SUFFIX)-dtb
+ else
+-KBUILD_IMAGE	:= Image.gz
++KBUILD_IMAGE	:= Image.$(KBUILD_COMPRESS_SUFFIX)
+ endif
+ 
+ KBUILD_DTBS	:= dtbs
+@@ -77,7 +89,7 @@ all:	$(KBUILD_IMAGE) $(KBUILD_DTBS)
+ 
+ boot := arch/arm64/boot
+ 
+-Image Image.gz: vmlinux
++Image Image.$(KBUILD_COMPRESS_SUFFIX): vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+ 
+ zinstall install: vmlinux
+@@ -94,7 +106,7 @@ dtbs: prepare scripts
+ dtbs_install:
+ 	$(Q)$(MAKE) $(dtbinst)=$(boot)/dts
+ 
+-Image.gz-dtb: vmlinux scripts dtbs
++Image.$(KBUILD_COMPRESS_SUFFIX)-dtb: vmlinux scripts dtbs
+ 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+ 
+ PHONY += vdso_install
+@@ -107,7 +119,8 @@ archclean:
+ 	$(Q)$(MAKE) $(clean)=$(boot)/dts
+ 
+ define archhelp
+-  echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Image.gz)'
++  echo  '* Image.gz      - Gzip compressed kernel image (arch/$(ARCH)/boot/Image.gz)'
++  echo  '* Image.lz4     - LZ4 compressed kernel image (arch/$(ARCH)/boot/Image.lz4)'
+   echo  '  Image         - Uncompressed kernel image (arch/$(ARCH)/boot/Image)'
+   echo  '* dtbs          - Build device tree blobs for enabled boards'
+   echo  '  dtbs_install  - Install dtbs to $(INSTALL_DTBS_PATH)'
+diff --git a/arch/arm64/boot/Makefile b/arch/arm64/boot/Makefile
+index 7903d81..8aace31 100644
+--- a/arch/arm64/boot/Makefile
++++ b/arch/arm64/boot/Makefile
+@@ -20,7 +20,7 @@ else
+ include $(srctree)/arch/arm64/boot/dts/lge/Makefile
+ endif
+ 
+-targets := Image Image.gz
++targets := Image Image.$(KBUILD_COMPRESS_SUFFIX)
+ 
+ DTB_NAMES := $(subst $\",,$(CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES))
+ ifneq ($(DTB_NAMES),)
+@@ -33,16 +33,16 @@ endif
+ $(obj)/Image: vmlinux FORCE
+ 	$(call if_changed,objcopy)
+ 
+-$(obj)/Image.gz: $(obj)/Image FORCE
+-	$(call if_changed,gzip)
++$(obj)/Image.$(KBUILD_COMPRESS_SUFFIX): $(obj)/Image FORCE
++	$(call if_changed,$(KBUILD_COMPRESS_CMD))
+ 
+-$(obj)/Image.gz-dtb: $(obj)/Image.gz $(DTB_OBJS) FORCE
++$(obj)/Image.$(KBUILD_COMPRESS_SUFFIX)-dtb: $(obj)/Image.$(KBUILD_COMPRESS_SUFFIX) $(DTB_OBJS) FORCE
+ 	$(call if_changed,cat)
+ 
+ install: $(obj)/Image
+ 	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+ 	$(obj)/Image System.map "$(INSTALL_PATH)"
+ 
+-zinstall: $(obj)/Image.gz
++zinstall: $(obj)/Image.$(KBUILD_COMPRESS_SUFFIX)
+ 	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+-	$(obj)/Image.gz System.map "$(INSTALL_PATH)"
++	$(obj)/Image.$(KBUILD_COMPRESS_SUFFIX) System.map "$(INSTALL_PATH)"
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 4ac6cce..a38a76e 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -339,7 +339,7 @@ cmd_lzo = (cat $(filter-out FORCE,$^) | \
+ 
+ quiet_cmd_lz4 = LZ4     $@
+ cmd_lz4 = (cat $(filter-out FORCE,$^) | \
+-	lz4demo -c1 stdin stdout && $(call size_append, $(filter-out FORCE,$^))) > $@ || \
++	lz4 -lz16 - && $(call size_append, $(filter-out FORCE,$^))) > $@ || \
+ 	(rm -f $@ ; false)
+ 
+ # U-Boot mkimage

@@ -1,0 +1,4 @@
+
+scripts/Makefile.lib
+-	lz4c -l -c1 stdin stdout && $(call size_append, $(filter-out FORCE,$^))) > $@ || \
++	lz4c -9) > $@ || \

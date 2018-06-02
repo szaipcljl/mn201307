@@ -1,0 +1,10 @@
+diff --git a/rda600/config/uboot/rda600_defconfig b/rda600/config/uboot/rda600_defconfig
+index c62f1e1..93ed26e 100644
+--- a/rda600/config/uboot/rda600_defconfig
++++ b/rda600/config/uboot/rda600_defconfig
+@@ -29,3 +29,5 @@ CONFIG_FSL_LINFLEXUART=y
+ CONFIG_FSL_CSE3=y
+ CONFIG_FSL_DSPI=y
+ # CONFIG_SJA1105 is not set
++
++CONFIG_LZ4=y

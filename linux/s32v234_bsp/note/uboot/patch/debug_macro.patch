@@ -1,0 +1,12 @@
+diff --git a/include/common.h b/include/common.h
+index d18ba67..f186bb8 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -95,6 +95,7 @@ typedef volatile unsigned char	vu_char;
+ #define CONFIG_SYS_SUPPORT_64BIT_DATA
+ #endif
+ 
++//#define DEBUG
+ #ifdef DEBUG
+ #define _DEBUG	1
+ #else

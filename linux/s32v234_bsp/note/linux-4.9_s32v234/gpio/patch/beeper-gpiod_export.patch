@@ -1,0 +1,15 @@
+diff --git a/linux/drivers/input/misc/gpio-beeper.c b/linux/drivers/input/misc/gpio-beeper.c
+index 4817c5f..4c8ea68 100644
+--- a/linux/drivers/input/misc/gpio-beeper.c
++++ b/linux/drivers/input/misc/gpio-beeper.c
+@@ -76,6 +76,10 @@ static int gpio_beeper_probe(struct platform_device *pdev)
+ 	if (IS_ERR(beep->desc))
+ 		return PTR_ERR(beep->desc);
+ 
++
++	/*gpiod_export(beep->desc, 1);*/
++	/*gpiod_direction_output_raw(beep->desc, 0);*/
++
+ 	input = devm_input_allocate_device(&pdev->dev);
+ 	if (!input)
+ 		return -ENOMEM;
