@@ -1,0 +1,15 @@
+
+If you build a zImage file for your kernel, then that is a self-extracting image
+(that does not require external lz4 support). Otherwise you seem to have no need
+for lz4 support in U-Boot.
+
+-----------------------------
+I have done following steps.
+1. Built u-boot image.
+2. built device tree.
+3. Selected lz4 compression in "make menuconfig" for kernel and built uImage.
+4. Flashed u-boot image , device tree binary and uImage. after power up board
+is booting fine.
+
+my doubht here is whether lz4 compression is used while
+creating uImage and lz4 un-compression is used during uncompressing the kernel.

@@ -1,0 +1,53 @@
+
+[0.000000 0.000000] 
+[0.806608 0.806608] 
+[0.806634 0.000026] U-Boot 2016.01-g8c15f6e-dirty (Jun 02 2018 - 09:42:19 +0800)
+[0.811376 0.004742] 
+[0.811387 0.000011] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.815303 0.003916] Reset cause: unknown reset
+[0.817333 0.002030] Board: rda600
+[0.818462 0.001129] I2C:   ready
+[0.820338 0.001876] DRAM:  2 GiB
+[0.864498 0.044160] All (4) cores are up.
+[0.869243 0.004745] MMC:   FSL_SDHC: 0
+[1.031360 0.162117] In:    serial
+[1.033498 0.002138] Out:   serial
+[1.035785 0.002287] Err:   serial
+[1.040748 0.004963] reading cse.bin
+[1.055499 0.014751] 17408 bytes read
+[1.060643 0.005144] Net:   
+[1.066176 0.005533] Warning: System is using default MAC address. Please set a new value
+[1.072514 0.006338] FEC
+[1.072581 0.000067] Hit any key to stop autoboot:  0 
+[4.165103 3.092522] switch to partitions #0, OK
+[4.165742 0.000639] mmc0 is current device
+[4.257914 0.092172] reading uImage
+[4.462055 0.204141] 2201220 bytes read in 203 ms (10.3 MiB/s)
+[4.468221 0.006166] Booting from mmc ...
+[4.477467 0.009246] reading rda600.dtb
+[4.495265 0.017798] 20102 bytes read in 17 ms (1.1 MiB/s)
+[4.498642 0.003377] ## Loading kernel from FIT Image at 81000000 ...
+[4.503404 0.004762]    Using 'conf-1' configuration
+[4.507589 0.004185]    Trying 'kernel' kernel subimage
+[4.509529 0.001940]      Description:  RDA600 Linux kernel
+[4.512525 0.002996]      Type:         Kernel Image
+[4.515414 0.002889]      Compression:  gzip compressed
+[4.518466 0.003052]      Data Start:   0x810000e4
+[4.521943 0.003477]      Data Size:    2179768 Bytes = 2.1 MiB
+[4.525402 0.003459]      Architecture: AArch64
+[4.527418 0.002016]      OS:           Linux
+[4.529843 0.002425]      Load Address: 0x80080000
+[4.532600 0.002757]      Entry Point:  0x80080000
+[4.536318 0.003718]      Hash algo:    crc32
+[4.537419 0.001101]      Hash value:   4b53bf2b
+[4.540599 0.003180]      Hash algo:    sha1
+[4.542340 0.001741]      Hash value:   4a807521a854663fe89c64a11eb76441cd82fd47
+[4.549110 0.006770]    Verifying Hash Integrity ... crc32+ sha1+ OK
+[5.524285 0.975175]    Booting using the fdt blob at 0x82000000
+[5.528616 0.004331]    Uncompressing Kernel Image ... OK
+[8.058637 2.530021]    reserving fdt memory region: addr=80000000 size=10000
+[8.064009 0.005372]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[8.109712 0.045703] 
+[8.109782 0.000070] Starting kernel ...
+[0.003616 0.003616] 
+[0.629616 0.626000] INIT: version 2.88 booting

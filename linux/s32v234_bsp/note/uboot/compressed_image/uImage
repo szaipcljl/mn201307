@@ -1,0 +1,38 @@
+
+reference
+---------
+https://blog.csdn.net/ee230/article/details/53318027
+
+[1] Device Tree（一）：背景介绍
+[2] doc/uImage.FIT/howto.txt
+[3] doc/uImage.FIT/kernel.its
+[4] doc/uImage.FIT/kernel_fdt.its
+[5] doc/uImage.FIT/multi.its
+[6] doc/uImage.FIT/source_file_format.txt
+
+
+Legacy uImage
+=============
+1) 使用mkimage工具（位于u-boot source code的tools/mkimage中）生成。
+2) 支持OS Kernel Images、RAMDisk Images等多种类型的Image。
+3) 支持gzip、bzip2等压缩算法。
+4) 支持CRC32 checksums。
+
+
+FIT uImage
+==========
+FIT -- flattened image tree
+FDT（flattened device tree）
+
+为了支持基于device tree的unify kernel，u-boot需要一种新的Image格式，这种格式
+需要具备如下能力：
+    1）Image中需要包含多个dtb文件。
+    2）可以方便的选择使用哪个dtb文件boot kernel。
+
+利用了Device Tree Source files（DTS）的语法，生成的image文件也和dtb文件类似（称作itb）
+
+Here's a graphical overview of the image creation and booting process:
+
+image source file     mkimage + dtc		  transfer to target
+	+	     ---------------> image file --------------------> bootm
+image data file(s)

@@ -1,0 +1,76 @@
+
+1. legacy uImage
+================
+(1) uboot source code
+include/configs/s32.h
+-#define CONFIG_USE_BOOTI
++//#define CONFIG_USE_BOOTI
+
+(2) uboot cmdline
+=> setenv image uImage
+=> setenv boot_mtd bootm
+=> setenv loadaddr 0x81000000
+=> saveenv
+=> printenv image boot_mtd loadaddr
+image=uImage
+boot_mtd=bootm
+loadaddr=0x81000000
+
+
+(3) create uImage
+./create_uImage-compressed.sh
+
+2. FIT image support
+====================
+(1)include/configs/s32.h
+-#define CONFIG_USE_BOOTI
++//#define CONFIG_USE_BOOTI
+
+(2) enable CONFIG_FIT in boards/rda600/config/uboot/rda600(-release)_defconfig
+      CONFIG_FIT=y 
+
+(2) uboot cmdline
+=> setenv image kernel_fdt.itb
+=> setenv boot_mtd bootm
+=> setenv loadaddr 0x81000000
+=> saveenv
+=> printenv image boot_mtd loadaddr
+image=kernel_fdt.itb
+boot_mtd=bootm
+loadaddr=0x81000000
+
+(3) create  kernel_fdt.itb and copy to SDcard
+
+download :create_uImage-compressed.sh﻿
+
+uncompress to boards/rda600/FIT_image,  copy Image.gz and rda600.dtb to the folder and Run the script :
+./create_itb.sh
+
+log:
+
+[4.498642 0.003377] ## Loading kernel from FIT Image at 81000000 ...
+[4.503404 0.004762]    Using 'conf-1' configuration
+[4.507589 0.004185]    Trying 'kernel' kernel subimage
+[4.509529 0.001940]      Description:  RDA600 Linux kernel
+[4.512525 0.002996]      Type:         Kernel Image
+[4.515414 0.002889]      Compression:  gzip compressed
+[4.518466 0.003052]      Data Start:   0x810000e4
+[4.521943 0.003477]      Data Size:    2179768 Bytes = 2.1 MiB
+[4.525402 0.003459]      Architecture: AArch64
+[4.527418 0.002016]      OS:           Linux
+[4.529843 0.002425]      Load Address: 0x80080000
+[4.532600 0.002757]      Entry Point:  0x80080000
+[4.536318 0.003718]      Hash algo:    crc32
+[4.537419 0.001101]      Hash value:   4b53bf2b
+[4.540599 0.003180]      Hash algo:    sha1
+[4.542340 0.001741]      Hash value:   4a807521a854663fe89c64a11eb76441cd82fd47
+[4.549110 0.006770]    Verifying Hash Integrity ... crc32+ sha1+ OK
+[5.524285 0.975175]    Booting using the fdt blob at 0x82000000
+[5.528616 0.004331]    Uncompressing Kernel Image ... OK
+[8.058637 2.530021]    reserving fdt memory region: addr=80000000 size=10000
+[8.064009 0.005372]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[8.109712 0.045703]
+[8.109782 0.000070] Starting kernel ...
+[0.003616 0.003616]
+[0.629616 0.626000] INIT: version 2.88 booting
+

@@ -1,0 +1,15 @@
+FIT image support
+
+reference
+=========
+u-boot/README
+
+
+FIT image support
+=================
+CONFIG_FIT=y
+
+
+changes required in u-boot for lz4 compression
+==============================================
+CONFIG_LZ4=y

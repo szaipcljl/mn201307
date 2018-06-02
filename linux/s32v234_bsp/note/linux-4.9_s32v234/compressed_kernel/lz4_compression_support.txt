@@ -1,0 +1,50 @@
+LZ4 compresseion support
+
+NOTE: unfinished job ...
+
+1. apply kernel patch
+	download the patch: better_lz4_compression_support.patch
+	(1)cd kernel/linux/
+		 patch -p1 < better_lz4_compression_support.patch
+	(2)enable CONFIG_BUILD_ARM64_KERNEL_LZ4 in boards/rda600/config/kernel/rda600(-release)_defconfig
+		 +CONFIG_BUILD_ARM64_KERNEL_LZ4=y 
+	(3)sudo apt-get install liblz4-tool
+	(4)build kernel image again and you will find Image.lz4 in $(KERNEL_OUT_DIT)/arch/arm64/boot/
+
+2. modify uboot
+	(1) include/configs/rda600.h
+	-#define CONFIG_USE_BOOTI
+	+//#define CONFIG_USE_BOOTI
+
+	(2) uboot cmdline
+		=> setenv image uImage
+		=> setenv boot_mtd bootm
+		=> setenv loadaddr 0x81000000
+		=> saveenv
+		=> printenv image boot_mtd loadaddr
+		image=uImage
+		boot_mtd=bootm
+		loadaddr=0x81000000
+
+	(3) create legacy uImage
+		download the script: create_uImage-compressed-lz4.sh
+		copy the script to boards/rda600 and run ：
+
+		./create_uImage-compressed-lz4.sh
+
+		uImage will be generated in $(KERNEL_OUT_DIR)/arch/arm64/boot/
+
+3. test result
+error log:
+
+## Booting kernel from Legacy Image at 81000000 ...
+   Image Name:   Linux
+   Image Type:   AArch64 Linux Kernel Image (lz4 compressed)
+   Data Size:    2561332 Bytes = 2.4 MiB
+   Load Address: 80080000
+   Entry Point:  80080000
+   Verifying Checksum ... OK
+   Booting using the fdt blob at 0x82000000
+   Uncompressing Kernel Image ... lz4 compressed: uncompress error -93
+Must RESET board to recover
+resetting ...
