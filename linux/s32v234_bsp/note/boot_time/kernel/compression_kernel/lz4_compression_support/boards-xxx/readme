@@ -1,0 +1,7 @@
+this patch was genetated by the following command:
+git format-patch -M master
+
+applying the patch
+-------------------
+git am 0001-Fix1.patch
+git commit -a -m "PATCH apply"

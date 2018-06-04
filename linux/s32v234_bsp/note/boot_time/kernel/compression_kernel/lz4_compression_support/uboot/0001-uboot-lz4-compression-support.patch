@@ -1,0 +1,58 @@
+From 31947fad02c9277d856abd48fe9716931496498d Mon Sep 17 00:00:00 2001
+From: "ning.ma" <ning.ma@roadefend.com>
+Date: Mon, 4 Jun 2018 11:23:44 +0800
+Subject: [PATCH] [uboot] lz4 compression support
+
+kernel: lz4 compression support
+uboot: FIT image, bootm
+
+Signed-off-by: ning.ma <ning.ma@roadefend.com>
+---
+ include/configs/rda600.h | 2 ++
+ include/configs/s32.h    | 3 +++
+ lib/lz4_wrapper.c        | 1 +
+ 3 files changed, 6 insertions(+)
+
+diff --git a/include/configs/rda600.h b/include/configs/rda600.h
+index cc5f7fc..1e3d585 100644
+--- a/include/configs/rda600.h
++++ b/include/configs/rda600.h
+@@ -29,6 +29,8 @@
+ //the boot delay is set to 0.
+ #endif
+ 
++#define CONFIG_USE_BOOTM
++
+ #else
+ //DEBUG VERSION
+ #define DELAY_TIME	3
+diff --git a/include/configs/s32.h b/include/configs/s32.h
+index c5a6ddf..5baa41f 100644
+--- a/include/configs/s32.h
++++ b/include/configs/s32.h
+@@ -215,7 +215,10 @@
+  * Enable CONFIG_USE_BOOTI if the u-boot enviroment variables
+  * specific for boot method have to be defined for booti by default.
+  */
++#ifndef CONFIG_USE_BOOTM
+ #define CONFIG_USE_BOOTI
++#endif
++
+ #ifdef CONFIG_USE_BOOTI
+ #define IMAGE_NAME Image
+ #define BOOT_MTD booti
+diff --git a/lib/lz4_wrapper.c b/lib/lz4_wrapper.c
+index 6dc8b76..00e73d6 100644
+--- a/lib/lz4_wrapper.c
++++ b/lib/lz4_wrapper.c
+@@ -8,6 +8,7 @@
+ #include <compiler.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
++#include <asm-generic/errno.h>
+ 
+ static u16 LZ4_readLE16(const void *src) { return le16_to_cpu(*(u16 *)src); }
+ static void LZ4_copy4(void *dst, const void *src) { *(u32 *)dst = *(u32 *)src; }
+-- 
+2.7.4
+

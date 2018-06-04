@@ -61,6 +61,7 @@ CONFIG_KALLSYMS, CONFIG_DEBUG_FS, CONFIG_BUG
 
 <a> # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
 4465624(4.3), 387 ms
+CRC?
 0.546987] ## Flattened Device Tree blob at 82000000
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	  uboot		 kernel		total
@@ -76,6 +77,7 @@ avr	1.479s
 
 <b> CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 4121392(4.0M), 358 ms
+CRC?
 0.504941] ## Flattened Device Tree blob at 82000000
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	  uboot		 kernel		total
@@ -91,8 +93,21 @@ avr	 1.406s		0.667s		2.074s
 
 compression kernel:
 -------------------
-lz4 compressed: Image.lz4: 2.5M
-FIT image support; no Hash: copy kernel_fdt.itb uImage
+lz4 compressed: Image.lz4: 2.5M, 233 ms; decompression time 394ms
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				size	copy_image	decompression_time	total
+--------------------------------------------------------------
+uncompressed	4.0M	358ms			0				358ms
+--------------------------------------------------------------
+lz4 compressed	2.5M	233ms			394ms			627ms
+--------------------------------------------------------------
+diff			-1.5M	-125ms			394ms			+269ms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+crc: 269ms+240ms=509ms
+
+
+FIT image support; no Hash: rename kernel_fdt.itb to uImage
 (SDcard boot)
 uboot: 1.20s
 kernel: 0.59s
@@ -135,15 +150,17 @@ avr
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						size	uboot	kernel	total 	diff
----------------------------------------------------------------
-SDcard	uncompressed	4.5M 	1.41s	0.66s	2.07s
-		compressed		2.5M	1.21s	0.62s	1.83s	-0.24s
----------------------------------------------------------------
-emmc	uncompressed	4.5M
-		compressed		2.5M	
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+remove CRC:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							size	uboot	kernel	total 	diff
+-------------------------------------------------------------------
+SDcard	uncompressed		4.5M 	1.41s	0.66s	2.07s
+		compressed+no_crc	2.5M	1.21s	0.62s	1.83s	-0.24s
+-------------------------------------------------------------------
+emmc	uncompressed		4.5M
+		compressed+no_crc	2.5M	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SDcard: -0.24s, because remove CRC, 500ms saved
 
 ====================================================
 eng Image

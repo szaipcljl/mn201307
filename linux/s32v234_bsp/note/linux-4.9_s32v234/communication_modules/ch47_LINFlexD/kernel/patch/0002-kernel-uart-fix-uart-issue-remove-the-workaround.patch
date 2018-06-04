@@ -1,0 +1,28 @@
+From 789dbfc405652cb5834fc6f06d1c9b05fc4fa5e6 Mon Sep 17 00:00:00 2001
+From: "ning.ma" <ning.ma@roadefend.com>
+Date: Mon, 4 Jun 2018 11:32:16 +0800
+Subject: [PATCH 2/2] [kernel][uart] fix uart issue: remove the workaround
+
+Signed-off-by: ning.ma <ning.ma@roadefend.com>
+---
+ linux/drivers/tty/serial/fsl_linflexuart.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/linux/drivers/tty/serial/fsl_linflexuart.c b/linux/drivers/tty/serial/fsl_linflexuart.c
+index 9b58577..030909d 100644
+--- a/linux/drivers/tty/serial/fsl_linflexuart.c
++++ b/linux/drivers/tty/serial/fsl_linflexuart.c
+@@ -1026,8 +1026,10 @@ linflex_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	The issue is assumed to be caused by a hardware bug.
+ 	Only apply the workaround after the boot sequence is
+ 	assumed to be complete.*/
++#if 0 //serial communication
+ 	if((jiffies - INITIAL_JIFFIES) / HZ > (long unsigned int)10)
+ 		writeb(' ', port->membase + BDRL);
++#endif
+ }
+ 
+ static const char *linflex_type(struct uart_port *port)
+-- 
+2.7.4
+
