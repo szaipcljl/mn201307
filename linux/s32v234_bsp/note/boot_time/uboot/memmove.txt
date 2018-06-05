@@ -1,5 +1,6 @@
+ep and dst
 
-
+gd reference: s32v_note/uboot/struct/gd.txt
 ==================
 common/cmd_bootm.c
 booti_setup
@@ -17,6 +18,121 @@ booti_setup
 (1) gd->bd->bi_dram[0].start
 
 
+DDR0 starting address: 0x80000000
 
-------------------------
+./common/board_f.c:231: gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE;
+__weak void dram_init_banksize(void)
+{
+#if defined(CONFIG_NR_DRAM_BANKS) && defined(CONFIG_SYS_SDRAM_BASE)
+	gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE;
+	gd->bd->bi_dram[0].size = get_effective_memsize();
+#endif
+}
+
+include/configs/s32.h
+/* Physical memory map */
+#define PHYS_SDRAM			(DDR_BASE_ADDR)
+#define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
+
+/* u-boot uses just DDR0 */
+#define CONFIG_RUN_FROM_DDR0
+#undef CONFIG_RUN_FROM_DDR1
+
+include/configs/s32v234_common.h
+/* Run by default from DDR1 */
+#ifdef CONFIG_RUN_FROM_DDR0
+#define DDR_BASE_ADDR		0x80000000
+#else
+#define DDR_BASE_ADDR		0xC0000000
+#endif
+
+===================
 (2) ih->text_offset
+
+booti_setup
+|-> ih = (struct Image_header *)map_sysmem(images->ep, 0);
+
+
+//include/mapmem.h
+static inline void *map_sysmem(phys_addr_t paddr, unsigned long len)
+{
+	return (void *)(uintptr_t)paddr;
+}
+
+--
+images->ep->text_offset (code segment)
+
+out/rda600/kernel/linux-4.9_rda600-release/arch/arm64/kernel/vmlinux.lds
+ * If padding is applied before .head.text, virt<->phys conversions will fail.
+ */
+ASSERT(_text == ((0xffffffffffffffff << ((39) - 1)) + 0x00080000), "HEAD is misaligned")
+
+
+-----------
+common/cmd_bootm.c
+/* See Documentation/arm64/booting.txt in the Linux kernel */
+./Documentation/zh_CN/arm64/booting.txt
+struct Image_header {
+	uint32_t	code0;		/* Executable code */
+	uint32_t	code1;		/* Executable code */
+	uint64_t	text_offset;	/* Image load offset, LE */
+	uint64_t	image_size;	/* Effective Image size, LE */
+	uint64_t	res1;		/* reserved */
+	uint64_t	res2;		/* reserved */
+	uint64_t	res3;		/* reserved */
+	uint64_t	res4;		/* reserved */
+	uint32_t	magic;		/* Magic number */
+	uint32_t	res5;
+};
+
+
+-------------------
+
+
+booti_start
+|-> /* Setup Linux kernel Image entry point */
+
+	if (!argc) {
+		images->ep = load_addr;
+		debug("*  kernel: default image load address = 0x%08lx\n",
+				load_addr);
+	} else {
+		images->ep = simple_strtoul(argv[0], NULL, 16);
+		debug("*  kernel: cmdline image address = 0x%08lx\n",
+			images->ep);
+	}
+|-> ret = booti_setup(images);
+
+//images->ep: a.default image load address; b. cmdline image address
+
+common/image.c
+ulong load_addr = CONFIG_SYS_LOAD_ADDR;	/* Default Load Address */
+
+include/configs/s32.h
+/*Kernel image load address */
+#define LOADADDR		0x8007FFC0
+#define CONFIG_LOADADDR		LOADADDR
+#define CONFIG_SYS_LOAD_ADDR		CONFIG_LOADADDR
+
+==================================
+reference: arch/arm/cpu/armv8/s32/s32v234/memory_map.txt
+DDR Layout
+============
+
+The maximum addressable DDR regions from each type of core are:
+
+=========================================================================
+|      Core      | Region | Starting address | Ending address |   Size  |
+|----------------|--------|------------------|----------------|---------|
+|       M4       |  DDR0  |    0x80000000    |  0xBFFFFFFF    |  1024 MB|
+|                |  DDR1  |    0xC0000000    |  0xDFFFFFFF    |  512 MB |
+|----------------|--------|------------------|----------------|---------|
+|       A53      |  DDR0  |    0x80000000    |  0xBFFFFFFF    |  1024 MB|
+|                |  DDR1  |    0xC0000000    |  0xEFFFFFFF    |  1024 MB|
+=========================================================================
+
+
+========================================
+do_booti [cmd_bootm.c]
+|-> booti_start
+	|-> booti_setup

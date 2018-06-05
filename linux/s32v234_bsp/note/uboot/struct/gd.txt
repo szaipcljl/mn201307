@@ -1,0 +1,79 @@
+
+gd
+
+
+gd_t
+----
+include/asm-generic/global_data.h
+
+typedef struct global_data {
+	...
+} gd_t;
+
+
+===========================
+(1) declare global data ptr
+gd
+--
+arch/arm/include/asm/global_data.h
+
+#ifdef CONFIG_ARM64
+#define DECLARE_GLOBAL_DATA_PTR		register volatile gd_t *gd asm ("x18")
+#else
+#define DECLARE_GLOBAL_DATA_PTR		register volatile gd_t *gd asm ("r9")
+#endif
+
+
+
+(2) Set up the global_data pointer
+//include/common.k
+void arch_setup_gd(gd_t *gd_ptr);
+ * For most architectures this can simply be:
+ *
+ *    gd = gd_ptr;
+--
+
+common/init/board_init.c
+#ifndef CONFIG_X86
+__weak void arch_setup_gd(struct global_data *gd_ptr)
+{
+	gd = gd_ptr;
+}
+#endif /* !CONFIG_X86 */
+
+	top => gd_ptr => gd
+
+(3) 
+./arch/arm/lib/crt0_64.S:78:    bl      board_init_f_mem
+
+board_init_f_mem() - Allocate global data and set stack position
+@top:    Top of available memory, also normally the top of the stack
+
+board_init_f_mem	[common/init/board_init.c]
+|-> arch_setup_gd(gd_ptr);
+
+----------------
+./arch/arm/lib/crt0_64.S
+
+ENTRY(_main)                                                      
+
+/*
+ * Set up initial C runtime environment and call board_init_f(0).
+ */
+#if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
+    ldr x0, =(CONFIG_SPL_STACK)
+#else
+    ldr x0, =(CONFIG_SYS_INIT_SP_ADDR)
+#endif
+    bic sp, x0, #0xf    /* 16-byte alignment for ABI compliance */
+    bl  board_init_f_mem
+    mov sp, x0
+
+    mov x0, #0
+    bl  board_init_f
+
+--------------------------
+
+(4)
+
+===================================

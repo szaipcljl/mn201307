@@ -44,7 +44,6 @@ arch/arm/include/asm/global_data.h
 #else
 #define DECLARE_GLOBAL_DATA_PTR		register volatile gd_t *gd asm ("r9")
 #endif
-#endif
 
 gd_t:
 include/asm-generic/global_data.h
