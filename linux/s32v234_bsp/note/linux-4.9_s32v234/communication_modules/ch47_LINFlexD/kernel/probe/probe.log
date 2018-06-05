@@ -1,0 +1,51 @@
+
+[    0.254559] ###mn:[linflex_probe 1261] [dump_stack start]
+[    0.254572] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #3
+[    0.254577] Hardware name: Freescale S32V234 (DT)
+[    0.254583] Call trace:
+[    0.254594] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    0.254602] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    0.254613] [<ffffffc000523cfc>] dump_stack+0x88/0xa8
+[    0.254622] [<ffffffc00037e660>] linflex_probe+0x44/0x37c
+[    0.254630] [<ffffffc00038fa7c>] platform_drv_probe+0x4c/0xb8
+[    0.254639] [<ffffffc00038e380>] driver_probe_device+0x16c/0x2a4
+[    0.254647] [<ffffffc00038e5a8>] __driver_attach+0x9c/0xa0
+[    0.254655] [<ffffffc00038c630>] bus_for_each_dev+0x58/0x98
+[    0.254662] [<ffffffc00038ddd0>] driver_attach+0x20/0x28
+[    0.254671] [<ffffffc00038da5c>] bus_add_driver+0x150/0x204
+[    0.254679] [<ffffffc00038e9c4>] driver_register+0x60/0x11c
+[    0.254687] [<ffffffc00038f9b0>] __platform_driver_register+0x60/0x68
+[    0.254696] [<ffffffc0006f4b2c>] linflex_serial_init+0x38/0x60
+[    0.254704] [<ffffffc00008102c>] do_one_initcall+0x8c/0x1a0
+[    0.254713] [<ffffffc0006dca48>] kernel_init_freeable+0x148/0x1e8
+[    0.254722] [<ffffffc000521da8>] kernel_init+0x10/0xd8
+[    0.254728] ###mn:[linflex_probe 1263] [dump_stack end]
+[    0.254735] #mn: app->stem:serial [of_alias_get_id]
+[    0.254818] 40053000.serial: ttyLF0 at MMIO 0x40053000 (irq = 23, base_baud = 4166666) is a FSL_LINFLEX
+[    1.095211] console [ttyLF0] enabled
+[    1.099627] ###mn:[linflex_probe 1261] [dump_stack start]
+[    1.105690] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #3
+[    1.112718] Hardware name: Freescale S32V234 (DT)
+[    1.117919] Call trace:
+[    1.120627] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    1.126600] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    1.132189] [<ffffffc000523cfc>] dump_stack+0x88/0xa8
+[    1.137778] [<ffffffc00037e660>] linflex_probe+0x44/0x37c
+[    1.143751] [<ffffffc00038fa7c>] platform_drv_probe+0x4c/0xb8
+[    1.150110] [<ffffffc00038e380>] driver_probe_device+0x16c/0x2a4
+[    1.156756] [<ffffffc00038e5a8>] __driver_attach+0x9c/0xa0
+[    1.162824] [<ffffffc00038c630>] bus_for_each_dev+0x58/0x98
+[    1.168989] [<ffffffc00038ddd0>] driver_attach+0x20/0x28
+[    1.174866] [<ffffffc00038da5c>] bus_add_driver+0x150/0x204
+[    1.181031] [<ffffffc00038e9c4>] driver_register+0x60/0x11c
+[    1.187196] [<ffffffc00038f9b0>] __platform_driver_register+0x60/0x68
+[    1.194325] [<ffffffc0006f4b2c>] linflex_serial_init+0x38/0x60
+[    1.200778] [<ffffffc00008102c>] do_one_initcall+0x8c/0x1a0
+[    1.206944] [<ffffffc0006dca48>] kernel_init_freeable+0x148/0x1e8
+[    1.213687] [<ffffffc000521da8>] kernel_init+0x10/0xd8
+[    1.219398] ###mn:[linflex_probe 1263] [dump_stack end]
+[    1.225205] #mn: app->stem:serial [of_alias_get_id]#mn: app->stem:serial [of_alias_get_id]
+[    1.234261] 400bc000.serial: ttyLF1 at MMIO 0x400bc000 (irq = 43, base_baud = 4166666) is a FSL_LINFLEX
+
+=========================================================================
+

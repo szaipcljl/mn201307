@@ -1,0 +1,75 @@
+
+
+
+scripts/Makefile.lib
+-	lz4c -l -c1 stdin stdout && $(call size_append, $(filter-out FORCE,$^))) > $@ || \
++	lz4c -9) > $@ || \
+
+=======================
+U-Boot 2016.01-g8c15f6e-dirty (Jun 02 2018 - 09:42:19 +0800)
+
+CPU:   NXP S32V234 V2.0 at 1000 MHz
+Reset cause: unknown reset
+Board: rda600
+I2C:   ready
+DRAM:  2 GiB
+All (4) cores are up.
+MMC:   FSL_SDHC: 0
+In:    serial
+Out:   serial
+Err:   serial
+reading cse.bin
+17408 bytes read
+Net:   
+Warning: System is using default MAC address. Please set a new value
+FEC
+Hit any key to stop autoboot:  3  2  1  0 
+switch to partitions #0, OK
+mmc0 is current device
+reading uImage
+2585160 bytes read in 234 ms (10.5 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+20102 bytes read in 17 ms (1.1 MiB/s)
+## Loading kernel from FIT Image at 81000000 ...
+   Using 'conf-1' configuration
+   Trying 'kernel' kernel subimage
+     Description:  RDA600 Linux kernel
+     Type:         Kernel Image
+     Compression:  lz4 compressed
+     Data Start:   0x810000e4
+     Data Size:    2563709 Bytes = 2.4 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x80080000
+     Entry Point:  0x80080000
+     Hash algo:    crc32
+     Hash value:   b328fd5e
+     Hash algo:    sha1
+     Hash value:   e5403207fc59c75df6970da9ef1d47e503a6abc4
+   Verifying Hash Integrity ... crc32+ sha1+ OK
+   Booting using the fdt blob at 0x82000000
+   Uncompressing Kernel Image ... OK
+   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+
+Starting kernel ...
+
+INIT: version 2.88 booting
+Starting udev
+udev: Not using udev cache because of changes detected in the following files:
+udev:     /proc/version /proc/cmdline /proc/devices
+udev:     lib/udev/rules.d/* etc/udev/rules.d/*
+udev: The udev cache will be regenerated. To identify the detected changes,
+udev: compare the cached sysconf at   /etc/udev/cache.data
+udev: against the current sysconf at  /dev/shm/udev.cache
+urandom start: failed.
+Populating dev cache
+hwclock: Cannot access the HaINIT: Entering runlevel: 5
+Configuring network interfaces... done.
+Starting system message bus: done
+Starting internet superserver: xinetd.
+
+Poky (Yocto Project Reference Distro) 1.8 s32v234evb /dev/ttyLF0
+
+s32v234evb login: 

@@ -1,0 +1,54 @@
+[0.000001 0.000001] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.003915 0.003914] Reset cause: unknown reset
+[0.005944 0.002029] Board: rda600
+[0.007121 0.001177] DRAM:  2 GiB
+[0.050935 0.043814] All (4) cores are up.
+[0.052965 0.002030] MMC:   FSL_SDHC: 0
+[0.221557 0.168592] In:    serial
+[0.223012 0.001455] Out:   serial
+[0.223876 0.000864] Err:   serial
+[0.230917 0.007041] reading cse.bin
+[0.247250 0.016333] 17408 bytes read
+[0.251505 0.004255] Net:   
+[0.255336 0.003831] Warning: System is using default MAC address. Please set a new value
+[0.261187 0.005851] FEC
+[0.262256 0.001069] 
+[0.346415 0.084159] switch to partitions #0, OK
+[0.349077 0.002662] mmc0 is current device
+[0.441603 0.092526] reading uImage
+[0.673512 0.231909] 2563773 bytes read in 232 ms (10.5 MiB/s)
+[0.682421 0.008909] Booting from mmc ...
+[0.690856 0.008435] reading rda600.dtb
+[0.707804 0.016948] 20102 bytes read in 18 ms (1.1 MiB/s)
+[0.712967 0.005163] ## Booting kernel from Legacy Image at 81000000 ...
+[0.716184 0.003217]    Image Name:   Linux
+[0.718239 0.002055]    Image Type:   AArch64 Linux Kernel Image (lz4 compressed)
+[0.724076 0.005837]    Data Size:    2563709 Bytes = 2.4 MiB
+[0.729120 0.005044]    Load Address: 80080000
+[0.733486 0.004366]    Entry Point:  80080000
+[0.733686 0.000200]    Verifying Checksum ... OK
+[1.091872 0.358186]    Booting using the fdt blob at 0x82000000
+[1.096689 0.004817]    Uncompressing Kernel Image ... OK
+[1.481203 0.384514]    reserving fdt memory region: addr=80000000 size=10000
+[1.484722 0.003519]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[1.532130 0.047408] 
+[1.532189 0.000059] Starting kernel ...
+[0.001770 0.001770] 
+[0.797055 0.795285] INIT: version 2.88 booting
+[1.043547 0.246492] Starting udev
+[1.079968 0.036421] udev: Not using udev cache because of changes detected in the following files:
+[1.088360 0.008392] udev:     /proc/version /proc/cmdline /proc/devices
+[1.093167 0.004807] udev:     lib/udev/rules.d/* etc/udev/rules.d/*
+[1.097745 0.004578] udev: The udev cache will be regenerated. To identify the detected changes,
+[1.104761 0.007016] udev: compare the cached sysconf at   /etc/udev/cache.data
+[1.110917 0.006156] udev: against the current sysconf at  /dev/shm/udev.cache
+[2.328746 1.217829] urandom start: failed.
+[2.335615 0.006869] Populating dev cache
+[2.530813 0.195198] hwclock: Cannot access the HaINIT: Entering runlevel: 5
+[2.547195 0.016382] Configuring network interfaces... done.
+[2.704771 0.157576] Starting system message bus: done
+[2.803986 0.099215] Starting internet superserver: xinetd.
+[2.931475 0.127489] 
+[2.939105 0.007630] Poky (Yocto Project Reference Distro) 1.8 s32v234evb /dev/ttyLF0
+[2.947636 0.008531] 
+[2.947651 0.000015] s32v234evb login: 

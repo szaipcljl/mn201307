@@ -1,0 +1,15 @@
+
+[    0.254366] ###mn:[uart_register_driver 2396] [dump_stack start]
+[    0.254378] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #4
+[    0.254383] Hardware name: Freescale S32V234 (DT)
+[    0.254388] Call trace:
+[    0.254398] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    0.254407] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    0.254417] [<ffffffc000523cdc>] dump_stack+0x88/0xa8
+[    0.254425] [<ffffffc00037ade0>] uart_register_driver+0x48/0x1ec
+[    0.254434] [<ffffffc0006f4b18>] linflex_serial_init+0x24/0x60
+[    0.254441] [<ffffffc00008102c>] do_one_initcall+0x8c/0x1a0
+[    0.254451] [<ffffffc0006dca48>] kernel_init_freeable+0x148/0x1e8
+[    0.254459] [<ffffffc000521d88>] kernel_init+0x10/0xd8
+[    0.254464] ###mn:[uart_register_driver 2398] [dump_stack end]
+======================================

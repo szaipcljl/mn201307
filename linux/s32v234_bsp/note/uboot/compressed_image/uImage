@@ -19,6 +19,74 @@ Legacy uImage
 4) 支持CRC32 checksums。
 
 
+uImage
+------
+uncompression kernel: 2.65s + 0.65s
+
+[0.991724 0.009338] reading rda600.dtb
+[1.010701 0.018977] 20102 bytes read in 17 ms (1.1 MiB/s)
+[1.012808 0.002107] ## Booting kernel from Legacy Image at 81000000 ...
+[1.018016 0.005208]    Image Name:   Linux
+[1.020036 0.002020]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[1.024765 0.004729]    Data Size:    6035848 Bytes = 5.8 MiB
+[1.027981 0.003216]    Load Address: 80080000
+[1.030886 0.002905]    Entry Point:  80080000
+[1.032738 0.001852]    Verifying Checksum ... OK
+[1.878145 0.845407]    Booting using the fdt blob at 0x82000000
+[1.881699 0.003554]    Loading Kernel Image ... OK
+[2.605458 0.723759]    reserving fdt memory region: addr=80000000 size=10000
+[2.610739 0.005281]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[2.656848 0.046109] 
+[2.656972 0.000124] Starting kernel ...
+[0.002494 0.002494] 
+[0.651580 0.649086] INIT: version 2.88 booting
+
+
+----------------
+XIP Kernel Image:
+Load_Address - 0x40 = 0x8007ffc0
+=> setenv loadaddr 0x8007ffc0
+=> saveenv
+
+[1.007182 0.004395] ## Booting kernel from Legacy Image at 8007ffc0 ...
+[1.011751 0.004569]    Image Name:   Linux
+[1.013947 0.002196]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[1.019669 0.005722]    Data Size:    6035848 Bytes = 5.8 MiB
+[1.021983 0.002314]    Load Address: 80080000
+[1.025164 0.003181]    Entry Point:  80080000
+[1.027159 0.001995]    Verifying Checksum ... OK
+[1.880987 0.853828]    Booting using the fdt blob at 0x82000000
+[1.885726 0.004739]    XIP Kernel Image ... OK
+[1.904612 0.018886]    reserving fdt memory region: addr=80000000 size=10000
+[1.909188 0.004576]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+
+-------------------
+kernel CRC check: no
+=> setenv verify no  
+=> saveenv
+[0.989975 0.008470] reading rda600.dtb
+[1.008045 0.018070] 20102 bytes read in 16 ms (1.2 MiB/s)
+[1.010240 0.002195] ## Booting kernel from Legacy Image at 8007ffc0 ...
+[1.015709 0.005469]    Image Name:   Linux
+[1.018265 0.002556]    Image Type:   AArch64 Linux Kernel Image (uncompressed)
+[1.024187 0.005922]    Data Size:    6035848 Bytes = 5.8 MiB
+[1.026197 0.002010]    Load Address: 80080000
+[1.028231 0.002034]    Entry Point:  80080000
+[1.030245 0.002014]    Booting using the fdt blob at 0x82000000
+[1.035160 0.004915]    XIP Kernel Image ... OK
+[1.054441 0.019281]    reserving fdt memory region: addr=80000000 size=10000
+[1.060491 0.006050]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[1.107005 0.046514] 
+[1.107189 0.000184] Starting kernel ...
+[0.001559 0.001559] 
+[0.635133 0.633574] INIT: version 2.88 booting
+
+uboot+kernel:
+1.11s + 0.64s = 1.75s
+
+
+
+
 FIT uImage
 ==========
 FIT -- flattened image tree

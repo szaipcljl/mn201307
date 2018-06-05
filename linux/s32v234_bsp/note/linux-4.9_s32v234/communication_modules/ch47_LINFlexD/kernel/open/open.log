@@ -1,0 +1,28 @@
+
+
+
+[    5.541552] ###mn:[linflex_startup 781] [dump_stack start]
+[    5.547646] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #7
+[    5.554676] Hardware name: Freescale S32V234 (DT)
+[    5.559876] Call trace:
+[    5.562582] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    5.568555] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    5.574144] [<ffffffc000523d68>] dump_stack+0x88/0xa8
+[    5.579733] [<ffffffc00037e290>] linflex_startup+0x3c/0x448
+[    5.585898] [<ffffffc00037c928>] uart_startup.part.18+0x78/0x1ac
+[    5.592543] [<ffffffc00037d550>] uart_open+0xf0/0x130
+[    5.598131] [<ffffffc000362a84>] tty_open+0xfc/0x578
+[    5.603623] [<ffffffc000169ebc>] chrdev_open+0x9c/0x1a4
+[    5.609404] [<ffffffc000163558>] do_dentry_open+0x1b8/0x300
+[    5.615569] [<ffffffc0001646cc>] vfs_open+0x58/0x64
+[    5.620965] [<ffffffc000171838>] do_last.isra.33+0x2e8/0xd08
+[    5.627225] [<ffffffc000174054>] path_openat+0x84/0x5d4
+[    5.633004] [<ffffffc0001752ac>] do_filp_open+0x30/0x98
+[    5.638785] [<ffffffc000164aac>] do_sys_open+0x140/0x224
+[    5.644661] [<ffffffc000164bac>] SyS_open+0x1c/0x24
+[    5.650058] [<ffffffc0006dca70>] kernel_init_freeable+0x170/0x1e8
+[    5.656800] [<ffffffc000521e14>] kernel_init+0x10/0xd8
+[    5.662519] ###mn:[linflex_startup 783] [dump_stack end]
+[    5.668426] #mn: dma_rx used [linflex_startup]
+
+==================================================================

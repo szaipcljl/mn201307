@@ -1,0 +1,18 @@
+
+
+[    1.089839] sdhci: Secure Digital Host Controller Interface driver
+[    1.096701] sdhci: Copyright(c) Pierre Ossman
+[    1.101524] sdhci-pltfm: SDHCI platform and OF driver helper
+[    1.108547] /soc/aips-bus@40000000/usdhc@4005D000: voltage-ranges unspecified
+[    1.116653] sdhci-esdhc-imx 4005d000.usdhc: No vmmc regulator found
+[    1.123612] sdhci-esdhc-imx 4005d000.usdhc: No vqmmc regulator found
+[    1.172249] mmc0: SDHCI controller on 4005d000.usdhc [4005d000.usdhc] using ADMA
+...
+[    1.239888] mmc0: MAN_BKOPS_EN bit is not set
+[    1.247731] i2c i2c-0: using dma0chan2 (tx) and dma0chan3 (rx) for DMA transfers
+[    1.254173] mmc0: new DDR MMC card at address 0001
+[    1.254553] mmcblk0: mmc0:0001 DG4008 7.28 GiB 
+[    1.254659] mmcblk0boot0: mmc0:0001 DG4008 partition 1 4.00 MiB
+[    1.254758] mmcblk0boot1: mmc0:0001 DG4008 partition 2 4.00 MiB
+[    1.254850] mmcblk0rpmb: mmc0:0001 DG4008 partition 3 4.00 MiB
+[    1.255760]  mmcblk0: p1 p2

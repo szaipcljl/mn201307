@@ -1,0 +1,9 @@
+
+
+root@s32v234evb:~# dmesg | grep "sja1105"
+[    3.645895] sja1105 spi0.0: Loading SJA1105 SPI driver
+[    3.651175] sja1105 spi0.0: setup mode 1, 16 bits/w, 5000 Hz max --> 0
+[    3.671805] sja1105 spi0.0: SJA1105 SPI Failed to read Device Id
+[    3.678102] sja1105 spi0.5: Loading SJA1105 SPI driver
+[    3.683687] sja1105 spi0.5: setup mode 1, 16 bits/w, 5000 Hz max --> 0
+[    3.704205] sja1105 spi0.5: SJA1105 SPI Failed to read Device Id

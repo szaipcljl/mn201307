@@ -1,0 +1,21 @@
+
+
+[    6.320320] ###mn:[linflex_start_tx 455] [dump_stack start]
+[    6.326057] CPU: 0 PID: 1 Comm: init Not tainted 4.1.26-rt29 #3
+[    6.332537] Hardware name: Freescale S32V234 (DT)
+[    6.337687] Call trace:
+[    6.340366] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    6.346275] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    6.351807] [<ffffffc000523cfc>] dump_stack+0x88/0xa8
+[    6.357338] [<ffffffc00037e090>] linflex_start_tx+0x30/0x164
+[    6.363536] [<ffffffc00037bb60>] __uart_start.isra.8+0x38/0x40
+[    6.369924] [<ffffffc00037bc88>] uart_write+0xc0/0x124
+[    6.375554] [<ffffffc0003644bc>] n_tty_write+0x1a0/0x468
+[    6.381369] [<ffffffc0003603d0>] tty_write+0x188/0x254
+[    6.386996] [<ffffffc00036054c>] redirected_tty_write+0xb0/0xc4
+[    6.393483] [<ffffffc0001650a8>] __vfs_write+0x2c/0x10c
+[    6.399204] [<ffffffc0001659dc>] vfs_write+0x90/0x194
+[    6.404736] [<ffffffc0001664d0>] SyS_write+0x44/0xa0
+[    6.410169] ###mn:[linflex_start_tx 457] [dump_stack end]
+
+=============================================================

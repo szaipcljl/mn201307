@@ -1,0 +1,30 @@
+
+[    2.320798] #mn: [ksz9031_config_init][455] 
+[    2.320809] ###[ksz9031_config_init 459] [dump_stack start]
+[    2.320820] CPU: 0 PID: 675 Comm: ifconfig Tainted: G           O    4.1.26-rt29 #2
+[    2.320826] Hardware name: Freescale S32V234 (DT)
+[    2.320831] Call trace:
+[    2.320845] [<ffffffc00008818c>] dump_backtrace+0x0/0x11c
+[    2.320854] [<ffffffc0000882bc>] show_stack+0x14/0x1c
+[    2.320864] [<ffffffc0004b88cc>] dump_stack+0x88/0xa8
+[    2.320874] [<ffffffc0003504e4>] ksz9031_config_init+0xa8/0x1bc
+[    2.320881] [<ffffffc00034eb1c>] phy_init_hw+0x4c/0x70
+[    2.320888] [<ffffffc00034ebb4>] phy_attach_direct+0x74/0x16c
+[    2.320895] [<ffffffc00034ed4c>] phy_connect_direct+0x20/0x70
+[    2.320904] [<ffffffc00039d264>] of_phy_connect+0x4c/0x80
+[    2.320912] [<ffffffc000358d4c>] fec_enet_open+0x2a0/0x558
+[    2.320922] [<ffffffc0003c4f94>] __dev_open+0xb4/0x120
+[    2.320930] [<ffffffc0003c5268>] __dev_change_flags+0x8c/0x150
+[    2.320937] [<ffffffc0003c534c>] dev_change_flags+0x20/0x5c
+[    2.320947] [<ffffffc000426680>] devinet_ioctl+0x634/0x6dc
+[    2.320955] [<ffffffc000427df8>] inet_ioctl+0x8c/0xa8
+[    2.320963] [<ffffffc0003a5384>] sock_do_ioctl+0x38/0x78
+[    2.320970] [<ffffffc0003a5ca4>] sock_ioctl+0x220/0x2e4
+[    2.320979] [<ffffffc000176df8>] do_vfs_ioctl+0x36c/0x5b0
+[    2.320986] [<ffffffc0001770c0>] SyS_ioctl+0x84/0x98
+[    2.320992] ###[ksz9031_config_init 461] [dump_stack end]
+[    2.321095] fec 40032000.ethernet eth0: Freescale FEC PHY driver [Micrel KSZ9031 Gigabit PHY] (mii_bus:phy_addr=40032000.etherne:03, irq=-1)
+[    2.321634] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+[    2.375635] random: dbus-uuidgen urandom read with 23 bits of entropy available
+[    7.321534] fec 40032000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+[    7.321560] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready

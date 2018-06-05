@@ -1,0 +1,22 @@
+
+
+==================
+common/cmd_bootm.c
+booti_setup
+|-> if (images->ep != dst) {
+		void *src;
+
+		debug("Moving Image from 0x%lx to 0x%llx\n", images->ep, dst);
+
+		src = (void *)images->ep;
+		images->ep = dst;
+		memmove((void *)dst, src, le32_to_cpu(ih->image_size));
+	}
+
+=========================
+(1) gd->bd->bi_dram[0].start
+
+
+
+------------------------
+(2) ih->text_offset

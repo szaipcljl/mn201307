@@ -1,0 +1,62 @@
+
+Hit any key to stop autoboot:  0 
+=> printenv bootcmd_fit 
+bootcmd_fit=run mmcargs; run mmcargs_fit; run mmcboot_fit; bootm 0x81000000
+=> printenv mmcargs_fit 
+mmcargs_fit=setenv loadaddr 0x8007FFC0
+=> printenv mmcboot_fit 
+mmcboot_fit=fatload mmc 0:1 0x80080000 kernel_fdt.itb
+
+=> run mmcargs
+=> fatload mmc 0:1 0x80080000 kernel_fdt.itb
+reading kernel_fdt.itb
+4699623 bytes read in 411 ms (10.9 MiB/s)
+=> bootm 0x80080000
+## Loading kernel from FIT Image at 80080000 ...
+   Using 'conf-1' configuration
+   Trying 'kernel' kernel subimage
+     Description:  RDA600 Linux kernel
+     Type:         Kernel Image
+     Compression:  uncompressed
+     Data Start:   0x800800e4
+     Data Size:    4678320 Bytes = 4.5 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x800800e4
+     Entry Point:  0x800800e4
+## Loading fdt from FIT Image at 80080000 ...
+   Using 'conf-1' configuration
+   Trying 'fdt-1' fdt subimage
+     Description:  Flattened Device Tree blob
+     Type:         Flat Device Tree
+     Compression:  uncompressed
+     Data Start:   0x804f6448
+     Data Size:    20102 Bytes = 19.6 KiB
+     Architecture: AArch64
+   Booting using the fdt blob at 0x804f6448
+   XIP Kernel Image ... OK
+   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+
+Starting kernel ...
+
+"Synchronous Abort" handler, esr 0x96000021
+ELR:     800801d0
+LR:      800801b0
+x0 : 000000008054f000 x1 : 000000008054f000
+x2 : 0000000000000040 x3 : 000000000000003f
+x4 : 00000000800800e4 x5 : 000000000000001c
+x6 : 000000008054f000 x7 : 0000000000000000
+x8 : 00000000fffba5a0 x9 : 0000000001008000
+x10: 000000000a200023 x11: 0000000000000002
+x12: 0000000000000002 x13: 0000000000000003
+x14: 00000000ffd75ae0 x15: 00000000fff7c8e4
+x16: 00000000fff7ce5c x17: f6d7f1573aaaccbf
+x18: 00000000ffd76e40 x19: 0000000000000400
+x20: 0000000000000e11 x21: 000000009fff8000
+x22: 0000000000000000 x23: 00000000ffd79078
+x24: 0000000080000000 x25: 000000008054a000
+x26: 000000008054d000 x27: 000000008008013c
+x28: 00000000800800e4 x29: 00000000ffd76a70
+
+Resetting CPU ...

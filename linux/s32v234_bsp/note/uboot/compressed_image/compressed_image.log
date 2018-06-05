@@ -1,0 +1,78 @@
+
+log1: could not use Image.gz directly
+=====================================
+uboot:
+include/configs/s32.h
+-#define CONFIG_USE_BOOTI
++//#define CONFIG_USE_BOOTI
+
+------------------------
+
+Hit any key to stop autoboot:  0 
+=> setenv image Image.gz
+=> run bootcmd 
+switch to partitions #0, OK
+mmc0 is current device
+reading Image.gz
+2194961 bytes read in 201 ms (10.4 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+20102 bytes read in 17 ms (1.1 MiB/s)
+Bad Linux ARM64 Image magic!
+
+===========================
+common/cmd_bootm.c:662:		puts("Bad Linux ARM64 Image magic!\n");
+
+
+log2: legacy uImage - gzip compressed
+=====================================
+
+U-Boot 2016.01-g8c15f6e-dirty (May 31 2018 - 19:53:07 +0800)
+
+CPU:   NXP S32V234 V2.0 at 1000 MHz
+Reset cause: unknown reset
+Board: rda600
+I2C:   ready
+DRAM:  2 GiB
+All (4) cores are up.
+MMC:   FSL_SDHC: 0
+In:    serial
+Out:   serial
+Err:   serial
+reading cse.bin
+17408 bytes read
+Net:   
+Warning: System is using default MAC address. Please set a new value
+FEC
+Hit any key to stop autoboot:  0 
+=> run bootcmd 
+switch to partitions #0, OK
+mmc0 is current device
+reading uImage
+2179827 bytes read in 198 ms (10.5 MiB/s)
+Booting from mmc ...
+reading rda600.dtb
+20102 bytes read in 16 ms (1.2 MiB/s)
+## Booting kernel from Legacy Image at 81000000 ...
+   Image Name:   Linux
+   Image Type:   AArch64 Linux Kernel Image (gzip compressed)
+   Data Size:    2179763 Bytes = 2.1 MiB
+   Load Address: 80080000
+   Entry Point:  80080000
+   Verifying Checksum ... OK
+#mn: [bootm_find_images][239] find flattened device tree
+#mn: [boot_get_fdt][227] enter
+#mn: [boot_get_fdt][308] map_sysmem
+#mn: ## Flattened Device Tree blob at 82000000
+   Booting using the fdt blob at 0x82000000
+   Uncompressing Kernel Image ... OK
+   reserving fdt memory region: addr=80000000 size=10000
+   Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+
+Starting kernel ...
+
+INIT: version 2.88 booting
+
+===========================
+
+

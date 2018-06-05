@@ -1,0 +1,35 @@
+
+===================
+MCU log:
+
+*i-TxMsgNumber09-$
+*i-TxMsgNumber08-$
+*i-TxMsgNumber07-$
+*i-TxMsgNumber06-$
+*i-TxMsgNumber05-$
+*i-TxMsgNumber04-$
+*i-TxMsgNumber03-$
+*i-TxMsgNumber02-$
+*i-TxMsgNumber01-$
+*^0x5E-$
+0x43-$
+0x5E-$
+0x42-$
+0x5E-$
+0x41-$
+0x5E-$
+0x40-$
+
+=================
+soc log:
+
+uart_read start!
+[  158.982196] #mn: [uart_put_char]
+[  158.985359] #mn: [uart_put_char]
+[  158.988887] #mn: [uart_put_char]
+[  158.992430] #mn: [uart_put_char]
+[  158.995944] #mn: [uart_put_char]
+[  158.999472] #mn: [uart_put_char]
+[  159.003023] #mn: [uart_put_char]
+[  159.006530] #mn: [uart_put_char]
+time over! 180.041312] #mn: [uart_set_termios]
