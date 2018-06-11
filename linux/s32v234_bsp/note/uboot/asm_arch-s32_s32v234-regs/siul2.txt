@@ -1,0 +1,23 @@
+
+
+S32V234_RM2.2.pdf
+=================
+20.2.13 SIUL2 GPIO Pad Data Output Register (SIUL2_GPDOn)
+Address: 0h base + 1300h offset + (4d × i), where i=0d to 40d
+
+
+u-boot/arch/arm/include/asm/arch-s32/siul.h
+These registers can be used to set or clear a single GPIO pad with a byte access.
+#define SIUL2_GPDO_BASE			(SIUL2_BASE_ADDR + 0x00001300)
+#define SIUL2_GPDOn(i)			(SIUL2_GPDO_BASE + 4 * (i))
+
+SIUL2_GPDOn(0): GPIO0_3
+SIUL2_GPDOn(20): 
+		(high)-------x -------x -------x -------x(low)
+                gpio80   gpio81  gpio82    gpio83	
+
+------------------------------------------
+
+	writeb(SIUL2_GPIO_VALUE1, SIUL2_GPDOn(20));
+	/*writel(SIUL2_MSCR_MUX_MODE_ALT0 | SIUL2_MSCR_OBE_EN | SIUL2_MSCR_PUS_100K_UP | SIUL2_MSCR_PUE_EN , SIUL2_MSCRn(83));*/
+	writel(SIUL2_MSCR_MUX_MODE_ALT0 | SIUL2_MSCR_OBE_EN , SIUL2_MSCRn(83));

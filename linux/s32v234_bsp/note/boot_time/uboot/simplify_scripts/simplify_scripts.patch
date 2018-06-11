@@ -1,0 +1,26 @@
+diff --git a/include/configs/s32.h b/include/configs/s32.h
+index 9c0cb36..06ba0f0 100644
+--- a/include/configs/s32.h
++++ b/include/configs/s32.h
+@@ -373,6 +373,13 @@
+ #define CONFIG_BOOTCOMMAND \
+ 	   "run flashboot"
+ #elif defined(CONFIG_SD_BOOT)
++#ifdef CONFIG_BUILD_RELEASE_VERSION
++#define CONFIG_BOOTCOMMAND \
++		"fatload mmc 0:1 " __stringify(LOADADDR) " " __stringify(IMAGE_NAME) ";" \
++		"setenv bootargs "CONFIG_RELEASE_ARGS_SETTINGS "console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw;"\
++		"fatload mmc 0:1 " __stringify(FDT_ADDR) " " __stringify(FDT_FILE)";" \
++		 __stringify(BOOT_MTD) " " __stringify(LOADADDR) " - " __stringify(FDT_ADDR)
++#else
+ #define CONFIG_BOOTCOMMAND \
+ 	   "mmc dev ${mmcdev}; if mmc rescan; then " \
+ 		   "if run loadimage; then " \
+@@ -382,6 +389,7 @@
+ 	   "else run netboot; fi"
+ #endif
+ #endif
++#endif
+ 
+ /* Miscellaneous configurable options */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */

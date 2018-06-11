@@ -1,0 +1,46 @@
+
+
+before
+------
+[0.000000 0.000000] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.003566 0.003566] Reset cause: unknown reset
+[0.006232 0.002666] Board: rda600
+[0.007697 0.001465] DRAM:  2 GiB
+[0.050308 0.042611] All (4) cores are up.
+[0.052938 0.002630] MMC:   FSL_SDHC: 0
+[0.057489 0.004551] Using default environment
+[0.057767 0.000278] 
+[0.073456 0.015689] In:    serial
+[0.074822 0.001366] Out:   serial
+[0.076292 0.001470] Err:   serial
+[0.167871 0.091579] reading cse.bin
+[0.182036 0.014165] 17408 bytes read
+[0.187519 0.005483] Hit any key to stop autoboot:  0 
+[0.196271 0.008752] reading Image
+[0.555473 0.359202] 4121264 bytes read in 358 ms (11 MiB/s)
+[0.563774 0.008301] reading rda600.dtb
+[0.581288 0.017514] 20102 bytes read in 17 ms (1.1 MiB/s)
+[0.585224 0.003936] ## Flattened Device Tree blob at 82000000
+[0.588835 0.003611]    Booting using the fdt blob at 0x82000000
+[0.592762 0.003927]    reserving fdt memory region: addr=80000000 size=10000
+[0.597936 0.005174]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[0.643515 0.045579] 
+[0.643690 0.000175] Starting kernel ...
+[0.002558 0.002558] 
+[0.813645 0.811087] INIT: version 2.88 booting
+
+
+after
+-----
+this saved 48ms
+
+[0.000000 0.000000] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.004429 0.004429] 2 GiB
+[0.045885 0.041456] FSL_SDHC: 0
+[0.170076 0.124191] 
+[0.595109 0.425033] 
+[0.595165 0.000056] Starting kernel ...
+[0.001847 0.001847] 
+[0.667941 0.666094] INIT: version 2.88 booting
+
+=======================================

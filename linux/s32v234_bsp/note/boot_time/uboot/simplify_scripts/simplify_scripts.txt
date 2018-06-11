@@ -1,0 +1,30 @@
+Simplify scripts
+
+Before
+------
+uboot: 0.823077
+
+before simplify scripts:
+[0.186923 0.005903] Hit any key to stop autoboot:  0 
+[0.275613 0.088690] switch to partitions #0, OK
+[0.277961 0.002348] mmc0 is current device
+[0.369551 0.091590] reading Image
+[0.727722 0.358171] 4121264 bytes read in 358 ms (11 MiB/s)
+[0.732723 0.005001] Booting from mmc ...
+[0.742499 0.009776] reading rda600.dtb
+[0.760134 0.017635] 20102 bytes read in 17 ms (1.1 MiB/s)
+
+
+after
+-----
+uboot: 0.642491
+this saved 0.18s
+
+after Simplify scripts:
+[0.187085 0.008280] Hit any key to stop autoboot:  0 
+[0.194337 0.007252] reading Image
+[0.551627 0.357290] 4121264 bytes read in 359 ms (10.9 MiB/s)
+[0.560931 0.009304] reading rda600.dtb
+[0.579063 0.018132] 20102 bytes read in 18 ms (1.1 MiB/s)
+
+

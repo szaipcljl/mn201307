@@ -1,0 +1,60 @@
+
+
+
+
+============================================
+include/configs/rda600.h	[top]
+|
+V
+include/configs/s32v234_roadefend.h
+|
+V
+include/configs/s32v234_common.h
+|
+V
+include/configs/s32.h
+|
+| asm/arch/imx-regs.h
+V
+arch/arm/include/asm/arch-s32/imx-tegs.h
+|
+|
+V
+arch/arm/include/asm/arch-s32/s32v234-regs.h
+
+set or clear a single GPIO pad
+============================================
+
+./arch/arm/include/asm/arch-s32/s32v234-regs.h:64:#define SIUL2_BASE_ADDR					(AIPS0_BASE_ADDR + 0x0006C000)
+
+./arch/arm/include/asm/arch-s32/siul.h:55:#define SIUL2_GPDI_BASE			(SIUL2_BASE_ADDR + 0x00001500)
+
+arch/arm/include/asm/arch-s32/siul.h:56:#define SIUL2_GPDIn(i)			(SIUL2_GPDI_BASE + 4 * (i))
+
+
+example:
+	/* I2C0 - Serial Data Input */
+	writel(SIUL2_PAD_CTRL_I2C0_MSCR_SDA, SIUL2_MSCRn(99));
+	writel(SIUL2_PAD_CTRL_I2C0_IMCR_SDA, SIUL2_IMCRn(269));
+
+arch/arm/include/asm/arch-s32/siul.h
+#define SIUL2_GPIO_VALUE0		(0x00)
+#define SIUL2_GPIO_VALUE1		(0x01)
+
+20.2.11 SIUL2 Multiplexed Signal Configuration (SIUL2_MSCRn)
+This register is used to control the settings for a PAD (bit-wise details given below) and
+select ALT modes using MUX_MODE bits.
+
+20.2.12 SIUL2 Input Multiplexed Signal Configuration Register
+(SIUL2_IMCRn)
+This register is used to select pad for a specific module input function.
+
+20.2.13 SIUL2 GPIO Pad Data Output Register (SIUL2_GPDOn)
+These registers can be used to set or clear a single GPIO pad with a byte access.
+These registers support 8-, 16-, and 32-bit accesses. SIUL2 GPIO Pad Data Output
+Register (SIUL2_GPDO0_162) is supported
+
+20.2.14 SIUL2 GPIO Pad Data Input Register (SIUL2_GPDIn)
+These registers can be used to read the GPIO pad data with a byte access.
+
+

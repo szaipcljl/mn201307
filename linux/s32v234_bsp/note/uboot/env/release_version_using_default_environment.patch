@@ -1,0 +1,61 @@
+commit 36a33c3e40b38917c02dad2f7cd0edd859facf2a
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Wed Jun 6 14:33:41 2018 +0800
+
+    [uboot] release version: using default environment
+    
+    release version:
+    define RELEASE_DEBUG_USING_ENV //load env from mmc/emmc ..
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/include/configs/rda600.h b/include/configs/rda600.h
+index 956ba44..ac0c96c 100644
+--- a/include/configs/rda600.h
++++ b/include/configs/rda600.h
+@@ -19,6 +19,7 @@
+ #define	FDT_FILE rda600.dtb
+ 
+ #ifdef CONFIG_BUILD_RELEASE_VERSION
++//#define RELEASE_DEBUG_USING_ENV
+ #if 0
+ //set to -2 to autoboot with no delay and not check for abort
+ #define DELAY_TIME	-2
+diff --git a/include/configs/s32.h b/include/configs/s32.h
+index 4b5e772..9c0cb36 100644
+--- a/include/configs/s32.h
++++ b/include/configs/s32.h
+@@ -205,6 +205,12 @@
+ #define CONFIG_BOOTARGS		"console=ttyLF"	__stringify(CONFIG_FSL_LINFLEX_MODULE) \
+ 				" root=/dev/ram rw"
+ 
++#if defined(CONFIG_BUILD_RELEASE_VERSION) && !defined(RELEASE_DEBUG_USING_ENV)
++#define CONFIG_RELEASE_ARGS_SETTINGS "loglevel=0 "
++#else
++#define CONFIG_RELEASE_ARGS_SETTINGS
++#endif
++
+ #define CONFIG_CMD_ENV
+ 
+ #define CONFIG_HWCONFIG
+@@ -290,7 +296,7 @@
+ 				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
+ 			"fi; "	\
+ 		"fi\0" \
+-	"mmcargs=setenv bootargs console=${console},${baudrate} " \
++	"mmcargs=setenv bootargs " CONFIG_RELEASE_ARGS_SETTINGS "console=${console},${baudrate} " \
+ 		"root=${mmcroot}\0" \
+ 	"loadbootscript=" \
+ 		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
+@@ -446,7 +452,11 @@
+ #define CONFIG_ENV_OFFSET			2 * CONFIG_ENV_SECT_SIZE
+ 
+ #elif defined(CONFIG_SD_BOOT)
++#if defined(CONFIG_BUILD_RELEASE_VERSION) && !defined(RELEASE_DEBUG_USING_ENV)
++#define CONFIG_ENV_IS_NOWHERE
++#else
+ #define CONFIG_ENV_IS_IN_MMC
++#endif
+ #define CONFIG_SYS_NO_FLASH
+ #define CONFIG_ENV_SIZE			(0x2000) /* 8 KB */
+ #define CONFIG_ENV_OFFSET		(0xC0000) /* 12 * 64 * 1024 */

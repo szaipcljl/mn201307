@@ -1,0 +1,43 @@
+[0.000000 0.000000] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.004161 0.004161] Reset cause: unknown reset
+[0.005949 0.001788] Board: rda600
+[0.007883 0.001934] DRAM:  2 GiB
+[0.051530 0.043647] All (4) cores are up.
+[0.053785 0.002255] MMC:   FSL_SDHC: 0
+[0.056806 0.003021] Using default environment
+[0.059567 0.002761] 
+[0.074125 0.014558] In:    serial
+[0.079200 0.005075] Out:   serial
+[0.079287 0.000087] Err:   serial
+[0.169127 0.089840] reading cse.bin
+[0.182467 0.013340] 17408 bytes read
+[0.187473 0.005006] Hit any key to stop autoboot:  0 
+[0.197305 0.009832] reading Image
+[0.555033 0.357728] 4121264 bytes read in 359 ms (10.9 MiB/s)
+[0.564150 0.009117] reading rda600.dtb
+[0.581579 0.017429] 20102 bytes read in 17 ms (1.1 MiB/s)
+[0.585386 0.003807] ## Flattened Device Tree blob at 82000000
+[0.591870 0.006484]    Booting using the fdt blob at 0x82000000
+[0.593079 0.001209]    reserving fdt memory region: addr=80000000 size=10000
+[0.598553 0.005474]    Loading Device Tree to 000000009fff8000, end 000000009ffffe85 ... OK
+[0.643129 0.044576] 
+[0.643242 0.000113] Starting kernel ...
+[0.002354 0.002354] 
+[0.668752 0.666398] INIT: version 2.88 booting
+[0.902736 0.233984] Starting udev
+[0.938269 0.035533] udev: Not using udev cache because of changes detected in the following files:
+[0.948330 0.010061] udev:     /proc/version /proc/cmdline /proc/devices
+[0.952267 0.003937] udev:     lib/udev/rules.d/* etc/udev/rules.d/*
+[0.955984 0.003717] udev: The udev cache will be regenerated. To identify the detected changes,
+[0.970275 0.014291] udev: compare the cached sysconf at   /etc/udev/cache.data
+[0.970848 0.000573] udev: against the current sysconf at  /dev/shm/udev.cache
+[2.390415 1.419567] urandom start: failed.
+[2.394908 0.004493] Populating dev cache
+[2.580917 0.186009] hwclock: Cannot access the HaINIT: Entering runlevel: 5
+[2.590325 0.009408] Configuring network interfaces... done.
+[2.741710 0.151385] Starting system message bus: done
+[2.854126 0.112416] Starting internet superserver: xinetd.
+[2.980776 0.126650] 
+[2.989945 0.009169] Poky (Yocto Project Reference Distro) 1.8 s32v234evb /dev/ttyLF0
+[2.996576 0.006631] 
+[2.996730 0.000154] s32v234evb login: 

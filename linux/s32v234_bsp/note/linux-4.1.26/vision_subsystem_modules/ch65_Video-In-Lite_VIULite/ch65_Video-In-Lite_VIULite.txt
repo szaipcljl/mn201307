@@ -1,0 +1,4 @@
+chapter 65
+Video-On-Lite(VIULite)
+
+	a bridge between external image sensor and system memory

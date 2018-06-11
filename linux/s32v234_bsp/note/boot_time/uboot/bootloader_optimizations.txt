@@ -1,0 +1,249 @@
+bootloader optimizations
+
+Remove unnecessary functionality.
+Usually, bootloaders include many features needed only for
+development. Compile your bootloader with less features.
+
+Optimize required functionality.
+Tune your bootloader for fastest performance.
+Switch to another bootloader (if available)
+Skip the bootloader and load the kernel right away.
+
+U-Boot optimizations
+====================
+
+U-Boot - Remove unnecessary functionality
+-----------------------------------------
+Recompile U-Boot to remove features not needed in production
+▶ Disable as many features as possible in
+  include/configs/<soc>-<board>.h
+▶ Examples: MMC, USB, Ethernet, dhcp, ping, command line
+  edition, command completion...
+▶ A smaller and simpler U-Boot is faster to load and faster to
+  initialize.
+
+U-Boot - Remove the boot delay
+------------------------------
+▶ Remove the boot delay:
+  setenv bootdelay 0
+▶ This usually saves several seconds!
+▶ Before you do that, recompile U-Boot with
+  CONFIG_ZERO_BOOTDELAY_CHECK, documented in
+  doc/README.autoboot. It allows to stop the autoboot process
+  by hitting a key even if the boot delay is set to 0.
+
+U-Boot - Simplify scripts
+-------------------------
+Some boards have over-complicated scripts:
+bootcmd=run bootf0
+bootf0=run ${args0}; setenv bootargs ${bootargs} \
+maximasp.kernel=maximasp_nand.0:kernel0; nboot 0x70007fc0 kernel0
+
+Let's replace this by:
+setenv bootargs 'mem=128M console=tty0 consoleblank=0
+console=ttyS0,57600 \
+mtdparts=maximasp_nand.0:2M(u-boot)ro,512k(env0)ro,512k(env1)ro,\
+4M(kernel0),4M(kernel1),5M(kernel2),100M(root0),100M(root1),-(other)\
+rw ubi.mtd=root0 root=ubi0:rootfs rootfstype=ubifs earlyprintk debug \
+user_debug=28 maximasp.board=EEKv1.3.x \
+maximasp.kernel=maximasp_nand.0:kernel0'
+setenv bootcmd 'nboot 0x70007fc0 kernel0'
+
+This saved 56 ms on this ARM9 system (400 MHz)!
+
+Bootloader: copy the exact kernel size
+--------------------------------------
+▶ When copying the kernel from flash to RAM, we still see
+  many systems that copy too many bytes, not taking the exact
+  kernel size into account.
+▶ In U-Boot, use the nboot command:
+  nboot ramaddr 0 nandoffset
+▶ U-Boot using the kernel size information stored in the uImage
+  header to know how many bytes to copy.
+
+U-Boot - Optimize kernel loading
+--------------------------------
+▶ After copying the kernel uImage to RAM, U-Boot always
+  moves it to the load address specified in the uImage header.
+▶ A CRC check is also performed.
+
+[16.590578 0.003404] ## Booting kernel from Legacy Image at 21000000 ...
+[16.595204 0.004626] Image Name: Linux-3.10.0+
+[16.597986 0.002782] Image Type: ARM Linux Kernel Image (uncompressed)
+[16.602881 0.004895] Data Size: 3464112 Bytes = 3.3 MiB
+[16.606542 0.003661] Load Address: 20008000
+[16.608903 0.002361] Entry Point: 20008000
+[16.611256 0.002353] Verifying Checksum ... OK
+[17.134317 0.523061] ## Flattened Device Tree blob at 22000000
+[17.137695 0.003378] Booting using the fdt blob at 0x22000000
+[17.141707 0.004012] Loading Kernel Image ... OK
+[18.005814 0.864107] Loading Device Tree to 2bb12000, end 2bb1a0b6 ... OK
+
+Kernel CRC check time: Verifying Checksum ... OK
+Kernel memmove time: Loading Kernel Image ... OK
+
+U-Boot - Remove unnecessary memmove (1)
+---------------------------------------
+▶ You can make U-Boot skip the memmove operation by directly
+	loading the uImage at the right address.
+▶ Compute this address:
+	Addr = Load Address - uImage header size
+	Addr = Load Address - (size(uImage) - size(zImage))
+	Addr = 0x20008000 - 0x40 = 0x20007fc0
+
+[16.590927 0.003407] ## Booting kernel from Legacy Image at 20007fc0 ...
+[16.595547 0.004620] Image Name: Linux-3.10.0+
+[16.598351 0.002804] Image Type: ARM Linux Kernel Image (uncompressed)
+[16.603228 0.004877] Data Size: 3464112 Bytes = 3.3 MiB
+[16.606907 0.003679] Load Address: 20008000
+[16.609256 0.002349] Entry Point: 20008000
+[16.611619 0.002363] Verifying Checksum ... OK
+[17.135046 0.523427] ## Flattened Device Tree blob at 22000000
+[17.138589 0.003543] Booting using the fdt blob at 0x22000000
+[17.142575 0.003986] XIP Kernel Image ... OK
+[17.156358 0.013783] Loading Device Tree to 2bb12000, end 2bb1a0b6 ... OK
+
+Kernel CRC check time
+Kernel memmove time (skipped): XIP Kernel Image
+
+U-Boot - Remove unnecessary memmove (2)
+---------------------------------------
+
+Results on Microchip SAMA5D3 Xplained (ARM), Linux 3.10:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							Time	 Diff
+--------------------------------------------
+Default					 1.433 s
+--------------------------------------------
+Optimum load address	 0.583 s 	-0.85 s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Measured between Booting kernel and Starting kernel ...
+
+U-Boot - Remove kernel CRC check
+--------------------------------
+▶ Fine in production when you never have data corruption
+  copying the kernel to RAM.
+▶ Disable CRC checking with a U-boot environment variable:
+  setenv verify no
+
+Results on Microchip SAMA5D3 Xplained (ARM), Linux 3.10:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					Time 	 Diff
+-------------------------------------
+With CRC check 		583 ms
+-------------------------------------
+Without CRC check 	60 ms 	-523 ms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Measured between Booting kernel and Starting kernel ...
+
+Further U-Boot optimizations
+----------------------------
+▶ Silence U-Boot console output. You will need to compile
+  U-Boot with CONFIG_SILENT_CONSOLE and
+  setenv silent yes.
+  See doc/README.silent for details.
+▶ Ultimate solution: use U-Boot's Falcon mode.
+  U-Boot is split in two parts: the SPL (Secondary Program
+  Loader) and the U-Boot image. U-Boot can then configure
+  the SPL to load the Linux kernel directly, instead of the
+  U-Boot image.
+  See doc/README.falcon for details.
+
+Switching to another bootloader
+===============================
+
+Switching from U-Boot to Barebox
+--------------------------------
+
+Compression
+-----------
+Let's try LZO compression for the kernel again:
+Before (gzip)
+
+
+After (LZO):
+
+Features
+--------
+Now, let's limit the features of the bootloader.
+We still keep a way to interact with it when a GPIO has a given
+value. For example, using the gpio_direction_input and
+gpio_get_value commands in a script that would then start an
+upgrade or boot a rescue kernel.
+
+gpio_get_value 42
+if [ $? = 0 ]; then
+kdev="/dev/nand0.krescue.bb"
+fi
+
+Note: the kernel didn't actually change but we don't get a
+message on the serial line exactly at the time we switch from the
+bootloader to the kernel.
+Warning: Sometimes, the kernel is relying on the bootloader to
+initialize the hardware (pinmuxing, clocks, ...) so be careful when
+removing features.
+
+Skipping the bootloader
+=======================
+
+Removing the bootloader
+-----------------------
+▶ Principle: instead of loading the bootloader and then the
+ kernel, load the kernel right away!
+▶ For example, on Microchip AT91, it is easy to implement with
+ at91bootstrap v3. You just need to configure it with one of
+ the linux or linux_dt configurations:
+
+make at91sama5d3xeknf_linux_dt_defconfig
+make
+  Full details on http://bootlin.com/blog/starting-linuxdirectly-from-at91bootstrap3/
+▶ In our particular case, though, you will lose the main
+  advantages of using Barebox. It uses the CPU caches while
+  loading the kernel.
+
+
+Kernel compression options
+==========================
+
+Kernel compression and size optimizations
+-----------------------------------------
+After optimizing the time to load the kernel in the bootloader, we
+are ready to experiment with kernel options impacting size:
+  ▶ Kernel compression options
+  ▶ Optimizing kernel code for size
+
+Results on Microchip AT91SAM9263 (ARM), 200 MHz, Linux 3.13-rc4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Timestamp    gzip      lzma       xz 	   	lzo 	lz4      uncompressed
+--------------------------------------------------------------------------
+Size  	    3016192   2270064   2186056   3292528  3541040   5775472
+Copy 	    4.105 s   3.095 s   2.981 s   4.478 s  4.814     7.836 s
+Uncompress  1.737 s   8.691 s   6.531 s   1.073 s  1.225 s   N/A
+Total       8.795 s   14.200 s  11.865 s  8.700 s  9.368 s   N/A
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Results indeed depend on I/O and CPU performance!
+
+Optimize kernel for size
+------------------------
+▶ CONFIG_CC_OPTIMIZE_FOR_SIZE: possibility to compile the
+  kernel with gcc -Os instead of gcc -O2.
+▶ Such optimizations give priority to code size at the expense of
+  code speed.
+▶ Results: the initial boot time is better (smaller size), but the
+  slower kernel code quickly offsets the benefits. Your system
+  will run slower!
+
+Results on Microchip SAMA5D3 Xplained (ARM), Linux 3.10, gzip
+compression:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Timestamp           O2        Os       Diff
+-------------------------------------------------
+Starting kernel   4.307 s   4.213 s    -94 ms
+Starting init     5.593 s   5.549 s    -44 ms
+Login prompt      21.085 s  22.900 s   +1.815 s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

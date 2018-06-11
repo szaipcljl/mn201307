@@ -60,7 +60,7 @@ static inline void *map_sysmem(phys_addr_t paddr, unsigned long len)
 }
 
 --
-images->ep->text_offset (code segment)
+images->ep->text_offset ??
 
 out/rda600/kernel/linux-4.9_rda600-release/arch/arm64/kernel/vmlinux.lds
  * If padding is applied before .head.text, virt<->phys conversions will fail.
