@@ -1,0 +1,55 @@
+
+
+
+CAM1_PWR_ON	cam1模块电源开关	3.3V	OUT	VDD_GPIO0=3.3V
+-------------------------------------------
+echo 16 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio16/direction 
+echo 1 > /sys/class/gpio/gpio16/value 
+i2cset -y 1 0x61 0x7 0xBA
+i2cset -y 1 0x61 0x8 0x20 
+i2cset -y 1 0x61 0x10 0x20
+------------------------------------------
+
+
+
+
+
+
+
+
+xc7027+ar0144
+=============
+** Architecture:
+** I2C bus: I2C1
+** ADDR:    0x60   0x5d    0x1b      0x20
+** i.MX6 -> 914 -> 913 -> xc7027 -> ar0144
+
+s32v:
+I2C bus: I2C1
+ADDR:    0x61   0x5d    0x1b      0x20
+s32v -> 914 -> 913 -> xc7027 -> ar0144
+
+echo 16 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio16/direction 
+echo 1 > /sys/class/gpio/gpio16/value 
+i2cset -y 1 0x61 0x7 0xBA
+i2cset -y 1 0x61 0x8 0x36 
+i2cset -y 1 0x61 0x10 0x36
+i2cset -y 1 0x61 0x9 0x20
+i2cset -y 1 0x61 0x11 0x20
+
+static int ioctl_dev_init(struct v4l2_int_device *s)
+{
+	u16 regval = 0;
+
+	//config 914 regs
+	ti_wrtie_reg(DS90UB914_ADDR, 0x07,  DS90UB913_ADDR << 1); //913 slave addr
+ 	ti_wrtie_reg(DS90UB914_ADDR, 0x08,  0x36); //xc7027 slave addr
+	ti_wrtie_reg(DS90UB914_ADDR, 0x010, 0x36); //xc7027 slave addr
+ 	ti_wrtie_reg(DS90UB914_ADDR, 0x09,  0x20); //ar0144 slave addr
+	ti_wrtie_reg(DS90UB914_ADDR, 0x011, 0x20); //ar0144 slave addr
+
+------------
+i2cdetect  -y -a 1
+

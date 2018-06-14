@@ -1,0 +1,7 @@
+在应用层能够侦测内存地址中的数据变化，以此来检测驱动中对内存或者相关配置的正确性验证。
+
+devmem2使用方法：
+devmem2 { address } [ type [ data ] ]
+	address : 物理地址
+	type :要访问的数据类型 : [b]yte, [h]alfword, [w]ord
+	data :想要写入的数据，若为读取操作则省略此参数，若为写入，则必须含有此参数。

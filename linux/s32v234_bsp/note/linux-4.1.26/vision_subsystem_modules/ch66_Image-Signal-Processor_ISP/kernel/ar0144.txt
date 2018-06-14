@@ -1,0 +1,6 @@
+
+mlinux@mlinux:~/rda600/device/s32v$ find . -name "*0144*" 
+./bsp/include/isp_cam_ar0144.h
+./bsp/drivers/cam_generic/kernel/include/ar0144_types.h
+./bsp/drivers/cam_generic/kernel/include/ar0144_config_viu.h
+./bsp/drivers/cam_generic/user/src/ar0144_user.cpp

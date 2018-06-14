@@ -1,0 +1,7 @@
+
+
+mlinux@mlinux:~/NXP/S32DS_Vision_v2.0$ ls S32DS/s32v234_sdk/
+3rdparty  build  consolmake.bat  demos  docs  include  isp  kernels  libs  os  platform  rebuildlibs.bat  ReleaseNotes.txt  runShell.cmd  tools
+
+mlinux@mlinux:~/NXP/S32DS_Vision_v2.0$ ls S32DS/s32v234_sdk/libs/
+apex  apexcv_base  apexcv_pro  apexcv_ref  dnn  io  isp  startup  utils  webserver

@@ -1,0 +1,17 @@
+chapter 49: secure digital host controller - uSDHC
+
+Dedicated Card detect(CD) pin is not supported.
+
+49.2.1.2.1 Data transfer Modes
+The uSDHC can select the following modes for data transfer:
+• SD 1-bit
+• SD 4-bit
+• MMC 1-bit
+• MMC 4-bit
+• MMC 8-bit
+• Identification Mode (up to 400 kHz)
+• MMC full speed mode (up to 25 MHz)
+• MMC high speed mode (up to 40 MHz)
+• MMC DDR mode (52MHz both edge)
+• SD/SDIO full speed mode (up to 25 MHz)
+• SD/SDIO high speed mode (up to 40 MHz)

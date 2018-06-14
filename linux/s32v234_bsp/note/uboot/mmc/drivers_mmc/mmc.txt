@@ -1,0 +1,40 @@
+
+
+mmc->cfg->ops->
+
+mmc addr
+
+freq
+clock
+blocksize
+
+bus_width
+SD_DATA_4BIT
+
+==========
+mmc_startup
+
+mmc->tran_speed
+mmc->read_bl_len
+
+#mn: [mmc_startup][1154] mmc->tran_speed: 25000000; mult: 25
+#mn: [mmc_startup][1158] mmc->read_bl_len:512 
+#mn: [mmc_startup][1184] MMC_MAX_BLOCK_LEN:512 
+
+
+==============
+sd_change_freq
+mmc_change_freq
+
+==============
+mmc_set_blocklen
+
+================
+#mn: [sd_change_freq][928] SD_VERSION_2
+#mn: [sd_change_freq][941] MMC_MODE_4BIT
+#mn: [sd_change_freq][985]  MMC_MODE_HS
+#mn: [mmc_set_bus_width][1045] mmc->bus_width:4 
+
+=================
+Multiplier values for TRAN_SPEED.
+static const int multipliers[] = {

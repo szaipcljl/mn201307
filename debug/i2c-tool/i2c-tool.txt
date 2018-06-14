@@ -1,1 +1,40 @@
 i2c-tool
+
+i2cset - set I2C registers
+==========================
+https://linux.die.net/man/8/i2cset
+
+Synopsis
+i2cset [-f] [-y] [-m mask] [-r] i2cbus chip-address data-address [value] ... [mode]
+
+i2cset -V 
+
+
+Options
+-------
+-V
+    Display the version and exit. 
+-f
+    Force access to the device even if it is already busy. By default, i2cset 
+	will refuse to access a device which is already under the control of a 
+	kernel driver. Using this flag is dangerous, it can seriously confuse the 
+	kernel driver in question. It can also cause i2cset to silently write to 
+	the wrong register. So use at your own risk and only if you know what 
+	you're doing. 
+-y
+    Disable interactive mode. By default, i2cset will wait for a confirmation 
+	from the user before messing with the I2C bus. When this flag is used, it 
+	will perform the operation directly. This is mainly meant to be used in 
+	scripts. 
+-m mask
+    The mask parameter, if specified, describes which bits of value will be 
+	actually written to data-address. Bits set to 1 in the mask are taken from 
+	value, while bits set to 0 will be read from data-address and thus preserved 
+	by the operation. Please note that this parameter assumes that the read and 
+	write operations for the specified mode are symmetrical for the device you 
+	are accessing. This may or may not be the case, as neither I2C nor SMBus 
+	guarantees this. 
+-r
+    Read back the value right after writing it, and compare the result with the 
+	value written. This used to be the default behavior. The same limitations 
+	apply as those of option -m.

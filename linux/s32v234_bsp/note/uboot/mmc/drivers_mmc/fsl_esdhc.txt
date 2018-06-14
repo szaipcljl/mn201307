@@ -1,0 +1,54 @@
+fsl_esdhc.txt
+
+uboot uSDHC (default) log
+=========================
+SD boot 
+-------
+[0.366925 0.095381] reading Image
+[0.981815 0.614890] 7177056 bytes read in 616 ms (11.1 MiB/s)
+
+emmc boot
+---------
+
+=========================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mode                    Voltage      Bits     Freq(MHz-Max)   Data Rate(Max)
+SD/ SDIO/SDHC/SDXC        3.3 V       1/4       25              12.5 MB/s
+full (Default) speed
+
+e.MMC full (Default)   3.3V/1.8V      1/4/8       26              26 MB/s
+speed mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+============================
+|-> mmc_init
+	|-> mmc_start_init
+		|-> mmc_set_bus_width(mmc, 1);
+			mmc_set_clock(mmc, 1);	//Identification Mode: Data Rate(Max) 400kHz
+	|-> mmc_complete_init [mmc.c]
+		|-> mmc_startup [mmc.c]
+			|-> if (IS_SD(mmc)) {
+
+=============================
+esdhc_send_cmd
+
+	/* Wait at least 8 SD clock cycles before the next command */
+	/*
+	 * Note: This is way more than 8 cycles, but 1ms seems to
+	 * resolve timing issues with some cards
+	 */
+	udelay(1000); => udelay(1); 
+reading Image
+4121264 bytes read in 347 ms (11.3 MiB/s)
+#mn: [mmc_init][1709] 
+reading rda600.dtb
+20102 bytes read in 6 ms (3.2 MiB/s)
+
+------------------
+udelay:
+mmc_send_status
+mmc_go_idle
+sd_send_op_cond
+
+	

@@ -1,0 +1,63 @@
+ds90ub914a
+
+
+向914对应的寄存器中写913 isp camera的i2c地址，是告诉914，当cpu进行i2c通信时，
+如果你要与isp通信，则cpu肯定写的是isp的i2c地址，因此914能够识别出你想与isp通信，
+因为它会接收数据并通过913传输给isp.  相当于转发
+
+在914的寄存器中填写 913/isp/ar0144 slave addr，相当于注册了这些从地址。
+当访问 914 时，从地址设置成914的i2c地址;
+当访问 isp 时，从地址设置成 isp 的地址，也会访问到914, 但是 914 会透传，相当于转发，
+实现访问isp。
+
+注册到 914 中的从设备地址，操作他们时相当于与 914 挂在同一条总线上。
+
+从设备地址写到 914 哪个寄存器中，没有要求。
+
+
+8.5.1 Programmable Controller
+An integrated I2C slave controller is embedded in the DS90UB914A-Q1 Deserializer. It must be used to
+configure the extra features embedded within the programmable registers or it can be used to control the set of
+programmable GPIOs.
+
+8.5.2 Description of Bidirectional Control Bus and I2C Modes
+The I2C-compatible interface allows programming of the DS90UB913A-Q1, DS90UB914A-Q1, or an external
+remote device (such as image sensor) through the bidirectional control channel. 
+
+8.5.3 I2C Pass-Through
+I2C pass-through provides a way to access remote devices at the other end of the FPD-Link III interface. This
+option is used to determine if an I2C instruction is transferred over to the remote I2C bus. For example, when the
+I2C master is connected to the deserializer and I2C pass-through is enabled on the deserializer, any I2C traffic
+targeted for the remote serializer or remote slave will be allowed to pass through the deserializer to reach those
+respective devices.
+
+Camera A (CMOS Image Sensor)
+	Slave ID:(0xA0)
+
+If master controller transmits I2C transaction for address 0xA0, the DES A with I2C pass-through enabled will
+transfer I2C commands to remote Camera A. 
+
+8.5.6 Multiple Device Addressing
+Some applications require multiple camera devices with the same fixed address to be accessed on the same I2C
+bus. The DS90UB914A provides slave ID matching/aliasing to generate different target slave addresses when
+connecting more than two identical devices together on the same bus. This allows the slave devices to be
+independently addressed. Each device connected to the bus is addressable through a unique ID by programming
+of the Slave alias register on Deserializer. This will remap the Slave alias address to the target SLAVE_ID
+address; up to 1 ID Alias is supported when slaves are attached to the DS90UB914A deserializer The ECU
+Controller must keep track of the list of I2C peripherals in order to properly address the target device.
+
+8.6 Register Maps
+
+
+
+Table 6. DS90UB914A-Q1 Control Registers
+ADDR
+(HEX)     NAME          BITS     FIELD     R/W     DEFAULT           DESCRIPTION
+0x07    SER Alias                                                   7-bit Remote Serializer Device Alias ID
+0x08    Slave ID[0]                                                 7-bit Remote Slave Device ID 0
+0x09    Slave ID[1]
+0x10    Slave Alias[0]                                              7-bit Remote Slave Device Alias ID 0
+0x11    Slave Alias[1]                                              7-bit Remote Slave Device Alias ID 1
+
+
+

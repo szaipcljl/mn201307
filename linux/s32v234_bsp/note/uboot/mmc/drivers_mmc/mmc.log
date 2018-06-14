@@ -1,0 +1,103 @@
+All (4) cores are up.
+MMC:   #mn: [fsl_esdhc_initialize][669] 
+#mn: [fsl_esdhc_initialize][744] cfg->cfg.f_max: 50000000
+FSL_SDHC: 0
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+#mn: [mmc_init][1680]                                     
+#mn: [esdhc_init][587]                                    
+#mn: [mmc_set_clock][1012] mmc->clock: 400000             
+#mn: [set_sysctl][495] sdhc_clk:50000000                  
+#mn: [esdhc_set_ios][573] mmc->clock                      
+#mn: [mmc_set_bus_width][1020] mmc->bus_width:1 
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_set_clock][1012] mmc->clock: 400000
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_complete_init][1666] 
+#mn: [sd_change_freq][855] 
+#mn: [sd_change_freq][960]  MMC_MODE_HS
+#mn: [mmc_set_bus_width][1020] mmc->bus_width:4 
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_set_clock][1012] mmc->clock: 50000000
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+reading cse.bin
+17408 bytes read
+Hit any key to stop autoboot:  0 
+#mn: [mmc_init][1680] 
+reading Image
+4121264 bytes read in 359 ms (10.9 MiB/s)
+#mn: [mmc_init][1680] 
+reading rda600.dtb
+20102 bytes read in 17 ms (1.1 MiB/s)
+
+=================================================
+
+reading cse.bin
+#mn: [mmc_bread][246] 
+#mn: [find_mmc_device][183] 
+#mn: [mmc_set_blocklen][166] 
+#mn: [mmc_read_blocks][204] 
+#mn: [mmc_bread][246] 
+#mn: [find_mmc_device][183] 
+#mn: [mmc_set_blocklen][166] 
+#mn: [mmc_read_blocks][204] 
+#mn: [mmc_bread][246] 
+#mn: [find_mmc_device][183] 
+#mn: [mmc_set_blocklen][166] 
+#mn: [mmc_read_blocks][204] 
+#mn: [mmc_bread][246] 
+#mn: [find_mmc_device][183] 
+#mn: [mmc_set_blocklen][166] 
+#mn: [mmc_read_blocks][204] 
+17408 bytes read
+
+---------------------------
+mmc_bread -> find_mmc_device -> mmc_set_blocklen -> mmc_read_blocks
+
+
+========================================
+All (4) cores are up.
+MMC:   #mn: [fsl_esdhc_initialize][675] 
+#mn: [esdhc_reset][651] 
+#mn: [esdhc_reset][659] hardware clears the bit when it is done
+#mn: [fsl_esdhc_initialize][750] cfg->cfg.f_max: 50000000
+FSL_SDHC: 0
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+#mn: [mmc_init][1705] 
+#mn: [esdhc_init][587] 
+#mn: [mmc_set_clock][1037] mmc->clock: 400000
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_set_bus_width][1045] mmc->bus_width:1 
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_set_clock][1037] mmc->clock: 400000
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_go_idle][286] 
+#mn: [sd_send_op_cond][308] 
+#mn: [mmc_complete_init][1691] 
+#mn: [mmc_set_capacity][563] 
+#mn: [sd_change_freq][928] SD_VERSION_2
+#mn: [sd_change_freq][941] MMC_MODE_4BIT
+#mn: [sd_change_freq][985]  MMC_MODE_HS
+#mn: [mmc_set_bus_width][1045] mmc->bus_width:4 
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+#mn: [mmc_set_clock][1037] mmc->clock: 50000000
+#mn: [set_sysctl][495] sdhc_clk:50000000
+#mn: [esdhc_set_ios][573] mmc->clock
+reading cse.bin
+
+======================================
