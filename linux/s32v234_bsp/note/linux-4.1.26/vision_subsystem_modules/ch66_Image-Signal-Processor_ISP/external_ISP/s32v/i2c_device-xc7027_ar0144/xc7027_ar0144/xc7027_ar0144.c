@@ -27,7 +27,7 @@
 #define XC7027_ADDR     0x1B
 #define AR0144_ADDR     0x10  //not sure
 
-static struct sensor_data xc7027_ar0144_data_data;
+static struct sensor_data xc7027_ar0144_data;
 static int ds90ub914_pwn_gpio, isp_pwn_gpio;
 
 //add for xc7027 ROI
@@ -54,7 +54,7 @@ static int xc7027_status = 0; // 0-off 1-on
 /*******************************************
  ** I2C slave device read and write function
  *******************************************/
-/* ti_wrtie_reg for 914 913*/
+/* test interface: ti_wrtie_reg for 914 913*/
 static s32 ti_wrtie_reg(u8 slave_addr, u8 reg, u8 val)
 {
 	s32 rc = 0;
@@ -64,15 +64,15 @@ static s32 ti_wrtie_reg(u8 slave_addr, u8 reg, u8 val)
 	au8Buf[0] = reg;
 	au8Buf[1] = val;
 
-	slave_addr_temp = xc7027_ar0144_data_data.i2c_client->addr;
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr;
+	slave_addr_temp = xc7027_ar0144_data.i2c_client->addr;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr;
 
-	if (2 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8Buf, 2)) {
+	if (2 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8Buf, 2)) {
 		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, slave_addr, reg, val);
 		rc =  -1;
 	}
 
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr_temp;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr_temp;
 	return rc;
 }
 
@@ -86,20 +86,20 @@ static s32 ti_read_reg(u8 slave_addr, u8 reg, u8 *val)
 
 	au8RegBuf[0] = reg;
 
-	slave_addr_temp = xc7027_ar0144_data_data.i2c_client->addr;
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr;
+	slave_addr_temp = xc7027_ar0144_data.i2c_client->addr;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr;
 
-	if (1 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8RegBuf, 1)) {
+	if (1 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8RegBuf, 1)) {
 		pr_err("%s error: addr=0x%x reg=0x%x\n", __func__, slave_addr, reg);
 		rc = -1;
 	}
 
-	if (1 != i2c_master_recv(xc7027_ar0144_data_data.i2c_client, &u8RdVal, 1)) {
+	if (1 != i2c_master_recv(xc7027_ar0144_data.i2c_client, &u8RdVal, 1)) {
 		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, slave_addr, reg, u8RdVal);
 		rc = -1;
 	}
 
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr_temp;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr_temp;
 	*val = u8RdVal;
 	return rc;
 }
@@ -116,15 +116,15 @@ static s32 ar_wrtie_reg(u8 slave_addr, u16 reg, u16 val)
 	au8Buf[2] = val >> 8;
 	au8Buf[3] = val & 0xff;
 
-	slave_addr_temp = xc7027_ar0144_data_data.i2c_client->addr;
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr;
+	slave_addr_temp = xc7027_ar0144_data.i2c_client->addr;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr;
 
-	if (4 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8Buf, 4)) {
+	if (4 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8Buf, 4)) {
 		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, slave_addr, reg, val);
 		rc =  -1;
 	}
 
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr_temp;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr_temp;
 	return rc;
 }
 
@@ -139,20 +139,20 @@ static s32 ar_read_reg(u8 slave_addr, u16 reg, u16 *val)
 	au8RegBuf[0] = reg >> 8;
 	au8RegBuf[1] = reg & 0xff;
 
-	slave_addr_temp = xc7027_ar0144_data_data.i2c_client->addr;
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr;
+	slave_addr_temp = xc7027_ar0144_data.i2c_client->addr;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr;
 
-	if (2 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8RegBuf, 2)) {
+	if (2 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8RegBuf, 2)) {
 		pr_err("%s error: addr=0x%x reg=0x%x\n", __func__, slave_addr, reg);
 		rc = -1;
 	}
 
-	if (2 != i2c_master_recv(xc7027_ar0144_data_data.i2c_client, au8RdVal, 2)) {
+	if (2 != i2c_master_recv(xc7027_ar0144_data.i2c_client, au8RdVal, 2)) {
 		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, slave_addr, reg, au8RdVal[0] << 8 | au8RdVal[1]);
 		rc = -1;
 	}
 
-	xc7027_ar0144_data_data.i2c_client->addr = slave_addr_temp;
+	xc7027_ar0144_data.i2c_client->addr = slave_addr_temp;
 	*val = (u16)(au8RdVal[0] << 8 | au8RdVal[1]);
 	return rc;
 }
@@ -187,16 +187,16 @@ static s32 xc_write_reg(u16 reg, u8 val)
 	au8Buf[1] = reg & 0xff;
 	au8Buf[2] = val;
 
-	if (3 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8Buf, 3)) {
-		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data_data.i2c_client->addr, reg, val);
+	if (3 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8Buf, 3)) {
+		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data.i2c_client->addr, reg, val);
 
 		for(i=0; i<3; i++) {
 			mdelay(100*(i+5));
-			if (3 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8Buf, 3)) {
-				pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data_data.i2c_client->addr, reg, val);
+			if (3 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8Buf, 3)) {
+				pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data.i2c_client->addr, reg, val);
 				rc = -1;
 			} else {
-				pr_err("%s success: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data_data.i2c_client->addr, reg, val);
+				pr_err("%s success: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data.i2c_client->addr, reg, val);
 				rc = 0;
 				break;
 			}
@@ -232,13 +232,13 @@ static s32 xc_read_reg(u16 reg, u8 *val)
 	au8RegBuf[0] = reg >> 8;
 	au8RegBuf[1] = reg & 0xff;
 
-	if (2 != i2c_master_send(xc7027_ar0144_data_data.i2c_client, au8RegBuf, 2)) {
-		pr_err("%s error: addr=0x%x reg=0x%x\n", __func__, xc7027_ar0144_data_data.i2c_client->addr, reg);
+	if (2 != i2c_master_send(xc7027_ar0144_data.i2c_client, au8RegBuf, 2)) {
+		pr_err("%s error: addr=0x%x reg=0x%x\n", __func__, xc7027_ar0144_data.i2c_client->addr, reg);
 		return -1;
 	}
 
-	if (1 != i2c_master_recv(xc7027_ar0144_data_data.i2c_client, &u8RdVal, 1)) {
-		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data_data.i2c_client->addr, reg, u8RdVal);
+	if (1 != i2c_master_recv(xc7027_ar0144_data.i2c_client, &u8RdVal, 1)) {
+		pr_err("%s error: addr=0x%x reg=0x%x,val=0x%x\n", __func__, xc7027_ar0144_data.i2c_client->addr, reg, u8RdVal);
 		return -1;
 	}
 
@@ -586,29 +586,29 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 		return retval;
 	}
 
-	memset(&xc7027_ar0144_data_data, 0, sizeof(xc7027_ar0144_data_data));
-	xc7027_ar0144_data_data.i2c_client = client;
+	memset(&xc7027_ar0144_data, 0, sizeof(xc7027_ar0144_data));
+	xc7027_ar0144_data.i2c_client = client;
 
-	retval = of_property_read_u32(dev->of_node, "mclk",&xc7027_ar0144_data_data.mclk);
+	retval = of_property_read_u32(dev->of_node, "mclk",&xc7027_ar0144_data.mclk);
 	if (retval < 0) {
 		dev_err(dev, PFLAG "mclk frequency is invalid\n");
 		return retval;
 	}
 
-	retval = of_property_read_u32(dev->of_node, "mclk_source", (u32 *) &(xc7027_ar0144_data_data.mclk_source));
+	retval = of_property_read_u32(dev->of_node, "mclk_source", (u32 *) &(xc7027_ar0144_data.mclk_source));
 	if (retval < 0) {
 		dev_err(dev, PFLAG "mclk_source invalid\n");
 		return retval;
 	}
 
-	retval = of_property_read_u32(dev->of_node, "csi_id", &(xc7027_ar0144_data_data.csi));
+	retval = of_property_read_u32(dev->of_node, "csi_id", &(xc7027_ar0144_data.csi));
 	if (retval < 0) {
 		dev_err(dev, PFLAG "csi_id invalid\n");
 		return retval;
 	}
 
-	xc7027_ar0144_data_data.io_init = xc7027_ar0144_data_reset;
-	xc7027_ar0144_data_data.i2c_client = client;
+	xc7027_ar0144_data.io_init = xc7027_ar0144_data_reset;
+	xc7027_ar0144_data.i2c_client = client;
 
 	//add for xc7027 ROI
 	alloc_chrdev_region(&xc7027_dev_id, 0, 1, "xc7027_roi");
