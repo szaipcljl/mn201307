@@ -314,6 +314,7 @@ static int power_off(void)
 //add for xc7027 ROI
 static int xc7027_open(struct inode *inode, struct file *file)
 {
+	power_on();
 	dev_init();
 	return nonseekable_open(inode, file);
 }
@@ -625,9 +626,6 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 
 	mutex_init(&xc7027_mutex);
 
-	//debug
-	power_on();
-	dev_init();
 	printk("#mn xc7027_ar0144_data camera module is found\n");
 
 	return retval;
