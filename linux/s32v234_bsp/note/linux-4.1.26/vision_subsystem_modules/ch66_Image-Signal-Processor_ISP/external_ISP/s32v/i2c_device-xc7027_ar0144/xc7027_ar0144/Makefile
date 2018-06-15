@@ -1,0 +1,2 @@
+obj-$(CONFIG_CAMERA_XC7027_AR0144) += xc7027_ar0144.o
+

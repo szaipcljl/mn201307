@@ -1,0 +1,31 @@
+diff --git a/linux/drivers/media/i2c/Kconfig b/linux/drivers/media/i2c/Kconfig
+index 6f30ea7..7408c7a 100644
+--- a/linux/drivers/media/i2c/Kconfig
++++ b/linux/drivers/media/i2c/Kconfig
+@@ -2,6 +2,17 @@
+ # Multimedia Video device configuration
+ #
+ 
++
++config CAMERA_XC7027_AR0144
++	tristate "xc7027 and ar0144 camera support"
++	depends on I2C
++	---help---
++      If you plan to use the xc7027 and ar0144 Camera with your MXC system, say Y here.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called xc7027_ar0144.
++
++
+ if VIDEO_V4L2
+ 
+ config VIDEO_IR_I2C
+diff --git a/linux/drivers/media/i2c/Makefile b/linux/drivers/media/i2c/Makefile
+index f165fae..81b2a5e 100644
+--- a/linux/drivers/media/i2c/Makefile
++++ b/linux/drivers/media/i2c/Makefile
+@@ -78,3 +78,4 @@ obj-$(CONFIG_VIDEO_AK881X)		+= ak881x.o
+ obj-$(CONFIG_VIDEO_IR_I2C)  += ir-kbd-i2c.o
+ obj-$(CONFIG_VIDEO_ML86V7667)	+= ml86v7667.o
+ obj-$(CONFIG_VIDEO_OV2659)	+= ov2659.o
++obj-$(CONFIG_CAMERA_XC7027_AR0144) += xc7027_ar0144/
