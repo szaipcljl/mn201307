@@ -1,0 +1,19 @@
+
+
+userspace_libraties.txt
+
+
+app
+
+├── opt
+│   └── viv_samples
+
+lib
+
+├── etc
+├── opt
+└── usr
+    ├── include
+    └── lib
+        ├── libGAL.so
+        ├── libOpenCL.so

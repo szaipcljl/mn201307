@@ -1,0 +1,106 @@
+ch54_GC3000-Graphics-Processing-Unit_GC3000
+
+It supports rendering surfaces up to 8k x 8k.
+
+GC3000 GPU IP supports the following graphics APIs:
+• OpenGL ES 3.1
+• OpenGL ES 3.0 / 2.0 / 1.1
+• EGL 1.4
+• DirectX 11 (9_3)1
+• OpenGL 3.x/2.x1
+• OpenVG 1.1
+• OpenCL 1.2
+
+54.2.2 GPU core design description
+The main functional blocks of the GPU core are described here, and a block diagram is
+shown below.
+
+Host interface
+Allows the GPU core to communicate with external memory and the CPU through
+the AXI or AHB bus.
+
+Memory Controller
+Internal memory management unit that controls the block-to-host memory request
+interface.
+
+Graphics pipeline front end
+Inserts high level primitives and commands into the graphics pipeline.
+
+Ultra-threaded unified shaders
+Unified SIMD processors that perform as both vertex shader and fragment shaders.
+When used as a vertex shader they perform geometry transformations and lighting
+computations. When used as a fragment shader they apply texture data and compute
+color values for each pixel.
+
+3D rendering engine
+Converts triangles and lines into pixels.
+Computes slopes of color attributes and texture coordinates.
+Performs clipping.
+
+Texture engine
+Retrieves texture information from memory upon request by the vertex shader or
+fragment shader. Performs interpolation and filtering, and transfers the computed
+value to the fragment shader or the vertex shader.
+
+Pixel engine/resolve
+Pixel engine does alpha blending and visible surface determination.
+Resolve does tiling and de-tiling.
+
+54.2.4 OpenCL support
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    OpenCL support                                  GPU Support
+-------------------------------------------------------------------
+Compute devices (GPU cores)                  1
+Compute units per device (Shader cores)      4 per compute device
+Processing elements per compute unit         4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+54.3.1 Graphics driver software stack
+
+The Graphics Abstraction Layer (GAL) is the software-hardware interface that connects
+the GC3000 GPU to the operating system. The GAL enables software written to a
+particular graphics application programming interface (API) to benefit from GPU
+hardware acceleration without the developer having to understand and directly program
+the hardware itself.
+
+The graphics driver software stack, as depicted in the figure below, consists of the
+following: Vivante GAL kernel driver, Vivante GAL user driver, and dynamic libraries
+that enable API functionality for APIs such as EGL, OpenGL ES 3.1/3.0 and OpenCL
+1.2.
+
+  +---------------------------------------------------------------------------+
+  |                        Application                                        |
+  +--+--------------------------+---------------------------------------------+
+     |                          |
+     |                          v
+     |            ?       +------------+
+     | +------------------+ openCL 1.2 |
+     | |                  +-----+------+
+     | |                        |
+     v v                        v
+   +-----+  +------------------------------------------------------------------+
+   |     |  |              Driver GAL                                          |
+   |     |  |                                                                  |
+   |     |  |User    +-------------------------+  +-------------------------+  |
+   | VDK |  |Domain  | Platform Dependent Code |  | Hardware Dependent Code |  |
+   |     |  |--------+-------------------------+--+-------------------------+--|
+   |     |  |Kernel  | Platform Dependent Code |  | Hardware Dependent Code |  |
+   |     |  |Domain  +-------------------------+  +-------------------------+  |
+   +--+--+  +------------+-----------------------------------------------------+
+      |                  |                                   ^
+      |                  |                                   |
+      |                  v                                   v
+      |       +-----------------------+           +----------+-----------+
+      +------>| Operating System(OS)  |           |        GC3000        |
+              +-----------------------+           +----------------------+
+Figure 54-2. Graphics driver software stack
+
+
+
+note:
+galcore: https://source.codeaurora.org/external/autobsps32/galcore
+
+
+
+

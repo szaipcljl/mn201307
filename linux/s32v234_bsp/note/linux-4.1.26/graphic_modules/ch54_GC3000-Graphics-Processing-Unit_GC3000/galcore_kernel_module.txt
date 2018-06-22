@@ -1,0 +1,120 @@
+/home/mlinux/rda600/kernel/private/drivers/galcore/
+├── build.sh
+├── config
+├── GPLv2
+├── hal
+│   ├── kernel
+│   │   ├── arch
+│   │   │   ├── gc_hal_kernel_context.c
+│   │   │   ├── gc_hal_kernel_context.h
+│   │   │   ├── gc_hal_kernel_hardware.c
+│   │   │   ├── gc_hal_kernel_hardware.h
+│   │   │   ├── gc_hal_kernel_recorder.c
+│   │   │   └── makefile.linux
+│   │   ├── archvg
+│   │   │   ├── gc_hal_kernel_hardware_command_vg.c
+│   │   │   ├── gc_hal_kernel_hardware_command_vg.h
+│   │   │   ├── gc_hal_kernel_hardware_vg.c
+│   │   │   ├── gc_hal_kernel_hardware_vg.h
+│   │   │   └── makefile.linux
+│   │   ├── gc_hal_kernel_async_command.c
+│   │   ├── gc_hal_kernel.c
+│   │   ├── gc_hal_kernel_command.c
+│   │   ├── gc_hal_kernel_command_vg.c
+│   │   ├── gc_hal_kernel_db.c
+│   │   ├── gc_hal_kernel_debug.c
+│   │   ├── gc_hal_kernel_event.c
+│   │   ├── gc_hal_kernel.h
+│   │   ├── gc_hal_kernel_heap.c
+│   │   ├── gc_hal_kernel_interrupt_vg.c
+│   │   ├── gc_hal_kernel_mmu.c
+│   │   ├── gc_hal_kernel_mmu_vg.c
+│   │   ├── gc_hal_kernel_power.c
+│   │   ├── gc_hal_kernel_precomp.h
+│   │   ├── gc_hal_kernel_security.c
+│   │   ├── gc_hal_kernel_security_v1.c
+│   │   ├── gc_hal_kernel_vg.c
+│   │   ├── gc_hal_kernel_vg.h
+│   │   ├── gc_hal_kernel_video_memory.c
+│   │   ├── inc
+│   │   │   ├── gc_feature_database.h
+│   │   │   ├── gc_hal_base.h
+│   │   │   ├── gc_hal_driver.h
+│   │   │   ├── gc_hal_driver_vg.h
+│   │   │   ├── gc_hal_dump.h
+│   │   │   ├── gc_hal_eglplatform.h
+│   │   │   ├── gc_hal_eglplatform_type.h
+│   │   │   ├── gc_hal_engine.h
+│   │   │   ├── gc_hal_engine_vg.h
+│   │   │   ├── gc_hal_enum.h
+│   │   │   ├── gc_hal.h
+│   │   │   ├── gc_hal_kernel_buffer.h
+│   │   │   ├── gc_hal_mem.h
+│   │   │   ├── gc_hal_options.h
+│   │   │   ├── gc_hal_profiler.h
+│   │   │   ├── gc_hal_raster.h
+│   │   │   ├── gc_hal_rename.h
+│   │   │   ├── gc_hal_resource.h
+│   │   │   ├── gc_hal_security_interface.h
+│   │   │   ├── gc_hal_statistics.h
+│   │   │   ├── gc_hal_types.h
+│   │   │   ├── gc_hal_version.h
+│   │   │   └── gc_hal_vg.h
+│   │   └── makefile.linux
+│   ├── os
+│   │   └── linux
+│   │       └── kernel
+│   │           ├── allocator
+│   │           │   ├── default
+│   │           │   │   ├── gc_hal_kernel_allocator_array.h
+│   │           │   │   ├── gc_hal_kernel_allocator_dmabuf.c
+│   │           │   │   ├── gc_hal_kernel_allocator_dma.c
+│   │           │   │   └── gc_hal_kernel_allocator_user_memory.c
+│   │           │   └── freescale
+│   │           │       ├── gc_hal_kernel_allocator_array.h
+│   │           │       └── gc_hal_kernel_allocator_cma.c
+│   │           ├── gc_hal_kernel_allocator.c
+│   │           ├── gc_hal_kernel_allocator.h
+│   │           ├── gc_hal_kernel_debugfs.c
+│   │           ├── gc_hal_kernel_debugfs.h
+│   │           ├── gc_hal_kernel_debug.h
+│   │           ├── gc_hal_kernel_device.c
+│   │           ├── gc_hal_kernel_device.h
+│   │           ├── gc_hal_kernel_driver.c
+│   │           ├── gc_hal_kernel_iommu.c
+│   │           ├── gc_hal_kernel_linux.c
+│   │           ├── gc_hal_kernel_linux.h
+│   │           ├── gc_hal_kernel_math.c
+│   │           ├── gc_hal_kernel_mutex.h
+│   │           ├── gc_hal_kernel_os.c
+│   │           ├── gc_hal_kernel_os.h
+│   │           ├── gc_hal_kernel_platform.h
+│   │           ├── gc_hal_kernel_security_channel.c
+│   │           ├── gc_hal_kernel_security_channel_emulator.c
+│   │           ├── gc_hal_kernel_sync.c
+│   │           ├── gc_hal_kernel_sync.h
+│   │           └── platform
+│   │               ├── default
+│   │               │   └── gc_hal_kernel_platform_default.c
+│   │               └── freescale
+│   │                   ├── gc_hal_kernel_platform_imx6.c
+│   │                   ├── gc_hal_kernel_platform_imx6.config
+│   │                   ├── gc_hal_kernel_platform_s32v234.c
+│   │                   └── gc_hal_kernel_platform_s32v234.config
+│   └── security_v1
+│       ├── gc_hal_ta.c
+│       ├── gc_hal_ta.h
+│       ├── gc_hal_ta_hardware.c
+│       ├── gc_hal_ta_hardware.h
+│       ├── gc_hal_ta_mmu.c
+│       └── os
+│           └── emulator
+│               └── gc_hal_ta_emulator.c
+├── Kbuild
+├── Makefile
+├── make.inc
+├── MIT
+├── README
+└── s32v234_config
+
+17 directories, 100 files
