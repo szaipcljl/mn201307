@@ -1,0 +1,5 @@
+
+mlinux@mlinux:~/rda600/boards/rda600[master]$ make sync_build_mkcfg
+/home/mlinux/roadefend/rda600/build/core/build_driver.mk:29: *** /home/mlinux/roadefend/rda600/kernel/private/drivers/gpu-vivian: No Kbuild.  Stop.
+
+$(if $(filter %Kbuild, $(LOCAL_SRCS)),,$(error $(LOCAL_PATH): No Kbuild))

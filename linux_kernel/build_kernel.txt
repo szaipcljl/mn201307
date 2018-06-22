@@ -30,3 +30,7 @@ make olddefconfig
 From the help (make help in the kernel source dir)
 	olddefconfig - Same as silentoldconfig but sets new symbols to their default value
 
+============================
+make modules SUBDIRS=drivers/usb/gadget/
+这样可以只是编译drivers/usb/gadget/目录下的ko模块
+Documentation/kbuild/modules.txt
