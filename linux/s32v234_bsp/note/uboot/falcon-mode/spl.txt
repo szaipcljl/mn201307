@@ -1,0 +1,9 @@
+spl
+
+u-boot/README
+
+
+Board Initialisation Flow:
+--------------------------
+
+At least most ARM boards which use CONFIG_SPL_FRAMEWORK conform to this.

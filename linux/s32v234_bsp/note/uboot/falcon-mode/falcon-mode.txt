@@ -1,0 +1,12 @@
+U-Boot Falcon Mode
+doc/README.falcon
+
+Falcon Mode is introduced to speed up the booting process, allowing
+to boot a Linux kernel (or whatever image) without a full blown U-Boot.
+
+Falcon Mode relies on the SPL framework.
+
+The Falcon Mode extends this way allowing to start the Linux kernel directly
+from SPL. 
+
+Falcon Mode is generally activated by setting CONFIG_SPL_OS_BOOT.

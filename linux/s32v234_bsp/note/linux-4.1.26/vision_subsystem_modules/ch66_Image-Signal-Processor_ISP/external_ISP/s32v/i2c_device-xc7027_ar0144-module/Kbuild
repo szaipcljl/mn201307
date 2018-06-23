@@ -1,0 +1,96 @@
+##############################################################################
+#
+#    The GPL License (GPL)
+#
+#    Copyright (C) 2018 - 2025 Roadefend Corporation
+#
+#    This program is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU General Public License
+#    as published by the Free Software Foundation; either version 2
+#    of the License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software Foundation,
+#    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+##############################################################################
+#
+#    Note: This software is released under dual MIT and GPL licenses. A
+#    recipient may use this file under the terms of either the MIT license or
+#    GPL License. If you wish to use only one license not the other, you can
+#    indicate your decision by deleting one of the above license notices in your
+#    version of this file.
+#
+##############################################################################
+
+
+#
+# Linux build file for kernel module driver.
+#
+
+# commenting out the following line to build use make in the current directory
+NOT_USE_KERNEL_DEFAULT_KBUILD :=y
+ifeq ($(NOT_USE_KERNEL_DEFAULT_KBUILD), y)
+AQROOT :=$(AMB_TOPDIR)/kernel/private/drivers/xc7027_ar0144
+# from build.sh
+-include $(AQROOT)/s32v234_config
+endif
+
+# Include platform config if exists.
+-include $(AQROOT)/config
+
+KERNEL_DIR ?= $(TOOL_DIR)/kernel
+
+MODULE_NAME ?= xc7027-ar0144
+
+#EXTRA_CFLAGS += -Werror
+
+OBJS := xc7027_ar0144.o
+
+#ifeq ($(VIVANTE_ENABLE_3D), 1)
+#OBJS += $(ARCH_KERNEL_DIR)/gc_hal_kernel_recorder.o
+#endif
+
+ifeq ($(KERNELRELEASE), )
+.PHONY: all clean install
+
+# Define targets.
+all:
+	@$(MAKE) V=$(V) ARCH=$(ARCH_TYPE) -C $(KERNEL_DIR) SUBDIRS=`pwd` modules
+
+clean:
+	@rm -rf $(OBJS)
+	@rm -rf modules.order Module.symvers .tmp_versions
+	@find $(AQROOT) -name ".xc*.cmd" | xargs rm -f
+	@find $(AQROOT) -name "*.mod.*" | xargs rm -f
+	@find $(AQROOT) -name "*.o" | xargs rm -f
+	@find $(AQROOT) -name "*.ko" | xargs rm -f
+
+install: all
+	@mkdir -p $(SDK_DIR)/drivers
+	@cp $(MODULE_NAME).ko $(SDK_DIR)/drivers
+
+else
+
+EXTRA_CFLAGS += -DLINUX -DDRIVER
+
+ifeq ($(DEBUG), 1)
+EXTRA_CFLAGS += -DDBG=1 -DDEBUG -D_DEBUG
+else
+EXTRA_CFLAGS += -DDBG=0
+endif
+
+
+EXTRA_CFLAGS += -I$(AQROOT)/
+
+EXTRA_CFLAGS += -DHOST=\"$(HOST)\"
+
+obj-m = $(MODULE_NAME).o
+$(MODULE_NAME)-objs  = $(OBJS)
+
+endif
