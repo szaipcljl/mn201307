@@ -40,3 +40,7 @@ sudo ln -sd ~/disk2/ /rootfs/
 卸载
 sudo umount /mnt
 
+----------------------------------------------------------------------
+auto mount
+sudo vi /etc/fstab 
+192.168.5.244:/home/chris /mnt/chris nfs rw 0 0

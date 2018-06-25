@@ -7,3 +7,26 @@ Board Initialisation Flow:
 --------------------------
 
 At least most ARM boards which use CONFIG_SPL_FRAMEWORK conform to this.
+
+
+doc/README.SPL
+**************
+
+Generic SPL framework
+=====================
+
+
+
+
+==================================
+[boot_time][uboot]Ultimate solution: use U-Boot's Falcon mode
+
+U-Boot: the SPL(Secondary Program Loader) + the U-Boot image
+configure the SPL to load the Linux kernel directly, instead of the U-Boot image.
+
+
+s32v not support booting via SPL now. Falcon mode depends on SPL.
+
+1. Booting via Normal U-Boot (u-boot.img) – Y
+2. Booting via SPL (SPL and u-boot.img) – N
+3. Booting via Falcon mode (SPL launches the kernel directly) – N

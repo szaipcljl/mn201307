@@ -1,0 +1,15 @@
+
+
+https://github.com/RobertCNelson/u-boot
+[v2018.05-rc3]$
+
+mx6sabresd_defconfig
+
+arch/arm/mach-imx
+
+   mx6sabresd: Add README file
+    
+    Add a README to explain the steps for booting mx6sabresd in different ways:
+        1. Booting via Normal U-Boot (u-boot.imx)
+        2. Booting via SPL (SPL and u-boot.img)
+        3. Booting via Falcon mode (SPL launches the kernel directly)

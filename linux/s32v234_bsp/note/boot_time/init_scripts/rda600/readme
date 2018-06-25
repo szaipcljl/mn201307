@@ -1,0 +1,20 @@
+Measuring -bootchart
+
+(1) Boot your board passing init=/sbin/bootchartd on your kernel command line
+=> printenv bootcmd 
+bootcmd=fatload mmc 0:1 0x80080000 Image;setenv bootargs loglevel=0 console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw;fatload mmc 0:1 0x82000000 rda600.dtb;booti 0x80080000 - 0x82000000
+=> setenv bootcmd "fatload mmc 0:1 0x80080000 Image;setenv bootargs loglevel=0
+console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw init=/sbin/bootchartd;fatload mmc 0:1 0x82000000 rda600.dtb;booti 0x80080000 - 0x82000000
+"
+=> run bootcmd
+
+(2) Copy /var/log/bootlog.tgz from your target to your host
+
+(3) download bootchart source code and build
+	git clone https://github.com/xrmx/bootchart
+	cd bootchart
+	make
+
+	reference: https://elinux.org/Bootchart
+(4) Generate the timechart: 
+	path/to/bootchart/pybootchartgui.py bootlog.tg

@@ -1,0 +1,2 @@
+
+./.u-boot.s32.cmd:1:cmd_u-boot.s32 := ./tools/mkimage -n board/freescale/rda600/rda600.cfg.cfgtmp -T imximage -e 0x3E820000 -d u-boot.bin u-boot.s32  >/dev/null

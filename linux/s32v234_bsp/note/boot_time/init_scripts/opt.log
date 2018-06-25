@@ -1,0 +1,9 @@
+
+=> printenv bootcmd 
+bootcmd=fatload mmc 0:1 0x80080000 Image;setenv bootargs loglevel=0 console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw;fatload mmc 0:1 0x82000000 rda600.dtb;booti 0x80080000 - 0x82000000
+=> fatload mmc 0:1 0x80080000 Image
+reading Image
+4121264 bytes read in 347 ms (11.3 MiB/s)
+=> setenv bootargs loglevel=0 console=ttyLF0,115200 root=/dev/mmcblk0p2 rootwait rw init=/sbin/bootchartd
+=> fatload mmc 0:1 0x82000000 rda600.dtb;booti 0x80080000 - 0x82000000
+reading rda600.dtb

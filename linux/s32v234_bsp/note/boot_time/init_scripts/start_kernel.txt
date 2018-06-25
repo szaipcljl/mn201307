@@ -1,0 +1,17 @@
+
+init/main.c
+
+start_kernel
+|-> rest_init
+	|-> kernel_thread(kernel_init, NULL, CLONE_FS);
+		|-> if (!try_to_run_init_process("/sbin/init") ||
+				!try_to_run_init_process("/etc/init") ||
+				!try_to_run_init_process("/bin/init") ||
+				!try_to_run_init_process("/bin/sh"))
+				return 0;
+------------------------------------------------
+try_to_run_init_process [init/main.c]
+|-> ret = run_init_process(init_filename);
+	|-> return do_execve(getname_kernel(init_filename),   
+			(const char __user *const __user *)argv_init,
+			(const char __user *const __user *)envp_init);
