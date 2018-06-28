@@ -1,0 +1,9 @@
+
+
+
+Devtmpfs lets the kernel create a tmpfs very early at kernel initialization,
+before any driver core deviceis registered. Every device with a
+major/minor will have a device node created in this tmpfs instance.
+After the rootfs is mounted by the kernel, the populated tmpfs is mounted
+at /dev. In initramfs, it can be moved to the manually mounted root
+filesystem before /sbin/init is executed.

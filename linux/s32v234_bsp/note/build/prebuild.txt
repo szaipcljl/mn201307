@@ -1,0 +1,3 @@
+
+prebuild/third-party
+~/roadefend/bsp15.0_1st/yocto_auto_linux_bsp15.0/build_s32v234evb_release/tmp/work/aarch64-fsl-linux/

@@ -26,6 +26,7 @@ sequence than with grabserial, you can use bootchart.
     cd bootchart-<version>
     java -jar bootchart.jar bootlog.tgz
     bootchart is available at http://www.bootchart.org
+	http://prdownloads.sourceforge.net/bootchart/bootchart-0.9.tar.bz2
 
 reference:
 https://elinux.org/Bootchart

@@ -1,0 +1,43 @@
+udev
+====
+One major point of improvement then in order to speed boot now is to cache the
+information used by udev, and providing a way of verifying if this cache is
+still valid or if it needs to be re-done.
+
+log:
+INIT: version 2.88 booting
+Starting udev
+
+fakeroot/etc/rcS.d/S04udev -> ../init.d/udev*
+
+--------------------------
+
+# List of files whose metadata (size/mtime/name) will be included in cached
+# system state.
+META_FILE_LIST="lib/udev/rules.d/* etc/udev/rules.d/*"
+
+-----------------
+root@s32v234evb:~# cat /etc/default/udev-cache
+# Default for /etc/init.d/udev
+
+# Comment this out to disable device cache
+DEVCACHE="/etc/udev-cache.tar.gz"
+PROBE_PLATFORM_BUS="yes"
+
+root@s32v234evb:~# cat /etc/udev/udev.conf
+# see udev(7) for details
+
+#udev_log="info"
+udev_run="/var/run/udev"
+
+------------------------
+
+udev cache
+==========
+/etc/init.d/udev
+
+if cmp $SYSCONF_CACHED $SYSCONF_TMP >/dev/null; then
+                             tar xmf $DEVCACHE -C / -m
+
+
+/proc/devices is different from /etc/udev/cache.data

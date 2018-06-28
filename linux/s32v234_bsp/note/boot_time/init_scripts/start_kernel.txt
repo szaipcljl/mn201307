@@ -15,3 +15,17 @@ try_to_run_init_process [init/main.c]
 	|-> return do_execve(getname_kernel(init_filename),   
 			(const char __user *const __user *)argv_init,
 			(const char __user *const __user *)envp_init);
+
+
+log:
+[    0.366743] kjournald starting.  Commit interval 5 seconds
+[    0.369442] EXT3-fs (mmcblk0p2): using internal journal
+[    0.369453] EXT3-fs (mmcblk0p2): mounted filesystem with ordered data mode
+[    0.369485] VFS: Mounted root (ext3 filesystem) on device 179:2.
+[    0.371439] devtmpfs: mounted
+[    0.371574] Freeing unused kernel memory: 168K (ffffffc00040e000 - ffffffc000438000)
+[    0.371585] Freeing alternatives memory: 4K (ffffffc000438000 - ffffffc000439000)
+[    0.371591] #mn: to run init process
+[    0.835717] udevd[480]: starting version 182
+[    1.010507] Galcore version 6.2.2.93313
+

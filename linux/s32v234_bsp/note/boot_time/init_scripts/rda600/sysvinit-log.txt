@@ -1,0 +1,87 @@
+sysvinit
+
+rc5.d
+rcS.d
+
+from bootchart.png
+------------------
+bootlogd
+init
+rc
+S04udev
+rc
+udevd
+bootlogd
+rc
+dbus-daemon
+devipc_deamon
+getty
+xinetd
+telnetd
+
+kthreadd
+ksoftirqd/0
+mmcqd/0
+kjournald
+kworker/3:1H
+kworker/2:1
+kworker/3:1
+kworker/2:1H
+galcore workque
+galcore deamon
+
+------------------------
+./sysvinit/sbin/bootlogd
+========================
+rcS.d -> rc5.d
+remove:
+rcS.d:
+bootlogd
+urandom
+udev-cache
+
+rc5.d:
+networking
+mountnfs
+xinetd
+rmnologin
+stop-bootlogd
+
+
+after:
+[0.676933 0.674987] INIT: version 2.88 booting
+...
+[2.334686 0.000188] rda600 login: 
+=> grabserial: 2.33-0.67= 1.66
+   bootchartd time: 4.46 - 4.19 = 0.27s
+
+
+etc/rcS.d/
+----------
+S02banner.sh -> ../init.d/banner.sh*                               Y
+S02sysfs.sh -> ../init.d/sysfs.sh*                                 Y
+S03mountall.sh -> ../init.d/mountall.sh*                           Y   required
+S04udev -> ../init.d/udev*                                         Y   remove cache related code;350ms
+S05modutils.sh -> ../init.d/modutils.sh*                           Y   480ms
+S06checkroot.sh -> ../init.d/checkroot.sh*                         Y   90ms
+S07bootlogd -> ../init.d/bootlogd*                                 N   not required
+S29read-only-rootfs-hook.sh -> ../init.d/read-only-rootfs-hook.sh
+S30urandom -> ../init.d/urandom*                                   N   not used
+S36udev-cache -> ../init.d/udev-cache*                             N   not use cache
+S37populate-volatile.sh -> ../init.d/populate-volatile.sh*
+S38devpts.sh -> ../init.d/devpts.sh*                               Y
+S38dmesg.sh -> ../init.d/dmesg.sh*                                 Y   /var/log/dmesg
+S39hostname.sh -> ../init.d/hostname.sh*                           Y
+S55bootmisc.sh -> ../init.d/bootmisc.sh*                           Y
+
+etc/rc5.d/
+----------
+S01networking -> ../init.d/networking*       N    not required to enable Spoof protection(/etc/sysctl.conf)
+S02dbus -> ../init.d/dbus*                   Y    70ms
+S110Devipc.sh -> ../init.d/devipc.sh*        Y    print a "."; remove it
+S15mountnfs.sh -> ../init.d/mountnfs.sh*     N    not required
+S20xinetd -> ../init.d/xinetd*               N    not required
+S99rmnologin.sh -> ../init.d/rmnologin.sh*   N    not used
+S99stop-bootlogd -> ../init.d/stop-bootlogd* N    bootlogd not required
+
+

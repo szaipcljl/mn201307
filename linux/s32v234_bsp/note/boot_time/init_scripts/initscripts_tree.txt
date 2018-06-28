@@ -1,0 +1,90 @@
+prebuild/third-party/initscripts/
+├── etc
+│   ├── default
+│   │   ├── devpts
+│   │   └── volatiles
+│   │       └── 00_core
+│   ├── init.d
+│   │   ├── banner.sh
+│   │   ├── bootmisc.sh
+│   │   ├── checkroot.sh
+│   │   ├── devpts.sh
+│   │   ├── dmesg.sh
+│   │   ├── functions
+│   │   ├── halt
+│   │   ├── hostname.sh
+│   │   ├── mountall.sh
+│   │   ├── mountnfs.sh
+│   │   ├── populate-volatile.sh
+│   │   ├── read-only-rootfs-hook.sh
+│   │   ├── reboot
+│   │   ├── rmnologin.sh
+│   │   ├── save-rtc.sh
+│   │   ├── sendsigs
+│   │   ├── single
+│   │   ├── sysfs.sh
+│   │   ├── umountfs
+│   │   ├── umountnfs.sh
+│   │   └── urandom
+│   ├── logrotate-dmesg.conf
+│   ├── rc0.d
+│   │   ├── S20sendsigs -> ../init.d/sendsigs
+│   │   ├── S25save-rtc.sh -> ../init.d/save-rtc.sh
+│   │   ├── S30urandom -> ../init.d/urandom
+│   │   ├── S31umountnfs.sh -> ../init.d/umountnfs.sh
+│   │   ├── S40umountfs -> ../init.d/umountfs
+│   │   └── S90halt -> ../init.d/halt
+│   ├── rc1.d
+│   │   └── S31umountnfs.sh -> ../init.d/umountnfs.sh
+│   ├── rc2.d
+│   │   ├── S15mountnfs.sh -> ../init.d/mountnfs.sh
+│   │   └── S99rmnologin.sh -> ../init.d/rmnologin.sh
+│   ├── rc3.d
+│   │   ├── S15mountnfs.sh -> ../init.d/mountnfs.sh
+│   │   └── S99rmnologin.sh -> ../init.d/rmnologin.sh
+│   ├── rc4.d
+│   │   ├── S15mountnfs.sh -> ../init.d/mountnfs.sh
+│   │   └── S99rmnologin.sh -> ../init.d/rmnologin.sh
+│   ├── rc5.d
+│   │   ├── S15mountnfs.sh -> ../init.d/mountnfs.sh
+│   │   └── S99rmnologin.sh -> ../init.d/rmnologin.sh
+│   ├── rc6.d
+│   │   ├── S20sendsigs -> ../init.d/sendsigs
+│   │   ├── S25save-rtc.sh -> ../init.d/save-rtc.sh
+│   │   ├── S30urandom -> ../init.d/urandom
+│   │   ├── S31umountnfs.sh -> ../init.d/umountnfs.sh
+│   │   ├── S40umountfs -> ../init.d/umountfs
+│   │   └── S90reboot -> ../init.d/reboot
+│   └── rcS.d
+│       ├── S02banner.sh -> ../init.d/banner.sh
+│       ├── S02sysfs.sh -> ../init.d/sysfs.sh
+│       ├── S03mountall.sh -> ../init.d/mountall.sh
+│       ├── S06checkroot.sh -> ../init.d/checkroot.sh
+│       ├── S29read-only-rootfs-hook.sh -> ../init.d/read-only-rootfs-hook.sh
+│       ├── S30urandom -> ../init.d/urandom
+│       ├── S37populate-volatile.sh -> ../init.d/populate-volatile.sh
+│       ├── S38devpts.sh -> ../init.d/devpts.sh
+│       ├── S38dmesg.sh -> ../init.d/dmesg.sh
+│       ├── S39hostname.sh -> ../init.d/hostname.sh
+│       └── S55bootmisc.sh -> ../init.d/bootmisc.sh
+└── make.inc
+
+12 directories, 57 files
+
+=============================
+prebuild/third-party/sja1105/
+├── etc
+│   ├── init.d
+│   │   └── sja1105.sh
+│   └── rc5.d
+│       └── S90sja1105.sh -> ../init.d/sja1105.sh
+└── lib
+    ├── firmware
+    │   ├── sja1105_cfg_mra2lt_1-2.bin
+    │   └── sja1105_cfg_mra2lt_2-2.bin
+    └── modules
+        └── 4.1.26-rt29+g8f348cf
+            └── extra
+                └── sja1105.ko
+
+8 directories, 5 files
