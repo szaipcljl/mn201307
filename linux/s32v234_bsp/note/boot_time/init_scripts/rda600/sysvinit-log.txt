@@ -34,7 +34,9 @@ galcore deamon
 ./sysvinit/sbin/bootlogd
 ========================
 rcS.d -> rc5.d
+
 remove:
+-------
 rcS.d:
 bootlogd
 urandom
@@ -76,11 +78,11 @@ S55bootmisc.sh -> ../init.d/bootmisc.sh*                           Y
 
 etc/rc5.d/
 ----------
-S01networking -> ../init.d/networking*       N    not required to enable Spoof protection(/etc/sysctl.conf)
+-S01networking -> ../init.d/networking*       N    not required to enable Spoof protection(/etc/sysctl.conf)
 S02dbus -> ../init.d/dbus*                   Y    70ms
 S110Devipc.sh -> ../init.d/devipc.sh*        Y    print a "."; remove it
 S15mountnfs.sh -> ../init.d/mountnfs.sh*     N    not required
-S20xinetd -> ../init.d/xinetd*               N    not required
+-S20xinetd -> ../init.d/xinetd*               N    not required
 S99rmnologin.sh -> ../init.d/rmnologin.sh*   N    not used
 S99stop-bootlogd -> ../init.d/stop-bootlogd* N    bootlogd not required
 

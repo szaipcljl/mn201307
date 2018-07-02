@@ -1,0 +1,11 @@
+
+./boards/rda600/config/rda600_config:39:CONFIG_AMBARELLA_DEFAULT_BOARD_ROOTFS_DIR="default"
+
+build/core/configure.mk:107:BOARD_ROOTFS_DIR    := $(AMB_TOPDIR)/boards/$(AMB_BOARD)/rootfs/$(CONFIG_AMBARELLA_DEFAULT_BOARD_ROOTFS_DIR)
+
+./rootfs/make.inc:125:  @if [ -e $(BOARD_ROOTFS_DIR)/etc/inittab ]; then \
+./rootfs/make.inc:126:          cp $(BOARD_ROOTFS_DIR)/etc/inittab $(FAKEROOT_DIR)/etc/inittab; \
+./rootfs/make.inc:152:  #@if [ -e $(BOARD_ROOTFS_DIR)/etc/fstab ]; then \
+./rootfs/make.inc:153:  #       cp $(BOARD_ROOTFS_DIR)/etc/fstab $(FAKEROOT_DIR)/etc/fstab; \
+./rootfs/make.inc:242:  @echo $(BOARD_ROOTFS_DIR)
+./rootfs/make.inc:243:  @cp -dpRf $(BOARD_ROOTFS_DIR)/* $(FAKEROOT_DIR)/ && chmod +x $(FAKEROOT_DIR)/etc/init.d/S*
