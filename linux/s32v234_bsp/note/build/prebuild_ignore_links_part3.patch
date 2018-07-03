@@ -1,0 +1,40 @@
+diff --git a/rda600/rootfs/default/etc/rc5.d/S01networking b/rda600/rootfs/default/etc/rc5.d/S01networking
+deleted file mode 120000
+index bd5b2c2..0000000
+--- a/rda600/rootfs/default/etc/rc5.d/S01networking
++++ /dev/null
+@@ -1 +0,0 @@
+-../init.d/networking
+\ No newline at end of file
+diff --git a/rda600/rootfs/default/etc/rc5.d/S110Devipc.sh b/rda600/rootfs/default/etc/rc5.d/S110Devipc.sh
+deleted file mode 120000
+index 57271aa..0000000
+--- a/rda600/rootfs/default/etc/rc5.d/S110Devipc.sh
++++ /dev/null
+@@ -1 +0,0 @@
+-../init.d/devipc.sh
+\ No newline at end of file
+diff --git a/rda600/rootfs/default/etc/rc5.d/S20xinetd b/rda600/rootfs/default/etc/rc5.d/S20xinetd
+deleted file mode 120000
+index 2a13269..0000000
+--- a/rda600/rootfs/default/etc/rc5.d/S20xinetd
++++ /dev/null
+@@ -1 +0,0 @@
+-../init.d/xinetd
+\ No newline at end of file
+diff --git a/rda600/rootfs/default/etc/rc5.d/S99devipc.sh b/rda600/rootfs/default/etc/rc5.d/S99devipc.sh
+new file mode 120000
+index 0000000..57271aa
+--- /dev/null
++++ b/rda600/rootfs/default/etc/rc5.d/S99devipc.sh
+@@ -0,0 +1 @@
++../init.d/devipc.sh
+\ No newline at end of file
+diff --git a/rda600/rootfs/default/etc/rcS.d/S36udev-cache b/rda600/rootfs/default/etc/rcS.d/S36udev-cache
+deleted file mode 120000
+index 49a0849..0000000
+--- a/rda600/rootfs/default/etc/rcS.d/S36udev-cache
++++ /dev/null
+@@ -1 +0,0 @@
+-../init.d/udev-cache
+\ No newline at end of file

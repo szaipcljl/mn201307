@@ -1,0 +1,13 @@
+diff --git a/core/build_prebuild.mk b/core/build_prebuild.mk
+index d94aef6..5bb96ca 100644
+--- a/core/build_prebuild.mk
++++ b/core/build_prebuild.mk
+@@ -47,6 +47,8 @@ $(FAKEROOT_DIR)/%: $(LOCAL_PATH)/%
+ 
+ # links can't be taken as targets, so we have to create links manually.
+ __LINKS__ := $(foreach d, $(LOCAL_SRCS), $(shell find $(LOCAL_PATH)/$(d) -type l))
++# ignore some links specified by IGNORE_LINKS in make.inc
++__LINKS__ := $(filter-out $(wildcard $(IGNORE_LINKS)), $(__LINKS__))
+ # conver to destination links
+ __LINKS__ := $(patsubst $(LOCAL_PATH)/%, $(FAKEROOT_DIR)/%,$(__LINKS__))
+ # if the destination links existed, filter-out it to avoid create again

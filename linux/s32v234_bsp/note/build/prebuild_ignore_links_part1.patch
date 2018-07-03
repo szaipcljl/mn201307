@@ -1,0 +1,33 @@
+diff --git a/initscripts/make.inc b/initscripts/make.inc
+index ba9d2f4..8ee7231 100644
+--- a/initscripts/make.inc
++++ b/initscripts/make.inc
+@@ -40,6 +40,12 @@ LOCAL_SRCS	:= etc
+ 
+ .PHONY: $(LOCAL_TARGET)
+ 
++ifeq ($(CONFIG_BSP_BOARD_RDA600), y)
++IGNORE_LINKS := $(LOCAL_PATH)/etc/rc5.d/S15mountnfs.sh \
++				$(LOCAL_PATH)/etc/rc5.d/S99rmnologin.sh \
++				$(LOCAL_PATH)/etc/rcS.d/S30urandom
++endif
++
+ include $(BUILD_PREBUILD)
+ 
+ $(LOCAL_TARGET): $(LOCAL_MODULE)
+diff --git a/sysvinit/make.inc b/sysvinit/make.inc
+index 5629aed..9766d56 100644
+--- a/sysvinit/make.inc
++++ b/sysvinit/make.inc
+@@ -40,6 +40,11 @@ LOCAL_SRCS	:= bin etc usr sbin
+ 
+ .PHONY: $(LOCAL_TARGET)
+ 
++ifeq ($(CONFIG_BSP_BOARD_RDA600), y)
++IGNORE_LINKS := $(LOCAL_PATH)/etc/rcS.d/S07bootlogd \
++				$(LOCAL_PATH)/etc/rc5.d/S99stop-bootlogd
++endif
++
+ include $(BUILD_PREBUILD)
+ 
+ $(LOCAL_TARGET): $(LOCAL_MODULE)
