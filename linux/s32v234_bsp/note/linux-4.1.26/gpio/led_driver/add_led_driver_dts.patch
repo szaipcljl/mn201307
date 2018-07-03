@@ -1,0 +1,55 @@
+commit 96ea2dbfe6be39f092d068014a262f1860f5a098
+Author: Luo Liang <liang.luo@roadefend.com>
+Date:   Thu Jun 28 09:28:11 2018 +0800
+
+    add the beeper into dts
+
+diff --git a/linux/arch/arm64/boot/dts/freescale/rda600.dts b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+index 8d1859b..ea0eb4d 100644
+--- a/linux/arch/arm64/boot/dts/freescale/rda600.dts
++++ b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+@@ -18,15 +18,17 @@
+ 		bootargs = "console=ttyLF0,115200";
+ 	};
+ 
+-	beeper: beeper {
+-		compatible = "gpio-beeper";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_gpio83>;
+-		gpios = <&gpioother 51 GPIO_ACTIVE_HIGH>; /*32+51=83*/
+-		status = "okay";
++    gpio_leds {
++		compatible = "gpio-leds";
++		beeper {
++			pinctrl-0 = <&pinctrl_gpio83>;
++			gpios = <&gpioother 51 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
+ 	};
+ };
+ 
++
+ /*
+ &can0 {
+ 	pinctrl-names = "default";
+@@ -56,9 +58,9 @@
+ 		bits-per-pixel = <32>;
+ 
+ 		display-timings {
+-			native-mode = <&timing0>;
++			native-mode = <&timing7>;
+ 
+-			/*
++			
+ 			timing1: hdmi-wuxga {
+ 				clock-frequency = <6666000>;
+ 				hactive = <1920>;
+@@ -142,7 +144,7 @@
+ 				hsync-len = <45>;
+ 				vsync-len = <16>;
+ 			};
+-			*/
++			
+ 
+ 			timing0: hdmi-fhd {
+ 				clock-frequency = <6666000>;
