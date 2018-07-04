@@ -38,3 +38,15 @@ Options
     Read back the value right after writing it, and compare the result with the 
 	value written. This used to be the default behavior. The same limitations 
 	apply as those of option -m.
+
+==========================
+i2cdetect -y 1
+i2cdetect -l
+i2cdump -f -y 1 0x61
+
+i2cset -y 1 0x61 0x9 0x20
+i2cget -f -y 1 0x61 0x9
+
+========================
+source code
+wget https://fossies.org/linux/misc/i2c-tools-4.0.tar.gz

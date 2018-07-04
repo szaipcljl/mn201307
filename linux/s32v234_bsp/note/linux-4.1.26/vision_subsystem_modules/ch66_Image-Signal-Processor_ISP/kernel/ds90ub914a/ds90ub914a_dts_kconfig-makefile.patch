@@ -1,0 +1,93 @@
+diff --git a/linux/arch/arm64/boot/dts/freescale/rda600.dts b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+index ea0eb4d..854f7c1 100644
+--- a/linux/arch/arm64/boot/dts/freescale/rda600.dts
++++ b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+@@ -60,7 +60,7 @@
+ 		display-timings {
+ 			native-mode = <&timing7>;
+ 
+-			
++
+ 			timing1: hdmi-wuxga {
+ 				clock-frequency = <6666000>;
+ 				hactive = <1920>;
+@@ -144,7 +144,7 @@
+ 				hsync-len = <45>;
+ 				vsync-len = <16>;
+ 			};
+-			
++
+ 
+ 			timing0: hdmi-fhd {
+ 				clock-frequency = <6666000>;
+@@ -236,6 +236,18 @@
+ 	pinctrl-0 = <&pinctrl_i2c1>;
+ 	status = "okay";
+ 
++ds90ub914a: ds90ub914a@61 {
++			compatible = "ti,ds90ub914a";
++			reg = <0x61>;
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_cam_mod>;
++			ds90ub914-pwn-gpios = <&gpioother 53 0>;  /* 32+53=85 : active high */
++			cmr-pwr-pin       = <&gpioeirq 16  0>;  /* camera module power on enable: active high */
++			DS90UB913_I2C_ADDR = <0x5D>; /*7'bit*/
++			CAMERA_I2C_ADDR = <0x10>; /*7'bit*/
++			status = "okay";
++		};
++
+ 	hdmi: sii9022a@39 {
+ 		compatible = "fsl,sii902x";
+ 		reg = <0x39>;
+@@ -547,6 +559,14 @@
+ 			>;
+ 		};
+ 
++		pinctrl_cam_mod: cam_modgrp {
++			fsl,pins = <
++				/*gpio85: 914_1_PDn gpio16: camera module CAM1_PWR_ON */
++				S32V234_PAD_PF5__SIUL_GPIO85
++				S32V234_PAD_PB0__SIUL_GPIO16
++			>;
++		};
++
+ 		pinctrl_i2c0: i2c0grp {
+ 			fsl,pins = <
+ 				S32V234_PAD_PG3__I2C0_DATA_OUT
+@@ -697,8 +717,10 @@
+ 				*//*GPIO83: Beep*/
+ 				S32V234_PAD_PF4__VIU_EN
+ 				S32V234_PAD_PF4__VIU1_D9
++				/*
+ 				S32V234_PAD_PF5__VIU_EN
+ 				S32V234_PAD_PF5__VIU1_D10
++				*//*PF5: gpio85 used for 914_1_PDn*/
+ 				S32V234_PAD_PF6__VIU_EN
+ 				S32V234_PAD_PF6__VIU1_D11
+ 				S32V234_PAD_PF7__VIU1_EN
+diff --git a/linux/drivers/misc/Kconfig b/linux/drivers/misc/Kconfig
+index 453a616..47d8115 100644
+--- a/linux/drivers/misc/Kconfig
++++ b/linux/drivers/misc/Kconfig
+@@ -553,6 +553,12 @@ config VEXPRESS_SYSCFG
+ 	  bus. System Configuration interface is one of the possible means
+ 	  of generating transactions on this bus.
+ 
++config DS90UB914A_I2C
++	tristate "support DS90UB914A i2c slave"
++	depends on I2C
++	help
++	  If you say yes here you get support for DS90UB914A.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/linux/drivers/misc/Makefile b/linux/drivers/misc/Makefile
+index 6a8e393..0e776a2 100644
+--- a/linux/drivers/misc/Makefile
++++ b/linux/drivers/misc/Makefile
+@@ -57,3 +57,4 @@ obj-$(CONFIG_GENWQE)		+= genwqe/
+ obj-$(CONFIG_ECHO)		+= echo/
+ obj-$(CONFIG_VEXPRESS_SYSCFG)	+= vexpress-syscfg.o
+ obj-$(CONFIG_CXL_BASE)		+= cxl/
++obj-$(CONFIG_DS90UB914A_I2C) += ds90ub914a/

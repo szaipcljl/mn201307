@@ -1,2 +1,32 @@
-
 use led driver for beeper
+=========================
+
+enable kernel flags
+-------------------
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+
+# LED drivers
+CONFIG_LEDS_GPIO=y
+
+# LED Triggers
+CONFIG_LEDS_TRIGGERS=y
+CONFIG_LEDS_TRIGGER_TIMER=y
+CONFIG_LEDS_TRIGGER_ONESHOT=y
+CONFIG_LEDS_TRIGGER_HEARTBEAT=y
+
+Makefile
+---------
+./drivers/leds/Makefile:3:obj-$(CONFIG_NEW_LEDS)			+= led-core.o
+./drivers/leds/Makefile:4:obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
+
+# LED drivers
+./drivers/leds/Makefile:24:obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
+
+# LED Triggers
+./drivers/leds/Makefile:6:obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
+./drivers/leds/Makefile:67:obj-$(CONFIG_LEDS_TRIGGERS)		+= trigger/
+
+./drivers/leds/trigger/Makefile:1:obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+./drivers/leds/trigger/Makefile:2:obj-$(CONFIG_LEDS_TRIGGER_ONESHOT)	+= ledtrig-oneshot.o
+./drivers/leds/trigger/Makefile:4:obj-$(CONFIG_LEDS_TRIGGER_HEARTBEAT)	+= ledtrig-heartbeat.o

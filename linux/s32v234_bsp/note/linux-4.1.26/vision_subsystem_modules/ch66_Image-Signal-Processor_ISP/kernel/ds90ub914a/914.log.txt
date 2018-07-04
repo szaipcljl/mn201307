@@ -1,0 +1,91 @@
+
+
+7'bit addr
+-----------
+0x61 914
+0x10 ar0144 (914 reg:0x11)
+0x5d 913	(914 reg: 0x07)
+
+only power on, not write i2c reg
+--------------------------------
+root@rda600:~# i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- UU -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: 60 UU -- 63 -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --
+
+only write i2c reg in driver probe
+-------------------------------------------------
+root@rda600:~# i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: 10 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- UU -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- 5d -- -- 
+60: 60 UU -- 63 -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- -- 
+
+root@rda600:~# i2cget -y 1 0x61 0x7
+Error: Could not set address to 0x61: Device or resource busy
+
+consider an address with a registered device, a driver bound to it, as busy. 
+
+have bound a i2c driver to it in driver.(registered i2c client)
+log:
+[   13.997434] #mn:[i2cdev_check_addr] if(!result)
+[   13.997451] #mn:[i2cdev_check_addr] result=-16, addr=61
+
+
+read i2c reg after write i2c reg in driver probe:
+-------------------------------------------------
+root@rda600:~# i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: 10 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- UU -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- 5d -- -- 
+60: 60 61 -- 63 -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --  
+
+root@rda600:~# i2cget -y 1 0x61 0x7
+0xba
+
+I2C_SLAVE:
+consider an address with a registered device, but no driver bound to it, as NOT busy.
+
+[   16.137215] #mn:[i2cdev_check_addr] if(!result)
+[   16.137232] #mn:[i2cdev_check_addr] result=0
+i2cdev_check_addr:
+    if (!result){
+        printk("#mn:[%s] if(!result)\n", __func__);
+        result = device_for_each_child(&adapter->dev, &addr,
+                        i2cdev_check_mux_children);
+    }
+
+    printk("#mn:[%s] result=%d\n", __func__, result);
+
+
+=> why?
+======
+i2c/i2c-dev.c
+i2cdev_ioctl
+
+	case I2C_SLAVE:
+	case I2C_SLAVE_FORCE:
+		if (cmd == I2C_SLAVE && i2cdev_check_addr(client->adapter, arg))
+			return -EBUSY;
+
+i2cdev_check_addr:
+/* This address checking function differs from the one in i2c-core
+   in that it considers an address with a registered device, but no
+   driver bound to it, as NOT busy. */
+
