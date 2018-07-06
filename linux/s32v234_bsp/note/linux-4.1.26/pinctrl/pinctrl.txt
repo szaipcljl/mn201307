@@ -1,0 +1,243 @@
+PINCTRL (PIN CONTROL) subsystem
+
+refer to: Documentation/pinctrl.txt
+
+This subsystem deals with:
+
+- Enumerating and naming controllable pins
+
+- Multiplexing of pins, pads, fingers (etc) see below for details
+
+- Configuration of pins, pads, fingers (etc), such as software-controlled
+  biasing and driving mode specific pins, such as pull-up/down, open drain,
+  load capacitance etc.
+
+Top-level interface
+===================
++------------------+
+| descriptor of a  | struct pinctrl_desc
+| pin controller   |
++---+--------------+
+    |
+    |(contains)
+    v
++----------------------------------+
+| an array of pin descriptors      |
+| describing the pins handled      |  struct pinctrl_pin_desc
+| by this specific pin controller. |
++----------------------------------+
+
+To enable the pinctrl subsystem and the subgroups for PINMUX and PINCONF and
+selected drivers, you need to select them from your machine's Kconfig entry,
+since these are so tightly integrated with the machines they are used on.
+arch/arm64/Kconfig.platforms
+config ARCH_S32
+	bool "Freescale S32 family" if ARCH_VEXPRESS
+	select PINCTRL
+	select ARCH_S32_CLK
+	help
+	  Support for Freescale S32 family of processors.
+
+the core pinctrl.h file provides a fancy macro
+called PINCTRL_PIN() to create the struct entries. 
+
+Pin groups
+==========
+
+static struct pinctrl_ops foo_pctrl_ops = {
+	.get_groups_count = foo_get_groups_count,
+	.get_group_name = foo_get_group_name,
+	.get_group_pins = foo_get_group_pins,
+};
+
+
+static struct pinctrl_desc foo_desc = {
+       ...
+       .pctlops = &foo_pctrl_ops,
+};
+
+Pin configuration
+=================
+
+static struct pinconf_ops foo_pconf_ops = {
+	.pin_config_get = foo_pin_config_get,
+	.pin_config_set = foo_pin_config_set,
+	.pin_config_group_get = foo_pin_config_group_get,
+	.pin_config_group_set = foo_pin_config_group_set,
+};
+
+
+/* Pin config operations are handled by some pin controller */
+static struct pinctrl_desc foo_desc = {
+	...
+	.confops = &foo_pconf_ops,
+};
+
+
+
+Interaction with the GPIO subsystem
+===================================
+the two subsystems can be used as completely orthogonal
+
+struct gpio_chip
+struct pinctrl_gpio_range
+struct pinctrl_dev
+pinctrl_add_gpio_range
+
+Please see
+section 2.1 of Documentation/devicetree/bindings/gpio/gpio.txt on how to bind
+pinctrl and gpio drivers.
+
+PINMUX interfaces
+=================
+the pinmux_* naming prefix
+
+
+What is pinmuxing?
+==================
+pinctrl_register_pins()
+
+
+Pinmux conventions
+==================
+drivers/pinctrl/*
+
+- FUNCTIONS and GROUPS on a certain PIN CONTROLLER are MAPPED to a certain
+  device by the board file, device tree or similar machine setup configuration
+  mechanism,
+
+- PINS for a certain FUNCTION using a certain PIN GROUP on a certain
+  PIN CONTROLLER are provided on a first-come first-serve basis, so if some
+  other device mux setting or GPIO pin request has already taken your physical
+  pin, you will be denied the use of it. To get (activate) a new setting, the
+  old one has to be put (deactivated) first.
+
+
+Pinmux drivers
+==============
+set_mux()
+struct pinmux_ops
+
+
+The beauty of the pinmux subsystem is that since it keeps track of all
+pins and who is using them, it will already have denied an impossible
+request like that, so the driver does not need to worry about such
+things - when it gets a selector passed in, the pinmux subsystem makes
+sure no other device or GPIO assignment is already using the selected
+pins. Thus bits 0 and 1 in the control register will never be set at the
+same time.
+
+
+Pin control interaction with the GPIO subsystem
+===============================================
+
+NOTE that platforms and individual drivers shall *NOT* request GPIO pins to be
+controlled e.g. muxed in. Instead, implement a proper gpiolib driver and have
+that driver request proper muxing and other control for its pins.
+
+there are two functions a pin control driver can implement
+to enable only GPIO on an individual pin: .gpio_request_enable() and
+.gpio_disable_free().
+
+gpiolib driver
+
+GPIO mode pitfalls
+==================
+
+Due to the naming conventions used by hardware engineers, where "GPIO"
+is taken to mean different things than what the kernel does, the developer
+may be confused by a datasheet talking about a pin being possible to set
+into "GPIO mode". It appears that what hardware engineers mean with
+"GPIO mode" is not necessarily the use case that is implied in the kernel
+interface <linux/gpio.h>: a pin that you grab from kernel code and then
+either listen for input or drive high/low to assert/deassert some
+external line.
+
+Rather hardware engineers think that "GPIO mode" means that you can
+software-control a few electrical properties of the pin that you would
+not be able to control if the pin was in some other mode, such as muxed in
+for a device.
+
+The GPIO portions of a pin and its relation to a certain pin controller
+configuration and muxing logic can be constructed in several ways. Here
+are two examples:
+
+(A)
+                       pin config
+                       logic regs
+                       |               +- SPI
+     Physical pins --- pad --- pinmux -+- I2C
+                               |       +- mmc
+                               |       +- GPIO
+                               pin
+                               multiplex
+                               logic regs
+
+(B)
+
+                       pin config
+                       logic regs
+                       |               +- SPI
+     Physical pins --- pad --- pinmux -+- I2C
+                       |       |       +- mmc
+                       |       |
+                       GPIO    pin
+                               multiplex
+                               logic regs
+
+"pin configuration" settings
+mux functions
+control GPIO functionality - GPIO subsystem
+
+include/pinctrl/pinconf-generic.h
+
+struct pinctrl_map
+pinctrl_register_mappings
+
+Board/machine configuration
+==================================
+
+
+Complex mappings
+================
+devm_pinctrl_get_select
+
+
+Pin control requests from drivers
+=================================
+When a device driver is about to probe the device core will automatically
+attempt to issue pinctrl_get_select_default() on these devices.
+This way driver writers do not need to add any of the boilerplate code
+of the type found below. However when doing fine-grained state selection
+and not using the "default" state, you may have to do some device driver
+handling of the pinctrl handles and states.
+
+In some cases where a driver needs to e.g. switch between different mux mappings
+at runtime this is not possible.
+
+A typical case is if a driver needs to switch bias of pins from normal
+operation and going to sleep, moving from the PINCTRL_STATE_DEFAULT to
+PINCTRL_STATE_SLEEP at runtime, re-biasing or even re-muxing pins to save
+current in sleep mode.
+
+devm_pinctrl_get
+pinctrl_lookup_state
+pinctrl_select_state
+This get/lookup/select/put sequence can just as well be handled by bus drivers
+if you don't want each and every driver to handle it and you know the
+arrangement on your bus.
+
+Drivers needing both pin control and GPIOs
+==========================================
+
+The above can be hidden: using the device core, the pinctrl core may be
+setting up the config and muxing for the pins right before the device is
+probing, nevertheless orthogonal to the GPIO subsystem.
+
+System pin control hogging
+==========================
+
+Runtime pinmuxing
+=================
+It is possible to mux a certain function in and out at runtime, say to move
+an SPI port from one set of pins to another set of pins.
