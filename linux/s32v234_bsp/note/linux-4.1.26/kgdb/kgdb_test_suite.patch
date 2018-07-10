@@ -1,0 +1,14 @@
+diff --git a/rda600/config/kernel/rda600_defconfig b/rda600/config/kernel/rda600_defconfig
+index 9960253..d7f9b0f 100644
+--- a/rda600/config/kernel/rda600_defconfig
++++ b/rda600/config/kernel/rda600_defconfig
+@@ -2042,7 +2042,8 @@ CONFIG_TRACING_SUPPORT=y
+ CONFIG_HAVE_ARCH_KGDB=y
+ CONFIG_KGDB=y
+ CONFIG_KGDB_SERIAL_CONSOLE=y
+-# CONFIG_KGDB_TESTS is not set
++CONFIG_KGDB_TESTS=y
++CONFIG_KGDB_TESTS_ON_BOOT=y
+ CONFIG_KGDB_KDB=y
+ CONFIG_KDB_DEFAULT_ENABLE=0x1
+ # CONFIG_KDB_KEYBOARD is not set
