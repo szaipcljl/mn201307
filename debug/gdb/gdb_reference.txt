@@ -1,0 +1,1 @@
+http://visualgdb.com/gdbreference/commands/set_solib-search-path
