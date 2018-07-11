@@ -1,0 +1,22 @@
+
+root@rda600:~# dmesg | grep "#mn"
+[    0.230394] #mn: [phy_drivers_register]
+[    0.230404] #mn:phy_driver_register  Generic PHY: Registered new driver
+[    0.230446] #mn:phy_driver_register  Generic 10G PHY: Registered new driver
+[    0.260785] #mn: [phy_drivers_register]
+[    0.260791] #mnn:phy_driver_register  Micrel KS8737: Registered new driver
+[    0.260838] #mnn:phy_driver_register  Micrel KSZ8021 or KSZ8031: Registered new driver
+[    0.260880] #mnn:phy_driver_register  Micrel KSZ8031: Registered new driver
+[    0.260917] #mnn:phy_driver_register  Micrel KSZ8041: Registered new driver
+[    0.260956] #mnn:phy_driver_register  Micrel KSZ8041RNLI: Registered new driver
+[    0.260995] #mnn:phy_driver_register  Micrel KSZ8051: Registered new driver
+[    0.261033] #mnn:phy_driver_register  Micrel KSZ8001 or KS8721: Registered new driver
+[    0.261073] #mnn:phy_driver_register  Micrel KSZ8081 or KSZ8091: Registered new driver
+[    0.261113] #mnn:phy_driver_register  Micrel KSZ8061: Registered new driver
+[    0.261158] #mnn:phy_driver_register  Micrel KSZ9021 Gigabit PHY: Registered new driver
+[    0.261203] #mnn:phy_driver_register  Micrel KSZ9031 Gigabit PHY: Registered new driver
+[    0.261248] #mnn:phy_driver_register  Micrel KSZ8873MLL Switch: Registered new driver
+[    0.261298] #mnn:phy_driver_register  Micrel KSZ886X Switch: Registered new driver
+[    0.262331] #mn: fec_reset_phy no phy_reset
+[    0.264028] #mn:fec mac:0 1b c3 12 34
+[    0.265240] #mn: [of_set_phy_supported] max_speed=1000

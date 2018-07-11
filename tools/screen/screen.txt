@@ -1,0 +1,14 @@
+screen -ls 列出会话
+screen -S stack 创建会话   -> byobu new -s s2
+screen -r stack 恢复会话
+screen -x 连接会话             -> byobu -x s2
+ctrl  + a + d 断开会话
+rm -rf /var/run/scree/S-hua/ 删除会话, 或killall screen
+
+窗口切换
+       ctrl + a + c 新建窗口
+       ctrl + a + n -> Next，切换到下个 window
+       ctrl + a + p -> Previous，前一个 window
+       ctrl + a + 1..9 -> 切换到第 1..9 个window
+       ctrl + a + ' 17 -> 直接跳到第10个以后的window，比如第17个：CRTL + A + '，输入 17
+       ctrl + a, 稍等一秒，再按shift + ' 显示screen中所有的窗口列表

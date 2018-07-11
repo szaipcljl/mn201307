@@ -27,9 +27,67 @@ obj-$(CONFIG_MICREL_PHY)	+= micrel.o
 
 ==============================
 phy:
-phy/phy.c
-phy/phy_device.c
-phy/mdio_bus.c
+phy.c
+phy_device.c
+mdio_bus.c
 
-phy/micrel.c   //Giga phys: KSZ9031
+micrel.c   //Giga phys: KSZ9031
 
+--------
+phy.c:
+	called by
+		fec_main.c
+		phy_device.c
+
+mdio_bus.c:
+	called by
+		fec_main.c
+		//fixed_phy.c
+		phy_device.c
+
+ mdio_bus_init [mdio_bus.c]
+ ^
+ |
+ +--------- phy_init [phy_device.c]
+
+
+phy_device.c:
+	called by
+		mdio_bus.c
+		of_mdio.c
+		//fixed_phy.c
+		fec_main.c: phy_connect/phy_disconnect genphy_restart_aneg
+		phy.c: genphy_aneg_done genphy_update_link
+
+	subsys_initcall(phy_init); //genphy_driver
+
+phy.c      -----+
+                +---> phy_device.c (genphy driver)
+mdio_bus.c -----+
+
+
+micrel.c:
+//Creates an alias so file2alias.c can find device table
+MODULE_DEVICE_TABLE(mdio, micrel_tbl);
+
+ Process:
+1. Driver for each device exposes its information using the API MODULE_DEVICE_TABLE.
+Each device has a unique vendor Id and device Id.
+2. At compilation time, the build process extracts this information out of the
+driver and builds a table.
+3. When the device is plugged in, the kernel checks this device table to see if
+any driver is available for the particular Vendor/Device Id. If yes then it
+loads that driver and initializes the device.
+
+
+module_phy_driver(ksphy_driver); ==> phy_drivers_register
+
+
+#define PHY_ID_KSZ9031		0x00221620
+
+	.phy_id_mask	= 0x00fffff0,
+==================================
+
+??
+ root@rda600:~# cat /sys/devices/platform/soc/40000000.aips-bus/40032000.ethernet/40032000.etherne:03/phy_id
+0x00221622

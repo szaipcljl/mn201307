@@ -1,10 +1,27 @@
 ksz9031rnxic.pdf
 
+1.1 General Description
+
 RGMII: 12 pins, Transmit data and receive data are each four bits wide.
 MDC/MDIO management
 
 configure to RGMII mode:
 MODE[3:0]
+
+FIGURE 1-1 SYSTEM BLOCK DIAGRAM
+
+         +-----------------+                +----------------+
+         |                 |    RGMII       |                |
+         |                 |<-------------->|                |
+         | 10/100/1000Mbps |                |                |
+         |    RGMII        |    MDC/MDIO    | KSZ9031RNX     |
+         |  ETHERNET MAC   |   MANAGEMENT   |                |
+         |                 |<-------------->|                |
+         |                 |                |                |
+         +-----------------+                +----------------+
+
+3.9 RGMII Interface
+===================
 
 RGMII signal definition (KSZ9031)
 	GTX_CLK  : transmit reference clock
@@ -15,6 +32,25 @@ RGMII signal definition (KSZ9031)
 	RX_DV    : receive control
 	rxd[3:0] : receive data[3:0]
 
+
+FIGURE 3-4 KSZ9031RNX RGMII INTERFACE
+
+         KSZ9031RNX             RGMII ETHERNET MAC
+        +-----------+            +-----------+
+        |   GTX_CLK |<-----------+ TXC       |
+        |     TX_EN |<-----------+ TX_CTL    |
+        |  TXD[3:0] |<-----------+ TXD[3:0]  |
+        |           |            |           |
+        |    RX_CLK +----------->| RXC       |
+        |     RX_DV +----------->| RX_CTL    |
+        |  RXD[3:0] +----------->| RXD[3:0]  |
+        +-----------+            +-----------+
+
+4.1 Register Map
+================
+The register space within the KSZ9031RNX consists of two distinct areas.
+• Standard registers // Direct register access
+• MDIO Manageable device (MMD) registers // Indirect register access
 
 4.2 standard registers
 ======================
