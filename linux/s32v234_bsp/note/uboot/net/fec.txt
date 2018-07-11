@@ -56,3 +56,17 @@ fec_recv
 		fec_set_hwaddr	//fec_mxc.c
 
 
+=========================
+reset
+uboot:
+[u-boot/drivers/net/fec_mxc.c]
+fec_probe:
+/* Reset chip. */
+writel(readl(&fec->eth->ecntrl) | FEC_ECNTRL_RESET, &fec->eth->ecntrl);
+
+=>
+
+struct fec_priv *fec;
+struct ethernet_regs *eth;  /* pointer to register'S base */
+uint32_t ecntrl;        /* MBAR_ETH + 0x024 */ 
+

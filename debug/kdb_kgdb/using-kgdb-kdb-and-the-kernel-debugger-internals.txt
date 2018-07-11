@@ -352,3 +352,17 @@ When using kgdboc with a UART, the UART driver must implement two callbacks in t
   
 
 Any implementation specifics around creating a polling driver use the #ifdef CONFIG_CONSOLE_POLL, as shown above. Keep in mind that polling hooks have to be implemented in such a way that they can be called from an atomic context and have to restore the state of the UART chip on return such that the system can return to normal when the debugger detaches. You need to be very careful with any kind of lock you consider, because failing here is most likely going to mean pressing the reset button. 
+
+kgdboc and uarts
+================
+
+The kgdboc driver is actually a very thin driver that relies on the underlying low level to the hardware driver having "polling hooks" to which the tty driver is attached. In the initial implementation of kgdboc the serial_core was changed to expose a low level UART hook for doing polled mode reading and writing of a single character while in an atomic context. When kgdb makes an I/O request to the debugger, kgdboc invokes a callback in the serial core which in turn uses the callback in the UART driver.
+
+When using kgdboc with a UART, the UART driver must implement two callbacks in the struct uart_ops. Example from drivers/8250.c:
+
+#ifdef CONFIG_CONSOLE_POLL
+	.poll_get_char = serial8250_get_poll_char,
+	.poll_put_char = serial8250_put_poll_char,
+#endif
+
+  Any implementation specifics around creating a polling driver use the #ifdef CONFIG_CONSOLE_POLL, as shown above. Keep in mind that polling hooks have to be implemented in such a way that they can be called from an atomic context and have to restore the state of the UART chip on return such that the system can return to normal when the debugger detaches. You need to be very careful with any kind of lock you consider, because failing here is most likely going to mean pressing the reset button.

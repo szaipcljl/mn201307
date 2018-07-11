@@ -1,0 +1,51 @@
+ksz9031rnxic.pdf
+
+RGMII: 12 pins, Transmit data and receive data are each four bits wide.
+MDC/MDIO management
+
+configure to RGMII mode:
+MODE[3:0]
+
+RGMII signal definition (KSZ9031)
+	GTX_CLK  : transmit reference clock
+	TX_EN    : transmit control
+	TXD[3:0] : transmit data[3:0]
+
+	RX_clk   : receive reference clock
+	RX_DV    : receive control
+	rxd[3:0] : receive data[3:0]
+
+
+4.2 standard registers
+======================
+Register 0h – Basic Control
+---------------------------
+
+reset
+-----
+
+speed select
+
+auto-negotiation enable
+
+power-down
+
+duplex mode
+
+Register 1h - Basic Status
+--------------------------
+Link Status
+
+
+PHY ID Number
+
+Register 3h - PHY Identifier 2
+------------------------------
+
+Register Dh - MMD Access – Control
+-----------------------------------
+MMD – Operation Mode
+MMD – Device Address
+
+Register Eh - MMD Access – Register/Data
+-----------------------------------

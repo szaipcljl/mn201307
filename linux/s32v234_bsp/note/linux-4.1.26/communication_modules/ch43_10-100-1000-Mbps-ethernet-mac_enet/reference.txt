@@ -1,0 +1,6 @@
+
+Documentation/devicetree/bindings/net/fsl-fec.txt
+Documentation/devicetree/bindings/net/fixed-link.txt
+Documentation/devicetree/bindings/net/ethernet.txt
+Documentation/devicetree/bindings/net/fsl-tsec-phy.txt
+Documentation/devicetree/bindings/net/phy.txt

@@ -1,0 +1,47 @@
+[u-boot/drivers/net/fec_mxc.c]
+
+fecmxc_initialize_mult
+======================
+(1) bus = fec_get_miibus(base_mii, dev_id);
+(2) phydev = phy_find_by_mask(bus, 1 << phy_id, PHY_INTERFACE_MODE_RGMII); 
+(3) ret = fec_probe(bd, dev_id, addr, bus, phydev);
+
+fec_probe:
+=========
+(1) /* create and fill edev struct */ 
+(2) /* Reset chip. */
+(3) Do initial configuration of the FEC registers
+(4) set dev name, dev_id, bus(struct mii_dev* passed from param)
+	fec->bus = bus;
+	fec_mii_setspeed(bus->priv);
+(5) phylib
+     fec->phydev = phydev;
+     phy_connect_dev(phydev, edev); //soft reset the phy
+     /* Configure phy */
+     phy_config(phydev); //ksz9031 phy
+(6) eth_register(edev);
+(7) fec_get_hwaddr(edev, dev_id, ethaddr);
+	memcpy(edev->enetaddr, ethaddr, 6);
+
+struct phy_device* passed from param 
+
+
+
+
+fec_init
+========
+(1) /* Initialize MAC address */
+	fec_set_hwaddr(dev);
+
+(2) * Setup transmit descriptors, there are two in total.
+	fec_tbd_init(fec);
+
+(3) /* Setup receive descriptors. */                 
+	fec_rbd_init(fec, FEC_RBD_NUM, FEC_MAX_PKT_SIZE);
+(4) Do initial configuration of the FEC registers   
+	fec_reg_setup(fec);
+(5) Set Opcode/Pause Duration Register
+(6) Set multicast address filter
+(7) /* size and address of each buffer */
+(8) Start the FEC engine
+	fec_open(dev);

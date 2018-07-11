@@ -1,0 +1,32 @@
+Framework
+==============================
+
+├── drivers
+    └── net
+        ├── ethernet
+        │   └── freescale
+        │       ├── fec_main.c [Fast Ethernet Controller (FEC) driver]
+        │       └── fec_ptp.c [Fast Ethernet Controller (ENET) PTP driver]
+        └── phy
+            ├── mdio_bus.c [MDIO Bus interface]
+            ├── micrel.c [Driver for Micrel PHYs]
+            ├── phy_device.c [Framework for finding and configuring PHYs. Also contains generic PHY driver]
+]
+            └── phy.c [Framework for configuring and reading PHY devices]
+
+[PHY Abstraction Layer]
+--------------------------
+ethernet/freescale/Makefile
+obj-$(CONFIG_FEC) += fec.o
+fec-objs :=fec_main.o fec_ptp.o
+
+phy/Makefile
+libphy-objs			:= phy.o phy_device.o mdio_bus.o
+
+==============================
+drivers/net/
+phy/phy.c
+phy/phy_device.c  //KSZ9031
+phy/micrel.c
+phy/mdio_bus.c
+

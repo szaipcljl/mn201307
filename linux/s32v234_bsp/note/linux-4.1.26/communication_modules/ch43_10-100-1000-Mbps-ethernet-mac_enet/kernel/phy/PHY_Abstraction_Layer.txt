@@ -1,0 +1,174 @@
+PHY Abstraction Layer (PAL)
+
+Documentation/networking/phy.txt
+
+
+Purpose
+-------
+
+provide an interface to PHY devices
+
+
+The MDIO bus
+------------
+In order to take advantage of the PAL, each bus interface needs to be
+registered as a distinct device.
+
+ 1) read and write functions must be implemented.
+
+     int write(struct mii_bus *bus, int mii_id, int regnum, u16 value);
+     int read(struct mii_bus *bus, int mii_id, int regnum);
+
+	 mii_id is the address on the bus for the PHY
+
+ 2) A reset function is optional.  This is used to return the bus to an
+   initialized state.
+
+ 3) A probe function is needed.  This function should set up anything the bus
+   driver needs, setup the mii_bus structure, and register with the PAL using
+   mdiobus_register. 
+
+ 4) Like any driver, the device_driver structure must be configured, and init
+   exit functions are used to register the driver.
+
+ 5) The bus must also be declared somewhere as a device, and registered.
+
+
+Connecting to a PHY
+-------------------
+PHY's bus and drivers need to all have been loaded
+several ways to connect to the PHY:
+
+ 1) The PAL handles everything, and only calls the network driver when
+   the link state changes, so it can react.
+
+ 2) The PAL handles everything except interrupts (usually because the
+   controller has the interrupt registers).
+
+ 3) The PAL handles everything, but checks in with the driver every second,
+   allowing the network driver to react first to any changes before the PAL
+   does.
+ 
+ 4) The PAL serves only as a library of functions, with the network device
+   manually calling functions to update status, and configure the PHY
+
+Letting the PHY Abstraction Layer do Everything -- choose option 1 
+<1> a function to react to changes in the link state.
+   static void adjust_link(struct net_device *dev);
+
+<2> to know the device name of the PHY 
+	"0:00" -- "bus_id:PHY's_address"
+
+<3> to connect
+   phydev = phy_connect(dev, phy_name, &adjust_link, interface);
+
+ phydev is a pointer to the phy_device structure which represents the PHY.
+ dev is the pointer to your net_device. 
+
+phydev->dev_flags:  PHY-specific flags 
+if the system has put hardware restrictions on the PHY/controller, of which 
+the PHY needs to be aware.
+
+ interface is a u32 which specifies the connection type used
+ between the controller and the PHY.  Examples are GMII, MII,
+ RGMII, and SGMII.  For a full list, see include/linux/phy.h
+
+ phydev->supported and phydev->advertising 
+
+phydev->irq
+
+call phy_start(phydev)
+ tells the PAL that you are ready, and configures the PHY to connect to the network.
+
+disconnect from the network
+phy_stop(phydev)
+
+
+
+ Here is a brief rundown of the functions:
+
+ int phy_read(struct phy_device *phydev, u16 regnum);
+ int phy_write(struct phy_device *phydev, u16 regnum, u16 val);
+
+ void phy_print_status(struct phy_device *phydev);
+
+ int phy_start_interrupts(struct phy_device *phydev);
+ int phy_stop_interrupts(struct phy_device *phydev);
+
+ struct phy_device * phy_attach(struct net_device *dev, const char *phy_id,
+		 phy_interface_t interface);
+
+ int phy_start_aneg(struct phy_device *phydev);
+
+ static inline int phy_read_status(struct phy_device *phydev);
+
+ int phy_mii_ioctl(struct phy_device *phydev,
+                 struct mii_ioctl_data *mii_data, int cmd);
+
+
+PHY Device Drivers
+------------------
+
+Generic PHY driver
+------------------
+
+
+Writing a PHY driver
+--------------------
+<1> make sure it can be matched with an appropriate PHY device.
+ This is done during bus initialization by reading the device's
+ UID (stored in registers 2 and 3), then comparing it to each
+ driver's phy_id field by ANDing it with each driver's
+ phy_id_mask field.  Also, it needs a name.  Here's an example:
+
+   static struct phy_driver dm9161_driver = {
+         .phy_id         = 0x0181b880,
+	 .name           = "Davicom DM9161E",
+	 .phy_id_mask    = 0x0ffffff0,
+	 ...
+   }
+
+<2> specify what features (speed, duplex, autoneg, etc) your PHY 
+device and driver support. 
+features: include/mii.h 
+
+
+ Each driver consists of a number of function pointers:
+
+   soft_reset: perform a PHY software reset
+   config_init: configures PHY into a sane state after a reset.
+     For instance, a Davicom PHY requires descrambling disabled.
+   probe: Allocate phy->priv, optionally refuse to bind.
+   PHY may not have been reset or had fixups run yet.
+   suspend/resume: power management
+   config_aneg: Changes the speed/duplex/negotiation settings
+   aneg_done: Determines the auto-negotiation result
+   read_status: Reads the current speed/duplex/negotiation settings
+   ack_interrupt: Clear a pending interrupt
+   did_interrupt: Checks if the PHY generated an interrupt
+   config_intr: Enable or disable interrupts
+   remove: Does any driver take-down
+   ts_info: Queries about the HW timestamping status
+   hwtstamp: Set the PHY HW timestamping configuration
+   rxtstamp: Requests a receive timestamp at the PHY level for a 'skb'
+   txtsamp: Requests a transmit timestamp at the PHY level for a 'skb'
+   set_wol: Enable Wake-on-LAN at the PHY level
+   get_wol: Get the Wake-on-LAN status at the PHY level
+   read_mmd_indirect: Read PHY MMD indirect register
+   write_mmd_indirect: Write PHY MMD indirect register
+
+Most modern PHYs will be able to use
+ the generic PAL framework for accessing the PHY's MMD registers.
+
+
+Board Fixups
+------------
+Sometimes the specific interaction between the platform and the PHY requires
+ special handling.
+to change where the PHY's clock input is,
+ or to add a delay to account for latency issues in the data path.
+
+ The platform code can either register the fixup using phy_register_fixup():
+
+ Or using one of the two stubs, phy_register_fixup_for_uid() and
+ phy_register_fixup_for_id():
