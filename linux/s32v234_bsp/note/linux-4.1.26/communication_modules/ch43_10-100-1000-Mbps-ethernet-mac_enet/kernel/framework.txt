@@ -10,23 +10,26 @@ Framework
         └── phy
             ├── mdio_bus.c [MDIO Bus interface]
             ├── micrel.c [Driver for Micrel PHYs]
-            ├── phy_device.c [Framework for finding and configuring PHYs. Also contains generic PHY driver]
-]
+            ├── phy_device.c [Framework for finding and configuring PHYs. Generic PHY driver]
             └── phy.c [Framework for configuring and reading PHY devices]
 
-[PHY Abstraction Layer]
---------------------------
-ethernet/freescale/Makefile
+PHY Abstraction Layer(PAL): mdio_bus.c phy.c phy_device.c
+
+Makefile
+--------
+ethernet/freescale/Makefile:
 obj-$(CONFIG_FEC) += fec.o
 fec-objs :=fec_main.o fec_ptp.o
 
-phy/Makefile
+phy/Makefile:
 libphy-objs			:= phy.o phy_device.o mdio_bus.o
+obj-$(CONFIG_MICREL_PHY)	+= micrel.o
 
 ==============================
-drivers/net/
+phy:
 phy/phy.c
-phy/phy_device.c  //KSZ9031
-phy/micrel.c
+phy/phy_device.c
 phy/mdio_bus.c
+
+phy/micrel.c   //Giga phys: KSZ9031
 
