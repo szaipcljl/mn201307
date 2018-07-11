@@ -1,0 +1,32 @@
+../../out/rda600/kernel/linux-4.1_rda600/drivers/pinctrl/
+├── core.o
+├── devicetree.o
+├── freescale
+│   ├── pinctrl-imx.o
+│   ├── pinctrl-s32v234.o
+│   └── pinctrl-s32v-core.o
+├── pinconf.o
+├── pinctrl-utils.o
+└── pinmux.o
+
+Makefile
+========================
+drivers/pinctrl/Makefile
+------------------------
+obj-$(CONFIG_PINCTRL)		+= core.o pinctrl-utils.o
+obj-$(CONFIG_PINMUX)		+= pinmux.o
+obj-$(CONFIG_PINCONF)		+= pinconf.o
+ifeq ($(CONFIG_OF),y)
+obj-$(CONFIG_PINCTRL)		+= devicetree.o
+endif
+
+obj-y				+= freescale/
+
+
+drivers/pinctrl/freescale/Makefile
+----------------------------------
+obj-$(CONFIG_PINCTRL_IMX)	+= pinctrl-imx.o
+obj-$(CONFIG_PINCTRL_S32V234)	+= pinctrl-s32v234.o
+jbj-$(CONFIG_PINCTRL_S32V_CORE)	+= pinctrl-s32v-core.o
+
+https://www.kernel.org/doc/Documentation/pinctrl.txt

@@ -60,9 +60,9 @@ static s32 i2c_read_reg8(struct i2c_client *client, u8 reg, u8 *val)
 /* config 914 regs */
 static int config_914_regs(void)
 {
-	i2c_write_reg8(ds90ub914a_dev.i2c_client, 0x07,  ds90ub914a_dev.ds914_pdata->ds90ub913_i2c_addr << 1); //913 slave addr
-	i2c_write_reg8(ds90ub914a_dev.i2c_client, 0x09,  ds90ub914a_dev.ds914_pdata->camera_i2c_addr << 1); //ar0144 slave addr
-	i2c_write_reg8(ds90ub914a_dev.i2c_client, 0x11, ds90ub914a_dev.ds914_pdata->camera_i2c_addr << 1); //ar0144 slave addr
+	i2c_write_reg8(ds90ub914a_dev.i2c_client, DS914_SER_ALIAS,  ds90ub914a_dev.ds914_pdata->ds90ub913_i2c_addr << 1); //913 slave addr
+	i2c_write_reg8(ds90ub914a_dev.i2c_client, DS914_SLAVE_ID1,  ds90ub914a_dev.ds914_pdata->camera_i2c_addr << 1); //ar0144 slave addr
+	i2c_write_reg8(ds90ub914a_dev.i2c_client, DS914_SLAVE_ALIAS1, ds90ub914a_dev.ds914_pdata->camera_i2c_addr << 1); //ar0144 slave addr
 	mdelay(1);
 
 	return 0;

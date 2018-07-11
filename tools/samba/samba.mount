@@ -29,3 +29,10 @@ Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.11-Ubuntu]
 	WORKGROUP            OMNISKY
 
 sudo mount -t cifs -o username=chris,password=dell123 //192.168.5.244/chris ~/smb_server
+
+=======================================
+1、在文件夹里访问samba地址：smb:// + IP
+
+2、通过终端ssh访问samba服务器，访问不了的话请下载：
+
+sudo apt-get install openssh-server

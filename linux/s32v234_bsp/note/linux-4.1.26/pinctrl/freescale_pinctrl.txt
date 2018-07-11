@@ -1,0 +1,100 @@
+drivers/pinctrl/freescale
+
+├── freescale
+│   ├── pinctrl-imx.o
+│   ├── pinctrl-s32v234.o
+│   └── pinctrl-s32v-core.o
+
+
+freescale/pinctrl-imx.c
+=======================
+* Core driver for the imx pin controller
+
+
+
+freescale/pinctrl-s32v-core.c
+=============================
+* Core driver for the S32V pin controller
+
+
+s32v_pinctrl_parse_groups
+	list = of_get_property(np, "fsl,pins", &size);
+
+
+
+freescale/pinctrl-s32v234.c
+===========================
+* s32v234 pinctrl driver based on imx pinmux and pinconf core
+
+module_platform_driver(s32v234_pinctrl_driver);
+                            |
+struct platform_driver <----+
+
+
+
+s32v234_pinctrl_driver
+----------------------
+(1)
+.driver.of_match_table 
+|
+|
+V
+s32v234_pinctrl_of_match[] = {
+	{
+		.compatible = "fsl,s32v234-siul2",
+		.data = (void *) PINCTRL_V1,
+	},
+	{
+		.compatible = "fsl,s32v234-siul2-pinctrl",
+		.data = (void *) PINCTRL_V2,
+	},
+	{ /* sentinel */ }
+};
+
+dts:
+arch/arm64/boot/dts/freescale/s32v234.dtsi
+/ {
+	...
+	soc {
+		...
+		aips0: aips-bus@40000000 {
+			...
+			siul2 {
+				...
+				pinctrl: siul2-pinctrl@4006C000 {
+					compatible =
+						"fsl,s32v234-siul2-pinctrl";
+					reg = <0x1 0x0 0x0 0x1000>;
+					status = "disabled";
+				};
+
+				gpioeirq: siul2-gpio@4006C000 {
+					compatible = "fsl,s32v234-siul2-gpio";
+					gpio-controller;
+					...
+				};
+
+				gpioother: siul2-gpio@4006D704 {
+					compatible = "fsl,s32v234-siul2-gpio";
+					gpio-controller;
+					...
+				};
+			};
+			...
+		};
+
+		aips1: aips-bus@40080000 {
+				   ...
+	    };
+	};
+	...
+};
+
+.probe
+------
+s32v234_pinctrl_probe
+
+
+======================
+s32v_pinctrl_parse_groups
+|-> list = of_get_property(np, "fsl,pins", &size);

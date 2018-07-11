@@ -1,0 +1,47 @@
+core drivers and device tree integration for the pin control subsystem
+
+drivers/pinctrl/
+
+4 c files:
+core drivers: core.c, pinconf.c, pinmux.c
+Device tree integration: devicetree.c
+
+
+(1) drivers/pinctrl/core.c
+==========================
+* Core driver for the pin control subsystem
+
+/* Global list of pin control devices (struct pinctrl_dev) */
+static LIST_HEAD(pinctrldev_list);
+
+(2) drivers/pinctrl/pinconf.c
+=========================
+* Core driver for the pin config portions of the pin control subsystem
+pinconfig core
+
+called by:
+	core.c
+	drivers/pinctrl/pinconf-generic.c
+
+(3) drivers/pinctrl/pinmux.c
+========================
+* Core driver for the pin muxing portions of the pin control subsystem
+
+called by:
+	core.c
+
+(4) drivers/pinctrl/devicetree.c
+============================
+* Device tree integration for the pin control subsystem
+
+called by:
+	core.c
+	drivers/gpio/gpiolib-of.c
+
+
+drivers/pinctrl/pinctrl-utils.c
+===============================
+Utils functions to implement the pincontrol driver.
+
+not used
+
