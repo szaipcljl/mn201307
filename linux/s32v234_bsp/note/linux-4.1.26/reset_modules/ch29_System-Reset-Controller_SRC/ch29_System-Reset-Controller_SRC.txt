@@ -1,0 +1,21 @@
+Chapter 29 System Reset Controller (SRC)
+
+29.1 Overview
+=============
+The System Reset Controller (SRC) module contains general purpose registers that
+control features, clocks, and functionality of other modules like PCIe, Cluster,
+Temperature Sensor, DDR, and SRAM. Details are covered in respective module
+chapters. SRC also contains boot and Reset configuration information.
+
+29.2 Memory map and register definition
+=======================================
+
+29.2.6 General Purpose Register 3 (SRC_GPR3)
+============================================
+
+Field                    Description
+--------------------------------------------------------------------------------------------
+     1       Selects the ENET mode of operation which decides the clocking scheme for ENET.
+ENET_MODE    0 RMII Mode
+             1 RGMII Mode
+--------------------------------------------------------------------------------------------
