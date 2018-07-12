@@ -1,0 +1,50 @@
+enable RGMII mode
+
+-----------------------------
+arch/arm/cpu/armv8/s32/soc.c
+
+int cpu_eth_init(bd_t *bis)
+{  
+	volatile struct src *src_regs = (struct src *)SRC_SOC_BASE_ADDR;
+	/* enable RGMII mode */                                 
+#if (CONFIG_FEC_XCV_TYPE == RGMII)                      
+	clrsetbits_le32(&src_regs->gpr3, SRC_GPR3_ENET_MODE,
+			SRC_GPR3_ENET_MODE);                        
+	printf("#mn: [%s] 1\n", __func__); 
+#else
+	...
+#endif
+		...
+}
+
+--------------------------------------------
+#define AIPS0_BASE_ADDR     (0x40000000)
+#define SRC_SOC_BASE_ADDR               (AIPS0_BASE_ADDR + 0x0007C000) 
+
+#define SRC_GPR3_ENET_MODE                  (1<<1)
+//arch/arm/include/asm/arch-s32/src.h
+
+//arch/arm/include/asm/io.h:
+#define clrsetbits(type, addr, clear, set) \                 
+    out_##type((addr), (in_##type(addr) & ~(clear)) | (set)) 
+
+#define clrsetbits_le32(addr, clear, set) clrsetbits(le32, addr, clear, set)
+
+------------------------------------------
+spec:
+src: System Reset Controller (SRC)
+contains general purpose registers that
+control features, clocks, and functionality of other modules
+
+General Purpose Register 3 (SRC_GPR3)
+
+
+bit1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Field                    Description
+--------------------------------------------------------------------------	
+1        	Selects the ENET mode of operation which decides the clocking
+ENET_MODE	scheme for ENET.
+			0 RMII Mode
+			1 RGMII Mode
+--------------------------------------------------------------------------
