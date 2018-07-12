@@ -1,0 +1,95 @@
+commit a1f84034ac247a992e5a3fece3164eaa4f471769
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Thu Jul 12 18:50:08 2018 +0800
+
+    fix an issue that the ethernet will not work when bootloader not support ethernet
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/linux/arch/arm64/boot/dts/freescale/rda600.dts b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+index 44726b5..d738417 100644
+--- a/linux/arch/arm64/boot/dts/freescale/rda600.dts
++++ b/linux/arch/arm64/boot/dts/freescale/rda600.dts
+@@ -180,6 +180,7 @@
+ 		#size-cells = <0>;
+ 		phy0: ethernet-phy@3 {
+ 			reg = <3>;
++			max-speed = <1000>;
+ 		};
+ 	};
+ };
+diff --git a/linux/drivers/net/ethernet/freescale/fec_main.c b/linux/drivers/net/ethernet/freescale/fec_main.c
+index 1bda8d4..231a34d 100644
+--- a/linux/drivers/net/ethernet/freescale/fec_main.c
++++ b/linux/drivers/net/ethernet/freescale/fec_main.c
+@@ -59,6 +59,10 @@
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/prefetch.h>
+ 
++#include <linux/regmap.h>
++#include <linux/mfd/syscon.h>
++#include <linux/mfd/syscon/s32v234-src.h>
++
+ #include <asm/cacheflush.h>
+ 
+ #include "fec.h"
+@@ -1955,6 +1959,38 @@ static int fec_enet_mii_probe(struct net_device *ndev)
+ 	return 0;
+ }
+ 
++static int fec_enet_select_enet_mode(struct platform_device *pdev)
++{
++	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct fec_enet_private *fep = netdev_priv(ndev);
++	struct regmap *src_regmap;
++	int ret = 0;
++
++	src_regmap = syscon_regmap_lookup_by_compatible("fsl,s32v234-src");
++	if (!src_regmap) {
++		dev_err(&pdev->dev, "Cannot obtain SRC regmap.\n");
++		return -ENODEV;
++	}
++
++	/*
++	 * Selects the ENET mode of operation which decides the clocking scheme for
++	 * ENET. If bootloader not support ethernet and not select ethe mode, this
++	 * must be set, or the network will not work.
++	 */
++	if (fep->phy_interface == PHY_INTERFACE_MODE_RGMII)
++		ret = regmap_update_bits(src_regmap, SRC_GPR3,
++				SRC_GPR3_ENET_MODE_MASK, SRC_GPR3_ENET_MODE_MASK);
++	else
++		ret = regmap_update_bits(src_regmap, SRC_GPR3,
++				SRC_GPR3_ENET_MODE_MASK, 0);
++	if (ret) {
++		dev_err(&pdev->dev,"[%s] reg bit update failed \n", __func__);
++		return -1;
++	}
++
++	return ret;
++}
++
+ static int fec_enet_mii_init(struct platform_device *pdev)
+ {
+ 	static struct mii_bus *fec0_mii_bus;
+@@ -3426,6 +3462,8 @@ fec_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	init_completion(&fep->mdio_done);
++
++	fec_enet_select_enet_mode(pdev);
+ 	ret = fec_enet_mii_init(pdev);
+ 	if (ret)
+ 		goto failed_mii_init;
+diff --git a/linux/include/linux/mfd/syscon/s32v234-src.h b/linux/include/linux/mfd/syscon/s32v234-src.h
+index bee9ef5..67b795e 100644
+--- a/linux/include/linux/mfd/syscon/s32v234-src.h
++++ b/linux/include/linux/mfd/syscon/s32v234-src.h
+@@ -23,6 +23,7 @@
+ #define SRC_PCIE_CONFIG1 0x180
+ #define SRC_PCIE_CONFIG0 0x188
+ 
++#define SRC_GPR3_ENET_MODE_MASK                 (0X1 << 1)
+ #define SRC_GPR4_TSENS_ENABLE_MASK				(0x1)
+ 
+ #define SRC_GPR5_PCIE_DEVICE_TYPE_EP				(0x0 << 1)
