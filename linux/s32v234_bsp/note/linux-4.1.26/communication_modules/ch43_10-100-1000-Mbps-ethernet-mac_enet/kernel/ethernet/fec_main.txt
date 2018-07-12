@@ -1,0 +1,164 @@
+fec_main.c
+
+
+============
+mac address
+-----------
+fec_probe [fec_main.c]
+|-> fec_enet_init [fec_main.c]
+	|-> fec_get_mac [drivers/net/ethernet/freescale/fec_main.c]
+		|-> of_get_mac_address [drivers/of/of_net.c] 
+
+struct
+================
+struct fec_enet_private : board info structure
+struct net_device : network device
+struct fec_platform_data : phy, mac, sleep_mode_enable func
+
+--------------
+struct ethtool_ops - optional netdev operations
+struct net_device_ops - This structure defines the management hooks for network devices.
+=================
+module_platform_driver(fec_driver);
+                           |
+struct platform_driver <---+
+
+fec_probe
+---------
+(1)
+parse the num of tx and rx queues
+fec_enet_get_queue_num
+|-> of_property_read_u32
+
+(2) Init network device
+alloc_etherdev_mqs - Allocates and sets up an Ethernet device
+[linux/net/ethernet/eth.c]
+
+/*
+ * Set the sysfs physical device reference for the network logical device
+ * if set prior to registration will cause a symlink during initialization.
+ */
+	SET_NETDEV_DEV(ndev, &pdev->dev); [include/linux/netdevice.h]
+
+(3) setup board info structure
+
+	<1> get network device private data
+		netdev_priv - access network device private data
+		fep = netdev_priv(ndev); // Get network device private data
+		[include/linux/netdevice.h]
+
+	<2> set quirks
+		 * of_match_device - Tell if a struct device matches an of_device_id list
+		 * Used by a driver to check whether an platform_device present in the
+		 * system is in its list of supported devices.
+
+		 of_id = of_match_device(fec_dt_ids, &pdev->dev);
+
+		 //setup the matched struct platform_device_id pointer to id_entry
+		 if (of_id)
+			pdev->id_entry = of_id->data;
+
+		 fep->quirks = pdev->id_entry->driver_data;
+	 
+	<3> set netdev, num_rx_queues/num_tx_queues
+
+	<4> Select default pin state
+		pinctrl_pm_select_default_state(&pdev->dev);
+
+	<5> Hardware registers of the FEC device
+
+		r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+		fep->hwp = devm_ioremap_resource(&pdev->dev, r);
+
+	<6> 
+		fep->pdev = pdev;
+		fep->dev_id = dev_id++;
+
+	<7> set platform_device struct's dev.driver_data to ndev
+		platform_set_drvdata(pdev, ndev);
+
+(4) parse magic-packet , phy-handle, phy_mode
+
+	if (of_get_property(np, "fsl,magic-packet", NULL))
+		fep->wol_flag |= FEC_WOL_HAS_MAGIC_PACKET;
+
+	phy_node = of_parse_phandle(np, "phy-handle", 0);
+	fep->phy_node = phy_node;
+
+	ret = of_get_phy_mode(pdev->dev.of_node);//Get phy mode for given device_node
+	fep->phy_interface = ret;
+
+(5) parse clk and enable them
+
+	fep->clk_ipg = devm_clk_get(&pdev->dev, "ipg");
+	fep->clk_ahb = devm_clk_get(&pdev->dev, "ahb");
+
+	fep->itr_clk_rate = clk_get_rate(fep->clk_ahb);
+
+	/* enet_out is optional, depends on board */
+	fep->clk_enet_out = devm_clk_get(&pdev->dev, "enet_out");
+
+	/* clk_ref is optional, depends on board */
+	fep->clk_ref = devm_clk_get(&pdev->dev, "enet_clk_ref");
+
+	fep->ptp_clk_on = false;
+
+	fep->bufdesc_ex = fep->quirks & FEC_QUIRK_HAS_BUFDESC_EX;
+	fep->clk_ptp = devm_clk_get(&pdev->dev, "ptp");
+
+	//init mutex
+	mutex_init(&fep->ptp_clk_mutex);
+
+	ret = fec_enet_clk_enable(ndev, true);
+	|-> clk_prepare_enable
+
+(6) get phy regulator and enable phy regulator
+	fep->reg_phy = devm_regulator_get(&pdev->dev, "phy");
+	ret = regulator_enable(fep->reg_phy);
+
+(7) reset phy
+	fec_reset_phy(pdev);
+
+(8)
+	if (fep->bufdesc_ex)
+		fec_ptp_init(pdev);
+
+(9)
+	ret = fec_enet_init(ndev);
+
+(10) request irq
+
+	for (i = 0; i < FEC_IRQ_NUM; i++) {
+		irq = platform_get_irq(pdev, i);
+		ret = devm_request_irq(&pdev->dev, irq, fec_enet_interrupt,
+				       0, pdev->name, ndev);
+		fep->irq[i] = irq;
+	}
+
+(11) init completion
+	init_completion(&fep->mdio_done);
+
+(12) mii init
+	ret = fec_enet_mii_init(pdev);
+
+(13) /* Carrier starts down, phylib will bring it up */
+	netif_carrier_off(ndev);
+	fec_enet_clk_enable(ndev, false);
+
+(14) 
+	/* Select sleep pin state */
+	pinctrl_pm_select_sleep_state(&pdev->dev);
+
+(15)
+	ret = register_netdev(ndev); [linux/net/core/dev.c]
+
+(16)
+ * device_init_wakeup - Device wakeup initialization.
+	device_init_wakeup(&ndev->dev, fep->wol_flag &
+			   FEC_WOL_HAS_MAGIC_PACKET);
+
+(17)
+	fep->rx_copybreak = COPYBREAK_DEFAULT;
+	INIT_WORK(&fep->tx_timeout_work, fec_enet_timeout_work);
+
+===========================================================

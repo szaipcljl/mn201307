@@ -1,8 +1,0 @@
-
-mac address
------------
-fec_probe [fec_main.c]
-|-> fec_enet_init [fec_main.c]
-	|-> fec_get_mac [drivers/net/ethernet/freescale/fec_main.c]
-		|-> of_get_mac_address [drivers/of/of_net.c] 
-
