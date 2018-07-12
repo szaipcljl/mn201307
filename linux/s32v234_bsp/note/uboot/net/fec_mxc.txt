@@ -1,7 +1,7 @@
 [u-boot/drivers/net/fec_mxc.c]
 
-fecmxc_initialize_mult
-======================
+fecmxc_initialize_multi
+=======================
 (1) bus = fec_get_miibus(base_mii, dev_id);
 (2) phydev = phy_find_by_mask(bus, 1 << phy_id, PHY_INTERFACE_MODE_RGMII); 
 (3) ret = fec_probe(bd, dev_id, addr, bus, phydev);
