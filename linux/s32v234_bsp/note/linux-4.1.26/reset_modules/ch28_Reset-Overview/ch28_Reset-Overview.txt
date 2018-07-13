@@ -1,0 +1,18 @@
+Chapter 28
+Reset Overview
+
+28.1 Introduction
+=================
+The chapter describes the reset behavior of the device
+
+28.1.1 Global Reset
+-------------------
+controlled by the MC_RGM which affects several modules of the device at the same time
+MC_RGM: Reset Generatioin Module
+
+28.1.2 Local Reset
+------------------
+controlled by the MC_RGM or dedicated modules which affects only one module at a time. 
+
+28.1.3 Reset sources
+--------------------

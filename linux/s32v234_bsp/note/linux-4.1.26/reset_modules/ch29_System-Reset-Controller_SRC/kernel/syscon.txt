@@ -1,0 +1,42 @@
+drivers/mfd/syscon.c - System Control Driver
+
+mfd: Multifunction miscellaneous devices
+
+3.10版本开始出现了regmap的接口，这个regmap将i2c、spi、mmio、irq都抽象出
+统一的接口regmap_read、regmap_write、regmap_update_bits等接口.
+
+header
+======
+#include <linux/regmap.h>
+#include <linux/mfd/syscon.h>
+#include <linux/mfd/syscon/s32v234-src.h>
+
+
+struct
+======
+struct syscon_platform_data
+struct syscon
+struct regmap
+struct regmap_config: Configuration for the register map of a device.
+
+=========================
+static int __init syscon_init(void)
+{
+	return platform_driver_register(&syscon_driver);
+}
+postcore_initcall(syscon_init);
+
+syscon_probe
+------------
+(1) devm_kzalloc
+(2) platform_get_resource
+	devm_ioremap
+(3) init syscon_regmap_config.max_register/.name
+(4) 
+	//devm_regmap_init_mmio(): Initialise managed register map
+	syscon->regmap = devm_regmap_init_mmio(dev, base,
+					&syscon_regmap_config);
+
+(5) 
+	platform_set_drvdata(pdev, syscon);
+

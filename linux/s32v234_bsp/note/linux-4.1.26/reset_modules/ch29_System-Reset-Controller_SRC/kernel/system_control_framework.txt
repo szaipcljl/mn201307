@@ -1,0 +1,23 @@
+
+drivers/mfd/
+├── mfd-core.o
+├── syscon.o
+└── vexpress-sysreg.o
+
+Makefile
+--------
+obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
+obj-$(CONFIG_MFD_SYSCON)	+= syscon.o
+obj-$(CONFIG_MFD_VEXPRESS_SYSREG)	+= vexpress-sysreg.o
+
+drivers/mfd/Kconfig
+-------------------
+config MFD_SYSCON
+	bool "System Controller Register R/W Based on Regmap"
+	select REGMAP_MMIO
+	help
+	  Select this option to enable accessing system control registers
+	  via regmap.
+
+config MFD_VEXPRESS_SYSREG
+	bool "Versatile Express System Registers"
