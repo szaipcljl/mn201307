@@ -1,0 +1,7 @@
+drivers/base/regmap/
+
+reference
+----------
+regmap was introduced by https://lwn.net/Articles/451789/
+syscon was introduced by https://lkml.org/lkml/2012/9/4/568
+
