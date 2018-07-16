@@ -1,5 +1,7 @@
 Apollo Auto
+===========
 
 An open autonomous driving platform
 
+https://github.com/ApolloAuto/apollo
 https://github.com/ApolloAuto/apollo/blob/master/docs/howto/how_to_build_and_release.md
