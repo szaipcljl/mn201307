@@ -1,0 +1,4 @@
+
+Electric-Eel-t.0.5:
+repo init -b eel -m eel_5.0.3.xml -u https://gerrit.automotivelinux.org/gerrit/AGL/AGL-repo
+repo sync
