@@ -1,0 +1,14 @@
+About the Alliance
+
+GENIVI® is a nonprofit industry alliance committed to driving the broad adoption
+of open source, In-Vehicle Infotainment (IVI) software and providing open
+technology for the connected car.
+
+The alliance provides its members with a global networking community of more
+than 140 companies, joining connected car stakeholders with world-class
+developers in a collaborative environment, resulting in free, open source
+middleware.
+
+Our work is informed by automotive trends and results in standard interfaces and
+software that shorten development cycles, speed time to market, and reduce costs
+for companies adopting and producing automotive solutions.
