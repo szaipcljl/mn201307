@@ -2,7 +2,7 @@ drivers/mfd/syscon.c - System Control Driver
 
 mfd: Multifunction miscellaneous devices
 
-3.10版本开始出现了regmap的接口，这个regmap将i2c、spi、mmio、irq都抽象出
+3.1版本开始出现了regmap的接口，这个regmap将i2c、spi、mmio、irq都抽象出
 统一的接口regmap_read、regmap_write、regmap_update_bits等接口.
 
 header
