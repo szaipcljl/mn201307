@@ -1,0 +1,6 @@
+
+49.3.12 System Control(uSDHC_SYS_CTRL)
+	Address:0h base + 2Ch offset = 2Ch
+
+	15-8
+	SDCLKFS: SDCLK Frequency Select
