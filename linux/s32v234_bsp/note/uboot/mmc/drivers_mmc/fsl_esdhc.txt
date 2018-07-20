@@ -73,6 +73,9 @@ mmc_create:
 	add struct mmc to struct list_head mmc_devices
     (c1): mmc = calloc(1, sizeof(*mmc));
     (c2): member init
+		  mmc->block_dev: .if_type, .dev, .removable, .block_read, .block_write,
+		  .block_write, .part_type
+
     (c3): list_add_tail(&mmc->link, &mmc_devices);
 
 
@@ -188,7 +191,14 @@ struct fsl_esdhc_cfg esdhc_cfg[1] = {
 #define USDHC_BASE_ADDR					(AIPS0_BASE_ADDR + 0x0005D000)
 
 
+
 ============================
+bootcmd=mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcboot; else run netboot; fi; else run netboot; fi
+
+loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}
+-------------
+do_mmc_dev [cmd_mmc.c]
+|-> init_mmc_device [cmd_mmc.c]
 |-> mmc_init
 	|-> mmc_start_init
 		|-> mmc_set_bus_width(mmc, 1);
@@ -196,6 +206,67 @@ struct fsl_esdhc_cfg esdhc_cfg[1] = {
 	|-> mmc_complete_init [mmc.c]
 		|-> mmc_startup [mmc.c]
 			|-> if (IS_SD(mmc)) {
+
+log
+---
+=> mmc dev ${mmcdev}
+#mn[init_mmc_device]:
+#mn[mmc_set_clock]:1. clock=400000
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=1
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=50000000
+#mn[mmc_set_clock]:2. clock=50000000
+switch to partitions #0, OK
+	mmc0 is current device
+
+fatload
+-------
+see fs/fs.txt
+
+read one time:
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+
+=> run loadimage
+#mn:[do_load]
+#mn:[find_mmc_device]
+#mn:[find_mmc_device]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[fs_read]
+#mn:[fat_read_file]
+reading Image
+#mn:[do_fat_read_at]
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+4337200 bytes read in 417 ms (9.9 MiB/s)
+
 
 
 =============================
@@ -220,4 +291,13 @@ mmc_go_idle
 sd_send_op_cond
 
 
+===============================
+Commands for MMC/SD/SDIO Cards
+[S32V234_RM2.2.pdf] P2645
 
+u-boot/include/mmc.h
+#define MMC_CMD_GO_IDLE_STATE		0
+#define MMC_CMD_SEND_OP_COND		1
+	...
+
+=======================
