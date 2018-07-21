@@ -1,0 +1,150 @@
+
+
+
+sd_change_freq
+==============
+(1) /* Read the SCR to find out if this card supports higher speeds */
+
+	cmd.cmdidx = MMC_CMD_APP_CMD;
+	...
+	cmd.cmdidx = SD_CMD_APP_SEND_SCR;
+	....
+	//check version, SD_DATA_4BIT
+
+(3)
+	err = sd_switch(mmc, SD_SWITCH_CHECK, 0, 1,
+			(u8 *)switch_status);
+	err = sd_switch(mmc, SD_SWITCH_SWITCH, 0, 1, (u8 *)switch_status);
+
+================
+static int sd_switch(struct mmc *mmc, int mode, int group, u8 value, u8 *resp)
+{
+	struct mmc_cmd cmd;
+	struct mmc_data data;
+
+	printf("#mn[%s] mode=0x%x\n", __func__, mode);
+	/* Switch the frequency */
+	cmd.cmdidx = SD_CMD_SWITCH_FUNC;
+	cmd.resp_type = MMC_RSP_R1;
+	cmd.cmdarg = (mode << 31) | 0xffffff;
+	cmd.cmdarg &= ~(0xf << (group * 4));
+	cmd.cmdarg |= value << (group * 4);
+
+	data.dest = (char *)resp;
+	data.blocksize = 64;
+	data.blocks = 1;
+	data.flags = MMC_DATA_READ;
+
+	return mmc_send_cmd(mmc, &cmd, &data);
+}
+
+
+#define SD_CMD_SWITCH_FUNC		6
+
+===============================
+49.5.4.2 Query, Enable and Disable SD High Speed Mode
+enable_sd_high_speed_mode(void)
+{
+	(1) set BLKCNT field to 1 (block), set BLKSIZE field to 64 (bytes);
+	(2) send CMD6, with argument 0xFFFFF1 and read 64 bytes of data accompanying the R1 response;
+		wait data transfer done bit is set;
+
+	(3) check if the bit 401 of received 512 bit is set;
+		if (bit 401 is '0')
+			report the SD card does not support high speed mode and return;
+
+	(4) send CMD6, with argument 0x80FFFFF1 and read 64 bytes of data accompanying the R1 response;
+		check if the bit field 379~376 is 0xF;
+		if (the bit field is 0xF) 
+			report the function switch failed and return;
+
+	(5) change clock divisor value or configure the system clock feeding into uSDHC to generate the card_clk of around 50MHz;
+
+	(data transactions like normal peers)
+}
+
+----------------
+(1) set BLKCNT field to 1 (block), set BLKSIZE field to 64 (bytes);
+sd_switch:
+	data.blocksize = 64;
+	data.blocks = 1;
+	mmc_send_cmd(mmc, &cmd, &data);
+
+esdhc_send_cmd
+|-> err = esdhc_setup_data(mmc, data);
+	|-> esdhc_write32(&regs->blkattr, data->blocks << 16 | data->blocksize);
+
+ps:
+49.3.2 Block Attributes (uSDHC_BLK_ATT)
+	configure the number of data blocks and the number of bytes in each block.
+	BLKCNT: bit[31:16], Blocks Count For Current Transfer,
+		FFFF 65535 blocks
+		0002 2 blocks
+		0001 1 block
+		0002 stop count
+	
+	BLKSIZE: bit[12:0], Transfer Block Size
+		0x1000 4096 Bytes
+		0x800  2048 Bytes
+		0x200 512 Bytes
+		0x1FF 511 Bytes
+		0x004 4 Bytes
+		0x003 3 Bytes
+		0x002 2 Bytes
+		0x001 1 Byte
+		0x000 No data transfer
+
+-------------
+(2) send CMD6, with argument 0xFFFFF1 and read 64 bytes of data accompanying the R1 response;
+	wait data transfer done bit is set;
+
+sd_switch:
+	/* Switch the frequency */
+	cmd.cmdidx = SD_CMD_SWITCH_FUNC;
+	cmd.resp_type = MMC_RSP_R1;
+	cmd.cmdarg = (mode << 31) | 0xffffff;
+	cmd.cmdarg &= ~(0xf << (group * 4));
+	cmd.cmdarg |= value << (group * 4);
+
+esdhc_send_cmd:
+	/* Send the command */
+	esdhc_write32(&regs->cmdarg, cmd->cmdarg);
+
+	esdhc_write32(&regs->mixctrl,
+	(esdhc_read32(&regs->mixctrl) & 0xFFFFFF80) | (xfertyp & 0x7F)
+			| (mmc->ddr_mode ? XFERTYP_DDREN : 0));
+	esdhc_write32(&regs->xfertyp, xfertyp & 0xFFFF0000);
+
+
+	/* Wait for the command to complete */
+	while (!(esdhc_read32(&regs->irqstat) & (IRQSTAT_CC | IRQSTAT_CTOE)))
+		;
+
+ps:
+
+log
+---------
+mn:[sd_change_freq] mmc->rca=1
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x371a0000
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x333a0011
+#mn:[sd_change_freq] SD_VERSION_2
+#mn:[sd_change_freq] SD_VERSION_3
+#mn:[sd_change_freq]mmc->card_caps=0x4,after |= MMC_MODE_4BIT
+#mn[sd_switch] mode=0x0, cmd.cmdarg=0xfffff1
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x63a0011
+#mn[sd_switch] mode=0x1, cmd.cmdarg=0x80fffff1
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x63a0011
+#mn[sd_change_freq] after sd_switch
+#mn:[sd_change_freq]mmc->card_caps |= MMC_MODE_HS;
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x371a0000
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x61a0000
+#mn[mmc_set_clock]:1. clock=50000000
+#mn[mmc_set_clock]:2. clock=50000000
+
+============================

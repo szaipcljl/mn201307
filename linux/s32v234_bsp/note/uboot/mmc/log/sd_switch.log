@@ -1,0 +1,19 @@
+
+
+#mn:[sd_change_freq] mmc->rca=1
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x371a0000
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x333a0011
+#mn:[sd_change_freq] SD_VERSION_2
+#mn:[sd_change_freq] SD_VERSION_3
+#mn:[sd_change_freq]mmc->card_caps=0x4,after |= MMC_MODE_4BIT
+#mn[sd_switch]
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x63a0011
+#mn[sd_switch]
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x63a0011
+#mn[sd_change_freq] after sd_switch

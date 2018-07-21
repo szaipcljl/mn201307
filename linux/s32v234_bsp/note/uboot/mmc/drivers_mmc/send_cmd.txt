@@ -67,6 +67,16 @@ to 1 enables interrupt generation.
 			| (mmc->ddr_mode ? XFERTYP_DDREN : 0));
 	esdhc_write32(&regs->xfertyp, xfertyp & 0xFFFF0000);
 
+log:load image
+--------------
+#mn:[find_mmc_device]
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x101a0000
+#mn[esdhc_setup_data]
+#mn: [esdhc_setup_data] set dsaddr
+#mn:[esdhc_send_cmd]mmc->ddr_mode=0, xfertyp=0x123a0037
+#mn:[disk_read]
+#mn:[mmc_bread]
+//xfertyp & 0xFFFF0000: 0x123a0000
 
 ps:
 49.3.3 Command Argument (uSDHC_CMD_ARG)
@@ -205,3 +215,9 @@ check_and_invalidate_dcache_range [fsl_esdhc.c]
 	|-> __asm_flush_dcache_range(start, stop) [arch/arm/cpu/armv8/cache.S]
 		// Invalidates range in all levels of D-cache/unified cache
 		// clean & invalidate data cache in the range
+
+=====================================
+49.3.17 Host Controller Capabilities (uSDHC_HOST_CTRL_CAP)
+
+
+HSS: bit[21] high speed support
