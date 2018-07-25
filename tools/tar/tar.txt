@@ -1,0 +1,4 @@
+
+
+tar -czf Image.tar.gz Image
+tar -zxvf Image.tar.gz

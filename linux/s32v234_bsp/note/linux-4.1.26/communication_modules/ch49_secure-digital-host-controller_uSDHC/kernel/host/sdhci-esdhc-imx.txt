@@ -1,0 +1,98 @@
+Freescale eSDHC i.MX controller driver for the platform bus.
+
+
+struct
+======
+struct sdhci_pltfm_host *pltfm_host;
+struct sdhci_host *host;
+struct esdhc_platform_data - platform data for esdhc on i.MX
+struct pltfm_imx_data *imx_data;
+
+
+static struct sdhci_ops sdhci_esdhc_ops = {
+
+sdhci-exdhc-imx.c
+=================
+module_platform_driver(sdhci_esdhc_imx_driver);
+
+sdhci_esdhc_imx_probe
+=====================
+
+(1)
+	host = sdhci_pltfm_init(pdev, &sdhci_esdhc_imx_pdata, 0); //[sdhci-pltfm.c]
+	(a)
+		platform_get_resource
+
+	(b) sdhci_alloc_host [sdhci.c]
+	(c) host->hw_name/ops/quirks/quirks2/irq
+        init host struct using platform_device struct and sdhci_pltfm_data
+		struct's members.
+
+	(d) init host->ioaddr 
+		//request region and ioremap
+		request_mem_region(iomem->start, resource_size(iomem),
+				mmc_hostname(host->mmc))
+
+		host->ioaddr = ioremap(iomem->start, resource_size(iomem));
+
+	(e)
+		host->ops->platform_init(host);
+
+	(f) platform_set_drvdata(pdev, host);
+
+(2)
+	pltfm_host = sdhci_priv(host);
+	//save host pointer to  host's private member
+
+(3) struct pltfm_imx_data *imx_data;
+	imx_data = devm_kzalloc(&pdev->dev, sizeof(*imx_data), GFP_KERNEL);
+
+	pltfm_host->priv = imx_data;
+
+(4)  init pltfm_imx_data struct
+	(a)
+	imx_data->socdata 
+	(b) clk
+	imx_data->clk_ipg
+	imx_data->clk_ahb
+	imx_data->clk_per
+
+	pltfm_host->clk = imx_data->clk_per;
+	pltfm_host->clock = clk_get_rate(pltfm_host->clk);
+
+	clk_prepare_enable(imx_data->clk_per);
+	clk_prepare_enable(imx_data->clk_ipg);
+	clk_prepare_enable(imx_data->clk_ahb);
+
+	(c) pinctrl
+	imx_data->pinctrl = devm_pinctrl_get(&pdev->dev);
+	imx_data->pins_default = pinctrl_lookup_state(imx_data->pinctrl,
+						PINCTRL_STATE_DEFAULT);
+(5) init pltfm_imx_data struct's quirks
+
+(6)  set tuning 
+
+(7) board data
+	boarddata = &imx_data->boarddata;
+	sdhci_esdhc_imx_probe_dt(pdev, host, boarddata)
+
+(8)
+	/* write_protect */
+	err = mmc_gpio_request_ro(host->mmc, boarddata->wp_gpio); [core/slot-gpio.c]
+
+(9)
+	/* card_detect */
+
+(10) init host->mmc->caps
+(11) init host->quirks2
+
+(12) 
+	err = sdhci_add_host(host); [sdhci.c]
+(13)
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_set_autosuspend_delay(&pdev->dev, 50);
+	pm_runtime_use_autosuspend(&pdev->dev);
+	pm_suspend_ignore_children(&pdev->dev, 1);
+	pm_runtime_enable(&pdev->dev);
+
+

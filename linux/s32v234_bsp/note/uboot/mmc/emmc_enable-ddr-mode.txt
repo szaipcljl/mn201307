@@ -1,0 +1,64 @@
+
+
+
+/* emmc config*/
+#define CONFIG_SYS_FSL_ESDHC_HAS_DDR_MODE
+
+disable ddr mode
+----------------
+(a) copy debug Image
+reading Image
+7177056 bytes read in 392 ms (17.5 MiB/s)
+reading rda600.dtb
+23347 bytes read in 15 ms (1.5 MiB/s)
+
+(b) copy release Image
+reading Image
+4386672 bytes read in 216 ms (19.4 MiB/s)
+reading rda600.dtb
+23347 bytes read in 10 ms (2.2 MiB/s)
+
+enable ddr mode
+---------------
+copy kenrel image alignment section could be 40MiB/s
+(a) copy debug Image:
+reading Image
+7177056 bytes read in 191 ms (35.8 MiB/s)
+reading rda600.dtb
+23347 bytes read in 13 ms (1.7 MiB/s)
+
+(b) copy release Image:
+reading Image
+4386672 bytes read in 128 ms (32.7 MiB/s)
+reading rda600.dtb
+23347 bytes read in 13 ms (1.7 MiB/s)
+
+measure time:
+-------------
+chris@iceberg:~/debug/ww30$ sudo grabserial -d /dev/ttyUSB0 -t -m "^Starting
+kernel*" | tee uboot-ddr-mode-release-kernel.log
+[0.000000 0.000000] CPU:   NXP S32V234 V2.0 at 1000 MHz
+[0.003617 0.003617] Reset cause: unknown reset
+[0.005534 0.001917] Board: rda600
+[0.007677 0.002143] DRAM:  2 GiB
+[0.050187 0.042510] All (4) cores are up.
+[0.057641 0.007454] MMC:   FSL_SDHC: 0
+[0.058201 0.000560] Using default environment
+[0.059263 0.001062]
+[0.072173 0.012910] In:    serial
+[0.074768 0.002595] Out:   serial
+[0.075712 0.000944] Err:   serial
+[0.135727 0.060015] reading cse.bin
+[0.145388 0.009661] 17408 bytes read
+[0.152537 0.007149] Hit any key to stop autoboot:  0
+[0.156248 0.003711] reading Image
+[0.279092 0.122844] 4386672 bytes read in 124 ms (33.7 MiB/s)
+[0.284934 0.005842] reading rda600.dtb
+[0.291872 0.006938] 23347 bytes read in 8 ms (2.8 MiB/s)
+[0.295889 0.004017] ## Flattened Device Tree blob at 82000000
+[0.299940 0.004051]    Booting using the fdt blob at 0x82000000
+[0.303742 0.003802]    reserving fdt memory region: addr=80000000 size=10000
+[0.308368 0.004626]    Loading Device Tree to 000000009fff7000, end 000000009ffffb32 ... OK
+[0.367284 0.058916]
+[0.367356 0.000072] Starting kernel ...
+
