@@ -1,0 +1,48 @@
+uboot 无法通过 nfs 启动 Ubuntu 18.04 内的根文件目录
+
+Ubuntu 18.04 lts nfs issue：
+VFS: Unable to mount root fs via NFS, trying floppy.
+
+Ubuntu 17.10 之后 nfs 默认就只支持协议3和协议4，但是 uboot 默认启动的是协议2，
+若想要求 nfs 支持协议2，在/etc/default/nfs-kernel-server末尾加一句：
+RPCNFSDOPTS="--nfs-version 2,3,4 --debug --syslog"，重启 nfs 。
+
+Tips. 当然也有人说可以在 uboot 的bootargs启动参数后面加nfsvers = 3，让uboot
+强制按照协议3执行，不过可能是我的 uboot 版本太垃圾，不支持协议3，所以这个办
+法不是很好使。
+
+参考：https://askubuntu.com/questions/974696/how-can-i-make-the-nfs-server-support-protocol-version-2-in-ubuntu-17-10
+
+How can I make the nfs server support protocol version 2 in Ubuntu 17.10?
+You need to modify /etc/default/nfs-kernel-server to have these lines:
+
+RPCNFSDOPTS="--nfs-version 2,3,4 --debug --syslog"
+# To confirm above mods are in effect after service restart use
+#     cat /run/sysconfig/nfs-utils
+#  or
+#    service nfs-kernel-server status
+#
+
+and restart the service
+
+service nfs-kernel-server restart
+
+take care that after service restart you may need to re-start shares
+
+zfs share -a
+
+Finally confirm that protocol 2 is being supported (tcp and udp too if necessary)
+
+rpcinfo -p servername | fgrep nfs
+
+You should see this
+
+100003    2   tcp   2049  nfs
+100003    3   tcp   2049  nfs
+100003    4   tcp   2049  nfs
+100003    2   udp   2049  nfs
+100003    3   udp   2049  nfs
+
+
+------------------------
+rootfs: copy from server via samba, you need copy tar.gz pakage
