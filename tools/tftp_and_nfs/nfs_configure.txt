@@ -11,12 +11,15 @@ sudo apt-get install nfs-kernel-server
 sudo vi /etc/exports
 
 添加下面一行: 
-/rootfs *(rw,sync,no_root_squash)
+# /rootfs *(rw,sync,no_root_squash)
 /tftpboot/rfs	*(insecure,rw,sync,no_root_squash,no_subtree_check)
 
 (3)create shared folder /rootfs
-sudo mkdir /rootfs
-sudo chmod 777 /rootfs
+#sudo mkdir /rootfs
+#sudo chmod 777 /rootfs
+
+sudo mkdir /tftpboot/rfs
+sudo chmod 777 /tftpboot/rfs
 
 (4)restart nfs service
 sudo /etc/init.d/nfs-kernel-server restart
