@@ -1,0 +1,13 @@
+diff --git a/make.inc b/make.inc
+index f33ff28..e544aa5 100644
+--- a/make.inc
++++ b/make.inc
+@@ -658,7 +658,7 @@ ifeq ($(CONFIG_AMBARELLA_ROOTFS_EXT3), y)
+ build_ext3: PRIVATE_FS_TYPE:=EXT3
+ build_ext3: build_fsimage_common
+ 	# Create a sparse image block
+-	@dd if=/dev/zero of=$(ROOTFS_OUT_DIR)/rootfs.ext3 seek=524288 count=0 bs=1k
++	@dd if=/dev/zero of=$(ROOTFS_OUT_DIR)/rootfs.ext3 seek=1048576 count=0 bs=1k
+ 	@$(ROOTFS_DIR)/bin/mkfs.ext3 -F -i 4096 $(ROOTFS_OUT_DIR)/rootfs.ext3 -d $(FAKEROOT_DIR)
+ 
+ build_fsimage: build_ext3

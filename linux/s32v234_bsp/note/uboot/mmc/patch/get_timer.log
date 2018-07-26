@@ -1,0 +1,19 @@
+
+
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+###mn[esdhc_send_cmd]:wait until all of the blocks are transferd: 1 ms
+###mn[esdhc_send_cmd]:3072 bytes read in 6 ms (500 KiB/s)
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+###mn[esdhc_send_cmd]:wait until all of the blocks are transferd: 359 ms
+###mn[esdhc_send_cmd]:4337152 bytes read in 365 ms (11.3 MiB/s)
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+###mn[esdhc_send_cmd]:wait until all of the blocks are transferd: 1 ms
+###mn[esdhc_send_cmd]:512 bytes read in 6 ms (83 KiB/s)
+4337200 bytes read in 448 ms (9.2 MiB/s)
+

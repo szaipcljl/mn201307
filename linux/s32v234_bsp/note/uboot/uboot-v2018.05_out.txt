@@ -1,0 +1,1005 @@
+s32v234evb/bootloader/u-boot/
+├── arch
+│   └── arm
+│       ├── cpu
+│       │   ├── armv8
+│       │   │   ├── built-in.o
+│       │   │   ├── cache.o
+│       │   │   ├── cache_v8.o
+│       │   │   ├── cache_v8.su
+│       │   │   ├── cpu-dt.o
+│       │   │   ├── cpu-dt.su
+│       │   │   ├── cpu.o
+│       │   │   ├── cpu.su
+│       │   │   ├── exceptions.o
+│       │   │   ├── fwcall.o
+│       │   │   ├── fwcall.su
+│       │   │   ├── generic_timer.o
+│       │   │   ├── generic_timer.su
+│       │   │   ├── s32v234
+│       │   │   │   ├── built-in.o
+│       │   │   │   ├── cpu.o
+│       │   │   │   ├── cpu.su
+│       │   │   │   ├── generic.o
+│       │   │   │   └── generic.su
+│       │   │   ├── start.o
+│       │   │   ├── tlb.o
+│       │   │   └── transition.o
+│       │   └── built-in.o
+│       ├── lib
+│       │   ├── asm-offsets.s
+│       │   ├── asm-offsets.su
+│       │   ├── bootm-fdt.o
+│       │   ├── bootm-fdt.su
+│       │   ├── bootm.o
+│       │   ├── bootm.su
+│       │   ├── built-in.o
+│       │   ├── cache.o
+│       │   ├── cache.su
+│       │   ├── crt0_64.o
+│       │   ├── crt0_aarch64_efi.o
+│       │   ├── gic_64.o
+│       │   ├── image.o
+│       │   ├── image.su
+│       │   ├── interrupts_64.o
+│       │   ├── interrupts_64.su
+│       │   ├── lib.a
+│       │   ├── psci-dt.o
+│       │   ├── psci-dt.su
+│       │   ├── reloc_aarch64_efi.o
+│       │   ├── reloc_aarch64_efi.su
+│       │   ├── relocate_64.o
+│       │   ├── reset.o
+│       │   ├── reset.su
+│       │   ├── sections.o
+│       │   ├── sections.su
+│       │   ├── setjmp_aarch64.o
+│       │   ├── stack.o
+│       │   ├── stack.su
+│       │   ├── zimage.o
+│       │   └── zimage.su
+│       └── mach-imx
+├── board
+│   └── freescale
+│       ├── common
+│       │   └── built-in.o
+│       └── s32v234evb
+│           ├── built-in.o
+│           ├── clock.o
+│           ├── clock.su
+│           ├── lpddr2.o
+│           ├── lpddr2.su
+│           ├── s32v234evb.o
+│           └── s32v234evb.su
+├── cmd
+│   ├── bdinfo.o
+│   ├── bdinfo.su
+│   ├── blk_common.o
+│   ├── blk_common.su
+│   ├── bootefi.o
+│   ├── bootefi.su
+│   ├── booti.o
+│   ├── booti.su
+│   ├── bootm.o
+│   ├── bootm.su
+│   ├── boot.o
+│   ├── boot.su
+│   ├── bootz.o
+│   ├── bootz.su
+│   ├── built-in.o
+│   ├── cache.o
+│   ├── cache.su
+│   ├── console.o
+│   ├── console.su
+│   ├── echo.o
+│   ├── echo.su
+│   ├── elf.o
+│   ├── elf.su
+│   ├── exit.o
+│   ├── exit.su
+│   ├── ext2.o
+│   ├── ext2.su
+│   ├── ext4.o
+│   ├── ext4.su
+│   ├── fat.o
+│   ├── fat.su
+│   ├── fdt.o
+│   ├── fdt.su
+│   ├── flash.o
+│   ├── flash.su
+│   ├── fs.o
+│   ├── fs.su
+│   ├── help.o
+│   ├── help.su
+│   ├── itest.o
+│   ├── itest.su
+│   ├── load.o
+│   ├── load.su
+│   ├── lzmadec.o
+│   ├── lzmadec.su
+│   ├── mem.o
+│   ├── mem.su
+│   ├── mii.o
+│   ├── mii.su
+│   ├── misc.o
+│   ├── misc.su
+│   ├── mmc.o
+│   ├── mmc.su
+│   ├── net.o
+│   ├── net.su
+│   ├── nvedit.o
+│   ├── nvedit.su
+│   ├── part.o
+│   ├── part.su
+│   ├── pcmcia.o
+│   ├── pcmcia.su
+│   ├── pxe.o
+│   ├── pxe.su
+│   ├── setexpr.o
+│   ├── setexpr.su
+│   ├── source.o
+│   ├── source.su
+│   ├── test.o
+│   ├── test.su
+│   ├── unzip.o
+│   ├── unzip.su
+│   ├── version.o
+│   ├── version.su
+│   ├── ximg.o
+│   └── ximg.su
+├── common
+│   ├── autoboot.o
+│   ├── autoboot.su
+│   ├── board_f.o
+│   ├── board_f.su
+│   ├── board_info.o
+│   ├── board_info.su
+│   ├── board_r.o
+│   ├── board_r.su
+│   ├── bootm.o
+│   ├── bootm_os.o
+│   ├── bootm_os.su
+│   ├── bootm.su
+│   ├── built-in.o
+│   ├── cli_hush.o
+│   ├── cli_hush.su
+│   ├── cli.o
+│   ├── cli_readline.o
+│   ├── cli_readline.su
+│   ├── cli_simple.o
+│   ├── cli_simple.su
+│   ├── cli.su
+│   ├── command.o
+│   ├── command.su
+│   ├── console.o
+│   ├── console.su
+│   ├── dlmalloc.o
+│   ├── dlmalloc.su
+│   ├── exports.o
+│   ├── exports.su
+│   ├── fdt_support.o
+│   ├── fdt_support.su
+│   ├── hash.o
+│   ├── hash.su
+│   ├── image-fdt.o
+│   ├── image-fdt.su
+│   ├── image.o
+│   ├── image.su
+│   ├── init
+│   │   ├── board_init.o
+│   │   ├── board_init.su
+│   │   └── built-in.o
+│   ├── main.o
+│   ├── main.su
+│   ├── malloc_simple.o
+│   ├── malloc_simple.su
+│   ├── memsize.o
+│   ├── memsize.su
+│   ├── menu.o
+│   ├── menu.su
+│   ├── miiphyutil.o
+│   ├── miiphyutil.su
+│   ├── splash.o
+│   ├── splash.su
+│   ├── s_record.o
+│   ├── s_record.su
+│   ├── stdio.o
+│   ├── stdio.su
+│   ├── xyzModem.o
+│   └── xyzModem.su
+├── disk
+│   ├── built-in.o
+│   ├── part_dos.o
+│   ├── part_dos.su
+│   ├── part_efi.o
+│   ├── part_efi.su
+│   ├── part_iso.o
+│   ├── part_iso.su
+│   ├── part.o
+│   └── part.su
+├── drivers
+│   ├── adc
+│   │   └── built-in.o
+│   ├── ata
+│   │   └── built-in.o
+│   ├── block
+│   │   ├── blk_legacy.o
+│   │   ├── blk_legacy.su
+│   │   └── built-in.o
+│   ├── built-in.o
+│   ├── core
+│   │   ├── built-in.o
+│   │   ├── device.o
+│   │   ├── device-remove.o
+│   │   ├── device-remove.su
+│   │   ├── device.su
+│   │   ├── dump.o
+│   │   ├── dump.su
+│   │   ├── fdtaddr.o
+│   │   ├── fdtaddr.su
+│   │   ├── lists.o
+│   │   ├── lists.su
+│   │   ├── root.o
+│   │   ├── root.su
+│   │   ├── uclass.o
+│   │   ├── uclass.su
+│   │   ├── util.o
+│   │   └── util.su
+│   ├── crypto
+│   │   ├── built-in.o
+│   │   ├── fsl
+│   │   │   ├── built-in.o
+│   │   │   ├── sec.o
+│   │   │   └── sec.su
+│   │   └── rsa_mod_exp
+│   │       └── built-in.o
+│   ├── dfu
+│   │   └── built-in.o
+│   ├── dma
+│   │   └── built-in.o
+│   ├── firmware
+│   │   └── built-in.o
+│   ├── gpio
+│   │   └── built-in.o
+│   ├── i2c
+│   │   └── built-in.o
+│   ├── input
+│   │   ├── built-in.o
+│   │   ├── input.o
+│   │   └── input.su
+│   ├── mailbox
+│   │   └── built-in.o
+│   ├── memory
+│   │   └── built-in.o
+│   ├── misc
+│   │   └── built-in.o
+│   ├── mmc
+│   │   ├── built-in.o
+│   │   ├── fsl_esdhc.o
+│   │   ├── fsl_esdhc.su
+│   │   ├── mmc_legacy.o
+│   │   ├── mmc_legacy.su
+│   │   ├── mmc.o
+│   │   ├── mmc.su
+│   │   ├── mmc_write.o
+│   │   └── mmc_write.su
+│   ├── mtd
+│   │   ├── built-in.o
+│   │   ├── onenand
+│   │   │   └── built-in.o
+│   │   └── spi
+│   │       └── built-in.o
+│   ├── net
+│   │   ├── built-in.o
+│   │   └── phy
+│   │       └── built-in.o
+│   ├── pci
+│   │   └── built-in.o
+│   ├── pcmcia
+│   │   └── built-in.o
+│   ├── phy
+│   │   ├── allwinner
+│   │   │   └── built-in.o
+│   │   └── marvell
+│   │       └── built-in.o
+│   ├── power
+│   │   ├── battery
+│   │   │   └── built-in.o
+│   │   ├── built-in.o
+│   │   ├── domain
+│   │   │   └── built-in.o
+│   │   ├── fuel_gauge
+│   │   │   └── built-in.o
+│   │   ├── mfd
+│   │   │   └── built-in.o
+│   │   ├── pmic
+│   │   │   └── built-in.o
+│   │   └── regulator
+│   │       └── built-in.o
+│   ├── pwm
+│   │   └── built-in.o
+│   ├── reset
+│   │   └── built-in.o
+│   ├── rtc
+│   │   ├── built-in.o
+│   │   ├── date.o
+│   │   └── date.su
+│   ├── scsi
+│   │   └── built-in.o
+│   ├── serial
+│   │   ├── built-in.o
+│   │   ├── serial_linflexuart.o
+│   │   ├── serial_linflexuart.su
+│   │   ├── serial-uclass.o
+│   │   └── serial-uclass.su
+│   ├── soc
+│   │   └── built-in.o
+│   ├── sound
+│   │   └── built-in.o
+│   ├── spi
+│   │   ├── built-in.o
+│   │   ├── spi.o
+│   │   └── spi.su
+│   ├── spmi
+│   │   └── built-in.o
+│   ├── sysreset
+│   │   └── built-in.o
+│   ├── thermal
+│   │   └── built-in.o
+│   ├── tpm
+│   │   └── built-in.o
+│   ├── usb
+│   │   ├── common
+│   │   │   └── built-in.o
+│   │   ├── dwc3
+│   │   │   └── built-in.o
+│   │   ├── emul
+│   │   │   └── built-in.o
+│   │   ├── eth
+│   │   │   └── built-in.o
+│   │   ├── gadget
+│   │   │   ├── built-in.o
+│   │   │   └── udc
+│   │   │       └── built-in.o
+│   │   ├── host
+│   │   │   └── built-in.o
+│   │   ├── musb
+│   │   │   └── built-in.o
+│   │   ├── musb-new
+│   │   │   └── built-in.o
+│   │   ├── phy
+│   │   │   └── built-in.o
+│   │   └── ulpi
+│   │       └── built-in.o
+│   ├── video
+│   │   ├── bridge
+│   │   │   └── built-in.o
+│   │   ├── built-in.o
+│   │   └── sunxi
+│   │       └── built-in.o
+│   └── watchdog
+│       └── built-in.o
+├── env
+│   ├── attr.o
+│   ├── attr.su
+│   ├── built-in.o
+│   ├── callback.o
+│   ├── callback.su
+│   ├── common.o
+│   ├── common.su
+│   ├── env.o
+│   ├── env.su
+│   ├── flags.o
+│   ├── flags.su
+│   ├── mmc.o
+│   └── mmc.su
+├── examples
+│   └── standalone
+│       ├── hello_world
+│       ├── hello_world.bin
+│       ├── hello_world.o
+│       ├── hello_world.srec
+│       ├── hello_world.su
+│       ├── libstubs.o
+│       ├── stubs.o
+│       └── stubs.su
+├── fs
+│   ├── built-in.o
+│   ├── ext4
+│   │   ├── built-in.o
+│   │   ├── dev.o
+│   │   ├── dev.su
+│   │   ├── ext4_common.o
+│   │   ├── ext4_common.su
+│   │   ├── ext4fs.o
+│   │   └── ext4fs.su
+│   ├── fat
+│   │   ├── built-in.o
+│   │   ├── fat.o
+│   │   └── fat.su
+│   ├── fs_internal.o
+│   ├── fs_internal.su
+│   ├── fs.o
+│   └── fs.su
+├── include
+│   ├── asm
+│   │   └── arch -> /home/chris/projects/rda600/bootloader/u-boot/arch/arm/include/asm/arch-s32v234
+│   ├── autoconf.mk
+│   ├── autoconf.mk.dep
+│   ├── config
+│   │   ├── arch
+│   │   │   └── fixup
+│   │   │       └── fdt
+│   │   │           └── memory.h
+│   │   ├── arm
+│   │   │   └── asm
+│   │   │       └── unified.h
+│   │   ├── arm64
+│   │   │   └── support
+│   │   │       └── aarch32.h
+│   │   ├── arm64.h
+│   │   ├── arm.h
+│   │   ├── auto
+│   │   │   └── complete.h
+│   │   ├── autoboot.h
+│   │   ├── auto.conf
+│   │   ├── auto.conf.cmd
+│   │   ├── baudrate.h
+│   │   ├── board
+│   │   │   └── early
+│   │   │       └── init
+│   │   │           └── f.h
+│   │   ├── bootargs.h
+│   │   ├── bootcommand.h
+│   │   ├── bootdelay.h
+│   │   ├── bootp
+│   │   │   ├── bootpath.h
+│   │   │   ├── dns.h
+│   │   │   ├── gateway.h
+│   │   │   ├── hostname.h
+│   │   │   ├── pxe
+│   │   │   │   └── clientarch.h
+│   │   │   ├── pxe.h
+│   │   │   ├── subnetmask.h
+│   │   │   └── vci
+│   │   │       └── string.h
+│   │   ├── bootstage
+│   │   │   ├── record
+│   │   │   │   └── count.h
+│   │   │   └── stash
+│   │   │       ├── addr.h
+│   │   │       └── size.h
+│   │   ├── cc
+│   │   │   └── optimize
+│   │   │       └── for
+│   │   │           └── size.h
+│   │   ├── cmd
+│   │   │   ├── bdi.h
+│   │   │   ├── bootd.h
+│   │   │   ├── bootefi
+│   │   │   │   └── hello
+│   │   │   │       └── compile.h
+│   │   │   ├── bootefi.h
+│   │   │   ├── booti.h
+│   │   │   ├── bootm.h
+│   │   │   ├── bootp.h
+│   │   │   ├── bootz.h
+│   │   │   ├── console.h
+│   │   │   ├── crc32.h
+│   │   │   ├── dhcp.h
+│   │   │   ├── dm.h
+│   │   │   ├── echo.h
+│   │   │   ├── editenv.h
+│   │   │   ├── elf.h
+│   │   │   ├── env
+│   │   │   │   └── exists.h
+│   │   │   ├── exportenv.h
+│   │   │   ├── ext2.h
+│   │   │   ├── ext4.h
+│   │   │   ├── fat.h
+│   │   │   ├── fdt.h
+│   │   │   ├── flash.h
+│   │   │   ├── fs
+│   │   │   │   └── generic.h
+│   │   │   ├── go.h
+│   │   │   ├── imi.h
+│   │   │   ├── importenv.h
+│   │   │   ├── itest.h
+│   │   │   ├── loadb.h
+│   │   │   ├── loads.h
+│   │   │   ├── lzmadec.h
+│   │   │   ├── memory.h
+│   │   │   ├── memtest.h
+│   │   │   ├── mii.h
+│   │   │   ├── misc.h
+│   │   │   ├── net.h
+│   │   │   ├── nfs.h
+│   │   │   ├── part.h
+│   │   │   ├── ping.h
+│   │   │   ├── pxe.h
+│   │   │   ├── run.h
+│   │   │   ├── saveenv.h
+│   │   │   ├── setexpr.h
+│   │   │   ├── source.h
+│   │   │   ├── tftpboot.h
+│   │   │   ├── unzip.h
+│   │   │   └── ximg.h
+│   │   ├── cmdline
+│   │   │   └── editing.h
+│   │   ├── cmdline.h
+│   │   ├── create
+│   │   │   └── arch
+│   │   │       └── symlink.h
+│   │   ├── default
+│   │   │   └── fdt
+│   │   │       └── file.h
+│   │   ├── display
+│   │   │   ├── boardinfo.h
+│   │   │   └── cpuinfo.h
+│   │   ├── distro
+│   │   │   └── defaults.h
+│   │   ├── dm
+│   │   │   ├── dev
+│   │   │   │   └── read
+│   │   │   │       └── inline.h
+│   │   │   ├── device
+│   │   │   │   └── remove.h
+│   │   │   ├── seq
+│   │   │   │   └── alias.h
+│   │   │   ├── serial.h
+│   │   │   ├── stdio.h
+│   │   │   └── warn.h
+│   │   ├── dma
+│   │   │   └── addr
+│   │   │       └── t
+│   │   │           └── 64bit.h
+│   │   ├── dm.h
+│   │   ├── dos
+│   │   │   └── partition.h
+│   │   ├── efi
+│   │   │   ├── loader.h
+│   │   │   ├── partition
+│   │   │   │   └── entries
+│   │   │   │       ├── numbers.h
+│   │   │   │       └── off.h
+│   │   │   └── partition.h
+│   │   ├── env
+│   │   │   ├── is
+│   │   │   │   └── in
+│   │   │   │       └── mmc.h
+│   │   │   └── vars
+│   │   │       └── uboot
+│   │   │           └── config.h
+│   │   ├── expert.h
+│   │   ├── fs
+│   │   │   ├── ext4.h
+│   │   │   ├── fat
+│   │   │   │   └── max
+│   │   │   │       └── clustsize.h
+│   │   │   └── fat.h
+│   │   ├── fsl
+│   │   │   ├── esdhc.h
+│   │   │   └── linflexuart.h
+│   │   ├── generate
+│   │   │   └── smbios
+│   │   │       └── table.h
+│   │   ├── hash.h
+│   │   ├── have
+│   │   │   └── block
+│   │   │       └── device.h
+│   │   ├── hush
+│   │   │   └── parser.h
+│   │   ├── ident
+│   │   │   └── string.h
+│   │   ├── image
+│   │   │   └── format
+│   │   │       └── legacy.h
+│   │   ├── iso
+│   │   │   └── partition.h
+│   │   ├── lib
+│   │   │   └── uuid.h
+│   │   ├── localversion
+│   │   │   └── auto.h
+│   │   ├── localversion.h
+│   │   ├── loglevel.h
+│   │   ├── lzma.h
+│   │   ├── menu.h
+│   │   ├── mkimage
+│   │   │   └── dtc
+│   │   │       └── path.h
+│   │   ├── mmc
+│   │   │   ├── hw
+│   │   │   │   └── partitioning.h
+│   │   │   ├── quirks.h
+│   │   │   ├── verbose.h
+│   │   │   └── write.h
+│   │   ├── mmc.h
+│   │   ├── mtdids
+│   │   │   └── default.h
+│   │   ├── mtdparts
+│   │   │   └── default.h
+│   │   ├── net
+│   │   │   └── tftp
+│   │   │       └── vars.h
+│   │   ├── net.h
+│   │   ├── of
+│   │   │   └── libfdt.h
+│   │   ├── optee
+│   │   │   └── load
+│   │   │       └── addr.h
+│   │   ├── partition
+│   │   │   └── uuids.h
+│   │   ├── partitions.h
+│   │   ├── phys
+│   │   │   └── 64bit.h
+│   │   ├── printf.h
+│   │   ├── regex.h
+│   │   ├── require
+│   │   │   └── serial
+│   │   │       └── console.h
+│   │   ├── serial
+│   │   │   └── present.h
+│   │   ├── smbios
+│   │   │   ├── manufacturer.h
+│   │   │   └── product
+│   │   │       └── name.h
+│   │   ├── spl
+│   │   │   ├── bootstage
+│   │   │   │   └── record
+│   │   │   │       └── count.h
+│   │   │   ├── ldscript.h
+│   │   │   ├── loglevel.h
+│   │   │   ├── serial
+│   │   │   │   └── present.h
+│   │   │   └── sys
+│   │   │       └── malloc
+│   │   │           └── f
+│   │   │               └── len.h
+│   │   ├── sprintf.h
+│   │   ├── static
+│   │   │   └── rela.h
+│   │   ├── strto.h
+│   │   ├── support
+│   │   │   ├── of
+│   │   │   │   └── control.h
+│   │   │   └── raw
+│   │   │       └── initrd.h
+│   │   ├── sys
+│   │   │   ├── arch
+│   │   │   │   └── timer.h
+│   │   │   ├── arch.h
+│   │   │   ├── arm
+│   │   │   │   └── arch.h
+│   │   │   ├── board.h
+│   │   │   ├── cache
+│   │   │   │   └── shift
+│   │   │   │       └── 6.h
+│   │   │   ├── cacheline
+│   │   │   │   └── size.h
+│   │   │   ├── config
+│   │   │   │   └── name.h
+│   │   │   ├── cpu.h
+│   │   │   ├── extra
+│   │   │   │   └── options.h
+│   │   │   ├── fsl
+│   │   │   │   └── erratum
+│   │   │   │       └── esdhc111.h
+│   │   │   ├── hz.h
+│   │   │   ├── longhelp.h
+│   │   │   ├── malloc
+│   │   │   │   ├── clear
+│   │   │   │   │   └── on
+│   │   │   │   │       └── init.h
+│   │   │   │   ├── f
+│   │   │   │   │   └── len.h
+│   │   │   │   └── f.h
+│   │   │   ├── prompt.h
+│   │   │   ├── soc.h
+│   │   │   ├── text
+│   │   │   │   └── base.h
+│   │   │   └── vendor.h
+│   │   ├── target
+│   │   │   └── s32v234evb.h
+│   │   ├── tpl
+│   │   │   └── sys
+│   │   │       └── malloc
+│   │   │           └── f
+│   │   │               └── len.h
+│   │   ├── tristate.conf
+│   │   ├── uboot.release
+│   │   ├── use
+│   │   │   ├── bootargs.h
+│   │   │   └── bootcommand.h
+│   │   └── zynq
+│   │       └── gem
+│   │           └── i2c
+│   │               └── mac
+│   │                   └── offset.h
+│   ├── config.h
+│   └── generated
+│       ├── asm-offsets.h
+│       ├── autoconf.h
+│       ├── generic-asm-offsets.h
+│       ├── timestamp_autogenerated.h
+│       └── version_autogenerated.h
+├── lib
+│   ├── asm-offsets.s
+│   ├── asm-offsets.su
+│   ├── built-in.o
+│   ├── charset.o
+│   ├── charset.su
+│   ├── crc16.o
+│   ├── crc16.su
+│   ├── crc32.o
+│   ├── crc32.su
+│   ├── crc7.o
+│   ├── crc7.su
+│   ├── crc8.o
+│   ├── crc8.su
+│   ├── ctype.o
+│   ├── ctype.su
+│   ├── display_options.o
+│   ├── display_options.su
+│   ├── div64.o
+│   ├── div64.su
+│   ├── efi_driver
+│   │   ├── built-in.o
+│   │   ├── efi_uclass.o
+│   │   └── efi_uclass.su
+│   ├── efi_loader
+│   │   ├── built-in.o
+│   │   ├── efi_bootmgr.o
+│   │   ├── efi_bootmgr.su
+│   │   ├── efi_boottime.o
+│   │   ├── efi_boottime.su
+│   │   ├── efi_console.o
+│   │   ├── efi_console.su
+│   │   ├── efi_crt0.o
+│   │   ├── efi_device_path.o
+│   │   ├── efi_device_path.su
+│   │   ├── efi_device_path_to_text.o
+│   │   ├── efi_device_path_to_text.su
+│   │   ├── efi_device_path_utilities.o
+│   │   ├── efi_device_path_utilities.su
+│   │   ├── efi_disk.o
+│   │   ├── efi_disk.su
+│   │   ├── efi_file.o
+│   │   ├── efi_file.su
+│   │   ├── efi_image_loader.o
+│   │   ├── efi_image_loader.su
+│   │   ├── efi_memory.o
+│   │   ├── efi_memory.su
+│   │   ├── efi_net.o
+│   │   ├── efi_net.su
+│   │   ├── efi_reloc.o
+│   │   ├── efi_reloc.su
+│   │   ├── efi_runtime.o
+│   │   ├── efi_runtime.su
+│   │   ├── efi_smbios.o
+│   │   ├── efi_smbios.su
+│   │   ├── efi_variable.o
+│   │   ├── efi_variable.su
+│   │   ├── efi_watchdog.o
+│   │   ├── efi_watchdog.su
+│   │   ├── helloworld.efi
+│   │   └── helloworld.su
+│   ├── efi_selftest
+│   │   └── built-in.o
+│   ├── errno.o
+│   ├── errno.su
+│   ├── gunzip.o
+│   ├── gunzip.su
+│   ├── hang.o
+│   ├── hang.su
+│   ├── hashtable.o
+│   ├── hashtable.su
+│   ├── hexdump.o
+│   ├── hexdump.su
+│   ├── initcall.o
+│   ├── initcall.su
+│   ├── ldiv.o
+│   ├── ldiv.su
+│   ├── libfdt
+│   │   ├── built-in.o
+│   │   ├── fdt_addresses.o
+│   │   ├── fdt_addresses.su
+│   │   ├── fdt_empty_tree.o
+│   │   ├── fdt_empty_tree.su
+│   │   ├── fdt.o
+│   │   ├── fdt_region.o
+│   │   ├── fdt_region.su
+│   │   ├── fdt_ro.o
+│   │   ├── fdt_ro.su
+│   │   ├── fdt_rw.o
+│   │   ├── fdt_rw.su
+│   │   ├── fdt_strerror.o
+│   │   ├── fdt_strerror.su
+│   │   ├── fdt.su
+│   │   ├── fdt_sw.o
+│   │   ├── fdt_sw.su
+│   │   ├── fdt_wip.o
+│   │   └── fdt_wip.su
+│   ├── linux_compat.o
+│   ├── linux_compat.su
+│   ├── linux_string.o
+│   ├── linux_string.su
+│   ├── list_sort.o
+│   ├── list_sort.su
+│   ├── lmb.o
+│   ├── lmb.su
+│   ├── lzma
+│   │   ├── built-in.o
+│   │   ├── LzmaDec.o
+│   │   ├── LzmaDec.su
+│   │   ├── LzmaTools.o
+│   │   └── LzmaTools.su
+│   ├── membuff.o
+│   ├── membuff.su
+│   ├── net_utils.o
+│   ├── net_utils.su
+│   ├── panic.o
+│   ├── panic.su
+│   ├── qsort.o
+│   ├── qsort.su
+│   ├── rc4.o
+│   ├── rc4.su
+│   ├── slre.o
+│   ├── slre.su
+│   ├── smbios.o
+│   ├── smbios.su
+│   ├── string.o
+│   ├── string.su
+│   ├── strmhz.o
+│   ├── strmhz.su
+│   ├── strto.o
+│   ├── strto.su
+│   ├── tables_csum.o
+│   ├── tables_csum.su
+│   ├── time.o
+│   ├── time.su
+│   ├── uuid.o
+│   ├── uuid.su
+│   ├── vsprintf.o
+│   ├── vsprintf.su
+│   └── zlib
+│       ├── built-in.o
+│       ├── zlib.o
+│       └── zlib.su
+├── Makefile
+├── net
+│   ├── arp.o
+│   ├── arp.su
+│   ├── bootp.o
+│   ├── bootp.su
+│   ├── built-in.o
+│   ├── checksum.o
+│   ├── checksum.su
+│   ├── eth_common.o
+│   ├── eth_common.su
+│   ├── eth_legacy.o
+│   ├── eth_legacy.su
+│   ├── net.o
+│   ├── net.su
+│   ├── nfs.o
+│   ├── nfs.su
+│   ├── ping.o
+│   ├── ping.su
+│   ├── tftp.o
+│   └── tftp.su
+├── scripts
+│   ├── basic
+│   │   └── fixdep
+│   └── kconfig
+│       ├── conf
+│       ├── conf.o
+│       ├── lxdialog
+│       ├── zconf.lex.c
+│       ├── zconf.tab.c
+│       └── zconf.tab.o
+├── source -> /home/chris/projects/rda600/bootloader/u-boot
+├── System.map
+├── test
+│   ├── built-in.o
+│   └── dm
+│       ├── built-in.o
+│       ├── cmd_dm.o
+│       └── cmd_dm.su
+├── tools
+│   ├── aisimage.o
+│   ├── atmelimage.o
+│   ├── common
+│   │   ├── bootm.c
+│   │   ├── bootm.o
+│   │   ├── hash.c
+│   │   ├── hash.o
+│   │   ├── image.c
+│   │   ├── image-fit.c
+│   │   ├── image-fit.o
+│   │   └── image.o
+│   ├── default_image.o
+│   ├── dumpimage
+│   ├── dumpimage.o
+│   ├── fdtgrep
+│   ├── fdtgrep.o
+│   ├── fit_common.o
+│   ├── fit_image.o
+│   ├── gen_eth_addr
+│   ├── gen_ethaddr_crc
+│   ├── gen_ethaddr_crc.o
+│   ├── gpimage-common.o
+│   ├── gpimage.o
+│   ├── image-host.o
+│   ├── imagetool.o
+│   ├── img2srec
+│   ├── imximage.o
+│   ├── kwbimage.o
+│   ├── lib
+│   │   ├── crc32.c
+│   │   ├── crc32.o
+│   │   ├── crc8.c
+│   │   ├── crc8.o
+│   │   ├── fdtdec.c
+│   │   ├── fdtdec_common.c
+│   │   ├── fdtdec_common.o
+│   │   ├── fdtdec.o
+│   │   ├── libfdt
+│   │   │   ├── fdt_region.c
+│   │   │   ├── fdt_region.o
+│   │   │   ├── fdt_ro.c
+│   │   │   └── fdt_ro.o
+│   │   ├── md5.c
+│   │   ├── md5.o
+│   │   ├── rc4.c
+│   │   ├── rc4.o
+│   │   ├── sha1.c
+│   │   ├── sha1.o
+│   │   ├── sha256.c
+│   │   └── sha256.o
+│   ├── libfdt
+│   │   ├── fdt_addresses.o
+│   │   ├── fdt_empty_tree.o
+│   │   ├── fdt.o
+│   │   ├── fdt_overlay.o
+│   │   ├── fdt_rw.o
+│   │   ├── fdt_strerror.o
+│   │   ├── fdt_sw.o
+│   │   └── fdt_wip.o
+│   ├── lpc32xximage.o
+│   ├── mkenvimage
+│   ├── mkenvimage.o
+│   ├── mkimage
+│   ├── mkimage.o
+│   ├── mxsimage.o
+│   ├── omapimage.o
+│   ├── os_support.o
+│   ├── pbl_crc32.o
+│   ├── pblimage.o
+│   ├── proftool
+│   ├── relocate-rela
+│   ├── rkcommon.o
+│   ├── rkimage.o
+│   ├── rksd.o
+│   ├── rkspi.o
+│   ├── socfpgaimage.o
+│   ├── stm32image.o
+│   ├── ublimage.o
+│   ├── vybridimage.o
+│   ├── zynqimage.o
+│   ├── zynqmpbif.o
+│   └── zynqmpimage.o
+├── u-boot
+├── u-boot.bin
+├── u-boot.cfg
+├── u-boot.cfg.configs
+├── u-boot.cfgout
+├── u-boot.elf
+├── u-boot-elf.o
+├── u-boot.imx
+├── u-boot.imx.log
+├── u-boot.lds
+├── u-boot.map
+├── u-boot-nodtb.bin
+├── u-boot.srec
+└── u-boot.sym
+
+226 directories, 776 files

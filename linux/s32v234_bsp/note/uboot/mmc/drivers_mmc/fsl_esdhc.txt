@@ -2,13 +2,17 @@ fsl_esdhc.txt
 
 uboot uSDHC (default) log
 =========================
-SD boot 
+SD boot
 -------
 [0.366925 0.095381] reading Image
 [0.981815 0.614890] 7177056 bytes read in 616 ms (11.1 MiB/s)
 
 emmc boot
 ---------
+reading Image
+7177056 bytes read in 381 ms (18 MiB/s)
+
+//imx6: 35MiB/s
 
 =========================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,8 +24,181 @@ e.MMC full (Default)   3.3V/1.8V      1/4/8       26              26 MB/s
 speed mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+struct
+======
+struct fsl_esdhc *regs;
+struct mmc *mmc;
+
+
+
+
+  +-------->struct fsl_esdhc_cfg
+  |         +-----------------------+
+  |         | u64	esdhc_base      |   struct fsl_esdhc* regs;
+  |         | u32	sdhc_clk        |
+  |         | u8	max_bus_width   |
+  |         | struct mmc_config cfg +----------------+
+  |         +-----------------------+                |
+  |                                                  |
+  |  +---------------------------------------------+ |
+  |  | +-----------------------------------------+ | |
+  |  | |                                         | | |
+  |  | |   +--+   prev    +--+   prev    +--+    | | |
+  |  | +---|  |<----------|  |<----------+  |<---+ | |
+  |  |     |  |   next    |  |   next    |  |      | |
+  |  +---->|  |---------->|  |---------->|  |------+ |
+  |        +--+           +--+           +--+        |
+  |                        ^            mmc_devices  |
+  |                        |                         |
+  |                        |                         |
+  |                        |                         |
+  |                    (c3)|                         |
+  |                        |                         |
+  |                        |                         |
+  |         struct mmc (c1)                          |
+  |         +---------------------------+            |
+  |         | struct list_head link     |   (c2)     v
+  |         | struct mmc_config *cfg    +---------->struct mmc_config
+  |         |                           |           +---------------------+
+  +---------+ void *priv                |           | char *name          |
+      (c2)  |                           |           | struct mmc_ops *ops |
+            |                           |           |                     |
+            |block_dev_desc_t block_dev |           |                     |
+            |                           |           +---------------------+
+            +---------------------------+
+
+
+
+mmc_create:
+	add struct mmc to struct list_head mmc_devices
+    (c1): mmc = calloc(1, sizeof(*mmc));
+    (c2): member init
+		  mmc->block_dev: .if_type, .dev, .removable, .block_read, .block_write,
+		  .block_write, .part_type
+
+    (c3): list_add_tail(&mmc->link, &mmc_devices);
+
+
+
+===================================
+init:
+
+init_fnc_t init_sequence_r[] = {
+	..
+#ifdef CONFIG_GENERIC_MMC
+	initr_mmc,
+#endif
+	...
+};
+
+initr_mmc [common/board_r.c]
+|-> mmc_initialize [drivers/mmc/mmc.c]
+|   |-> INIT_LIST_HEAD (&mmc_devices);
+|   |-> mmc_probe [mmc.c]
+|   	|-> board_mmc_init [arch/arm/cpu/armv8/s32/soc.c]
+|   		|-> detect_boot_interface [soc.c]
+|   		|-> sdhc_setup [soc.c]
+|   			|-> setup_iomux_sdhc [soc.c]
+|   			|-> fsl_esdhc_initialize [fsl_esdhc.c]
+|   				|-> esdhc_reset
+|   				|-> writel(SDHCI_IRQ_EN_BITS, &regs->irqstaten);
+|   				|-> caps = esdhc_read32(&regs->hostcapblt);
+|   				|-> cfg->cfg.ops = &esdhc_ops; //init cfg->cfg
+|   				|   //init .name, .ops, .Voltage, .host_caps,
+|   				|   //.f_min/.f_max/.b_max,
+|   				|-> mmc_create
+|-> do_preinit
+	|-> mmc_start_init(m);
+		|-> mmc_getcd(mmc)
+		|-> board_mmc_power_init
+		|-> err = mmc->cfg->ops->init(mmc);
+		|-> mmc_set_bus_width(mmc, 1);
+		|-> mmc_set_clock(mmc, 1);
+		|-> /* Reset the Card */
+		|   err = mmc_go_idle(mmc);
+		|-> /* Test for SD version 2 */
+		|   err = mmc_send_if_cond(mmc);
+		|-> /* Now try to get the SD card's operating condition */
+		|   err = sd_send_op_cond(mmc);
+		|   mmc->init_in_progress = 1;
+
+---------------------------
+err = mmc->cfg->ops->init(mmc);
+=> esdhc_init
+	|-> /* Reset the entire host controller */
+		esdhc_setbits32(&regs->sysctl, SYSCTL_RSTA);
+	|-> /* Set the initial clock speed */
+		mmc_set_clock(mmc, 400000); 
+	|-> /* Enable all events to be notified */
+		esdhc_write32(&regs->irqstaten, 0xFFFFFFFF);
+	|-> /* Disable the BRR and BWR bits in IRQSTAT */
+		esdhc_clrbits32(&regs->irqstaten, IRQSTATEN_BRR | IRQSTATEN_BWR);
+	|-> /* Put the PROCTL reg back to the default */
+		esdhc_write32(&regs->proctl, PROCTL_INIT);
+	|-> /* Set timout to the maximum value */
+		esdhc_clrsetbits32(&regs->sysctl, SYSCTL_TIMEOUT_MASK, 14 << 16);
+--------------------------
+mmc_set_bus_width [mmc.c]
+|-> mmc_set_ios [mmc.c]
+	|-> mmc->cfg->ops->set_ios(mmc);
+	=> esdhc_set_ios [fsl_esdhc.c]
+		|-> /* Set the clock speed */
+			set_sysctl(mmc, mmc->clock); [fsl_esdhc.c]
+		|-> /* Set the bus width */
+			esdhc_clrbits32(&regs->proctl, PROCTL_DTW_4 | PROCTL_DTW_8);
+			if (mmc->bus_width == 4)
+				esdhc_setbits32(&regs->proctl, PROCTL_DTW_4);
+			else if (mmc->bus_width == 8)
+				esdhc_setbits32(&regs->proctl, PROCTL_DTW_8);
+
+-------------
+mmc_set_clock [mmc.c]
+|-> mmc_set_ios(mmc); [mmc.c]
+	|-> mmc->cfg->ops->set_ios(mmc);
+
+init-log
+--------
+
+All (4) cores are up.
+#mn: [initr_mmc]
+MMC:   #mn:[mmc_initialize]
+#mn:[mmc_probe]
+#mn:[board_mmc_init]
+#mn:[detect_boot_interface]
+#mn:[board_mmc_init] ret != SRC_BMR1_CFG1_QuadSPI
+#mn:[sdhc_setup]
+FSL_SDHC: 0
+
+
+---------------
+#mn[mmc_set_clock]:1. clock=400000 		//err = mmc->cfg->ops->init(mmc);
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=1
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=50000000
+#mn[mmc_set_clock]:2. clock=50000000
+
+============
+(1) base address
+-----------------
+[soc.c]
+struct fsl_esdhc_cfg esdhc_cfg[1] = {
+	{USDHC_BASE_ADDR}, //esdhc_cfg[0].esdhc_base = USDHC_BASE_ADDR
+};
+
+[arch/arm/include/asm/arch-s32/s32v234-regs.h]
+#define AIPS0_BASE_ADDR		(0x40000000UL)
+#define USDHC_BASE_ADDR					(AIPS0_BASE_ADDR + 0x0005D000)
+
+
 
 ============================
+bootcmd=mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcboot; else run netboot; fi; else run netboot; fi
+
+loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}
+-------------
+do_mmc_dev [cmd_mmc.c]
+|-> init_mmc_device [cmd_mmc.c]
 |-> mmc_init
 	|-> mmc_start_init
 		|-> mmc_set_bus_width(mmc, 1);
@@ -29,6 +206,68 @@ speed mode
 	|-> mmc_complete_init [mmc.c]
 		|-> mmc_startup [mmc.c]
 			|-> if (IS_SD(mmc)) {
+
+log
+---
+=> mmc dev ${mmcdev}
+#mn[init_mmc_device]:
+#mn[mmc_set_clock]:1. clock=400000
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=1
+#mn[mmc_set_clock]:2. clock=400000
+#mn[mmc_set_clock]:1. clock=50000000
+#mn[mmc_set_clock]:2. clock=50000000
+switch to partitions #0, OK
+	mmc0 is current device
+
+fatload
+-------
+see fs/fs.txt
+
+read one time:
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+
+=> run loadimage
+#mn:[do_load]
+#mn:[find_mmc_device]
+#mn:[find_mmc_device]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[fs_read]
+#mn:[fat_read_file]
+reading Image
+#mn:[do_fat_read_at]
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+#mn:[disk_read]
+#mn:[mmc_bread]
+#mn:[find_mmc_device]
+#mn:[mmc_set_blocklen], mmc->ddr_mode=0, read_bl_len=512
+4337200 bytes read in 417 ms (9.9 MiB/s)
+
+
 
 =============================
 esdhc_send_cmd
@@ -38,10 +277,10 @@ esdhc_send_cmd
 	 * Note: This is way more than 8 cycles, but 1ms seems to
 	 * resolve timing issues with some cards
 	 */
-	udelay(1000); => udelay(1); 
+	udelay(1000); => udelay(1);
 reading Image
 4121264 bytes read in 347 ms (11.3 MiB/s)
-#mn: [mmc_init][1709] 
+#mn: [mmc_init][1709]
 reading rda600.dtb
 20102 bytes read in 6 ms (3.2 MiB/s)
 
@@ -51,4 +290,14 @@ mmc_send_status
 mmc_go_idle
 sd_send_op_cond
 
-	
+
+===============================
+Commands for MMC/SD/SDIO Cards
+[S32V234_RM2.2.pdf] P2645
+
+u-boot/include/mmc.h
+#define MMC_CMD_GO_IDLE_STATE		0
+#define MMC_CMD_SEND_OP_COND		1
+	...
+
+=======================

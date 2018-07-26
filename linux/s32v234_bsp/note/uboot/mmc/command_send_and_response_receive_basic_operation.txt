@@ -1,0 +1,64 @@
+49.5.1 Command Send and Response Receive Basic Operation
+
+
+//mmc.c
+int mmc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
+
+
+//fsl_esdhc.c
+static const struct mmc_ops esdhc_ops = {
+	.send_cmd	= esdhc_send_cmd,
+	.set_ios	= esdhc_set_ios,
+	.init		= esdhc_init,
+	.getcd		= esdhc_getcd,
+};
+
+
+49.5.2 Card Identification Mode
+request the cards to publish the Relative Card Address (RCA) 
+
+mmc_init
+|-> mmc_start_init
+	|-> sd_send_op_cond: mmc->rca = 0;
+|-> mmc_complete_init
+	|-> mmc_startup: (1) cmd2, cmd3
+
+cmd2
+----
+[mmc.c]
+mmc_startup:
+	struct mmc_cmd cmd;
+	/* Put the Card in Identify Mode */
+	cmd.cmdidx = mmc_host_is_spi(mmc) ? MMC_CMD_SEND_CID :
+		MMC_CMD_ALL_SEND_CID; /* cmd not supported in spi */
+	cmd.resp_type = MMC_RSP_R2;
+	cmd.cmdarg = 0;
+
+	err = mmc_send_cmd(mmc, &cmd, NULL);
+
+	if (err)
+		return err;
+
+	memcpy(mmc->cid, cmd.response, 16);
+
+
+cmd3
+-------
+[mmc.c]
+mmc_startup
+
+	 * For MMC cards, set the Relative Address.
+	 * For SD cards, get the Relatvie Address.
+
+		cmd.cmdidx = SD_CMD_SEND_RELATIVE_ADDR;
+		cmd.cmdarg = mmc->rca << 16;
+		cmd.resp_type = MMC_RSP_R6;
+
+		err = mmc_send_cmd(mmc, &cmd, NULL);
+
+		if (err)
+			return err;
+
+		if (IS_SD(mmc))
+			mmc->rca = (cmd.response[0] >> 16) & 0xffff;
+

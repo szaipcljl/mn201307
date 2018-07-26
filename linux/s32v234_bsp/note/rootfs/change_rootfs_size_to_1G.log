@@ -1,0 +1,35 @@
+
+  Build EXT3 ...
+0+0 records in
+0+0 records out
+0 bytes copied, 0.000190538 s, 0.0 kB/s
+mke2fs 1.42.9 (28-Dec-2013)
+Discarding device blocks: done                            
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+131072 inodes, 131072 blocks
+6553 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=134217728
+4 block groups
+32768 blocks per group, 32768 fragments per group
+32768 inodes per group
+Superblock backups stored on blocks: 
+32768, 98304
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (4096 blocks): done
+
+Copying files into the device: copy_file: Could not allocate block in ext2 filesystem 
+copy_file: Could not allocate block in ext2 filesystem 
+ext2fs_mkdir: Could not allocate block in ext2 filesystem 
+populate_fs: Could not allocate block in ext2 filesystem while making dir "vdk"
+populate_fs: Could not allocate block in ext2 filesystem while adding dir "viv_samples"
+populate_fs: Could not allocate block in ext2 filesystem while adding dir "opt"
+
+Error while populating file system
+/home/chris/projects/rda600/rootfs/make.inc:660: recipe for target 'build_ext3' failed

@@ -1,0 +1,27 @@
+
+
+
+struct
+======
+struct mmc_request 
+
+struct mmc_data
+
+mmc/core/core.c
+===============
+mmc_start_req
+|-> __mmc_start_data_req
+	|-> mmc_start_request
+		|-> host->ops->request(host, mrq);
+
+mmc_wait_for_req //start a request and wait for completion
+|-> __mmc_start_req
+		|-> mmc_start_request
+
+mmc_wait_for_data_req_done
+|-> req failed , retrying
+	host->ops->request(host, mrq);
+
+mc_wait_for_req_done
+|-> req failed , retrying
+	host->ops->request(host, mrq);

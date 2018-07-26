@@ -1,0 +1,97 @@
+adma
+
+
+struct
+======
+
+struct sdhci_adma2_64_desc {
+	__le16	cmd;
+	__le16	len;
+	__le32	addr_lo;
+	__le32	addr_hi;
+}  __packed __aligned(4);
+
+
+
+============
+sdhci.h
+#define ADMA2_TRAN_VALID	0x21
+#define ADMA2_NOP_END_VALID	0x3
+#define ADMA2_END		0x2
+
+=================
+sdhci_adma_write_desc
+---------------------
+
+
+sdhci_adma_mark_end
+-------------------
+
+sdhci_adma_table_pre
+
+sdhci_adma_table_post
+
+==============
+
+sdhci_send_command [sdhci.c]
+(1)
+	sdhci_prepare_data(host, cmd);
+
+SDHCI_USE_ADMA:
+---------------
+	ret = sdhci_adma_table_pre(host, data);
+
+	sdhci_writel(host, host->adma_addr,
+			SDHCI_ADMA_ADDRESS);
+	/*
+	 * Always adjust the DMA selection as some controllers
+	 * (e.g. JMicron) can't do PIO properly when the selection
+	 * is ADMA.
+	 */
+		ctrl |= SDHCI_CTRL_ADMA32;
+		sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+
+	sdhci_set_transfer_irqs(host);
+
+	/* Set the DMA boundary value and block size */
+	sdhci_writew(host, SDHCI_MAKE_BLKSZ(SDHCI_DEFAULT_BOUNDARY_ARG,
+		data->blksz), SDHCI_BLOCK_SIZE);
+	sdhci_writew(host, data->blocks, SDHCI_BLOCK_COUNT);
+
+(2)
+	sdhci_writel(host, cmd->arg, SDHCI_ARGUMENT);
+
+[sdhci.h]
+#define SDHCI_ARGUMENT		0x08
+ps:
+49.3.3 Command Argument (uSDHC_CMD_ARG)
+Address: 0h base + 8h offset = 8h
+
+
+(3)
+	sdhci_set_transfer_mode(host, cmd);
+
+=>
+	sdhci_writew(host, mode, SDHCI_TRANSFER_MODE);
+
+[sdhci.h]
+#define SDHCI_TRANSFER_MODE	0x0C
+
+ps:
+49.3.4 Command Transfer Type (uSDHC_CMD_XFR_TYP)
+Address: 0h base + Ch offset = Ch
+
+(4)
+	sdhci_writew(host, SDHCI_MAKE_CMD(cmd->opcode, flags), SDHCI_COMMAND);
+
+[sdhci.h]
+#define SDHCI_COMMAND		0x0E
+ps: 
+49.3.6 Command Response1 (uSDHC_CMD_RSP1)
+Address: 0h base + 14h offset = 14h
+
+=============================
+.request //struct mmc_host_ops sdhci_ops
+|-> sdhci_request [sdhci_request.c]
+	|-> sdhci_send_command [sdhci.c]
+

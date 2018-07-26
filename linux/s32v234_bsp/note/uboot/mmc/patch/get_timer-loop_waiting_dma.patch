@@ -1,0 +1,30 @@
+diff --git a/drivers/mmc/fsl_esdhc.c b/drivers/mmc/fsl_esdhc.c
+index 1968389..184eb2c 100644
+--- a/drivers/mmc/fsl_esdhc.c
++++ b/drivers/mmc/fsl_esdhc.c
+@@ -311,6 +311,7 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
+ 	uint	irqstat;
+ 	loff_t len_read;
+ 	unsigned long time;
++	unsigned long time1;
+ 	struct fsl_esdhc_cfg *cfg = mmc->priv;
+ 	volatile struct fsl_esdhc *regs = (struct fsl_esdhc *)cfg->esdhc_base;
+ 
+@@ -431,6 +432,7 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
+ #ifdef CONFIG_SYS_FSL_ESDHC_USE_PIO
+ 		esdhc_pio_read_write(mmc, data);
+ #else
++		time1 = get_timer(0);
+ 		do {
+ 			irqstat = esdhc_read32(&regs->irqstat);
+ #ifdef CONFIG_SAC58R
+@@ -451,6 +453,9 @@ esdhc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
+ 			}
+ 		} while ((irqstat & DATA_COMPLETE) != DATA_COMPLETE);
+ 
++		time1 = get_timer(time1);
++		printf("###mn[%s]:wait until all of the blocks are transferd: %lu ms\n", __func__, time1);
++
+ 		len_read = data->blocks * data->blocksize;
+ 		time = get_timer(time);
+ 		printf("###mn[%s]:%llu bytes read in %lu ms", __func__, len_read, time);

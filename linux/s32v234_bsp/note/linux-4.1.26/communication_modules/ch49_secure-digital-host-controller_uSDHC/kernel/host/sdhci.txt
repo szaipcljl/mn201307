@@ -1,0 +1,57 @@
+
+drivers/mmc/host:
+├── sdhci-esdhc-imx.c
+├── sdhci.c
+└── sdhci-pltfm.c
+
+
+struct
+======
+struct sdhci_host 
+
+linux/drivers/mmc/host/sdhci.c - Secure Digital Host Controller Interface driver
+============
+sdhci_esdhc_imx_probe [sdhci-esdhc-imx.c]// static
+|-> sdhci_add_host //EXPORT_SYMBOL_GPL
+	|-> sdhci_init //static
+		|-> sdhci_do_reset //static
+
+sdhci_do_reset
+(1) check if there is no card inserted by host->quirks, and get status of the
+uSDHC from Preset State(uSDHC_PRES_STATE) register and check the CINST(card
+		inserted) bit.
+
+	if (host->quirks & SDHCI_QUIRK_NO_CARD_NO_RESET) {
+		if (!(sdhci_readl(host, SDHCI_PRESENT_STATE) &
+			SDHCI_CARD_PRESENT))
+			return;
+	}
+
+
+[sdhci.h]
+/* Controller doesn't like to be reset when there is no card inserted. */
+#define SDHCI_QUIRK_NO_CARD_NO_RESET			(1<<2)
+#define SDHCI_PRESENT_STATE	0x24
+#define  SDHCI_CARD_PRESENT	0x00010000
+
+ps:
+49.3.10 Present State (uSDHC_PRES_STATE)
+Address: 0h base + 24h offset = 24h
+
+(2)
+	host->ops->reset(host, mask);
+(3)
+
+	host->ops->enable_dma(host);
+
+===========================
+
+sdhci_send_command
+|-> sdhci_prepare_data
+
+sdhci_request
+sdhci_finish_data
+dhci_finish_command
+sdhci_execute_tuning
+
+=================

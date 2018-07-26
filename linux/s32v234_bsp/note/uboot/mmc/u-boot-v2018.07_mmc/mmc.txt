@@ -1,0 +1,29 @@
+
+=========
+[mmc.c]
+static int mmc_go_idle(struct mmc *mmc)
+{
+	struct mmc_cmd cmd;
+	int err;
+
+	udelay(1000);
+
+	cmd.cmdidx = MMC_CMD_GO_IDLE_STATE;
+	cmd.cmdarg = 0;
+	cmd.resp_type = MMC_RSP_NONE;
+
+	err = mmc_send_cmd(mmc, &cmd, NULL);
+
+	if (err)
+		return err;
+
+	udelay(2000);
+
+	return 0;
+}
+
+
+//CMD0 [mmc.h]
+#define MMC_CMD_GO_IDLE_STATE		0
+
+---------------
