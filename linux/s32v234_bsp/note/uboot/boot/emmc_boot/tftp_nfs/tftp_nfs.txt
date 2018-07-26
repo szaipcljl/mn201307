@@ -1,25 +1,23 @@
 tftp and nfs
 
-======================
-turn off the firewall
-sudo ufw disable
-
 tftp boot: load kernel image and dtb with u-boot via tftp
 ==============================================================
-1. host pc: 
-	disable host WLAN
 
-2. (1) VMware bridge mode,
+1.
+   (1) add a network adapter(total you need two adapter) in virtualbox, bridged adapter
+   (2)
 	Edit connections
-	add a "Ethernet connection 1"
+	add a "Ethernet connection 2"
 	edit 
 	IPv4 Settings: Method Manual
 	add addresses:
 		192.168.2.5
 
-	(2) setup tftp server
+	(3) "System Settings" -> "Network": Wired which ip is your desired need to turn on, others turn off.
 
-3. uboot command line
+	(4) setup tftp server
+
+2. uboot command line
 	(1) set up and ping
 	=> setenv ipaddr 192.168.2.1
 	=> setenv serverip 192.168.2.5
