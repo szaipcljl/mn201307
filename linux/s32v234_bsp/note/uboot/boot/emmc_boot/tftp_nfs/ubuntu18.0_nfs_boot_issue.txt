@@ -46,3 +46,21 @@ You should see this
 
 ------------------------
 rootfs: copy from server via samba, you need copy tar.gz pakage
+
+========================
+If you upgrade to Ubuntu 18.04, you will find that there is no RPCNFSDOPTS 
+variable anymore in /etc/default/nfs-kernel-server.
+
+$ sudo cat /proc/fs/nfsd/versions
+-2 +3 +4 +4.1 +4.2
+
+I had to hijack RPCNFSDCOUNT to get it to use NFS v2:
+
+RPCNFSDCOUNT="--nfs-version 2 8"
+
+Proof that it worked:
+
+$ service nfs-kernel-server restart
+$ cat /proc/fs/nfsd/versions
++2 +3 +4 +4.1 +4.2
+
