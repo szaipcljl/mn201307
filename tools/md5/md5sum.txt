@@ -1,0 +1,4 @@
+root@s32v234evb:~# md5sum /tmp/fakeroot.tar.gz 
+0926a287f60e5a67ed0ef8c2388854fa  /tmp/fakeroot.tar.gz
+
+md5sum - compute and check MD5 message digest
