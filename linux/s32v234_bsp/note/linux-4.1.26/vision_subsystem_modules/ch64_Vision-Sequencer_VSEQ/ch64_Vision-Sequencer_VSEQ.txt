@@ -1,0 +1,20 @@
+Chapter 64
+Vision Sequencer (VSEQ)
+
+64.3 Introduction
+The Sequencer controls the data flow for the Vision subsystem. Its main purpose is to
+provide data coherency between the different processing steps that are scheduled in a
+pipeline fashion. This processing chain covers:
+  • Camera input data and Video Decoder input data
+  • Various processing steps in the ISP (camera input processing)
+  • Data exchange between the SRAM and the DDR memory and vice versa
+  • Video Encoder
+  • Host CPU and eDMA
+
+The main idea of the processing pipeline is that only a limited set of image lines is stored
+in the SRAM. Once this set of data is stable, they can be processed by the next processing
+step. This line by line processing allows implementing the function with a low buffer
+footprint, as only a subset of the image lines need to be stored. It also allows keeping the
+latency between camera exposure and processing result low because the processing can
+start when the first data arrived from the camera, i.e., before the whole image frame is
+available.
