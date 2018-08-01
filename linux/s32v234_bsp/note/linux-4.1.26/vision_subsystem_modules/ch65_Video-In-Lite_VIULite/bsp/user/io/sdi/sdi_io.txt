@@ -1,0 +1,102 @@
+sdi; Sensor device interface
+
+=================
+bsp/drivers/io/sdi/src/sdi_io.cpp
+
+sdi.hpp: Sensor device interface functionality declaration.
+sdi_io.hpp: Declaration of SDI input/output objects.
+
+===============
+
+sdi_ViuIO::Reserve
+------------------
+(1) VIU_Open
+(2) // update descriptor to get SRAM buffer address
+    mDesc   = mpGraph->ViuDescGet(mDesc.mIdx);
+
+(3)
+    switch(mDesc.mCamType): //switch camera type
+	...
+	case VIU_AR0144:
+		AR0144_Open(mDesc.mIdx);
+		//bsp/drivers/cam_generic/user/src/ar0144_user.cpp
+
+
+call graph
+----------
+sdi_grabber::PreStart [bsp/drivers/io/sdi/src/sdi.cpp]
+|-> sdi_grabber::IOsReserve  [sdi.cpp]
+	|-> mpIOs[i]->Reserve()
+		|-> VIU_Open
+
+	
+
+---------------
+|-> sdi_grabber::Release [sdi.cpp]
+	|-> sdi_grabber::IOsRelease [sdi.cpp]
+		|-> sdi_ViuIO::Release [sdi.cpp]
+			|-> VIU_Close [viulite_user.cpp]
+
+
+
+
+-------------------
+sdi_grabber::PreStart [sdi.cpp]
+|-> sdi_grabber::IOsSetup [sdi.cpp]
+	|-> sdi_ViuIO::Setup [sdi_io.cpp]
+    	|-> // get viu descriptor from graph
+		|	mDesc = mpGraph->ViuDescGet(mDesc.mIdx); // try idx 0 first
+		|-> // reset the receiver
+		|	VIU_DmaStop
+		|	VIU_SwReset
+		|-> switch(mDesc.mCamType) // switch camera type
+		|   case VIU_AR0144:
+		|   //setup VIU receiver RAW,
+		|   buff_addr,txsize,nmb_lines,nmb_pixells,frame_inc,alpha_val,
+		|   pclk_pol, vsync_pol, hsync_pol, endiannessk
+		|-> VIU_Config [viulite_user.cpp]
+		|-> // configure camera registers
+			switch(mDesc.mCamType)
+            case VIU_AR0144:
+				AR0144_RegConfig [cam_generic/user/src/ar0144_user,cpp]
+
+
+sdi_ViuIO::Setup
+|-> VIU_IrqConfig [viulite_user.cpp]
+
+
+sdi_ViuIO::Setup
+|-> VIU_SwReset [viulite_user.cpp]
+
+
+
+
+sdi_grabber::Start
+----------------------------
+sdi_grabber::Start [sdi.cpp]
+|-> sdi_grabber::IOsStart [sdi.cpp]
+	|-> sdi_ViuIO::Start [sdi_io.cpp]
+		|-> switch(mDesc.mCamType) //enable data: switch camera type
+		|	case VIU_AR0144:
+		|-> VIU_Start [viulite_user.cpp]
+		|-> VIU_DmaStart [viulite_user.cpp]
+
+sdi_grabber::Stop
+----------------------------
+sdi_grabber::Stop
+|-> sdi_grabber::IOsStop
+	|-> sdi_ViuIO::Stop [sdi_io.cpp]
+		|-> switch(mDesc.mCamType) //switch camera type
+			case VIU_AR0144:// nothing to be done
+		|-> VIU_DmaStop [viulite_user.cpp]
+		|-> VIU_Stop [viulite_user.cpp]
+
+
+----------------
+
+
+
+
+
+
+

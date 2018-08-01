@@ -1,0 +1,148 @@
+
+
+
+[bsp/drivers/io/sdi/include/sdio_io.hpp] low level class
+=========================================================
+class sdi;
+class sdi_FdmaIO;
+class sdi_grabber;
+
+// Class describing a general input or output object.
+// Virtual class.
+class sdi_io
+{
+	...
+};
+
+
+// Class describing FDMA IO object.
+class sdi_FdmaIO : sdi_io
+{
+	...
+};
+
+
+
+// Class describing H264DEC IO object.
+class sdi_H264DecIO : sdi_io
+{
+	,,,
+};
+
+// Class describing H264ENC IO object.
+class sdi_H264EncIO : sdi_io
+{
+	...
+};
+
+// Class describing JpegDec IO object.
+class sdi_JpegDecIO : sdi_io
+{
+	...
+};
+
+
+// Class describing MipiCsi IO object.
+class sdi_MipiCsiIO : sdi_io
+{
+	...
+};
+
+
+// Class describing VIU IO object.
+class sdi_ViuIO : sdi_io
+{
+	...
+};
+
+
+
+[bsp/include/sdi.hpp]
+==========================
+class sdi;
+class sdi_grabTask;
+class sdi_grabber;
+class sdi_graph;
+
+
+// Class encapsulating sensor setup.
+class sdi_input
+{
+	...
+};
+
+
+// Class describing the processing in ISP/Sequencer vision subsystem.
+class sdi_process
+{
+	...
+};
+
+
+// Structure for grabber setup storage.
+struct sdi_grabberContext
+{
+	...
+};
+
+
+/** Class responsible for grabbing images from sensors through sequencer.
+ *
+ * Runs in separate task (thread). When frame is ready, registered callback
+ * function is executed.
+ */
+class sdi_grabTask//: public OAL_Task
+{
+	...
+};
+
+
+/** Encapsulates frame capture related functionality.
+ *
+ * Interconnects sdi_input (sensor) with sdi_process (data processing setup)
+ * and memory buffer.
+ *
+ * Executes grabbing task.
+ */
+
+class sdi_grabber: SEQ_EventHandlerClass
+{
+	...
+};
+
+
+class sdi_mutex
+{
+	...
+};
+
+
+// sdi_grabber class
+class sdi
+{
+	...
+};
+
+
+[bsp/drivers/io/sdi/include/sdi_graph.hpp]
+==========================================
+ * \file      sdi_graph.hpp
+ * \brief     Graph related objects declarations. Depends on GDT 
+ *            generated metadata.
+
+
+// Class encapsulating Sequencer graph handling.
+class sdi_graph
+{
+	...
+};
+
+
+
+
+
+
+
+
+
+

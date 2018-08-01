@@ -1,0 +1,20 @@
+
+
+==================
+sdi_graph.cpp:
+    Defines Sequencer graph related functionality. Depends 
+    on GDT generated metadata.
+
+
+
+allocate sram buffers
+---------------------
+sdi_grabber::PreStart [sdi.cpp]
+|-> sdi_graph::Finalize [sdi_graph.cpp]
+	|-> // allocate all sram buffers
+		SramBuffersAllocate [bsp/drivers/io/sdi/src/sdi_graph.cpp]
+
+
+SramBuffersAllocate:
+      // set addr to buffer
+      lpCurrBuff->mpBuf = (SEQ_Mem_Ptr_t)( lRes);

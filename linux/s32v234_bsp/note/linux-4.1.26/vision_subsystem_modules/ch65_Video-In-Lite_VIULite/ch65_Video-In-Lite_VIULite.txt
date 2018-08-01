@@ -2,3 +2,68 @@ chapter 65
 Video-On-Lite(VIULite)
 
 	a bridge between external image sensor and system memory
+
+
+65.6.1 Status And Control Register (VIULite_SCR)
+Address: 0h base + 0h offset = 0h
+
+VIULITE_IOCTL_SET_DATA_INTERFACE
+--------------------------------
+13
+ITU_MODE
+
+12–11
+CPP
+
+10–8
+INPUT_WIDTH
+
+VIULITE_IOCTL_SET_DATA_INTERFACE
+---------------------------------
+   6
+PCLK_POL  Pixel clock polarity control bit. pix_clk will be reversed when the bit is set.
+
+   5      Vsync polarity control bit. Vsync will be reversed when the bit is set.
+VSYNC_POL 0 Active high
+          1 Active low
+
+   4
+HSYNC_POL
+
+ 1       Data endian control bit.
+LENDIAN  0 Big endian
+         1 Little endian
+
+------
+
+
+VIULITE_IOCTL_DMA_CONFIG
+------------------------
+27       DMA transfer of current field/frame is busy (write by software, cleared at end of transfer). When DMA_ACT
+DMA_ACT  is cleared, input video data is ignored and not put into FIFO.It should be activated during vertical blanking
+         period
+
+65.6.2 Interrupt Register (VIULite_INTR)
+
+
+
+65.6.5 DMA Size Register (VIULite_DMA_SIZE)
+  31-16
+ reserved
+          DMA size register
+DMA_SIZE  Number of lines to be transferred by the DMA into the circular buffer in target memory. Each time the DMA
+ 15-0     has transferred the number of lines defined by DMA_SIZE, a DMA_END interrupt is asserted. The DMA
+          jumps back to the DMA base address defined by DMA_ADDR and continue its transfer.
+          
+5.6.6 Base Address Of Every Field/Frame Of Picture In Memory
+(VIULite_DMA_ADDR)
+
+65.6.8 Input Video Pixel and Line Count (VIULite_INVSZ)
+65.6.2 Interrupt Register (VIULite_INTR)
+
+65.6.9 Programable Alpha Value (VIULite_ALPHA)
+
+ALPHA    Alpha value used for picture blending. This register is configured during vertical blanking and used from
+7-0      the next video field.
+
+

@@ -1,0 +1,112 @@
+
+bsp/drivers/viu/kernel/src/viulite_core.txt
+
+viulite_set_videoinputformat
+* @brief          Sets the format of the input video data.
+* @details        The function sets the format of the input video data.
+
+viulite_get_videoinputformat
+* @brief          Get the parameters used to configure the video data format
+* @details        The function returns the parameters used to configure the
+*                 video data format
+
+viulite_set_datainterface
+* @brief          The function configures the data interface.
+* @details        The function configures the data interface: polarity of
+*                 synchro signals and endianness type. 
+
+viulite_get_datainterface
+* @brief          The function returns the data interface parameters
+* @details        The function get configures the data interface: polarity of
+*                 synchro signals and endianness type. 
+
+viulite_dma_config
+* @brief          The function sets the DMA transfer parameters.
+* @details        The function sets the DMA transfer parameters: size,
+*                 destination buffer address, expected number of pixels per line
+*                 and expected number of lines per frame and eventually the
+*                 increment and alpha value.
+
+viulite_dma_start
+* @brief          The function starts the DMA transfer.
+* @details        The function starts the DMA transfer of an image frame to the
+*                 memory using the configuring data previously set
+
+viulite_dma_stop
+* @brief          The function stops the DMA transfer.
+* @details        The function stops the DMA transfer of the data frames to the
+*                 memory.
+
+viulite_dma_getstatus
+* @brief          The function reads the DMA STATUS flag and returns its value.
+* @details        The function reads the DMA STATUS flag and returns its value.
+
+viulite_sw_reset
+* @brief          The function sets and resets the reset bit.
+* @details        The function sets and resets the reset bit. To be used
+*                  in case of errors.
+
+viulite_enable_ituerror
+* @brief          The function enables the ECC functionality
+* @details        The function enables the ECC functionality
+
+
+viulite_get_ituerror
+* @brief          The function reads the ERROR_CODE field and returns its value
+* @details        The function reads the ERROR_CODE field and returns its value
+
+viulite_enable_irqs
+* @brief          The function enables one or more of the interrupt types
+* @details        The function enables one or more of the interrupt types:
+*                 FRAME_END, LINE_END, ERROR, DMA_END, VSTART, HSYNC, VSYNC,
+*                 FIELD according to the input. 
+
+viulite_get_irqstatus
+* @brief          The function returns the status of the interrupt flags
+* @details        The function returns the status of the interrupt flags:
+*                 FRAME_END, LINE_END, ERROR, DMA_END, VSTART, HSYNC, VSYNC,
+*                 FIELD, packed in a byte
+
+viulite_reset_irqstatus
+* @brief          The function resets the status of the interrupt flags 
+* @details        The function resets the status of the interrupt flags
+*                 (FRAME_END, LINE_END, ERROR, DMA_END, VSTART, HSYNC, VSYNC,
+*                 FIELD) in the input mask.  
+
+viulite_get_syncsignals
+* @brief          The function returns the status of VSYNC and HSYNC pulses.
+* @details        The function returns the status of VSYNC and HSYNC pulses. 
+
+viulite_get_fieldnum
+* @brief          The function returns the transferred field number.
+* @details        The function returns the transferred field number extracted
+*                 from ITU 656 data stream.
+
+viulite_get_framesize
+* @brief          The function returns the number of pixels detected per line.
+* @details        The function returns the number of pixels detected per line
+*                 and the number of lines detected per input frame (register
+*                 VIULite_DINFSZ).
+
+viulite_set_clippingdata
+* @brief          The function sets the origin and the size of the clipped area.
+* @details        The function sets the origin and the size of the clipped area
+*                 (x_origin, y_origin, x_size, y_size).
+
+viulite_get_clippingdata
+* @brief          The function gets the origin and the size of the clipped area
+* @details        The function gets the origin and the size of the clipped area
+*                 (x_origin, y_origin, x_size, y_size).
+
+VIU_Isr
+* @brief          This function is the service routine for the viu irq
+* @details        This function is the service routine for the viu irq
+
+VIU0_Isr
+* @brief          This function is the interrupt service routine for VIU0
+* @details        This function is the interrupt service routine for VIU0
+
+VIU1_Isr
+* @brief          This function is the interrupt service routine for VIU1
+* @details        This function is the interrupt service routine for VIU1
+

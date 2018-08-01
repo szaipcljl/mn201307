@@ -1,0 +1,96 @@
+bsp/drivers/viu/kernel/src/viulite_linux.c
+
+
+module_platform_driver(fsl_viulite_driver);
+
+probe
+-----
+	viulite_probe
+(1)
+	ret = of_alias_get_id(viu_n, "viu");
+(2) 
+	/* create device and register it in /dev through sysfs */
+	devn_temp = (dev_t)viulite_dev_create(viu_num);
+
+(3)
+	/* map register space */
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+(4) 
+	viudata = devm_kzalloc(&pdev->dev,
+			sizeof(struct viulite_data), GFP_KERNEL);
+
+	/* setup file operations */
+	cdev_init(&(viudata->chdev), &viulite_fops);
+	ret = cdev_add(&(viudata->chdev), viulite_devn, 1);
+(5) 
+	viulite_reg_base = devm_ioremap_resource(&pdev->dev, res);
+	viudata->reg_base = (VIU_Registers_t *)viulite_reg_base;
+	viudata->dev_num = devn_temp;
+
+(6)
+	/* enable clocks for VIU */
+	viulite_clk = devm_clk_get(&pdev->dev, device_name[viu_num]);
+
+
+	clk_prepare_enable(viulite_clk);
+	viudata->viu_clk = viulite_clk;
+	viulite_clk = devm_clk_get(&pdev->dev, "per");
+
+
+	clk_prepare_enable(viulite_clk);
+	viudata->per_clk = viulite_clk;
+
+(7)
+	viulite_irq = (uint32_t)platform_get_irq(pdev, 0);
+	viudata->irq = viulite_irq;
+	/* install interrupt handler */
+	request_irq(viudata->irq, viulite_intr, 0,
+			device_name[viu_num], (void *)viudata)
+
+(8)
+	dev_set_drvdata(&pdev->dev, viudata);
+	viulite_devn++;
+	viu_devices++;
+
+==============
+
+const struct file_operations viulite_fops =
+{
+  .owner          = THIS_MODULE,
+  .open           = viulite_open,
+  .release        = viulite_close,
+  .unlocked_ioctl = viulite_ioctl,
+}; 
+
+viulite_ioctl:
+--------------
+VIULITE_IOCTL_DMA_CONFIG
+VIULITE_IOCTL_DMA_START
+VIULITE_IOCTL_DMA_STOP
+VIULITE_IOCTL_DMA_GET_STATUS
+
+VIULITE_IOCTL_SW_RESET
+
+VIULITE_IOCTL_SET_VIDEOIN_FORMAT
+VIULITE_IOCTL_GET_VIDEOIN_FORMAT
+
+VIULITE_IOCTL_SET_DATA_INTERFACE
+VIULITE_IOCTL_GET_DATA_INTERFACE
+
+VIULITE_IOCTL_CONFIG_IRQS
+VIULITE_IOCTL_EN_ITU_ERRCODE
+VIULITE_IOCTL_RESET_IRQSTATUS
+VIULITE_IOCTL_GET_IRQSTATUS
+
+VIULITE_IOCTL_GET_ITU_ERRCODE
+VIULITE_IOCTL_GET_SYNC
+VIULITE_IOCTL_GET_FIELDNUM
+VIULITE_IOCTL_GET_FRAME_SIZE:
+
+VIULITE_IOCTL_SET_CLIPPING:
+VIULITE_IOCTL_GET_CLIPPING:
+
+
+
+

@@ -1,0 +1,16 @@
+
+bsp/drivers/cam_generic/user/src/ar0144_user.cpp
+
+AR0144_RegConfig
+(1) for: CAM_WriteDouble(spClients[aViuIdx], lpOvTable[i], 
+            	            lpOvTable[i + 1])
+(2) 
+	line_len = CAM_ReadDouble(spClients[aViuIdx], AR0144_LINE_LENGTH_PCK);
+	frame_length_lines = CAM_ReadDouble(spClients[aViuIdx], AR0144_FRAME_LENGTH_LINES);
+(3) AR0144_Start_Streaming(spClients[aViuIdx]);
+
+AR0144_Start_Streaming
+|-> data = CAM_ReadDouble(aHandle, AR0144_RESET_REGISTER);
+	data = (data | 0x0004);
+	CAM_WriteDouble(aHandle, AR0144_RESET_REGISTER, data);/* start streaming */
+

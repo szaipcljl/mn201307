@@ -1,0 +1,50 @@
+
+bsp/drivers/viu/user/src/viulite_user.cpp
+
+
+VIU_Open
+|-> open
+
+VIU_Close
+
+VIU_Config
+----------
+ioctl:
+    VIULITE_IOCTL_DMA_CONFIG
+    VIULITE_IOCTL_SET_DATA_INTERFACE
+    VIULITE_IOCTL_SET_VIDEOIN_FORMAT
+    VIULITE_IOCTL_CONFIG_IRQS
+
+VIU_IrqConfig
+-------------
+ioctl:
+    VIULITE_IOCTL_CONFIG_IRQS
+
+VIU_Start
+---------
+ioctl:
+    // start VIU receiving by enabling VIU interrupts
+    VIULITE_IOCTL_CONFIG_IRQS
+
+VIU_Stop
+--------
+ioctl:
+    // stop VIU receiving by disabling VIU interrupts
+    VIULITE_IOCTL_CONFIG_IRQS
+
+VIU_SwReset
+-----------
+ioctl:
+    // stop VIU receiving by disabling VIU interrupts
+    VIULITE_IOCTL_SW_RESET
+
+VIU_DmaStart
+------------
+ioctl:
+    VIULITE_IOCTL_DMA_START
+
+VIU_DmaStop
+-----------
+ioctl: 
+    VIULITE_IOCTL_DMA_STOP
+
