@@ -1,0 +1,77 @@
+
+
+a specific transfer channel (TC)
+
+device tree node
+=================
+[arch/arm64/boot/dts/freescale/s32v234.dtsi]
+
+fdma: fast_dma@7C040000 {
+		compatible = "fsl,s32v234-fdma";
+		reg = <0x0 0x7C040000 0x0 0x1000>;
+		interrupts = <0 83 1>,
+			<0 84 1>;
+		status = "disabled";
+};
+
+
+module_init(FdmaInit);
+======================
+
+FdmaInit
+--------
+//Initialize the module - Register the character device
+(1) platform_driver_register(&sFdmaPlatformDriver)
+(2) FDMA_Setup(&sFdmaDrvInfo) 
+(3) initialize device file
+	alloc_chrdev_region(&sFdmaDevno, 0, 1, FDMA_DEVICE_NAME) //get device number
+	class_create
+	device_create
+	cdev_init
+	cdev_add
+
+FdmaDrvProbe
+------------
+(1) Setup the driver
+	// Fdma driver info structure
+	static FDMA_DrvInfo_t sFdmaDrvInfo;
+
+(2) 
+  // attempt to connect to Sequencer module if available
+  sFdmaDrvInfo.mpSeqComm = (SEQ_FdmaComm_t*)symbol_get(gSEQ_DRV_FdmaComm);
+
+(3) FdmaMap(apDev)) //map register space
+	a. platform_get_resource //get FDMA regs resource
+	b. devm_ioremap_resource //ioremap FDMA regs resource
+
+(4) irq_of_parse_and_map [linux/drivers/of/irq.c]
+	|-> of_irq_parse_one [irq.c]
+	|-> irq_create_of_mapping [linux/kernel/irq/irqdomain.c]
+
+	sFdmaDrvInfo.mIrqDone, sFdmaDrvInfo.mIrqErr
+#define DONE_IRQ_IDX 0        ///< FDMA transfer done  IRQ index in DTB node
+#define ERR_IRQ_IDX  1        ///< FDMA transfer error IRQ index in DTB node
+
+(5) 
+	dev_set_drvdata(&apDev->dev, &sFdmaDrvInfo);
+
+file_operations
+================
+FdmaOpen
+--------
+	sDeviceOpenCnt++;
+		  
+	try_module_get(THIS_MODULE);
+
+
+FdmaRelease
+-----------
+	sDeviceOpenCnt--;
+
+	module_put(THIS_MODULE);
+
+FdmaIoctl 
+---------
+[dfma_ioctl.c]
+
+

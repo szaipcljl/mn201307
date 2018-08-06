@@ -1,0 +1,52 @@
+
+
+
+pc: ubuntu18.04
+1. clone
+git clone https://github.com/cmusatyalab/openface
+
+2. setup
+sudo apt install python-nose
+pip install opencv-python
+
+# install dlib
+# https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
+# Step #1: Install dlib prerequisites
+sudo apt-get install build-essential cmake
+sudo apt-get install libgtk-3-dev
+sudo apt-get install libboost-all-dev
+
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+
+# Step #2: Access your Python virtual environment (optional)
+sudo apt install virtualenvwrapper
+
+add to .bashrc:
+# load virtualenvwrapper for python (after custom PATHs)
+venvwrap="virtualenvwrapper.sh"
+/usr/bin/which -a $venvwrap
+if [ $? -eq 0 ]; then
+    venvwrap=`/usr/bin/which $venvwrap`
+    source $venvwrap
+fi
+
+# Step #3: Install dlib with Python bindings
+if you plan on using dlib for any type of computer vision or image processing, I
+would recommend installing:
+pip install numpy
+pip install scipy --user
+pip install scikit-image --user
+
+# download the dlib package from PyPI, automatically configure it via CMake,
+# and then compile and install it on your system
+pip install dlib
+
+# Step #4: Test out your dlib install
+
+3.setup
+install pandas:
+
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+sudo pip install pandas

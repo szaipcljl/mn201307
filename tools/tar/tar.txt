@@ -2,3 +2,19 @@
 
 tar -czf Image.tar.gz Image
 tar -zxvf Image.tar.gz
+
+tar -czpf fakeroot.tar.gz fakeroot/
+tar -xzpf fakeroot.tar.gz
+
+---------------------
+compress
+xz -z files
+
+decompress
+xz -d files.xz
+-------------------
+创建或解压tar.xz文件的方法
+
+解压：tar Jcvf其中J参数解压.xz文件
+
+创建tar.xz文件：只要先 tar cvf xxx.tar xxx/ 这样创建xxx.tar文件先，然后使用 xz -z xxx.tar 来将 xxx.tar压缩成为 xxx.tar.xz
