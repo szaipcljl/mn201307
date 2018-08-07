@@ -15,11 +15,8 @@
 #include "sensor.h"
 #include "xc7027_ar0144.h"
 
-<<<<<<< HEAD
 #define CAMERA_REG_DEBUG 1
 
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 /***********************************
  ** Architecture:
  ** I2C bus: I2C1
@@ -303,11 +300,8 @@ static int power_on(void)
 	gpio_set_value(isp_pwn_gpio, 1);
 	//the delay must be 20ms, or read/write 913 reg failed
 	mdelay(20);
-<<<<<<< HEAD
 
 	xc7027_status = 1;
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	return 0;
 }
 
@@ -317,13 +311,9 @@ static int power_off(void)
 	gpio_set_value(isp_pwn_gpio, 0);
 	//disable ds90ub914
 	gpio_set_value(ds90ub914_pwn_gpio, 0);
-<<<<<<< HEAD
 	mdelay(20);
 
 	xc7027_status = 0;
-=======
-
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	return 0;
 }
 
@@ -553,7 +543,6 @@ static ssize_t xc7027_roi_rec_set(struct device *dev, struct device_attribute *a
 
 static DEVICE_ATTR(roi, S_IRUGO | S_IWUSR, xc7027_roi_rec_show, xc7027_roi_rec_set);
 
-<<<<<<< HEAD
 #if 0
 
 //add for xc7027_reg sysfs get/set
@@ -782,8 +771,6 @@ static ssize_t camera_reg_set(struct device *dev, struct device_attribute *attr,
 static DEVICE_ATTR(camera_reg, S_IRUGO | S_IWUSR, camera_reg_show, camera_reg_set);
 #endif
 
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 #if 1
 #undef dev_err
 #define PFLAG "#mn: "
@@ -805,10 +792,7 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 		return PTR_ERR(pinctrl);
 	}
 
-<<<<<<< HEAD
 #if 1
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	/* request ds90ub914 power down pin */
 	ds90ub914_pwn_gpio = of_get_named_gpio(dev->of_node, "ds90ub914-pwn-gpios", 0);
 	if (!gpio_is_valid(ds90ub914_pwn_gpio)) {
@@ -834,10 +818,7 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 		dev_err(dev, PFLAG "gpio request isp_pwdn failed\n");
 		return retval;
 	}
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 
 	memset(&xc7027_ar0144_data, 0, sizeof(xc7027_ar0144_data));
 	xc7027_ar0144_data.i2c_client = client;
@@ -877,7 +858,6 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 		return retval;
 	}
 
-<<<<<<< HEAD
 #ifdef CAMERA_REG_DEBUG
 	//add for camera module reg read and write
 	retval = device_create_file(dev, &dev_attr_camera_reg);
@@ -887,8 +867,6 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 	}
 #endif
 
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	mutex_init(&xc7027_mutex);
 
 	power_on();
@@ -900,29 +878,22 @@ static s32 xc7027_probe(struct i2c_client *client, const struct i2c_device_id *i
 
 static int xc7027_remove(struct i2c_client *client)
 {
-<<<<<<< HEAD
 	struct device *dev = &client->dev;
 
 #ifdef CAMERA_REG_DEBUG
 	device_remove_file(dev, &dev_attr_camera_reg);
 #endif
-=======
-
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	device_remove_file(pxc7027_device, &dev_attr_roi);
 	cdev_del(&xc7027_cdev);
 	unregister_chrdev_region(xc7027_dev_id, 1);
 	device_destroy(xc7027_cls, xc7027_dev_id);
 	class_destroy(xc7027_cls);
-<<<<<<< HEAD
 
 	power_off();
 	devm_gpio_free(dev, ds90ub914_pwn_gpio);
 	devm_gpio_free(dev, isp_pwn_gpio);
 
 	printk("#mn: [%s] xc7027_ar0144_data removed\n", __func__);
-=======
->>>>>>> 8f8a302ea4de02a3e7c703853dd43e1fdbdcc534
 	return 0;
 }
 
