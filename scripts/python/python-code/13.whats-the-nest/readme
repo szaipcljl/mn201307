@@ -1,0 +1,135 @@
+
+
+what's next?
+1. 创建你自己的命令行 地址簿 程序:
+添加、修改、删除和搜索你的联系人（朋友、家人和同事等等）以及它们的信息（诸如电子邮
+件地址和/或电话号码）。这些详细信息应该被保存下来以便以后提取
+
+提示（其实你不应该阅读这个提示） 创建一个类来表示一个人的信息。使用字典储存每个人
+的对象，把他们的名字作为键。使用cPickle模块永久地把这些对象储存在你的硬盘上。使用字
+典内建的方法添加、删除和修改人员信息
+
+2. 图形软件
+使用Python的GUI库——你需要使用这些库来用Python语言创建你自己的图形程序。使用GUI
+库和它们的Python绑定，你可以创建你自己的IrfanView、Kuickshow软件或者任何别的类似的
+东西。绑定让你能够使用Python语言编写程序，而使用的库本身是用C、C++或者别的语言编
+写的。
+
+有许多可供选择的使用Python的GUI：
+
+● PyQt 这是Qt工具包的Python绑定。Qt工具包是构建KDE的基石。Qt，特别是配合Qt
+Designer和出色的Qt文档之后，它极其易用并且功能非常强大。你可以在Linux下免费使
+用它，但是如果你在Windows下使用它需要付费。使用PyQt，你可以在Linux/Unix上开
+发免费的（GPL约定的）软件，而开发具产权的软件则需要付费。一个很好的PyQt资源
+是《使用Python语言的GUI编程：Qt版》 请查阅官方主页以获取更多详情。
+● PyGTK 这是GTK+工具包的Python绑定。GTK+工具包是构建GNOME的基石。GTK+在
+使用上有很多怪癖的地方，不过一旦你习惯了，你可以非常快速地开发GUI应用程序。
+Glade图形界面设计器是必不可少的，而文档还有待改善。GTK+在Linux上工作得很好，
+而它的Windows接口还不完整。你可以使用GTK+开发免费和具有产权的软件。请查阅
+官方主页以获取更多详情。
+● wxPython 这是wxWidgets工具包的Python绑定。wxPython有与它相关的学习方法。它的
+可移植性极佳，可以在Linux、Windows、Mac甚至嵌入式平台上运行。有很多wxPython
+的IDE，其中包括GUI设计器以及如SPE（Santi's Python Editor） 和wxGlade那样的GUI开
+发器。你可以使用wxPython开发免费和具有产权的软件。请查阅官方主页以获取更多详
+情。
+● TkInter 这是现存最老的GUI工具包之一。如果你使用过IDLE，它就是一个TkInter程序。
+在PythonWare.org上的TkInter文档是十分透彻的。TkInter具备可移植性，可以在Linux/
+Unix和Windows下工作。重要的是，TkInter是标准Python发行版的一部分。
+● 要获取更多选择，请参阅Python.org上的GUI编程wiki页。
+
+GUI工具概括
+不幸的是，并没有单一的标准Python GUI工具。我建议你根据你的情况在上述工具中选择一
+个。首要考虑的因素是你是否愿意为GUI工具付费。其次考虑的是你是想让你的程序运行在
+Linux下、Windows下还是两者都要。第三个考虑因素根据你是Linux下的KDE用户还是GNOME
+用户而定。
+
+探索更多内容
+● Python标准库是一个丰富的库，在大多数时候，你可以在这个库中找到你所需的东西。
+这被称为Python的“功能齐全”理念。我强烈建议你在开始开发大型Python程序之前浏
+览一下Python标准文档。
+● Python.org——Python编程语言的官方主页。你可以在上面找到Python语言和解释器的最
+新版本。另外还有各种邮件列表活跃地讨论Python的各方面内容。
+● comp.lang.python是讨论Python语言的世界性新闻组。你可以把你的疑惑和询问贴在这个
+新闻组上。可以使用Google群在线访问这个新闻组，或加入作为新闻组镜像的邮件列
+表。
+● 《Python实用大全》 是一个极有价值的秘诀和技巧集合，它帮助你解决某些使用Python
+的问题。这是每个Python用户必读的一本书。
+● 《迷人的Python》 是David Mertz编著的一系列优秀的Python相关文章。
+● 《深入理解Python》 是给有经验的Python程序员的一本很优秀的书。如果你已经完整地
+阅读了本书，那么我强烈建议你接下来阅读《深入理解Python》。它覆盖了包括XML处
+理、单元测试和功能性编程在内的广泛的主题。
+● Jython是用Java语言实现的Python解释器。这意味着你可以用Python语言编写程序而同时
+使用Java库！Jython是一个稳定成熟的软件。如果你也是一个Java程序员，我强烈建议你
+尝试一下Jython。
+● IronPython是用C#语言实现的Python解释器，可以运行在.NET、Mono和DotGNU平台
+上。这意味着你可以用Python语言编写程序而使用.NET库以及其他由这三种平台提供的
+库！IronPython还只是一个前期alpha测试软件，现在还只适合用来进行试验。Jim
+Hugunin，IronPython的开发者，已经加入了微软公司，将在将来全力开发一个完整版本
+的IronPython。
+● Lython是Python语言的Lisp前段。它类似于普通的Lisp语言，会被直接编译为Python字节
+码，这意味着它能与我们普通的Python代码协同工作。
+● 另外还有很多很多的Python资源。其中比较有趣的有Daily Python-URL!，它使你保持与
+Python的最新进展同步。另外还有Vaults of Parnassus、 ONLamp.com Python DevCenter、
+dirtSimple.org、 Python Notes等等。
+
+
+自由/开放源码软件（FLOSS）
+FLOSS基于社区的概念，而它本身基于共享，特别是知识共享的概念。FLOSS可以免费使用、
+修改和再发行。
+如果你已经读了本书，那么你一定熟悉FLOSS，因为你一直在使用Python！
+如果你想要了解更多的FLOSS，你可以探索下面这个列表中的软件。我列出了一些最著名的
+FLOSS以及那些可以跨平台（即在Linux、Windows等）工作的FLOSS。这样你无需马上切换到
+Linux就可以尝试使用这些软件了， 尽管你最终一定会转到Linux上的 。
+● Linux 这是一个正在慢慢被世界接纳的FLOSS操作系统！它最初由Linus Torvalds在学生时
+候开发。现在，它已经可以与微软Windows相匹敌。最新的2.6版本核心，无论从速度、
+稳定性还是扩展性角度来说，都是一个巨大的突破。【Linux核心】
+● Knoppix 这是一个仅仅在CD上运行的Linux发行版！它不需要安装——你只需要重新启
+动你的计算机，把CD放入光驱，就可以开始使用一个完全的Linux发行版了！你可以使
+用所有的随标准Linux发行版发行的FLOSS，如运行Python程序、编译C程序、看电影等
+等。然后再次重启你的计算机，取出CD，就可以使用你现有的操作系统了，就好像什
+么都没有发生过一样。【Knoppix】
+● Fedora 这是一个由社区开发维护的发行版，由Red Hat公司赞助。它是最流行的Linux发
+行版之一。它包含Linux核心、KDE、GNOME和XFCE桌面以及众多的FLOSS，而所有这
+些都易于安装、易于使用。
+如果你担心你是一个完全的Linux生手，那么我推荐你尝试Mandrake Linux。最新发布
+Mandrake 10.1确实很棒。【Fedora Linux、 Mandrake Linux】
+● OpenOffice.org 这是一个优秀的办公套件，它基于Sun Microsystems的StarOffice软件。
+OpenOffice由文本编写器、演讲辅助、电子表格和绘图组件等等组成。它甚至可以方便
+地打开和编辑微软Word和PowerPoint文件。它可以在几乎所有平台上运行。即将推出的
+OpenOffice 2.0有一些重大的改进。【OpenOffice】
+● Mozilla Firefox 这是被认为可以在未来几年击败Internet Explorer（仅按照市场份额计算）
+的下一代网络浏览器。它极快，它的一些合理的、令人印象深刻的特性广受好评。它的
+扩展理念允许在它上面添加各种功能。
+它的姐妹产品Thunderbird是一个优秀的电子邮件客户端，使阅读电子邮件变得十分快
+捷。【Mozilla Firefox、 Mozilla Thunderbird】
+● Mono 这是一个微软.NET平台的开源实现。它使我们可以在Linux、Windows、
+FreeBSD、Mac OS和许多其他平台上创建和运行.NET程序。Mono执行CLI和C#的ECMA
+标准，这个标准已经由微软、英特尔和惠普提交称为一个开放标准。这也是迈向ISO标
+准的一步。
+目前，Mono包含一个完整的C#主控制台（它本身也由C#编写！）、一个具备完整特性
+的ASP.NET实现、许多数据库ADO.NET提供器另外还有每天不断改善和增加的新特
+性。【Mono、 ECMA、 Microsoft .NET】
+● Apache网络服务器 这是最流行的开源网络服务器。事实上，它是地球上最流行的网络服
+务器！它运行着几乎60％的网站。对——Apache处理的网站比它所有的竞争对手（包括
+微软IIS）之和还要多。【Apache】
+● MySQL 这是一个极其流行的开源数据库服务器。它以它的快速最为著名。在它的最新
+版本中又添加了更多的特性。【MySQL】
+● MPlayer 这是一个视频播放器，可以播放DivX、MP3、Ogg、VCD、DVD……谁说开源
+软件就不能具有趣味呢？【MPlayer】
+● Movix 这是一个Linux发行版，它基于Knoppix仅仅在CD上运行用来播放电影！你可以创
+建Movix的CD。它们是可启动的CD，当你重启计算机的时候，放入CD，电影就会自己
+开始播放！使用Movix观看电影，你甚至不需要硬盘。【Movix】
+上面这个列表只是希望给你一个大概的印象——还有很多别的优秀FLOSS，比如Perl语言、
+PHP语言、Drupal网站内容管理系统、PostgreSQL数据库服务器、TORCS赛车游戏、KDevelop
+IDE、Anjuta IDE、Xine——电影播放器、VIM编辑器、Quanta+编辑器、XMMS音频播放器、
+GIMP图像编辑程序……这个列表可以一直继续下去。
+访问下述网站以获取更多FLOSS信息：
+● SourceForge
+● FreshMeat
+● KDE
+● GNOME
+要获知FLOSS世界的最新进展，请访问下述网站：
+● OSNews
+● LinuxToday
+● NewsForge
+● SwaroopCH's blog
