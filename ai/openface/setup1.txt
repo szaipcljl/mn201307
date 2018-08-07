@@ -1,0 +1,104 @@
+test pc: ubuntu 18.04
+web addr: https://blog.csdn.net/weixinhum/article/details/77046873
+
+Ubuntu 18.04+OpenFace的配置和简单人脸检测
+
+1.python
+　　　Ubuntu 16.04桌面版自带python
+
+2.git
+
+$ sudo apt-get install git
+
+3.编译工具CMake
+
+$ sudo apt-get install cmake
+
+4.C++标准库安装
+
+$ sudo apt-get install libboost-dev
+$ sudo apt-get install libboost-python-dev
+
+.下载OpenFace代码
+
+$ git clone https://github.com/cmusatyalab/openface.git
+
+6.OpenCV安装
+
+$ sudo apt-get install libopencv-dev
+$ sudo apt-get install python-opencv
+
+7.安装包管理工具pip
+
+$ sudo apt install python-pip
+
+　　　更新pip,按上面安装不知道为什么是旧的版本，可能影响下面的操作
+
+$ pip install --upgrade pip
+
+8.安装依赖的 PYTHON库
+
+$ cd openface
+$ sudo pip install -r requirements.txt
+$ sudo pip install dlib
+$ sudo pip install matplotlib
+
+
+9.安装 luarocks—Lua 包管理器,提供一个命令行的方式来管理 Lua 包依赖、安装第三方 Lua 包等功能
+
+$ sudo apt-get install luarocks
+
+10.安装 TORCH—科学计算框架，支持机器学习算法　
+
+$ git clone https://github.com/torch/distro.git ~/torch --recursive
+$ cd torch
+$ bash install-deps
+$ ./install.sh
+
+
+使 torch7 设置的刚刚的环境变量生效
+
+$ source ~/.bashrc
+
+
+　　这里只安装了CPU版本，后面如果需要再更新CUDA的使用方法
+
+11.安装依赖的 LUA库　
+
+$ luarocks install dpnn
+
+
+下面的为选装，有些函数或方法可能会用到
+
+$ luarocks install image
+$ luarocks install nn
+$ luarocks install graphicsmagick
+$ luarocks install torchx
+$ luarocks install csvigo
+
+12.编译OpenFace代码
+
+$ python setup.py build
+$ sudo python setup.py install
+
+
+13.下载预训练后的数据
+
+$ sh models/get-models.sh
+$ wget https://storage.cmusatyalab.org/openface-models/nn4.v1.t7 -O models/openface/
+
+————————-到此配置完成,下面是简单的例子————————-
+compare.py（demo文件夹中）给出的示例检测两张脸的相近程度。
+
+$ python demos/compare.py {3.jpg*,4.jpg*}
+
+
+-----------------------------------
+cp face_detect.py to openface/demos
+
+issue:
+chris@iceberg:~/mn/openface[master]$ python demos/face_detect.py --image=images/examples/clapton-1.jpg
+/home/chris/torch/install/bin/luajit: cannot open <models/openface/nn4.v1.t7> in mode r  at /home/chris/torch/pkg/torch/lib/TH/THDiskFile.c:673
+
+=>
+openface/models/openface[master]$ cp nn4.small2.v1.t7 nn4.v1.t7
