@@ -1,3 +1,4 @@
 
 
 eog - a GNOME image viewer
+在ubuntu中输入终端命令：cheese即可调用摄像头
