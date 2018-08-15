@@ -1,0 +1,1922 @@
+diff --git a/.gitignore b/.gitignore
+index 31dc307..607095f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,2 +1,5 @@
+ *.d
+ *.o
++cscope.*
++tags
++tags.o.fn
+diff --git a/drivers/cam_generic.tar.gz b/drivers/cam_generic.tar.gz
+new file mode 100644
+index 0000000..7ece7d0
+Binary files /dev/null and b/drivers/cam_generic.tar.gz differ
+diff --git a/drivers/cam_generic/kernel/include/xc7027_ar0144_config_viu.h b/drivers/cam_generic/kernel/include/xc7027_ar0144_config_viu.h
+new file mode 100755
+index 0000000..b009a9e
+--- /dev/null
++++ b/drivers/cam_generic/kernel/include/xc7027_ar0144_config_viu.h
+@@ -0,0 +1,893 @@
++#ifndef AR0144_XC7027CONFIGVIU_H
++#define AR0144_XC7027CONFIGVIU_H
++
++#define SENSOR_AE_ENABLE 1
++#if 1
++static uint16_t XC7027_AR0144Viu_Table[] = {
++	0x301A, 0x00D9,
++	0xFFFF, 0x0030,
++	0x301A, 0x30D8,
++	0x3088, 0x8000,
++#if 1
++	0x3086, 0x327F,
++	0x3086, 0x5780,
++	0x3086, 0x2730,
++	0x3086, 0x7E13,
++	0x3086, 0x8000,
++	0x3086, 0x157E,
++	0x3086, 0x1380,
++	0x3086, 0x000F,
++	0x3086, 0x8190,
++	0x3086, 0x1643,
++	0x3086, 0x163E,
++	0x3086, 0x4522,
++	0x3086, 0x0937,
++	0x3086, 0x8190,
++	0x3086, 0x1643,
++	0x3086, 0x167F,
++	0x3086, 0x9080,
++	0x3086, 0x0038,
++	0x3086, 0x7F13,
++	0x3086, 0x8023,
++	0x3086, 0x3B7F,
++	0x3086, 0x9345,
++	0x3086, 0x0280,
++	0x3086, 0x007F,
++	0x3086, 0xB08D,
++	0x3086, 0x667F,
++	0x3086, 0x9081,
++	0x3086, 0x923C,
++	0x3086, 0x1635,
++	0x3086, 0x7F93,
++	0x3086, 0x4502,
++	0x3086, 0x8000,
++	0x3086, 0x7FB0,
++	0x3086, 0x8D66,
++	0x3086, 0x7F90,
++	0x3086, 0x8182,
++	0x3086, 0x3745,
++	0x3086, 0x0236,
++	0x3086, 0x8180,
++	0x3086, 0x4416,
++	0x3086, 0x3143,
++	0x3086, 0x7416,
++	0x3086, 0x787B,
++	0x3086, 0x7D45,
++	0x3086, 0x023D,
++	0x3086, 0x6445,
++	0x3086, 0x0A3D,
++	0x3086, 0x647E,
++	0x3086, 0x1281,
++	0x3086, 0x8037,
++	0x3086, 0x7F10,
++	0x3086, 0x450A,
++	0x3086, 0x3F74,
++	0x3086, 0x7E10,
++	0x3086, 0x7E12,
++	0x3086, 0x0F3D,
++	0x3086, 0xD27F,
++	0x3086, 0xD480,
++	0x3086, 0x2482,
++	0x3086, 0x9C03,
++	0x3086, 0x430D,
++	0x3086, 0x2D46,
++	0x3086, 0x4316,
++	0x3086, 0x5F16,
++	0x3086, 0x532D,
++	0x3086, 0x1660,
++	0x3086, 0x404C,
++	0x3086, 0x2904,
++	0x3086, 0x2984,
++	0x3086, 0x81E7,
++	0x3086, 0x816F,
++	0x3086, 0x170A,
++	0x3086, 0x81E7,
++	0x3086, 0x7F81,
++	0x3086, 0x5C0D,
++	0x3086, 0x5749,
++	0x3086, 0x5F53,
++	0x3086, 0x2553,
++	0x3086, 0x274D,
++	0x3086, 0x2BF8,
++	0x3086, 0x1016,
++	0x3086, 0x4C09,
++	0x3086, 0x2BB8,
++	0x3086, 0x2B98,
++	0x3086, 0x4E11,
++	0x3086, 0x5367,
++	0x3086, 0x4001,
++	0x3086, 0x605C,
++	0x3086, 0x095C,
++	0x3086, 0x1B40,
++	0x3086, 0x0245,
++	0x3086, 0x0045,
++	0x3086, 0x8029,
++	0x3086, 0xB67F,
++	0x3086, 0x8040,
++	0x3086, 0x047F,
++	0x3086, 0x8841,
++	0x3086, 0x095C,
++	0x3086, 0x0B29,
++	0x3086, 0xB241,
++	0x3086, 0x0C40,
++	0x3086, 0x0340,
++	0x3086, 0x135C,
++	0x3086, 0x0341,
++	0x3086, 0x1117,
++	0x3086, 0x125F,
++	0x3086, 0x2B90,
++	0x3086, 0x2B80,
++	0x3086, 0x816F,
++	0x3086, 0x4010,
++	0x3086, 0x4101,
++	0x3086, 0x5327,
++	0x3086, 0x4001,
++	0x3086, 0x6029,
++	0x3086, 0xA35F,
++	0x3086, 0x4D1C,
++	0x3086, 0x1702,
++	0x3086, 0x81E7,
++	0x3086, 0x2983,
++	0x3086, 0x4588,
++	0x3086, 0x4021,
++	0x3086, 0x7F8A,
++	0x3086, 0x4039,
++	0x3086, 0x4580,
++	0x3086, 0x2440,
++	0x3086, 0x087F,
++	0x3086, 0x885D,
++	0x3086, 0x5367,
++	0x3086, 0x2992,
++	0x3086, 0x8810,
++	0x3086, 0x2B04,
++	0x3086, 0x8916,
++	0x3086, 0x5C43,
++	0x3086, 0x8617,
++	0x3086, 0x0B5C,
++	0x3086, 0x038A,
++	0x3086, 0x484D,
++	0x3086, 0x4E2B,
++	0x3086, 0x804C,
++	0x3086, 0x0B41,
++	0x3086, 0x9F81,
++	0x3086, 0x6F41,
++	0x3086, 0x1040,
++	0x3086, 0x0153,
++	0x3086, 0x2740,
++	0x3086, 0x0160,
++	0x3086, 0x2983,
++	0x3086, 0x2943,
++	0x3086, 0x5C05,
++	0x3086, 0x5F4D,
++	0x3086, 0x1C81,
++	0x3086, 0xE745,
++	0x3086, 0x0281,
++	0x3086, 0x807F,
++	0x3086, 0x8041,
++	0x3086, 0x0A91,
++	0x3086, 0x4416,
++	0x3086, 0x092F,
++	0x3086, 0x7E37,
++	0x3086, 0x8020,
++	0x3086, 0x307E,
++	0x3086, 0x3780,
++	0x3086, 0x2015,
++	0x3086, 0x7E37,
++	0x3086, 0x8020,
++	0x3086, 0x0343,
++	0x3086, 0x164A,
++	0x3086, 0x0A43,
++	0x3086, 0x160B,
++	0x3086, 0x4316,
++	0x3086, 0x8F43,
++	0x3086, 0x1690,
++	0x3086, 0x4316,
++	0x3086, 0x7F81,
++	0x3086, 0x450A,
++	0x3086, 0x4130,
++	0x3086, 0x7F83,
++	0x3086, 0x5D29,
++	0x3086, 0x4488,
++	0x3086, 0x102B,
++	0x3086, 0x0453,
++	0x3086, 0x2D40,
++	0x3086, 0x3045,
++	0x3086, 0x0240,
++	0x3086, 0x087F,
++	0x3086, 0x8053,
++	0x3086, 0x2D89,
++	0x3086, 0x165C,
++	0x3086, 0x4586,
++	0x3086, 0x170B,
++	0x3086, 0x5C05,
++	0x3086, 0x8A60,
++	0x3086, 0x4B91,
++	0x3086, 0x4416,
++	0x3086, 0x0915,
++	0x3086, 0x3DFF,
++	0x3086, 0x3D87,
++	0x3086, 0x7E3D,
++	0x3086, 0x7E19,
++	0x3086, 0x8000,
++	0x3086, 0x8B1F,
++	0x3086, 0x2A1F,
++	0x3086, 0x83A2,
++	0x3086, 0x7E11,
++	0x3086, 0x7516,
++	0x3086, 0x3345,
++	0x3086, 0x0A7F,
++	0x3086, 0x5380,
++	0x3086, 0x238C,
++	0x3086, 0x667F,
++	0x3086, 0x1381,
++	0x3086, 0x8414,
++	0x3086, 0x8180,
++	0x3086, 0x313D,
++	0x3086, 0x6445,
++	0x3086, 0x2A3D,
++	0x3086, 0xD27F,
++	0x3086, 0x4480,
++	0x3086, 0x2494,
++	0x3086, 0x3DFF,
++	0x3086, 0x3D4D,
++	0x3086, 0x4502,
++	0x3086, 0x7FD0,
++	0x3086, 0x8000,
++	0x3086, 0x8C66,
++	0x3086, 0x7F90,
++	0x3086, 0x8194,
++	0x3086, 0x3F44,
++	0x3086, 0x1681,
++	0x3086, 0x8416,
++	0x3086, 0x2C2C,
++	0x3086, 0x2C2C,
++#endif
++#if 1
++	0x3F00, 0x0005,
++	0x3ED6, 0x3CB1,
++	0x3EDA, 0xBADE,
++	0x3EDA, 0xBAEE,
++	0x3ED6, 0x3CB5,
++	0x3F00, 0x0A05,
++	0x3F00, 0xAA05,
++	0x3F00, 0xAA05,
++	0x3EDA, 0xBCEE,
++	0x3EDA, 0xCCEE,
++	0x3EF8, 0x6542,
++	0x3EF8, 0x6522,
++	0x3EFA, 0x4442,
++	0x3EFA, 0x4422,
++	0x3EFA, 0x4222,
++	0x3EFA, 0x2222,
++	0x3EFC, 0x4446,
++	0x3EFC, 0x4466,
++	0x3EFC, 0x4666,
++	0x3EFC, 0x6666,
++	0x3EEA, 0xAA09,
++	0x3EE2, 0x180E,
++	0x3EE4, 0x0808,
++#endif
++	0x3060, 0x002A,//0x000E,
++#if 1
++	0x3EEA, 0x2A09,
++	0x3268, 0x0037,
++#endif
++	0x3092, 0x00CF,
++	0x3786, 0x0006,
++#if 1
++	0x3F4A, 0x0F70,
++#endif
++	0x3092, 0x00CF,
++	0x3786, 0x0006,
++	0x3268, 0x0036,
++	0x3268, 0x0034,
++	0x3268, 0x0030,
++	0x3064, 0x1802,
++	0x306E, 0x5010,
++	0x306E, 0x4810,
++	0x3270, 0x0100, //flash control
++#if 1
++	0x3EF6, 0x8001,
++	0x3EF6, 0x8041,
++#endif
++	0x3180, 0xC08F,
++	0x302A, 0x0006,
++	0x302C, 0x0001,
++	0x302E, 0x0004,
++	0x3030, 0x0030,
++	//0x3030, 0x0042,
++	0x3036, 0x000C,
++	0x3038, 0x0001,
++	0x30B0, 0x0038,
++	0xFFFF, 0x000A,
++	0x3002, 0x0000,
++	0x3004, 0x0004,
++	0x3006, 0x031F,
++	0x3008, 0x0503,
++	//0x300A, 0x0339, //60fps
++	0x300A, 0x0672, //30fps
++	0x300C, 0x05D0,
++	0x3012, 0x0064,
++	0x30A2, 0x0001,
++	0x30A6, 0x0001,
++	0x3040, 0x0000,
++	0x31AE, 0x0200,
++	0x3040, 0x0400,
++	0x30A8, 0x0003,
++	0x3040, 0x0C00,
++	0x30AE, 0x0003,
++	0x3028, 0x0010,
++	0x3064, 0x1902,
++	0x3064, 0x1802,
++#if SENSOR_AE_ENABLE
++	/* AE config */
++	0x3100, 0x0003,
++	0x3102, 0x3000, //AE Target
++	0x311E, 0x0001, //AE Min exp
++	0x311C, 0x02A0, //AE Max exp
++	0x3166, 0x03DA, //Max AGain
++	0x3168, 0x000E, //Min AGain
++	0x3108, 0x0010,
++	0x310A, 0x0004,
++	0x3064, 0x1982,
++#else
++	0x3060, 0x002A,
++#endif
++	/* end */
++	0x301A, 0x30DC,
++}; 
++
++#else
++static uint16_t AR0144_XC7027Viu_Table[] = {
++//AR0144_XC7027 setting_1280*720
++0xffff, 200   ,		//表示delay
++0x301A, 0x00D9, 
++0xffff, 200   ,
++0x3F4C, 0x4B3F, // PIX_DEF_1D_DDC_LO_DEF
++0x3F4C, 0x003F, // PIX_DEF_1D_DDC_LO_DEF
++0x3F4E, 0x5718, // PIX_DEF_1D_DDC_HI_DEF
++0x3F4E, 0x0018, // PIX_DEF_1D_DDC_HI_DEF
++0x3F50, 0x401F, // PIX_DEF_1D_DDC_EDGE
++0x3F50, 0x17DF, // PIX_DEF_1D_DDC_EDGE
++0xffff, 20    ,
++0x3ED6, 0x3CB5, // DAC_LD_10_11
++0x3ED8, 0x8765, // DAC_LD_12_13
++0x3EDA, 0x8888, // DAC_LD_14_15
++0x3EDC, 0x97FF, // DAC_LD_16_17
++0x3EF8, 0x6522, // DAC_LD_44_45
++0x3EFA, 0x2222, // DAC_LD_46_47
++0x3EFC, 0x6666, // DAC_LD_48_49
++0x3F00, 0xAA05, // DAC_LD_52_53
++0x3EE2, 0x180E, // DAC_LD_22_23
++0x3EE4, 0x0808, // DAC_LD_24_25
++0x3EEA, 0x2A09, // DAC_LD_30_31
++0x3060, 0x000D, // ANALOG_GAIN
++0x3092, 0x00CF, // ROW_NOISE_CONTROL
++0x3268, 0x0030, // SEQUENCER_CONTROL
++0x3786, 0x0006, // DIGITAL_CTRL_1
++0x3F4A, 0x0F70, // DELTA_DK_PIX_THRES
++0x306E, 0x4810, // DATAPATH_SELECT
++0x3064, 0x1802, // SMIA_TEST
++0x3EF6, 0x804D, // DAC_LD_42_43
++0x3180, 0xC08F, // DELTA_DK_CONTROL
++0x30BA, 0x7623, // DIGITAL_CTRL
++0x3176, 0x0480, // DELTA_DK_ADJUST_GREENR
++0x3178, 0x0480, // DELTA_DK_ADJUST_RED
++0x317A, 0x0480, // DELTA_DK_ADJUST_BLUE
++0x317C, 0x0480, // DELTA_DK_ADJUST_GREENB
++0x3270, 0x0100, //flash control
++#if 0
++0x302A, 0x0006,	//VT_PIX_CLK_DIV = 6
++0x302C, 0x0001,	//VT_SYS_CLK_DIV = 1
++0x302E, 0x0002,	//PRE_PLL_CLK_DIV = 2
++0x3030, 0x0022,	//PLL_MULTIPLIER = 34
++0x3036, 0x000C,	//OP_PIX_CLK_DIV = 12
++0x3038, 0x0001,	//OP_SYS_CLK_DIV = 1
++0x30B0, 0x0038,// DIGITAL_TEST
++0xffff, 10    ,
++0x31AE, 0x0202, // SERIAL_FORMAT
++0x31B0, 0x002D,		//FRAME_PREAMBLE = 45
++0x31B2, 0x001B,		//LINE_PREAMBLE = 27
++0x31B4, 0x1565,		//MIPI_TIMING_0 = 5477
++0x31B6, 0x110D,		//MIPI_TIMING_1 = 4365
++0x31B8, 0x2047,		//MIPI_TIMING_2 = 8263
++0x31BA, 0x0105,		//MIPI_TIMING_3 = 261
++0x31BC, 0x8004,		//MIPI_TIMING_4 = 32772
++
++
++0x31AE, 0x0202,		//SERIAL_FORMAT = 514
++#endif
++#if 0
++0x3002, 0x0027,		//Y_ADDR_START = 40
++0x3004, 0x0004,		//X_ADDR_START = 4
++0x3006, 0x02F7,		//Y_ADDR_END = 759
++0x3008, 0x0503,		//X_ADDR_END = 1283
++0x300A, 0x02F4,		//FRAME_LENGTH_LINES = 756
++0x300C, 0x05d0,		//LINE_LENGTH_PCK = 1488
++0x3012, 0x00C8,		//COARSE_INTEGRATION_TIME = 755
++0x31AC, 0x0C0C,		//DATA_FORMAT_BITS = 3084
++0x306E, 0x9010,		//DATAPATH_SELECT = 36880
++#endif
++0x30A2, 0x0001,		//X_ODD_INC = 1
++0x30A6, 0x0001,		//Y_ODD_INC = 1
++0x3082, 0x0003,		//OPERATION_MODE_CTRL = 3
++0x3084, 0x0003,		//OPERATION_MODE_CTRL_CB = 3
++#if 0
++{0x308C, 0x0028},		//Y_ADDR_START_CB = 40
++{0x308A, 0x0004},		//X_ADDR_START_CB = 4
++{0x3090, 0x02F7},		//Y_ADDR_END_CB = 759
++{0x308E, 0x0503},		//X_ADDR_END_CB = 1283
++{0x30AA, 0x02F4},		//FRAME_LENGTH_LINES_CB = 756
++{0x303E, 0x05D0},		//LINE_LENGTH_PCK_CB = 1488
++{0x3016, 0x02F3},		//COARSE_INTEGRATION_TIME_CB = 755
++#endif
++0x30AE, 0x0001,		//X_ODD_INC_CB = 1
++0x30A8, 0x0001,		//Y_ODD_INC_CB = 1
++0x3040, 0x0000,		//READ_MODE = 0
++0x31D0, 0x0001,		//COMPANDING = 1
++0x301A, 0x00DC,		 	// RESET_REGISTER
++0xffff, 10    ,
++};
++#endif
++
++/** AR0144_XC7027 global gain table row size */
++#define AR0144_XC7027_GAIN_ROWS		449
++#define AR0144_XC7027_GAIN_COLS 		2
++#define AR0144_XC7027_GAIN_42DB		448
++
++#define AR0144_XC7027_GAIN_COL_AGAIN		0
++#define AR0144_XC7027_GAIN_COL_DGAIN		1
++
++static const uint16_t AR0144_XC7027_GAIN_TABLE[AR0144_XC7027_GAIN_ROWS][AR0144_XC7027_GAIN_COLS] = {
++	/* analog gain 1.6x~16x */
++	{0x0009, 0x0080}, /* index:0, gain:0.00000db -> x1.000000, again:x1.600000, dgain:x1.000000 */
++	{0x0009, 0x0080}, /* index:1, gain:0.09375db -> x1.010852, again:x1.617363, dgain:x1.000000 */
++	{0x000a, 0x0080}, /* index:2, gain:0.18750db -> x1.021821, again:x1.634914, dgain:x1.000000 */
++	{0x000a, 0x0080}, /* index:3, gain:0.28125db -> x1.032910, again:x1.652656, dgain:x1.000000 */
++	{0x000a, 0x0080}, /* index:4, gain:0.37500db -> x1.044119, again:x1.670590, dgain:x1.000000 */
++	{0x000b, 0x0080}, /* index:5, gain:0.46875db -> x1.055450, again:x1.688719, dgain:x1.000000 */
++	{0x000b, 0x0080}, /* index:6, gain:0.56250db -> x1.066903, again:x1.707045, dgain:x1.000000 */
++	{0x000b, 0x0080}, /* index:7, gain:0.65625db -> x1.078481, again:x1.725570, dgain:x1.000000 */
++	{0x000b, 0x0080}, /* index:8, gain:0.75000db -> x1.090184, again:x1.744295, dgain:x1.000000 */
++	{0x000c, 0x0080}, /* index:9, gain:0.84375db -> x1.102015, again:x1.763224, dgain:x1.000000 */
++	{0x000c, 0x0080}, /* index:10, gain:0.93750db -> x1.113974, again:x1.782358, dgain:x1.000000 */
++	{0x000c, 0x0080}, /* index:11, gain:1.03125db -> x1.126063, again:x1.801700, dgain:x1.000000 */
++	{0x000d, 0x0080}, /* index:12, gain:1.12500db -> x1.138282, again:x1.821252, dgain:x1.000000 */
++	{0x000d, 0x0080}, /* index:13, gain:1.21875db -> x1.150635, again:x1.841016, dgain:x1.000000 */
++	{0x000d, 0x0080}, /* index:14, gain:1.31250db -> x1.163121, again:x1.860994, dgain:x1.000000 */
++	{0x000e, 0x0080}, /* index:15, gain:1.40625db -> x1.175743, again:x1.881189, dgain:x1.000000 */
++	{0x000e, 0x0080}, /* index:16, gain:1.50000db -> x1.188502, again:x1.901604, dgain:x1.000000 */
++	{0x000e, 0x0080}, /* index:17, gain:1.59375db -> x1.201400, again:x1.922239, dgain:x1.000000 */
++	{0x000f, 0x0080}, /* index:18, gain:1.68750db -> x1.214437, again:x1.943099, dgain:x1.000000 */
++	{0x000f, 0x0080}, /* index:19, gain:1.78125db -> x1.227616, again:x1.964185, dgain:x1.000000 */
++	{0x000f, 0x0080}, /* index:20, gain:1.87500db -> x1.240938, again:x1.985500, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:21, gain:1.96875db -> x1.254404, again:x2.007047, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:22, gain:2.06250db -> x1.268017, again:x2.028827, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:23, gain:2.15625db -> x1.281777, again:x2.050843, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:24, gain:2.25000db -> x1.295687, again:x2.073099, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:25, gain:2.34375db -> x1.309747, again:x2.095596, dgain:x1.000000 */
++	{0x0010, 0x0080}, /* index:26, gain:2.43750db -> x1.323960, again:x2.118337, dgain:x1.000000 */
++	{0x0011, 0x0080}, /* index:27, gain:2.53125db -> x1.338328, again:x2.141325, dgain:x1.000000 */
++	{0x0011, 0x0080}, /* index:28, gain:2.62500db -> x1.352851, again:x2.164562, dgain:x1.000000 */
++	{0x0011, 0x0080}, /* index:29, gain:2.71875db -> x1.367532, again:x2.188051, dgain:x1.000000 */
++	{0x0011, 0x0080}, /* index:30, gain:2.81250db -> x1.382372, again:x2.211796, dgain:x1.000000 */
++	{0x0011, 0x0080}, /* index:31, gain:2.90625db -> x1.397374, again:x2.235798, dgain:x1.000000 */
++	{0x0012, 0x0080}, /* index:32, gain:3.00000db -> x1.412538, again:x2.260060, dgain:x1.000000 */
++	{0x0012, 0x0080}, /* index:33, gain:3.09375db -> x1.427866, again:x2.284586, dgain:x1.000000 */
++	{0x0012, 0x0080}, /* index:34, gain:3.18750db -> x1.443361, again:x2.309378, dgain:x1.000000 */
++	{0x0012, 0x0080}, /* index:35, gain:3.28125db -> x1.459024, again:x2.334439, dgain:x1.000000 */
++	{0x0012, 0x0080}, /* index:36, gain:3.37500db -> x1.474857, again:x2.359772, dgain:x1.000000 */
++	{0x0013, 0x0080}, /* index:37, gain:3.46875db -> x1.490862, again:x2.385380, dgain:x1.000000 */
++	{0x0013, 0x0080}, /* index:38, gain:3.56250db -> x1.507041, again:x2.411265, dgain:x1.000000 */
++	{0x0013, 0x0080}, /* index:39, gain:3.65625db -> x1.523395, again:x2.437432, dgain:x1.000000 */
++	{0x0013, 0x0080}, /* index:40, gain:3.75000db -> x1.539927, again:x2.463882, dgain:x1.000000 */
++	{0x0013, 0x0080}, /* index:41, gain:3.84375db -> x1.556638, again:x2.490620, dgain:x1.000000 */
++	{0x0014, 0x0080}, /* index:42, gain:3.93750db -> x1.573530, again:x2.517648, dgain:x1.000000 */
++	{0x0014, 0x0080}, /* index:43, gain:4.03125db -> x1.590606, again:x2.544969, dgain:x1.000000 */
++	{0x0014, 0x0080}, /* index:44, gain:4.12500db -> x1.607867, again:x2.572586, dgain:x1.000000 */
++	{0x0014, 0x0080}, /* index:45, gain:4.21875db -> x1.625315, again:x2.600504, dgain:x1.000000 */
++	{0x0015, 0x0080}, /* index:46, gain:4.31250db -> x1.642952, again:x2.628724, dgain:x1.000000 */
++	{0x0015, 0x0080}, /* index:47, gain:4.40625db -> x1.660782, again:x2.657250, dgain:x1.000000 */
++	{0x0015, 0x0080}, /* index:48, gain:4.50000db -> x1.678804, again:x2.686086, dgain:x1.000000 */
++	{0x0015, 0x0080}, /* index:49, gain:4.59375db -> x1.697022, again:x2.715235, dgain:x1.000000 */
++	{0x0015, 0x0080}, /* index:50, gain:4.68750db -> x1.715438, again:x2.744701, dgain:x1.000000 */
++	{0x0016, 0x0080}, /* index:51, gain:4.78125db -> x1.734054, again:x2.774486, dgain:x1.000000 */
++	{0x0016, 0x0080}, /* index:52, gain:4.87500db -> x1.752871, again:x2.804594, dgain:x1.000000 */
++	{0x0016, 0x0080}, /* index:53, gain:4.96875db -> x1.771893, again:x2.835029, dgain:x1.000000 */
++	{0x0016, 0x0080}, /* index:54, gain:5.06250db -> x1.791121, again:x2.865794, dgain:x1.000000 */
++	{0x0017, 0x0080}, /* index:55, gain:5.15625db -> x1.810558, again:x2.896893, dgain:x1.000000 */
++	{0x0017, 0x0080}, /* index:56, gain:5.25000db -> x1.830206, again:x2.928330, dgain:x1.000000 */
++	{0x0017, 0x0080}, /* index:57, gain:5.34375db -> x1.850067, again:x2.960108, dgain:x1.000000 */
++	{0x0017, 0x0080}, /* index:58, gain:5.43750db -> x1.870144, again:x2.992230, dgain:x1.000000 */
++	{0x0018, 0x0080}, /* index:59, gain:5.53125db -> x1.890438, again:x3.024701, dgain:x1.000000 */
++	{0x0018, 0x0080}, /* index:60, gain:5.62500db -> x1.910953, again:x3.057525, dgain:x1.000000 */
++	{0x0018, 0x0080}, /* index:61, gain:5.71875db -> x1.931690, again:x3.090704, dgain:x1.000000 */
++	{0x0018, 0x0080}, /* index:62, gain:5.81250db -> x1.952653, again:x3.124244, dgain:x1.000000 */
++	{0x0019, 0x0080}, /* index:63, gain:5.90625db -> x1.973842, again:x3.158148, dgain:x1.000000 */
++	{0x0019, 0x0080}, /* index:64, gain:6.00000db -> x1.995262, again:x3.192420, dgain:x1.000000 */
++	{0x0019, 0x0080}, /* index:65, gain:6.09375db -> x2.016915, again:x3.227063, dgain:x1.000000 */
++	{0x001a, 0x0080}, /* index:66, gain:6.18750db -> x2.038802, again:x3.262083, dgain:x1.000000 */
++	{0x001a, 0x0080}, /* index:67, gain:6.28125db -> x2.060927, again:x3.297482, dgain:x1.000000 */
++	{0x001a, 0x0080}, /* index:68, gain:6.37500db -> x2.083291, again:x3.333266, dgain:x1.000000 */
++	{0x001a, 0x0080}, /* index:69, gain:6.46875db -> x2.105899, again:x3.369438, dgain:x1.000000 */
++	{0x001b, 0x0080}, /* index:70, gain:6.56250db -> x2.128752, again:x3.406003, dgain:x1.000000 */
++	{0x001b, 0x0080}, /* index:71, gain:6.65625db -> x2.151852, again:x3.442964, dgain:x1.000000 */
++	{0x001b, 0x0080}, /* index:72, gain:6.75000db -> x2.175204, again:x3.480327, dgain:x1.000000 */
++	{0x001c, 0x0080}, /* index:73, gain:6.84375db -> x2.198809, again:x3.518094, dgain:x1.000000 */
++	{0x001c, 0x0080}, /* index:74, gain:6.93750db -> x2.222670, again:x3.556272, dgain:x1.000000 */
++	{0x001c, 0x0080}, /* index:75, gain:7.03125db -> x2.246790, again:x3.594864, dgain:x1.000000 */
++	{0x001d, 0x0080}, /* index:76, gain:7.12500db -> x2.271172, again:x3.633875, dgain:x1.000000 */
++	{0x001d, 0x0080}, /* index:77, gain:7.21875db -> x2.295818, again:x3.673309, dgain:x1.000000 */
++	{0x001d, 0x0080}, /* index:78, gain:7.31250db -> x2.320732, again:x3.713171, dgain:x1.000000 */
++	{0x001e, 0x0080}, /* index:79, gain:7.40625db -> x2.345916, again:x3.753466, dgain:x1.000000 */
++	{0x001e, 0x0080}, /* index:80, gain:7.50000db -> x2.371374, again:x3.794198, dgain:x1.000000 */
++	{0x001e, 0x0080}, /* index:81, gain:7.59375db -> x2.397107, again:x3.835372, dgain:x1.000000 */
++	{0x001f, 0x0080}, /* index:82, gain:7.68750db -> x2.423120, again:x3.876993, dgain:x1.000000 */
++	{0x001f, 0x0080}, /* index:83, gain:7.78125db -> x2.449416, again:x3.919065, dgain:x1.000000 */
++	{0x001f, 0x0080}, /* index:84, gain:7.87500db -> x2.475996, again:x3.961594, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:85, gain:7.96875db -> x2.502865, again:x4.004585, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:86, gain:8.06250db -> x2.530026, again:x4.048042, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:87, gain:8.15625db -> x2.557482, again:x4.091970, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:88, gain:8.25000db -> x2.585235, again:x4.136376, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:89, gain:8.34375db -> x2.613289, again:x4.181263, dgain:x1.000000 */
++	{0x0020, 0x0080}, /* index:90, gain:8.43750db -> x2.641648, again:x4.226637, dgain:x1.000000 */
++	{0x0021, 0x0080}, /* index:91, gain:8.53125db -> x2.670315, again:x4.272504, dgain:x1.000000 */
++	{0x0021, 0x0080}, /* index:92, gain:8.62500db -> x2.699293, again:x4.318869, dgain:x1.000000 */
++	{0x0021, 0x0080}, /* index:93, gain:8.71875db -> x2.728585, again:x4.365736, dgain:x1.000000 */
++	{0x0021, 0x0080}, /* index:94, gain:8.81250db -> x2.758195, again:x4.413112, dgain:x1.000000 */
++	{0x0021, 0x0080}, /* index:95, gain:8.90625db -> x2.788127, again:x4.461003, dgain:x1.000000 */
++	{0x0022, 0x0080}, /* index:96, gain:9.00000db -> x2.818383, again:x4.509413, dgain:x1.000000 */
++	{0x0022, 0x0080}, /* index:97, gain:9.09375db -> x2.848968, again:x4.558348, dgain:x1.000000 */
++	{0x0022, 0x0080}, /* index:98, gain:9.18750db -> x2.879884, again:x4.607814, dgain:x1.000000 */
++	{0x0022, 0x0080}, /* index:99, gain:9.28125db -> x2.911136, again:x4.657818, dgain:x1.000000 */
++	{0x0022, 0x0080}, /* index:100, gain:9.37500db -> x2.942727, again:x4.708363, dgain:x1.000000 */
++	{0x0023, 0x0080}, /* index:101, gain:9.46875db -> x2.974661, again:x4.759458, dgain:x1.000000 */
++	{0x0023, 0x0080}, /* index:102, gain:9.56250db -> x3.006942, again:x4.811107, dgain:x1.000000 */
++	{0x0023, 0x0080}, /* index:103, gain:9.65625db -> x3.039572, again:x4.863316, dgain:x1.000000 */
++	{0x0023, 0x0080}, /* index:104, gain:9.75000db -> x3.072557, again:x4.916092, dgain:x1.000000 */
++	{0x0023, 0x0080}, /* index:105, gain:9.84375db -> x3.105900, again:x4.969440, dgain:x1.000000 */
++	{0x0024, 0x0080}, /* index:106, gain:9.93750db -> x3.139605, again:x5.023368, dgain:x1.000000 */
++	{0x0024, 0x0080}, /* index:107, gain:10.03125db -> x3.173675, again:x5.077880, dgain:x1.000000 */
++	{0x0024, 0x0080}, /* index:108, gain:10.12500db -> x3.208116, again:x5.132985, dgain:x1.000000 */
++	{0x0024, 0x0080}, /* index:109, gain:10.21875db -> x3.242930, again:x5.188687, dgain:x1.000000 */
++	{0x0024, 0x0080}, /* index:110, gain:10.31250db -> x3.278121, again:x5.244994, dgain:x1.000000 */
++	{0x0025, 0x0080}, /* index:111, gain:10.40625db -> x3.313695, again:x5.301911, dgain:x1.000000 */
++	{0x0025, 0x0080}, /* index:112, gain:10.50000db -> x3.349654, again:x5.359447, dgain:x1.000000 */
++	{0x0025, 0x0080}, /* index:113, gain:10.59375db -> x3.386004, again:x5.417607, dgain:x1.000000 */
++	{0x0025, 0x0080}, /* index:114, gain:10.68750db -> x3.422749, again:x5.476398, dgain:x1.000000 */
++	{0x0026, 0x0080}, /* index:115, gain:10.78125db -> x3.459892, again:x5.535827, dgain:x1.000000 */
++	{0x0026, 0x0080}, /* index:116, gain:10.87500db -> x3.497438, again:x5.595900, dgain:x1.000000 */
++	{0x0026, 0x0080}, /* index:117, gain:10.96875db -> x3.535391, again:x5.656626, dgain:x1.000000 */
++	{0x0026, 0x0080}, /* index:118, gain:11.06250db -> x3.573757, again:x5.718011, dgain:x1.000000 */
++	{0x0027, 0x0080}, /* index:119, gain:11.15625db -> x3.612539, again:x5.780062, dgain:x1.000000 */
++	{0x0027, 0x0080}, /* index:120, gain:11.25000db -> x3.651741, again:x5.842786, dgain:x1.000000 */
++	{0x0027, 0x0080}, /* index:121, gain:11.34375db -> x3.691369, again:x5.906191, dgain:x1.000000 */
++	{0x0027, 0x0080}, /* index:122, gain:11.43750db -> x3.731427, again:x5.970284, dgain:x1.000000 */
++	{0x0028, 0x0080}, /* index:123, gain:11.53125db -> x3.771920, again:x6.035073, dgain:x1.000000 */
++	{0x0028, 0x0080}, /* index:124, gain:11.62500db -> x3.812853, again:x6.100564, dgain:x1.000000 */
++	{0x0028, 0x0080}, /* index:125, gain:11.71875db -> x3.854229, again:x6.166766, dgain:x1.000000 */
++	{0x0028, 0x0080}, /* index:126, gain:11.81250db -> x3.896054, again:x6.233687, dgain:x1.000000 */
++	{0x0029, 0x0080}, /* index:127, gain:11.90625db -> x3.938333, again:x6.301333, dgain:x1.000000 */
++	{0x0029, 0x0080}, /* index:128, gain:12.00000db -> x3.981072, again:x6.369715, dgain:x1.000000 */
++	{0x0029, 0x0080}, /* index:129, gain:12.09375db -> x4.024274, again:x6.438838, dgain:x1.000000 */
++	{0x002a, 0x0080}, /* index:130, gain:12.18750db -> x4.067944, again:x6.508711, dgain:x1.000000 */
++	{0x002a, 0x0080}, /* index:131, gain:12.28125db -> x4.112089, again:x6.579342, dgain:x1.000000 */
++	{0x002a, 0x0080}, /* index:132, gain:12.37500db -> x4.156712, again:x6.650740, dgain:x1.000000 */
++	{0x002a, 0x0080}, /* index:133, gain:12.46875db -> x4.201821, again:x6.722913, dgain:x1.000000 */
++	{0x002b, 0x0080}, /* index:134, gain:12.56250db -> x4.247418, again:x6.795869, dgain:x1.000000 */
++	{0x002b, 0x0080}, /* index:135, gain:12.65625db -> x4.293510, again:x6.869616, dgain:x1.000000 */
++	{0x002b, 0x0080}, /* index:136, gain:12.75000db -> x4.340103, again:x6.944164, dgain:x1.000000 */
++	{0x002c, 0x0080}, /* index:137, gain:12.84375db -> x4.387200, again:x7.019521, dgain:x1.000000 */
++	{0x002c, 0x0080}, /* index:138, gain:12.93750db -> x4.434810, again:x7.095696, dgain:x1.000000 */
++	{0x002c, 0x0080}, /* index:139, gain:13.03125db -> x4.482936, again:x7.172697, dgain:x1.000000 */
++	{0x002d, 0x0080}, /* index:140, gain:13.12500db -> x4.531584, again:x7.250534, dgain:x1.000000 */
++	{0x002d, 0x0080}, /* index:141, gain:13.21875db -> x4.580759, again:x7.329215, dgain:x1.000000 */
++	{0x002d, 0x0080}, /* index:142, gain:13.31250db -> x4.630469, again:x7.408750, dgain:x1.000000 */
++	{0x002d, 0x0080}, /* index:143, gain:13.40625db -> x4.680719, again:x7.489150, dgain:x1.000000 */
++	{0x002e, 0x0080}, /* index:144, gain:13.50000db -> x4.731513, again:x7.570420, dgain:x1.000000 */
++	{0x002e, 0x0080}, /* index:145, gain:13.59375db -> x4.782858, again:x7.652573, dgain:x1.000000 */
++	{0x002e, 0x0080}, /* index:146, gain:13.68750db -> x4.834761, again:x7.735617, dgain:x1.000000 */
++	{0x002f, 0x0080}, /* index:147, gain:13.78125db -> x4.887227, again:x7.819563, dgain:x1.000000 */
++	{0x002f, 0x0080}, /* index:148, gain:13.87500db -> x4.940262, again:x7.904420, dgain:x1.000000 */
++	{0x002f, 0x0080}, /* index:149, gain:13.96875db -> x4.993873, again:x7.990197, dgain:x1.000000 */
++	{0x0030, 0x0080}, /* index:150, gain:14.06250db -> x5.048066, again:x8.076905, dgain:x1.000000 */
++	{0x0030, 0x0080}, /* index:151, gain:14.15625db -> x5.102846, again:x8.164554, dgain:x1.000000 */
++	{0x0030, 0x0080}, /* index:152, gain:14.25000db -> x5.158221, again:x8.253154, dgain:x1.000000 */
++	{0x0030, 0x0080}, /* index:153, gain:14.34375db -> x5.214198, again:x8.342717, dgain:x1.000000 */
++	{0x0030, 0x0080}, /* index:154, gain:14.43750db -> x5.270781, again:x8.433250, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:155, gain:14.53125db -> x5.327979, again:x8.524766, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:156, gain:14.62500db -> x5.385797, again:x8.617275, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:157, gain:14.71875db -> x5.444243, again:x8.710788, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:158, gain:14.81250db -> x5.503323, again:x8.805317, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:159, gain:14.90625db -> x5.563044, again:x8.900871, dgain:x1.000000 */
++	{0x0031, 0x0080}, /* index:160, gain:15.00000db -> x5.623413, again:x8.997461, dgain:x1.000000 */
++	{0x0032, 0x0080}, /* index:161, gain:15.09375db -> x5.684437, again:x9.095100, dgain:x1.000000 */
++	{0x0032, 0x0080}, /* index:162, gain:15.18750db -> x5.746124, again:x9.193798, dgain:x1.000000 */
++	{0x0032, 0x0080}, /* index:163, gain:15.28125db -> x5.808480, again:x9.293569, dgain:x1.000000 */
++	{0x0032, 0x0080}, /* index:164, gain:15.37500db -> x5.871513, again:x9.394420, dgain:x1.000000 */
++	{0x0032, 0x0080}, /* index:165, gain:15.46875db -> x5.935229, again:x9.496367, dgain:x1.000000 */
++	{0x0033, 0x0080}, /* index:166, gain:15.56250db -> x5.999637, again:x9.599419, dgain:x1.000000 */
++	{0x0033, 0x0080}, /* index:167, gain:15.65625db -> x6.064744, again:x9.703590, dgain:x1.000000 */
++	{0x0033, 0x0080}, /* index:168, gain:15.75000db -> x6.130558, again:x9.808893, dgain:x1.000000 */
++	{0x0033, 0x0080}, /* index:169, gain:15.84375db -> x6.197086, again:x9.915337, dgain:x1.000000 */
++	{0x0034, 0x0080}, /* index:170, gain:15.93750db -> x6.264335, again:x10.022937, dgain:x1.000000 */
++	{0x0034, 0x0080}, /* index:171, gain:16.03125db -> x6.332315, again:x10.131703, dgain:x1.000000 */
++	{0x0034, 0x0080}, /* index:172, gain:16.12500db -> x6.401032, again:x10.241651, dgain:x1.000000 */
++	{0x0034, 0x0080}, /* index:173, gain:16.21875db -> x6.470495, again:x10.352792, dgain:x1.000000 */
++	{0x0034, 0x0080}, /* index:174, gain:16.31250db -> x6.540712, again:x10.465139, dgain:x1.000000 */
++	{0x0035, 0x0080}, /* index:175, gain:16.40625db -> x6.611690, again:x10.578704, dgain:x1.000000 */
++	{0x0035, 0x0080}, /* index:176, gain:16.50000db -> x6.683439, again:x10.693502, dgain:x1.000000 */
++	{0x0035, 0x0080}, /* index:177, gain:16.59375db -> x6.755966, again:x10.809546, dgain:x1.000000 */
++	{0x0035, 0x0080}, /* index:178, gain:16.68750db -> x6.829282, again:x10.926851, dgain:x1.000000 */
++	{0x0036, 0x0080}, /* index:179, gain:16.78125db -> x6.903392, again:x11.045427, dgain:x1.000000 */
++	{0x0036, 0x0080}, /* index:180, gain:16.87500db -> x6.978306, again:x11.165289, dgain:x1.000000 */
++	{0x0036, 0x0080}, /* index:181, gain:16.96875db -> x7.054033, again:x11.286453, dgain:x1.000000 */
++	{0x0036, 0x0080}, /* index:182, gain:17.06250db -> x7.130582, again:x11.408931, dgain:x1.000000 */
++	{0x0037, 0x0080}, /* index:183, gain:17.15625db -> x7.207963, again:x11.532740, dgain:x1.000000 */
++	{0x0037, 0x0080}, /* index:184, gain:17.25000db -> x7.286182, again:x11.657891, dgain:x1.000000 */
++	{0x0037, 0x0080}, /* index:185, gain:17.34375db -> x7.365250, again:x11.784400, dgain:x1.000000 */
++	{0x0037, 0x0080}, /* index:186, gain:17.43750db -> x7.445176, again:x11.912282, dgain:x1.000000 */
++	{0x0038, 0x0080}, /* index:187, gain:17.53125db -> x7.525970, again:x12.041552, dgain:x1.000000 */
++	{0x0038, 0x0080}, /* index:188, gain:17.62500db -> x7.607641, again:x12.172226, dgain:x1.000000 */
++	{0x0038, 0x0080}, /* index:189, gain:17.71875db -> x7.690198, again:x12.304317, dgain:x1.000000 */
++	{0x0038, 0x0080}, /* index:190, gain:17.81250db -> x7.773650, again:x12.437840, dgain:x1.000000 */
++	{0x0039, 0x0080}, /* index:191, gain:17.90625db -> x7.858008, again:x12.572813, dgain:x1.000000 */
++	{0x0039, 0x0080}, /* index:192, gain:18.00000db -> x7.943282, again:x12.709251, dgain:x1.000000 */
++	{0x0039, 0x0080}, /* index:193, gain:18.09375db -> x8.029482, again:x12.847171, dgain:x1.000000 */
++	{0x0039, 0x0080}, /* index:194, gain:18.18750db -> x8.116616, again:x12.986586, dgain:x1.000000 */
++	{0x003a, 0x0080}, /* index:195, gain:18.28125db -> x8.204696, again:x13.127514, dgain:x1.000000 */
++	{0x003a, 0x0080}, /* index:196, gain:18.37500db -> x8.293732, again:x13.269971, dgain:x1.000000 */
++	{0x003a, 0x0080}, /* index:197, gain:18.46875db -> x8.383734, again:x13.413974, dgain:x1.000000 */
++	{0x003b, 0x0080}, /* index:198, gain:18.56250db -> x8.474713, again:x13.559542, dgain:x1.000000 */
++	{0x003b, 0x0080}, /* index:199, gain:18.65625db -> x8.566679, again:x13.706687, dgain:x1.000000 */
++	{0x003b, 0x0080}, /* index:200, gain:18.75000db -> x8.659643, again:x13.855429, dgain:x1.000000 */
++	{0x003c, 0x0080}, /* index:201, gain:18.84375db -> x8.753616, again:x14.005785, dgain:x1.000000 */
++	{0x003c, 0x0080}, /* index:202, gain:18.93750db -> x8.848608, again:x14.157773, dgain:x1.000000 */
++	{0x003c, 0x0080}, /* index:203, gain:19.03125db -> x8.944633, again:x14.311413, dgain:x1.000000 */
++	{0x003c, 0x0080}, /* index:204, gain:19.12500db -> x9.041698, again:x14.466717, dgain:x1.000000 */
++	{0x003d, 0x0080}, /* index:205, gain:19.21875db -> x9.139817, again:x14.623707, dgain:x1.000000 */
++	{0x003d, 0x0080}, /* index:206, gain:19.31250db -> x9.239000, again:x14.782401, dgain:x1.000000 */
++	{0x003d, 0x0080}, /* index:207, gain:19.40625db -> x9.339260, again:x14.942816, dgain:x1.000000 */
++	{0x003e, 0x0080}, /* index:208, gain:19.50000db -> x9.440609, again:x15.104975, dgain:x1.000000 */
++	{0x003e, 0x0080}, /* index:209, gain:19.59375db -> x9.543057, again:x15.268891, dgain:x1.000000 */
++	{0x003e, 0x0080}, /* index:210, gain:19.68750db -> x9.646616, again:x15.434586, dgain:x1.000000 */
++	{0x003f, 0x0080}, /* index:211, gain:19.78125db -> x9.751299, again:x15.602079, dgain:x1.000000 */
++	{0x003f, 0x0080}, /* index:212, gain:19.87500db -> x9.857118, again:x15.771390, dgain:x1.000000 */
++	{0x003f, 0x0080}, /* index:213, gain:19.96875db -> x9.964087, again:x15.942540, dgain:x1.000000 */
++	{0x0040, 0x0080}, /* index:214, gain:20.06250db -> x10.072214, again:x16.000000, dgain:x1.007221 */
++	{0x0040, 0x0082}, /* index:215, gain:20.15625db -> x10.181517, again:x16.000000, dgain:x1.018152 */
++	{0x0040, 0x0083}, /* index:216, gain:20.25000db -> x10.292006, again:x16.000000, dgain:x1.029201 */
++	{0x0040, 0x0085}, /* index:217, gain:20.34375db -> x10.403692, again:x16.000000, dgain:x1.040369 */
++	{0x0040, 0x0086}, /* index:218, gain:20.43750db -> x10.516592, again:x16.000000, dgain:x1.051659 */
++	{0x0040, 0x0088}, /* index:219, gain:20.53125db -> x10.630714, again:x16.000000, dgain:x1.063071 */
++	{0x0040, 0x0089}, /* index:220, gain:20.62500db -> x10.746078, again:x16.000000, dgain:x1.074608 */
++	{0x0040, 0x008b}, /* index:221, gain:20.71875db -> x10.862694, again:x16.000000, dgain:x1.086269 */
++	{0x0040, 0x008c}, /* index:222, gain:20.81250db -> x10.980572, again:x16.000000, dgain:x1.098057 */
++	{0x0040, 0x008e}, /* index:223, gain:20.90625db -> x11.099733, again:x16.000000, dgain:x1.109973 */
++	{0x0040, 0x008f}, /* index:224, gain:21.00000db -> x11.220183, again:x16.000000, dgain:x1.122018 */
++	{0x0040, 0x0091}, /* index:225, gain:21.09375db -> x11.341944, again:x16.000000, dgain:x1.134194 */
++	{0x0040, 0x0092}, /* index:226, gain:21.18750db -> x11.465026, again:x16.000000, dgain:x1.146503 */
++	{0x0040, 0x0094}, /* index:227, gain:21.28125db -> x11.589441, again:x16.000000, dgain:x1.158944 */
++	{0x0040, 0x0095}, /* index:228, gain:21.37500db -> x11.715209, again:x16.000000, dgain:x1.171521 */
++	{0x0040, 0x0097}, /* index:229, gain:21.46875db -> x11.842338, again:x16.000000, dgain:x1.184234 */
++	{0x0040, 0x0099}, /* index:230, gain:21.56250db -> x11.970850, again:x16.000000, dgain:x1.197085 */
++	{0x0040, 0x009a}, /* index:231, gain:21.65625db -> x12.100757, again:x16.000000, dgain:x1.210076 */
++	{0x0040, 0x009c}, /* index:232, gain:21.75000db -> x12.232071, again:x16.000000, dgain:x1.223207 */
++	{0x0040, 0x009e}, /* index:233, gain:21.84375db -> x12.364812, again:x16.000000, dgain:x1.236481 */
++	{0x0040, 0x009f}, /* index:234, gain:21.93750db -> x12.498991, again:x16.000000, dgain:x1.249899 */
++	{0x0040, 0x00a1}, /* index:235, gain:22.03125db -> x12.634629, again:x16.000000, dgain:x1.263463 */
++	{0x0040, 0x00a3}, /* index:236, gain:22.12500db -> x12.771739, again:x16.000000, dgain:x1.277174 */
++	{0x0040, 0x00a5}, /* index:237, gain:22.21875db -> x12.910334, again:x16.000000, dgain:x1.291033 */
++	{0x0040, 0x00a7}, /* index:238, gain:22.31250db -> x13.050436, again:x16.000000, dgain:x1.305044 */
++	{0x0040, 0x00a8}, /* index:239, gain:22.40625db -> x13.192055, again:x16.000000, dgain:x1.319205 */
++	{0x0040, 0x00aa}, /* index:240, gain:22.50000db -> x13.335214, again:x16.000000, dgain:x1.333521 */
++	{0x0040, 0x00ac}, /* index:241, gain:22.59375db -> x13.479927, again:x16.000000, dgain:x1.347993 */
++	{0x0040, 0x00ae}, /* index:242, gain:22.68750db -> x13.626207, again:x16.000000, dgain:x1.362621 */
++	{0x0040, 0x00b0}, /* index:243, gain:22.78125db -> x13.774078, again:x16.000000, dgain:x1.377408 */
++	{0x0040, 0x00b2}, /* index:244, gain:22.87500db -> x13.923549, again:x16.000000, dgain:x1.392355 */
++	{0x0040, 0x00b4}, /* index:245, gain:22.96875db -> x14.074647, again:x16.000000, dgain:x1.407465 */
++	{0x0040, 0x00b6}, /* index:246, gain:23.06250db -> x14.227384, again:x16.000000, dgain:x1.422738 */
++	{0x0040, 0x00b8}, /* index:247, gain:23.15625db -> x14.381775, again:x16.000000, dgain:x1.438177 */
++	{0x0040, 0x00ba}, /* index:248, gain:23.25000db -> x14.537845, again:x16.000000, dgain:x1.453784 */
++	{0x0040, 0x00bc}, /* index:249, gain:23.34375db -> x14.695604, again:x16.000000, dgain:x1.469560 */
++	{0x0040, 0x00be}, /* index:250, gain:23.43750db -> x14.855080, again:x16.000000, dgain:x1.485508 */
++	{0x0040, 0x00c0}, /* index:251, gain:23.53125db -> x15.016287, again:x16.000000, dgain:x1.501629 */
++	{0x0040, 0x00c2}, /* index:252, gain:23.62500db -> x15.179238, again:x16.000000, dgain:x1.517924 */
++	{0x0040, 0x00c4}, /* index:253, gain:23.71875db -> x15.343962, again:x16.000000, dgain:x1.534396 */
++	{0x0040, 0x00c6}, /* index:254, gain:23.81250db -> x15.510470, again:x16.000000, dgain:x1.551047 */
++	{0x0040, 0x00c8}, /* index:255, gain:23.90625db -> x15.678788, again:x16.000000, dgain:x1.567879 */
++	{0x0040, 0x00ca}, /* index:256, gain:24.00000db -> x15.848934, again:x16.000000, dgain:x1.584893 */
++	{0x0040, 0x00cd}, /* index:257, gain:24.09375db -> x16.020921, again:x16.000000, dgain:x1.602092 */
++	{0x0040, 0x00cf}, /* index:258, gain:24.18750db -> x16.194779, again:x16.000000, dgain:x1.619478 */
++	{0x0040, 0x00d1}, /* index:259, gain:24.28125db -> x16.370519, again:x16.000000, dgain:x1.637052 */
++	{0x0040, 0x00d3}, /* index:260, gain:24.37500db -> x16.548171, again:x16.000000, dgain:x1.654817 */
++	{0x0040, 0x00d6}, /* index:261, gain:24.46875db -> x16.727751, again:x16.000000, dgain:x1.672775 */
++	{0x0040, 0x00d8}, /* index:262, gain:24.56250db -> x16.909275, again:x16.000000, dgain:x1.690927 */
++	{0x0040, 0x00da}, /* index:263, gain:24.65625db -> x17.092773, again:x16.000000, dgain:x1.709277 */
++	{0x0040, 0x00dd}, /* index:264, gain:24.75000db -> x17.278258, again:x16.000000, dgain:x1.727826 */
++	{0x0040, 0x00df}, /* index:265, gain:24.84375db -> x17.465760, again:x16.000000, dgain:x1.746576 */
++	{0x0040, 0x00e1}, /* index:266, gain:24.93750db -> x17.655298, again:x16.000000, dgain:x1.765530 */
++	{0x0040, 0x00e4}, /* index:267, gain:25.03125db -> x17.846887, again:x16.000000, dgain:x1.784689 */
++	{0x0040, 0x00e6}, /* index:268, gain:25.12500db -> x18.040560, again:x16.000000, dgain:x1.804056 */
++	{0x0040, 0x00e9}, /* index:269, gain:25.21875db -> x18.236330, again:x16.000000, dgain:x1.823633 */
++	{0x0040, 0x00eb}, /* index:270, gain:25.31250db -> x18.434230, again:x16.000000, dgain:x1.843423 */
++	{0x0040, 0x00ee}, /* index:271, gain:25.40625db -> x18.634277, again:x16.000000, dgain:x1.863428 */
++	{0x0040, 0x00f1}, /* index:272, gain:25.50000db -> x18.836490, again:x16.000000, dgain:x1.883649 */
++	{0x0040, 0x00f3}, /* index:273, gain:25.59375db -> x19.040902, again:x16.000000, dgain:x1.904090 */
++	{0x0040, 0x00f6}, /* index:274, gain:25.68750db -> x19.247528, again:x16.000000, dgain:x1.924753 */
++	{0x0040, 0x00f9}, /* index:275, gain:25.78125db -> x19.456401, again:x16.000000, dgain:x1.945640 */
++	{0x0040, 0x00fb}, /* index:276, gain:25.87500db -> x19.667540, again:x16.000000, dgain:x1.966754 */
++	{0x0040, 0x00fe}, /* index:277, gain:25.96875db -> x19.880966, again:x16.000000, dgain:x1.988097 */
++	{0x0040, 0x0101}, /* index:278, gain:26.06250db -> x20.096713, again:x16.000000, dgain:x2.009671 */
++	{0x0040, 0x0104}, /* index:279, gain:26.15625db -> x20.314795, again:x16.000000, dgain:x2.031480 */
++	{0x0040, 0x0106}, /* index:280, gain:26.25000db -> x20.535250, again:x16.000000, dgain:x2.053525 */
++	{0x0040, 0x0109}, /* index:281, gain:26.34375db -> x20.758098, again:x16.000000, dgain:x2.075810 */
++	{0x0040, 0x010c}, /* index:282, gain:26.43750db -> x20.983357, again:x16.000000, dgain:x2.098336 */
++	{0x0040, 0x010f}, /* index:283, gain:26.53125db -> x21.211067, again:x16.000000, dgain:x2.121107 */
++	{0x0040, 0x0112}, /* index:284, gain:26.62500db -> x21.441243, again:x16.000000, dgain:x2.144124 */
++	{0x0040, 0x0115}, /* index:285, gain:26.71875db -> x21.673922, again:x16.000000, dgain:x2.167392 */
++	{0x0040, 0x0118}, /* index:286, gain:26.81250db -> x21.909126, again:x16.000000, dgain:x2.190913 */
++	{0x0040, 0x011b}, /* index:287, gain:26.90625db -> x22.146876, again:x16.000000, dgain:x2.214688 */
++	{0x0040, 0x011e}, /* index:288, gain:27.00000db -> x22.387213, again:x16.000000, dgain:x2.238721 */
++	{0x0040, 0x0121}, /* index:289, gain:27.09375db -> x22.630151, again:x16.000000, dgain:x2.263015 */
++	{0x0040, 0x0124}, /* index:290, gain:27.18750db -> x22.875732, again:x16.000000, dgain:x2.287573 */
++	{0x0040, 0x0127}, /* index:291, gain:27.28125db -> x23.123978, again:x16.000000, dgain:x2.312398 */
++	{0x0040, 0x012b}, /* index:292, gain:27.37500db -> x23.374912, again:x16.000000, dgain:x2.337491 */
++	{0x0040, 0x012e}, /* index:293, gain:27.46875db -> x23.628575, again:x16.000000, dgain:x2.362857 */
++	{0x0040, 0x0131}, /* index:294, gain:27.56250db -> x23.884984, again:x16.000000, dgain:x2.388498 */
++	{0x0040, 0x0135}, /* index:295, gain:27.65625db -> x24.144182, again:x16.000000, dgain:x2.414418 */
++	{0x0040, 0x0138}, /* index:296, gain:27.75000db -> x24.406193, again:x16.000000, dgain:x2.440619 */
++	{0x0040, 0x013b}, /* index:297, gain:27.84375db -> x24.671041, again:x16.000000, dgain:x2.467104 */
++	{0x0040, 0x013f}, /* index:298, gain:27.93750db -> x24.938770, again:x16.000000, dgain:x2.493877 */
++	{0x0040, 0x0142}, /* index:299, gain:28.03125db -> x25.209397, again:x16.000000, dgain:x2.520940 */
++	{0x0040, 0x0146}, /* index:300, gain:28.12500db -> x25.482967, again:x16.000000, dgain:x2.548297 */
++	{0x0040, 0x0149}, /* index:301, gain:28.21875db -> x25.759507, again:x16.000000, dgain:x2.575951 */
++	{0x0040, 0x014d}, /* index:302, gain:28.31250db -> x26.039040, again:x16.000000, dgain:x2.603904 */
++	{0x0040, 0x0150}, /* index:303, gain:28.40625db -> x26.321614, again:x16.000000, dgain:x2.632161 */
++	{0x0040, 0x0154}, /* index:304, gain:28.50000db -> x26.607248, again:x16.000000, dgain:x2.660725 */
++	{0x0040, 0x0158}, /* index:305, gain:28.59375db -> x26.895988, again:x16.000000, dgain:x2.689599 */
++	{0x0040, 0x015c}, /* index:306, gain:28.68750db -> x27.187861, again:x16.000000, dgain:x2.718786 */
++	{0x0040, 0x015f}, /* index:307, gain:28.78125db -> x27.482895, again:x16.000000, dgain:x2.748289 */
++	{0x0040, 0x0163}, /* index:308, gain:28.87500db -> x27.781137, again:x16.000000, dgain:x2.778114 */
++	{0x0040, 0x0167}, /* index:309, gain:28.96875db -> x28.082609, again:x16.000000, dgain:x2.808261 */
++	{0x0040, 0x016b}, /* index:310, gain:29.06250db -> x28.387360, again:x16.000000, dgain:x2.838736 */
++	{0x0040, 0x016f}, /* index:311, gain:29.15625db -> x28.695417, again:x16.000000, dgain:x2.869542 */
++	{0x0040, 0x0173}, /* index:312, gain:29.25000db -> x29.006810, again:x16.000000, dgain:x2.900681 */
++	{0x0040, 0x0177}, /* index:313, gain:29.34375db -> x29.321590, again:x16.000000, dgain:x2.932159 */
++	{0x0040, 0x017b}, /* index:314, gain:29.43750db -> x29.639778, again:x16.000000, dgain:x2.963978 */
++	{0x0040, 0x017f}, /* index:315, gain:29.53125db -> x29.961427, again:x16.000000, dgain:x2.996143 */
++	{0x0040, 0x0183}, /* index:316, gain:29.62500db -> x30.286567, again:x16.000000, dgain:x3.028657 */
++	{0x0040, 0x0187}, /* index:317, gain:29.71875db -> x30.615226, again:x16.000000, dgain:x3.061523 */
++	{0x0040, 0x018c}, /* index:318, gain:29.81250db -> x30.947461, again:x16.000000, dgain:x3.094746 */
++	{0x0040, 0x0190}, /* index:319, gain:29.90625db -> x31.283292, again:x16.000000, dgain:x3.128329 */
++	{0x0040, 0x0194}, /* index:320, gain:30.00000db -> x31.622777, again:x16.000000, dgain:x3.162278 */
++	{0x0040, 0x0199}, /* index:321, gain:30.09375db -> x31.965945, again:x16.000000, dgain:x3.196594 */
++	{0x0040, 0x019d}, /* index:322, gain:30.18750db -> x32.312829, again:x16.000000, dgain:x3.231283 */
++	{0x0040, 0x01a2}, /* index:323, gain:30.28125db -> x32.663485, again:x16.000000, dgain:x3.266349 */
++	{0x0040, 0x01a6}, /* index:324, gain:30.37500db -> x33.017938, again:x16.000000, dgain:x3.301794 */
++	{0x0040, 0x01ab}, /* index:325, gain:30.46875db -> x33.376247, again:x16.000000, dgain:x3.337625 */
++	{0x0040, 0x01af}, /* index:326, gain:30.56250db -> x33.738444, again:x16.000000, dgain:x3.373844 */
++	{0x0040, 0x01b4}, /* index:327, gain:30.65625db -> x34.104562, again:x16.000000, dgain:x3.410456 */
++	{0x0040, 0x01b9}, /* index:328, gain:30.75000db -> x34.474663, again:x16.000000, dgain:x3.447466 */
++	{0x0040, 0x01be}, /* index:329, gain:30.84375db -> x34.848770, again:x16.000000, dgain:x3.484877 */
++	{0x0040, 0x01c2}, /* index:330, gain:30.93750db -> x35.226947, again:x16.000000, dgain:x3.522695 */
++	{0x0040, 0x01c7}, /* index:331, gain:31.03125db -> x35.609227, again:x16.000000, dgain:x3.560923 */
++	{0x0040, 0x01cc}, /* index:332, gain:31.12500db -> x35.995646, again:x16.000000, dgain:x3.599565 */
++	{0x0040, 0x01d1}, /* index:333, gain:31.21875db -> x36.386269, again:x16.000000, dgain:x3.638627 */
++	{0x0040, 0x01d6}, /* index:334, gain:31.31250db -> x36.781120, again:x16.000000, dgain:x3.678112 */
++	{0x0040, 0x01db}, /* index:335, gain:31.40625db -> x37.180267, again:x16.000000, dgain:x3.718027 */
++	{0x0040, 0x01e1}, /* index:336, gain:31.50000db -> x37.583745, again:x16.000000, dgain:x3.758374 */
++	{0x0040, 0x01e6}, /* index:337, gain:31.59375db -> x37.991591, again:x16.000000, dgain:x3.799159 */
++	{0x0040, 0x01eb}, /* index:338, gain:31.68750db -> x38.403873, again:x16.000000, dgain:x3.840387 */
++	{0x0040, 0x01f0}, /* index:339, gain:31.78125db -> x38.820619, again:x16.000000, dgain:x3.882062 */
++	{0x0040, 0x01f6}, /* index:340, gain:31.87500db -> x39.241898, again:x16.000000, dgain:x3.924190 */
++	{0x0040, 0x01fb}, /* index:341, gain:31.96875db -> x39.667748, again:x16.000000, dgain:x3.966775 */
++	{0x0040, 0x0201}, /* index:342, gain:32.06250db -> x40.098209, again:x16.000000, dgain:x4.009821 */
++	{0x0040, 0x0206}, /* index:343, gain:32.15625db -> x40.533352, again:x16.000000, dgain:x4.053335 */
++	{0x0040, 0x020c}, /* index:344, gain:32.25000db -> x40.973206, again:x16.000000, dgain:x4.097321 */
++	{0x0040, 0x0212}, /* index:345, gain:32.34375db -> x41.417845, again:x16.000000, dgain:x4.141785 */
++	{0x0040, 0x0217}, /* index:346, gain:32.43750db -> x41.867309, again:x16.000000, dgain:x4.186731 */
++	{0x0040, 0x021d}, /* index:347, gain:32.53125db -> x42.321639, again:x16.000000, dgain:x4.232164 */
++	{0x0040, 0x0223}, /* index:348, gain:32.62500db -> x42.780911, again:x16.000000, dgain:x4.278091 */
++	{0x0040, 0x0229}, /* index:349, gain:32.71875db -> x43.245154, again:x16.000000, dgain:x4.324515 */
++	{0x0040, 0x022f}, /* index:350, gain:32.81250db -> x43.714448, again:x16.000000, dgain:x4.371445 */
++	{0x0040, 0x0235}, /* index:351, gain:32.90625db -> x44.188835, again:x16.000000, dgain:x4.418883 */
++	{0x0040, 0x023b}, /* index:352, gain:33.00000db -> x44.668357, again:x16.000000, dgain:x4.466836 */
++	{0x0040, 0x0241}, /* index:353, gain:33.09375db -> x45.153095, again:x16.000000, dgain:x4.515309 */
++	{0x0040, 0x0248}, /* index:354, gain:33.18750db -> x45.643081, again:x16.000000, dgain:x4.564308 */
++	{0x0040, 0x024e}, /* index:355, gain:33.28125db -> x46.138397, again:x16.000000, dgain:x4.613840 */
++	{0x0040, 0x0254}, /* index:356, gain:33.37500db -> x46.639088, again:x16.000000, dgain:x4.663909 */
++	{0x0040, 0x025b}, /* index:357, gain:33.46875db -> x47.145199, again:x16.000000, dgain:x4.714520 */
++	{0x0040, 0x0262}, /* index:358, gain:33.56250db -> x47.656816, again:x16.000000, dgain:x4.765682 */
++	{0x0040, 0x0268}, /* index:359, gain:33.65625db -> x48.173972, again:x16.000000, dgain:x4.817397 */
++	{0x0040, 0x026f}, /* index:360, gain:33.75000db -> x48.696753, again:x16.000000, dgain:x4.869675 */
++	{0x0040, 0x0276}, /* index:361, gain:33.84375db -> x49.225207, again:x16.000000, dgain:x4.922521 */
++	{0x0040, 0x027c}, /* index:362, gain:33.93750db -> x49.759382, again:x16.000000, dgain:x4.975938 */
++	{0x0040, 0x0283}, /* index:363, gain:34.03125db -> x50.299367, again:x16.000000, dgain:x5.029937 */
++	{0x0040, 0x028a}, /* index:364, gain:34.12500db -> x50.845199, again:x16.000000, dgain:x5.084520 */
++	{0x0040, 0x0291}, /* index:365, gain:34.21875db -> x51.396968, again:x16.000000, dgain:x5.139697 */
++	{0x0040, 0x0299}, /* index:366, gain:34.31250db -> x51.954725, again:x16.000000, dgain:x5.195472 */
++	{0x0040, 0x02a0}, /* index:367, gain:34.40625db -> x52.518520, again:x16.000000, dgain:x5.251852 */
++	{0x0040, 0x02a7}, /* index:368, gain:34.50000db -> x53.088447, again:x16.000000, dgain:x5.308845 */
++	{0x0040, 0x02ae}, /* index:369, gain:34.59375db -> x53.664545, again:x16.000000, dgain:x5.366455 */
++	{0x0040, 0x02b6}, /* index:370, gain:34.68750db -> x54.246909, again:x16.000000, dgain:x5.424691 */
++	{0x0040, 0x02bd}, /* index:371, gain:34.78125db -> x54.835593, again:x16.000000, dgain:x5.483559 */
++	{0x0040, 0x02c5}, /* index:372, gain:34.87500db -> x55.430651, again:x16.000000, dgain:x5.543065 */
++	{0x0040, 0x02cd}, /* index:373, gain:34.96875db -> x56.032181, again:x16.000000, dgain:x5.603218 */
++	{0x0040, 0x02d4}, /* index:374, gain:35.06250db -> x56.640223, again:x16.000000, dgain:x5.664022 */
++	{0x0040, 0x02dc}, /* index:375, gain:35.15625db -> x57.254879, again:x16.000000, dgain:x5.725488 */
++	{0x0040, 0x02e4}, /* index:376, gain:35.25000db -> x57.876205, again:x16.000000, dgain:x5.787621 */
++	{0x0040, 0x02ec}, /* index:377, gain:35.34375db -> x58.504258, again:x16.000000, dgain:x5.850426 */
++	{0x0040, 0x02f4}, /* index:378, gain:35.43750db -> x59.139143, again:x16.000000, dgain:x5.913914 */
++	{0x0040, 0x02fd}, /* index:379, gain:35.53125db -> x59.780900, again:x16.000000, dgain:x5.978090 */
++	{0x0040, 0x0305}, /* index:380, gain:35.62500db -> x60.429639, again:x16.000000, dgain:x6.042964 */
++	{0x0040, 0x030d}, /* index:381, gain:35.71875db -> x61.085418, again:x16.000000, dgain:x6.108542 */
++	{0x0040, 0x0316}, /* index:382, gain:35.81250db -> x61.748296, again:x16.000000, dgain:x6.174830 */
++	{0x0040, 0x031e}, /* index:383, gain:35.90625db -> x62.418384, again:x16.000000, dgain:x6.241838 */
++	{0x0040, 0x0327}, /* index:384, gain:36.00000db -> x63.095728, again:x16.000000, dgain:x6.309573 */
++	{0x0040, 0x0330}, /* index:385, gain:36.09375db -> x63.780438, again:x16.000000, dgain:x6.378044 */
++	{0x0040, 0x0339}, /* index:386, gain:36.18750db -> x64.472580, again:x16.000000, dgain:x6.447258 */
++	{0x0040, 0x0342}, /* index:387, gain:36.28125db -> x65.172214, again:x16.000000, dgain:x6.517221 */
++	{0x0040, 0x034b}, /* index:388, gain:36.37500db -> x65.879459, again:x16.000000, dgain:x6.587946 */
++	{0x0040, 0x0354}, /* index:389, gain:36.46875db -> x66.594360, again:x16.000000, dgain:x6.659436 */
++	{0x0040, 0x035d}, /* index:390, gain:36.56250db -> x67.317038, again:x16.000000, dgain:x6.731704 */
++	{0x0040, 0x0367}, /* index:391, gain:36.65625db -> x68.047559, again:x16.000000, dgain:x6.804756 */
++	{0x0040, 0x0370}, /* index:392, gain:36.75000db -> x68.785987, again:x16.000000, dgain:x6.878599 */
++	{0x0040, 0x037a}, /* index:393, gain:36.84375db -> x69.532449, again:x16.000000, dgain:x6.953245 */
++	{0x0040, 0x0383}, /* index:394, gain:36.93750db -> x70.286991, again:x16.000000, dgain:x7.028699 */
++	{0x0040, 0x038d}, /* index:395, gain:37.03125db -> x71.049741, again:x16.000000, dgain:x7.104974 */
++	{0x0040, 0x0397}, /* index:396, gain:37.12500db -> x71.820768, again:x16.000000, dgain:x7.182077 */
++	{0x0040, 0x03a1}, /* index:397, gain:37.21875db -> x72.600143, again:x16.000000, dgain:x7.260014 */
++	{0x0040, 0x03ab}, /* index:398, gain:37.31250db -> x73.387995, again:x16.000000, dgain:x7.338800 */
++	{0x0040, 0x03b5}, /* index:399, gain:37.40625db -> x74.184377, again:x16.000000, dgain:x7.418438 */
++	{0x0040, 0x03bf}, /* index:400, gain:37.50000db -> x74.989421, again:x16.000000, dgain:x7.498942 */
++	{0x0040, 0x03ca}, /* index:401, gain:37.59375db -> x75.803201, again:x16.000000, dgain:x7.580320 */
++	{0x0040, 0x03d4}, /* index:402, gain:37.68750db -> x76.625792, again:x16.000000, dgain:x7.662579 */
++	{0x0040, 0x03df}, /* index:403, gain:37.78125db -> x77.457330, again:x16.000000, dgain:x7.745733 */
++	{0x0040, 0x03ea}, /* index:404, gain:37.87500db -> x78.297871, again:x16.000000, dgain:x7.829787 */
++	{0x0040, 0x03f5}, /* index:405, gain:37.96875db -> x79.147554, again:x16.000000, dgain:x7.914755 */
++	{0x0040, 0x0400}, /* index:406, gain:38.06250db -> x80.006459, again:x16.000000, dgain:x8.000646 */
++	{0x0040, 0x040b}, /* index:407, gain:38.15625db -> x80.874662, again:x16.000000, dgain:x8.087466 */
++	{0x0040, 0x0416}, /* index:408, gain:38.25000db -> x81.752308, again:x16.000000, dgain:x8.175231 */
++	{0x0040, 0x0421}, /* index:409, gain:38.34375db -> x82.639457, again:x16.000000, dgain:x8.263946 */
++	{0x0040, 0x042d}, /* index:410, gain:38.43750db -> x83.536255, again:x16.000000, dgain:x8.353625 */
++	{0x0040, 0x0438}, /* index:411, gain:38.53125db -> x84.442785, again:x16.000000, dgain:x8.444278 */
++	{0x0040, 0x0444}, /* index:412, gain:38.62500db -> x85.359129, again:x16.000000, dgain:x8.535913 */
++	{0x0040, 0x0450}, /* index:413, gain:38.71875db -> x86.285441, again:x16.000000, dgain:x8.628544 */
++	{0x0040, 0x045c}, /* index:414, gain:38.81250db -> x87.221781, again:x16.000000, dgain:x8.722178 */
++	{0x0040, 0x0468}, /* index:415, gain:38.90625db -> x88.168307, again:x16.000000, dgain:x8.816831 */
++	{0x0040, 0x0474}, /* index:416, gain:39.00000db -> x89.125104, again:x16.000000, dgain:x8.912510 */
++	{0x0040, 0x0481}, /* index:417, gain:39.09375db -> x90.092259, again:x16.000000, dgain:x9.009226 */
++	{0x0040, 0x048d}, /* index:418, gain:39.18750db -> x91.069934, again:x16.000000, dgain:x9.106993 */
++	{0x0040, 0x049a}, /* index:419, gain:39.28125db -> x92.058194, again:x16.000000, dgain:x9.205819 */
++	{0x0040, 0x04a7}, /* index:420, gain:39.37500db -> x93.057204, again:x16.000000, dgain:x9.305720 */
++	{0x0040, 0x04b4}, /* index:421, gain:39.46875db -> x94.067055, again:x16.000000, dgain:x9.406706 */
++	{0x0040, 0x04c1}, /* index:422, gain:39.56250db -> x95.087839, again:x16.000000, dgain:x9.508784 */
++	{0x0040, 0x04ce}, /* index:423, gain:39.65625db -> x96.119726, again:x16.000000, dgain:x9.611973 */
++	{0x0040, 0x04db}, /* index:424, gain:39.75000db -> x97.162784, again:x16.000000, dgain:x9.716278 */
++	{0x0040, 0x04e9}, /* index:425, gain:39.84375db -> x98.217189, again:x16.000000, dgain:x9.821719 */
++	{0x0040, 0x04f6}, /* index:426, gain:39.93750db -> x99.283036, again:x16.000000, dgain:x9.928304 */
++	{0x0040, 0x0504}, /* index:427, gain:40.03125db -> x100.360449, again:x16.000000, dgain:x10.036045 */
++	{0x0040, 0x0512}, /* index:428, gain:40.12500db -> x101.449499, again:x16.000000, dgain:x10.144950 */
++	{0x0040, 0x0520}, /* index:429, gain:40.21875db -> x102.550422, again:x16.000000, dgain:x10.255042 */
++	{0x0040, 0x052e}, /* index:430, gain:40.31250db -> x103.663293, again:x16.000000, dgain:x10.366329 */
++	{0x0040, 0x053d}, /* index:431, gain:40.40625db -> x104.788240, again:x16.000000, dgain:x10.478824 */
++	{0x0040, 0x054b}, /* index:432, gain:40.50000db -> x105.925396, again:x16.000000, dgain:x10.592540 */
++	{0x0040, 0x055a}, /* index:433, gain:40.59375db -> x107.074833, again:x16.000000, dgain:x10.707483 */
++	{0x0040, 0x0569}, /* index:434, gain:40.68750db -> x108.236802, again:x16.000000, dgain:x10.823680 */
++	{0x0040, 0x0578}, /* index:435, gain:40.78125db -> x109.411381, again:x16.000000, dgain:x10.941138 */
++	{0x0040, 0x0587}, /* index:436, gain:40.87500db -> x110.598706, again:x16.000000, dgain:x11.059871 */
++	{0x0040, 0x0597}, /* index:437, gain:40.96875db -> x111.798917, again:x16.000000, dgain:x11.179892 */
++	{0x0040, 0x05a6}, /* index:438, gain:41.06250db -> x113.012089, again:x16.000000, dgain:x11.301209 */
++	{0x0040, 0x05b6}, /* index:439, gain:41.15625db -> x114.238490, again:x16.000000, dgain:x11.423849 */
++	{0x0040, 0x05c6}, /* index:440, gain:41.25000db -> x115.478198, again:x16.000000, dgain:x11.547820 */
++	{0x0040, 0x05d6}, /* index:441, gain:41.34375db -> x116.731361, again:x16.000000, dgain:x11.673136 */
++	{0x0040, 0x05e6}, /* index:442, gain:41.43750db -> x117.998122, again:x16.000000, dgain:x11.799812 */
++	{0x0040, 0x05f6}, /* index:443, gain:41.53125db -> x119.278565, again:x16.000000, dgain:x11.927856 */
++	{0x0040, 0x0607}, /* index:444, gain:41.62500db -> x120.572968, again:x16.000000, dgain:x12.057297 */
++	{0x0040, 0x0618}, /* index:445, gain:41.71875db -> x121.881418, again:x16.000000, dgain:x12.188142 */
++	{0x0040, 0x0629}, /* index:446, gain:41.81250db -> x123.204068, again:x16.000000, dgain:x12.320407 */
++	{0x0040, 0x063a}, /* index:447, gain:41.90625db -> x124.541071, again:x16.000000, dgain:x12.454107 */
++	{0x0040, 0x064b}, /* index:448, gain:42.00000db -> x125.892514, again:x16.000000, dgain:x12.589251 */
++};
++#endif /* AR0144_XC7027CONFIGVIU_H */
+diff --git a/drivers/cam_generic/kernel/include/xc7027_ar0144_types.h b/drivers/cam_generic/kernel/include/xc7027_ar0144_types.h
+new file mode 100755
+index 0000000..ed1d443
+--- /dev/null
++++ b/drivers/cam_generic/kernel/include/xc7027_ar0144_types.h
+@@ -0,0 +1,110 @@
++#ifndef XC7027_AR0144TYPES_H
++#define XC7027_AR0144TYPES_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#if !defined(__KERNEL__) && !defined(__STANDALONE__)
++#include <stdint.h>
++
++#endif
++
++#define XC7027_AR0144_RESET_REGISTER				0x301A
++#define XC7027_AR0144_LINE_LENGTH_PCK			0x300C
++#define XC7027_AR0144_FRAME_LENGTH_LINES			0x300A
++
++#define XC7027_AR0144_CHIP_VERSION_REG			0x3000
++#define XC7027_AR0144_COARSE_INTEGRATION_TIME	0x3012
++
++#define XC7027_AR0144_VT_PIX_CLK_DIV				0x302A
++#define XC7027_AR0144_VT_SYS_CLK_DIV				0x302C
++#define XC7027_AR0144_PRE_PLL_CLK_DIV				0x302E
++#define XC7027_AR0144_PLL_MULTIPLIER				0x3030
++
++#define XC7027_AR0144_DGAIN						0x305E
++#define XC7027_AR0144_AGAIN						0x3060
++#define XC7027_AR0144_DCG_CTL						0x3100
++
++	/* XC7027_AR0144 mirror mode */
++#define XC7027_AR0144_READ_MODE				0x3040
++#define XC7027_AR0144_H_MIRROR			(0x01 << 14)
++#define XC7027_AR0144_V_FLIP				(0x01 << 15)
++#define XC7027_AR0144_MIRROR_MASK			(XC7027_AR0144_H_MIRROR + XC7027_AR0144_V_FLIP)
++
++	typedef struct XC7027_AR0144_Geometry
++	{
++		enum CSI_IDX mCsiIdx;
++
++
++		uint32_t mWinMode;
++
++
++		uint32_t mVmax;
++		uint32_t mHmax;
++
++
++		uint32_t mXoff;
++		uint32_t mYoff;
++		uint32_t mWidth;
++		uint32_t mHeight;
++		uint8_t  mOb;
++
++
++		uint8_t mVerFlip;
++		uint8_t mHorFlip;
++
++
++		uint8_t mFps;
++
++
++		uint8_t mExpMode;
++
++
++		uint8_t mSyncMode;
++
++	} XC7027_AR0144_Geometry_t;
++
++
++
++	typedef struct XC7027_AR0144_Exposure
++	{
++		enum CSI_IDX mCsiIdx;
++
++		uint32_t mAnalogGain;
++		uint32_t mExposureLines;
++		uint32_t mExposureLinesShort;
++		uint8_t  mConversionGain;
++
++		uint8_t mConfigFlags;
++	} XC7027_AR0144_Exposure_t;
++
++
++
++	typedef enum XC7027_AR0144_ExpState
++	{
++		XC7027_AR0144_EXP_SENT = 1,
++		XC7027_AR0144_EXP_APPLIED,
++		XC7027_AR0144_EXP_USED,
++		XC7027_AR0144_EXP_READY,
++	}  XC7027_AR0144_ExpState_t;
++
++
++
++	typedef struct XC7027_AR0144_ChGain
++	{
++		enum CSI_IDX mCsiIdx;
++
++		uint16_t mLevel[4];
++		uint16_t mMax;
++		uint16_t mMin;
++
++	}  XC7027_AR0144_ChGain_t;
++
++
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* XC7027_AR0144TYPES_H */
+diff --git a/drivers/cam_generic/user/src/xc7027_ar0144_user.cpp b/drivers/cam_generic/user/src/xc7027_ar0144_user.cpp
+new file mode 100755
+index 0000000..01ed399
+--- /dev/null
++++ b/drivers/cam_generic/user/src/xc7027_ar0144_user.cpp
+@@ -0,0 +1,267 @@
++#include "s32vs234.h"
++#include <stdint.h>
++#include <cstring>
++
++#include <fcntl.h>		// open
++#include <unistd.h>		// exit
++#include <sys/ioctl.h>	// ioctl
++#include <sys/mman.h>	// mmap
++
++#define VDB_LOG_NOTE_OFF
++
++#include "xc7027_ar0144_config_viu.h"
++#include "isp_cam_generic.h"
++#include "cam_ioctl.h"
++#include "isp_cam_xc7027_ar0144.h"
++#include "vdb_log.h"
++
++//****************************************************************************
++// consts
++//****************************************************************************
++
++#define XC7027_AR0144_COMPATIBLE_STRING "s32v-xc7027_ar0144"
++
++#define XC7027_AR0144_RESET_REGISTER				0x301A
++#define XC7027_AR0144_LINE_LENGTH_PCK			0x300C
++#define XC7027_AR0144_FRAME_LENGTH_LINES			0x300A
++
++#define XC7027_AR0144_CHIP_VERSION_REG			0x3000
++#define XC7027_AR0144_COARSE_INTEGRATION_TIME	0x3012
++
++#define XC7027_AR0144_VT_PIX_CLK_DIV				0x302A
++#define XC7027_AR0144_VT_SYS_CLK_DIV				0x302C
++#define XC7027_AR0144_PRE_PLL_CLK_DIV				0x302E
++#define XC7027_AR0144_PLL_MULTIPLIER				0x3030
++
++#define XC7027_AR0144_DGAIN						0x305E
++#define XC7027_AR0144_AGAIN						0x3060
++#define XC7027_AR0144_DCG_CTL						0x3100
++
++#define XC7027_AR0144_AE_ROI_X_START_OFFSET        0x3140
++#define XC7027_AR0144_AE_ROI_Y_START_OFFSET        0x3142
++#define XC7027_AR0144_AE_ROI_X_SIZE                0x3144
++#define XC7027_AR0144_AE_ROI_Y_SIZE                0x3146
++
++/* XC7027_AR0144 mirror mode */
++#define XC7027_AR0144_READ_MODE				0x3040
++#define XC7027_AR0144_H_MIRROR			(0x01 << 14)
++#define XC7027_AR0144_V_FLIP				(0x01 << 15)
++#define XC7027_AR0144_MIRROR_MASK			(XC7027_AR0144_H_MIRROR + XC7027_AR0144_V_FLIP)
++
++
++//****************************************************************************
++// types
++//****************************************************************************
++
++//****************************************************************************
++// global variables
++//****************************************************************************
++extern int32_t gCamFD;   ///< cam driver file descriptor
++
++//*****************************************************************************
++// local data
++//*****************************************************************************
++
++//static CamI2cClient_t spClients[2] = {0}; // initialize to invalid
++//static I2C_BUS_IDX    sI2cBus[]    = {I2C_BUS_IDX_1, I2C_BUS_IDX_0};
++
++static void XC7027_AR0144_SW_Reset(const CamI2cClient_t aHandle)
++{
++#if 0
++	CAM_WriteDouble(aHandle, XC7027_AR0144_RESET_REGISTER, 0x0001);/* Register RESET_REGISTER */
++	usleep(10*1000);
++	CAM_WriteDouble(aHandle, XC7027_AR0144_RESET_REGISTER, 0x10D8);/* Register RESET_REGISTER */
++#endif
++}
++
++static void XC7027_AR0144_Start_Streaming(const CamI2cClient_t aHandle)
++{
++#if 0
++	uint16_t data;
++	data = CAM_ReadDouble(aHandle, XC7027_AR0144_RESET_REGISTER);
++	data = (data | 0x0004);
++	CAM_WriteDouble(aHandle, XC7027_AR0144_RESET_REGISTER, data);/* start streaming */
++#endif
++}
++
++//*****************************************************************************
++// functions definitions
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_Open(const VIU_IDX aViuIdx)
++{
++	CAM_LIB_RESULT lRet = CAM_LIB_SUCCESS;
++#if 0
++	CamI2cCfg_t    lCamCfg;
++	if(CAM_Open() == CAM_LIB_SUCCESS)
++	{
++		if(spClients[aViuIdx] == 0)
++		{
++			lCamCfg.mI2cBusIdx    = sI2cBus[aViuIdx];
++			lCamCfg.mI2cAddr      = (uint8_t)I2C_XC7027_AR0144_CAM_ADDR;
++			lCamCfg.mRegAddrWidth = I2C_REG_ADDR_WIDTH_16;
++
++			memcpy(lCamCfg.mpCompatible,
++					XC7027_AR0144_COMPATIBLE_STRING,
++					strlen(XC7027_AR0144_COMPATIBLE_STRING));
++
++
++			spClients[aViuIdx] = CAM_ClientAdd(lCamCfg);
++		} // if not created yet
++		else
++		{
++			VDB_LOG_ERROR("XC7027_AR0144 is already registered on VIU idx %u.\n",
++					(uint32_t)aViuIdx);
++			lRet = CAM_LIB_FAILURE;
++		} // else if not created yet
++
++		if(spClients[aViuIdx] != 0)
++		{
++			uint32_t version;
++
++			XC7027_AR0144_SW_Reset(spClients[aViuIdx]);
++			//version = CAM_ReadDouble(spClients[aViuIdx], XC7027_AR0144_CHIP_VERSION_REG);
++			//printf("The XC7027_AR0144 chip version is 0x%x\n", version);
++		} // if client added successfully
++		else
++		{
++			VDB_LOG_ERROR(
++					"Failed to add XC7027_AR0144 camera client: VIU idx %u, address 0x%x.\n",
++					aViuIdx,
++					lCamCfg.mI2cAddr
++					);
++			lRet = CAM_LIB_FAILURE;
++		} // else if client added successfully
++	} // if generic camera driver ready
++	else
++	{
++		VDB_LOG_ERROR("Failed to open generic camera driver.\n");
++		lRet = CAM_LIB_FAILURE;
++	} // else from if generic camera driver ready
++#endif
++
++	return lRet;
++} // XC7027_AR0144_Open()
++
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_Close(const VIU_IDX aViuIdx)
++{
++	CAM_LIB_RESULT lRet = CAM_LIB_SUCCESS;
++#if 0
++	if(spClients[aViuIdx] != 0)
++	{
++		if(CAM_ClientRem(spClients[aViuIdx]) != CAM_LIB_SUCCESS)
++		{
++			VDB_LOG_ERROR("Failed to remove the camera client.\n");
++			lRet = CAM_LIB_FAILURE;
++		} // if ClientRem() failed
++		else
++		{
++			spClients[aViuIdx] = 0;
++		} // else from if CLientRem() failed
++	} // if camera client attached
++	else
++	{
++		VDB_LOG_ERROR("No such client connected.\n");
++		lRet = CAM_LIB_FAILURE;
++	} // else from if camera client attached
++#endif
++	return lRet;
++} // XC7027_AR0144_Close()
++
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_Roi_Setting(const VIU_IDX aViuIdx, uint16_t xoffset, uint16_t yoffset, uint16_t xsize, uint16_t ysize)
++{
++	CAM_LIB_RESULT ret = CAM_LIB_SUCCESS;
++#if 0
++	ret = CAM_WriteDouble(spClients[aViuIdx], XC7027_AR0144_AE_ROI_X_START_OFFSET, xoffset);
++	CAM_WriteDouble(spClients[aViuIdx], XC7027_AR0144_AE_ROI_Y_START_OFFSET, yoffset);
++	CAM_WriteDouble(spClients[aViuIdx], XC7027_AR0144_AE_ROI_X_SIZE, xsize);
++	CAM_WriteDouble(spClients[aViuIdx], XC7027_AR0144_AE_ROI_Y_SIZE, ysize);
++#endif
++	return ret;
++}
++
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_RegConfig(const VIU_IDX aViuIdx)
++{
++	CAM_LIB_RESULT lRet = CAM_LIB_SUCCESS;
++#if 0
++
++	if(spClients[aViuIdx] != 0)
++	{
++		uint32_t i         = (uint32_t)0;
++		uint16_t *lpOvTable = XC7027_AR0144Viu_Table;
++		uint32_t lOvTabSz  = (uint32_t)sizeof(XC7027_AR0144Viu_Table)/sizeof(XC7027_AR0144Viu_Table[0]);
++
++		printf("start setting the xc7027_ar0144 register, the sz is %d\n", lOvTabSz);
++		// *** basic configuration ***
++#if 0
++		for(;;)
++#endif
++		{
++			for(i = (uint32_t)0; i < lOvTabSz; i += 2)
++			{
++				if (lpOvTable[i] == 0xffff)
++					usleep(1000*lpOvTable[i+1]);
++				else {
++					//	usleep(1000*5);
++Retry:
++					if(CAM_WriteDouble(spClients[aViuIdx], lpOvTable[i],
++								lpOvTable[i + 1])!= CAM_LIB_SUCCESS) {
++						usleep(1000*2);
++						printf("#%d write xc7027_ar0144 reg_%x %x failed\n",i/2, lpOvTable[i],lpOvTable[i+1]);
++						goto Retry;
++						//lRet = CAM_LIB_FAILURE;
++						//return lRet;
++					}
++				}
++			}// for all table entries
++		}
++	} // if camera client attached
++	else
++	{
++		VDB_LOG_ERROR("No such client connected.\n");
++		lRet = CAM_LIB_FAILURE;
++	} // else from if camera client attached
++
++	uint16_t line_len,frame_length_lines;
++	line_len = CAM_ReadDouble(spClients[aViuIdx], XC7027_AR0144_LINE_LENGTH_PCK);
++	frame_length_lines = CAM_ReadDouble(spClients[aViuIdx], XC7027_AR0144_FRAME_LENGTH_LINES);
++
++	printf("\nXC7027_AR0144_LINE_LENGTH_PCK = 0x%x, XC7027_AR0144_FRAME_LENGTH_LINES = 0x%x\n", line_len, frame_length_lines);
++	XC7027_AR0144_Start_Streaming(spClients[aViuIdx]);
++#endif
++	return lRet;
++} // XC7027_AR0144_RegConfig()
++
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_DataEnable(const VIU_IDX aViuIdx)
++{
++	CAM_LIB_RESULT lRet = (CAM_LIB_RESULT)aViuIdx;
++
++	///NOTE: nothing to be done
++	lRet = CAM_LIB_SUCCESS;
++
++	return lRet;
++} // XC7027_AR0144_CsiEnable(enum VIU_IDX aViuIdx)
++
++//*****************************************************************************
++
++CAM_LIB_RESULT XC7027_AR0144_DataDisable(const VIU_IDX aViuIdx)
++{
++	CAM_LIB_RESULT lRet = (CAM_LIB_RESULT)aViuIdx;
++
++	///NOTE: nothing to be done
++	lRet = CAM_LIB_SUCCESS;
++
++	return lRet;
++} // XC7027_AR0144_CsiDisable(enum VIU_IDX aViuIdx)
++
++//***************************************************************************
++
++/*EOF*/
+diff --git a/drivers/io/sdi/src/sdi.cpp b/drivers/io/sdi/src/sdi.cpp
+index 5d84eb5..97052a8 100755
+--- a/drivers/io/sdi/src/sdi.cpp
++++ b/drivers/io/sdi/src/sdi.cpp
+@@ -951,15 +951,19 @@ LIB_RESULT sdi_grabber::SeqEventCallBackInstall(
+ LIB_RESULT sdi_grabber::PreStart()
+ {
+   LIB_RESULT lRet = LIB_SUCCESS;
++  printf("#mn: %s 1 \n", __func__);
+   
+   // lock the grabber
+   if (OAL_SemaphoreObtain(mThreadMutex, scSemWaitMax) != LIB_SUCCESS)
+   {
+     VDB_LOG_ERROR("Grabber semaphore obtain failed.\n");
++	printf("#mn: %s 2 \n", __func__);
+     lRet = LIB_FAILURE;
+   } // if SemaphoreObtain failed
+   else
+   {
++
++	printf("#mn: %s 3 \n", __func__);
+     if(mStatus == OFF)
+     {  
+ #ifdef __STANDALONE__  
+@@ -974,6 +978,7 @@ LIB_RESULT sdi_grabber::PreStart()
+           // *** reserve IO objects ***
+           if( IOsReserve() != LIB_SUCCESS)
+           {
++			  printf("#mn: %s 4 \n", __func__);
+             VDB_LOG_ERROR("Failed to reserve IO objects.\n");
+             lRet = LIB_FAILURE;
+           } // if IOsReserve() failed
+@@ -983,6 +988,7 @@ LIB_RESULT sdi_grabber::PreStart()
+             // allocates SRAM buffers & reserves TCs
+             if(mProcess.Finalize() != LIB_SUCCESS)
+             {
++			  printf("#mn: %s 5 \n", __func__);
+               VDB_LOG_ERROR("Failed to finalize process.\n");
+               lRet = LIB_FAILURE;
+             } // if Process::Finalize() failed
+@@ -991,6 +997,7 @@ LIB_RESULT sdi_grabber::PreStart()
+               // *** apply IO objects parameters ***
+               if(IOsSetup() != LIB_SUCCESS)
+               {
++				  printf("#mn: %s 6 \n", __func__);
+                 VDB_LOG_ERROR("Failed to setup IO objects.\n");
+                 lRet = LIB_FAILURE;
+               } // if IOsSetup() failed
+@@ -999,6 +1006,7 @@ LIB_RESULT sdi_grabber::PreStart()
+                 // *** download the Graph ***	
+                 if(mProcess.Download() != LIB_SUCCESS)
+                 {
++					printf("#mn: %s 7 \n", __func__);
+                   VDB_LOG_ERROR("Failed to Download the process.\n");
+                   lRet = LIB_FAILURE;
+                 } // if download failed
+@@ -1007,6 +1015,7 @@ LIB_RESULT sdi_grabber::PreStart()
+                   // *** boot the Sequencer FW ***
+                   if(SEQ_Reset() != SEQ_LIB_SUCCESS)
+                   {
++					printf("#mn: %s 8 \n", __func__);
+                     VDB_LOG_ERROR("Failed to reset sequencer.\n");
+                     lRet = LIB_FAILURE;
+                   } // if seq reset failed
+@@ -1014,6 +1023,7 @@ LIB_RESULT sdi_grabber::PreStart()
+                   {
+                     if(SEQ_Boot() != SEQ_LIB_SUCCESS)
+                     {
++						printf("#mn: %s 8 \n", __func__);
+                       VDB_LOG_ERROR("Failed to boot sequencer.\n");
+                       lRet = LIB_FAILURE;
+                     } // if seq boot failed
+@@ -1055,6 +1065,7 @@ LIB_RESULT sdi_grabber::PreStart()
+         else 
+         {
+           VDB_LOG_ERROR("Failed to setup Sequencer event handler.\n");
++						printf("#mn: %s 9 \n", __func__);
+           lRet = LIB_FAILURE;
+         } // else from if set handler ok
+ 
+@@ -1073,12 +1084,14 @@ LIB_RESULT sdi_grabber::PreStart()
+     else
+     {
+       VDB_LOG_ERROR("Grabber is not OFF.\n");
++	  printf("#mn: %s 10 \n", __func__);
+       lRet = LIB_FAILURE;
+     } // else from if OFF
+     
+     // release the lock
+     if (OAL_SemaphoreRelease(mThreadMutex) != LIB_SUCCESS)
+     {
++	  printf("#mn: %s 11 \n", __func__);
+       VDB_LOG_ERROR("Grabber semaphore release failed.\n");
+       lRet = LIB_FAILURE;
+     } // if mutex release failed
+@@ -1330,7 +1343,8 @@ SDI_Frame sdi_grabber::FramePop(uint32_t aChnlIdx, uint32_t aTimeoutMs)
+       if(aTimeoutMs <= lTimeSpent)
+       {
+         lRes = LIB_FAILURE;
+-        VDB_LOG_ERROR("Frame wait timed out\n");
++        //VDB_LOG_ERROR("Frame wait timed out\n");
++        printf("#mn[%s]:Frame wait timed out\n", __func__);
+         break;
+       } // if timed-out
+     } // if timeout required
+diff --git a/drivers/io/sdi/src/sdi_io.cpp b/drivers/io/sdi/src/sdi_io.cpp
+index 50ec609..d5030b3 100755
+--- a/drivers/io/sdi/src/sdi_io.cpp
++++ b/drivers/io/sdi/src/sdi_io.cpp
+@@ -57,6 +57,7 @@
+ #include "isp_cam_ov10640.h"
+ #include "isp_cam_ov10635.h"
+ #include "isp_cam_ar0144.h"
++#include "isp_cam_xc7027_ar0144.h"
+ #include "isp_h264enc.h"
+ #include "isp_h264dec.h"
+ #include "isp_viu.h"
+@@ -3402,10 +3403,21 @@ LIB_RESULT sdi_ViuIO::Reserve()
+         if(AR0144_Open(mDesc.mIdx) != CAM_LIB_SUCCESS)
+         {
+           lRet = LIB_FAILURE;
++		  printf("#mn: %s\n", __func__);
+         } // if failed to open ov10635
+ #endif
+       } // AR0144
+         break;
++	  case VIU_XC7027_AR0144:
++		{
++#if 1
++			if (XC7027_AR0144_Open(mDesc.mIdx) != CAM_LIB_SUCCESS) {
++				lRet = LIB_FAILURE;
++				printf("#mn: %s\n", __func__);
++			} // if failed to open XC7027_AR0144
++#endif
++		} // XC7027_AR0144
++		break;
+       default:
+       {
+         VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3465,6 +3477,16 @@ LIB_RESULT sdi_ViuIO::Release()
+ #endif
+     } // AR0144
+       break;
++    case VIU_XC7027_AR0144:
++    {
++#if 1
++      if(XC7027_AR0144_Close(mDesc.mIdx) != CAM_LIB_SUCCESS)
++      {
++        lRet = LIB_FAILURE;
++      } // if failed to close XC7027_AR0144
++#endif
++    } // XC7027_AR0144
++      break;
+     default:
+     {
+       VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3591,6 +3613,107 @@ LIB_RESULT sdi_ViuIO::Setup()
+           } // AR0144
+             break;
+ 
++		  case VIU_XC7027_AR0144:
++			{
++				//setup VIU receiver yuv-gray
++				printf("[%s] Set VIU interface for XC7027_AR0144\n", __func__);
++				lViuDmaConfig.buff_addr   = mDesc.mBufAddr;
++				lViuDmaConfig.tx_size     = mDesc.mLineCnt;
++				lViuDmaConfig.nmb_lines   = 720; // number of lines per frame
++				lViuDmaConfig.nmb_pixells = 1280;//mDesc.mLineBytes; //TODO: correct value
++				lViuDmaConfig.frame_inc   = 0;//mDesc.mLinePadding;
++				lViuDmaConfig.alpha_val   = 0xff;
++
++#if 0 // INTR_ERR_MASK: 0x70aa0002; DINVSZ=0x0, DINVFL=0x2d03cad,INVSZ=0x2d00500
++
++				lViuDataInterface.pclk_pol    = 1;
++				lViuDataInterface.vsync_pol   = 1;
++				lViuDataInterface.hsync_pol   = 1;
++#endif
++
++#if 0 //viulite_intr INTR_ERR_MASK: 0x70aa0002; DINVSZ=0x0, DINVFL=0x1eb3ca6,INVSZ=0x2d00500
++				//
++				lViuDataInterface.pclk_pol    = 0;
++				lViuDataInterface.vsync_pol   = 1;
++				lViuDataInterface.hsync_pol   = 1;
++#endif
++
++#if 0 // INTR_ERR_MASK: 0x70aa0002; DINVSZ=0x18b, DINVFL=0x2d03ca6,INVSZ=0x2d00500
++				//0111 Not enough lines in a field/frame
++				lViuDataInterface.pclk_pol    = 1;
++				lViuDataInterface.vsync_pol   = 0;
++				lViuDataInterface.hsync_pol   = 1;
++#endif
++#if 0 //INTR_ERR_MASK: 0x60fe0002; DINVSZ=0x10010, DINVFL=0x2d03ca6,INVSZ=0x2d00500
++				//0110 Line too short
++
++				lViuDataInterface.pclk_pol    = 1;
++				lViuDataInterface.vsync_pol   = 1;
++				lViuDataInterface.hsync_pol   = 0;
++#endif
++
++#if 1
++				/*
++				start a new frame transfer: 0x702e0002; DINVSZ=0x1da0500, DINVFL=0x1dbffff,INVSZ=0x2d00500
++					INTR_ERR_MASK: 0x702e0002; DINVSZ=0x1da0500, DINVFL=0x1db3ca6,INVSZ=0x2d00500
++					INTR_HSYNC_MASK
++					INTR_VSTART_MASK
++					start a new frame transfer: 0xe0002; DINVSZ=0x2d00500, DINVFL=0x2d0ffff,INVSZ=0x2d00500
++					INTR_HSYNC_MASK
++					INTR_VSTART_MASK
++					start a new frame transfer: 0x102e0002; DINVSZ=0x2d00500, DINVFL=0x2d0ffff,INVSZ=0x2d00500
++					INTR_ERR_MASK: 0x102e0002; DINVSZ=0x2d00500, DINVFL=0x2d03ca6,INVSZ=0x2d00500
++					INTR_HSYNC_MASK
++					INTR_VSTART_MASK
++					start a new frame transfer: 0xe0002; DINVSZ=0x2d00500, DINVFL=0x2d0ffff,INVSZ=0x2d00500
++					INTR_HSYNC_MASK
++					INTR_VSTART_MASK
++					*/
++
++				lViuDataInterface.pclk_pol    = 0;
++				lViuDataInterface.vsync_pol   = 0;
++				lViuDataInterface.hsync_pol   = 1;
++#endif
++#if 0
++				/*
++				start a new frame transfer: 0x60fe0002; DINVSZ=0x10010, DINVFL=0x2d0ffff,INVSZ=0x2d00500
++					INTR_DMA_END_MASK
++					INTR_ERR_MASK: 0x60fe0002; DINVSZ=0x10010, DINVFL=0x2d03ca6,INVSZ=0x2d00500
++					INTR_HSYNC_MASK
++					INTR_LINE_END_MASK
++					INTR_FRAME_END_MASK
++					INTR_VSTART_MASK
++					*/
++
++				lViuDataInterface.pclk_pol    = 0;
++				lViuDataInterface.vsync_pol   = 1;
++				lViuDataInterface.hsync_pol   = 0;
++#endif
++#if 0 //viulite_intr INTR_ERR_MASK: 0x402e0002; DINVSZ=0x2d1043b, DINVFL=0x2d03ca6,INVSZ=0x2d00500
++				//nmb_lines -> 721: INTR_ERR_MASK: 0x402e0002; DINVSZ=0x2d1043b,DINVFL=0x2d03ca6,INVSZ=0x2d10500
++				lViuDataInterface.pclk_pol    = 1;
++				lViuDataInterface.vsync_pol   = 0;
++				lViuDataInterface.hsync_pol   = 0;
++#endif
++#if 0 //INTR_ERR_MASK: 0x402e0002; DINVSZ=0x2d1043c, DINVFL=0x2d03cad,INVSZ=0x2d00500
++				//0100 Line too long
++				lViuDataInterface.pclk_pol    = 0;
++				lViuDataInterface.vsync_pol   = 0;
++				lViuDataInterface.hsync_pol   = 0;
++#endif
++
++
++				lViuDataInterface.endianness  = 1;
++				//lViuDataInterface.endianness  = 0;
++
++				//lViuInputFormat.mode              = ITU_MODE;
++				lViuInputFormat.mode              = PARALLEL_MODE;
++				lViuInputFormat.width             = WIDE_8_BITS; // 8 bits
++				lViuInputFormat.clocks_per_pixell = CPP_1_PP;
++				//lViuInputFormat.clocks_per_pixell = CPP_3_PP;
++			} // XC7027_AR0144
++			break;
++
+           default:
+           {
+             VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3634,6 +3757,16 @@ LIB_RESULT sdi_ViuIO::Setup()
+ #endif
+             } // AR0144
+ 			    break;
++            case VIU_XC7027_AR0144:
++            {
++#if 1
++              if(XC7027_AR0144_RegConfig(mDesc.mIdx) != CAM_LIB_SUCCESS)
++              {
++                lRet = LIB_FAILURE;
++              } // if XC7027_ar0144 config failed
++#endif
++            } // XC7027_AR0144
++			    break;
+             default:
+             {
+               VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3690,6 +3823,11 @@ LIB_RESULT sdi_ViuIO::Start(void)
+         // nothing to be done
+       } // AR0144
+         break;
++      case VIU_XC7027_AR0144:
++      {
++        // nothing to be done
++      } // XC7027_AR0144
++        break;
+       default:
+       {
+         VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3751,6 +3889,11 @@ LIB_RESULT sdi_ViuIO::Stop(void)
+         // nothing to be done
+       } // AR0144
+ 	  	break;
++      case VIU_XC7027_AR0144:
++      {
++        // nothing to be done
++      } // XC7027_AR0144
++	  	break;
+       default:
+       {
+         VDB_LOG_ERROR("Unknown VIU camera type.\n");
+@@ -3901,6 +4044,7 @@ SDI_ImageDescriptor::SDI_ImageDescriptor(uint32_t aWidth,
+     {
+       mBpp = 8;
+       mCvImageFormat = VSDK_CV_8UC1;
++	  printf("#mn:[%s]GS8\n", __func__);
+     }
+       break;
+     case RGBA8888:
+diff --git a/drivers/sequencer/kernel/src/seq_func.c b/drivers/sequencer/kernel/src/seq_func.c
+index cfc85b8..3a67423 100755
+--- a/drivers/sequencer/kernel/src/seq_func.c
++++ b/drivers/sequencer/kernel/src/seq_func.c
+@@ -2552,6 +2552,7 @@ int32_t SEQ_DRV_FrmBufferPop(SEQ_FrmBufferInfo_t *apBufferInfo)
+   else
+   {
+     lpStream = spFrmStreams[apBufferInfo->mStreamIdx];
++	printk("#mn:apBufferInfo->mStreamIdx:%d\n", apBufferInfo->mStreamIdx);
+   } // input OK
+   
+   cnt = (uint8_t)(lpStream->mCnt);
+@@ -2573,7 +2574,7 @@ int32_t SEQ_DRV_FrmBufferPop(SEQ_FrmBufferInfo_t *apBufferInfo)
+       // return to the formally state specified in flags      
+       spin_unlock_irqrestore(&sStreamLock, lFlags); 
+       
+-      //printk("FrmBuffer %p\n",lpFrmBuffer);
++	  printk("FrmBuffer %p\n",lpFrmBuffer);
+       lpFrmBuffer->mState = SEQ_FRM_BUFFER_STATE_USER;     
+         
+       apBufferInfo->mBufferIdx = lpFrmBuffer->mBufferIdx; 
+@@ -2583,13 +2584,15 @@ int32_t SEQ_DRV_FrmBufferPop(SEQ_FrmBufferInfo_t *apBufferInfo)
+     }// if done queue not empty
+     else
+     {
+-      VDB_LOG_NOTE("Done queue empty. Pop aborted.\n");
++      /*VDB_LOG_NOTE("Done queue empty. Pop aborted.\n");*/
++      printk("Done queue empty. Pop aborted.\n");
+       lRet = SEQ_DRV_FAILURE;
+     } // else from if done queue not empty
+   } // if buffer exists
+   else
+   {
+-    VDB_LOG_ERROR("No such stream\n");
++    /*VDB_LOG_ERROR("No such stream\n");*/
++    printk("No such stream\n");
+     lRet = SEQ_DRV_FAILURE;
+   } // if no such buffer
+   
+diff --git a/drivers/sequencer/kernel/src/seq_ioctl.c b/drivers/sequencer/kernel/src/seq_ioctl.c
+index 6017c58..80b043e 100755
+--- a/drivers/sequencer/kernel/src/seq_ioctl.c
++++ b/drivers/sequencer/kernel/src/seq_ioctl.c
+@@ -657,7 +657,8 @@ int32_t BufferPop(unsigned long aIoctlParam)
+   if (copy_from_user( &lBuffInfo, (SEQ_FrmBufferInfo_t *)aIoctlParam, 
+       sizeof(SEQ_FrmBufferInfo_t)) != 0)
+   {
+-    VDB_LOG_ERROR("Copy from user failed.\n");
++    /*VDB_LOG_ERROR("Copy from user failed.\n");*/
++    printk("Copy from user failed.\n");
+     lRet = -EIO;
+   } // if copy from user failed
+   else
+@@ -665,7 +666,8 @@ int32_t BufferPop(unsigned long aIoctlParam)
+     // Pop the buffer
+     if(SEQ_DRV_FrmBufferPop(&lBuffInfo) != SEQ_DRV_SUCCESS)
+     {
+-      VDB_LOG_NOTE("Frame buffers query failed.\n");
++      /*VDB_LOG_NOTE("Frame buffers query failed.\n");*/
++      printk("Frame buffers query failed.\n");
+       lRet = SEQ_DRV_FAILURE;
+     }
+     
+@@ -673,7 +675,8 @@ int32_t BufferPop(unsigned long aIoctlParam)
+     if (copy_to_user((SEQ_FrmBufferInfo_t *)aIoctlParam, &lBuffInfo, 
+         sizeof(SEQ_FrmBufferInfo_t)) != 0)
+     {
+-      VDB_LOG_ERROR("Failed to copy the buffer info to user space.\n");
++      /*VDB_LOG_ERROR("Failed to copy the buffer info to user space.\n");*/
++      printk("#mn: Failed to copy the buffer info to user space.\n");
+       lRet = -EIO;
+     } // if copy to user failed
+   } // else from if copy from user failed
+@@ -811,4 +814,4 @@ int32_t PatchListSet(unsigned long aIoctlParam)
+   return lRet;
+ } // PatchListSet()
+ 
+-//*****************************************************************************
+\ No newline at end of file
++//*****************************************************************************
+diff --git a/drivers/sequencer/user/src/seq_user.cpp b/drivers/sequencer/user/src/seq_user.cpp
+index b88d601..d3b96f6 100755
+--- a/drivers/sequencer/user/src/seq_user.cpp
++++ b/drivers/sequencer/user/src/seq_user.cpp
+@@ -933,11 +933,14 @@ SEQ_LIB_RESULT SEQ_FrmBufferPop(SEQ_FrmBufferInfo_t *apBuffInfo)
+     if ((lRetVal = ioctl(sSeqFD, IOCTL_SEQ_BUF_POP, apBuffInfo)) < 0) 
+     {
+       lRet = SEQ_LIB_FAILURE;
++	  printf("#mn[%s] %d: IOCTL_SEQ_BUF_POP failure\n", __func__, __LINE__);
+     } // if ioctl returned failure
+ #else // #ifndef __STANDALONE__
+     if(SEQ_DRV_FrmBufferPop(apBuffInfo) != SEQ_DRV_SUCCESS)
+     {
+       lRet = SEQ_LIB_FAILURE;
++
++	  printf("#mn[%s] %d: SEQ_DRV_FrmBufferPop", __func__, __LINE__);
+     } // if Pop failed
+ #endif // else #ifndef __STANDALONE__
+   }// if Info structure exists 
+diff --git a/drivers/sram/user/src/sram_user.cpp b/drivers/sram/user/src/sram_user.cpp
+index 01abc96..acc70d6 100755
+--- a/drivers/sram/user/src/sram_user.cpp
++++ b/drivers/sram/user/src/sram_user.cpp
+@@ -78,6 +78,7 @@ SRAM_LIB_RESULT SramOpen()
+   
+   SRAM_LIB_RESULT lRet = SRAM_LIB_SUCCESS;
+ #ifndef __STANDALONE__
++  printf("#mn:[%s] #ifndef __STANDALONE__\n", __func__);
+   if(sFileDesc == -1)
+   {
+     sFileDesc = open("/dev/" SRAM_DEVICE_NAME, 0);
+@@ -91,6 +92,7 @@ SRAM_LIB_RESULT SramOpen()
+     VDB_LOG_WARNING("SRAM already openned.\n");
+   } // else from if not openned yet
+ #else // #ifndef __STANDALONE__
++  printf("#mn:[%s] else \n", __func__);
+   if(SRAM_SetUp() != SRAM_DRV_SUCCESS)
+   {
+     VDB_LOG_ERROR("Failed to setup SRAM manager\n");
+@@ -191,4 +193,4 @@ void SramFree(uintptr_t aAddr)
+   } // if ioctl returned failure
+ } // SramFree()
+ 
+-//****************************************************************************
+\ No newline at end of file
++//****************************************************************************
+diff --git a/drivers/viu/kernel/src/viulite_linux.c b/drivers/viu/kernel/src/viulite_linux.c
+index e9885a8..4409750 100755
+--- a/drivers/viu/kernel/src/viulite_linux.c
++++ b/drivers/viu/kernel/src/viulite_linux.c
+@@ -525,6 +525,7 @@ irqreturn_t viulite_intr(int irq, void *const dev_id)
+ 
+   uint32_t  int_status, reg_value;
+   int_status = viulite_regbase->INTR;
++  printk("s: SCR=0x%x \n", viulite_regbase->SCR);
+ 
+   if (0U != (int_status & (INTR_VSYNC_MASK | INTR_VSYNC_EN)))
+   {
+@@ -534,41 +535,60 @@ irqreturn_t viulite_intr(int irq, void *const dev_id)
+       viulite_regbase->SCR = reg_value;
+ 
+       int_status |= INTR_VSYNC_MASK;
++	  printk("new transfer: 0x%x, DINVSZ=0x%x, DINVFL=0x%x,"\
++			  "INVSZ=0x%x\n"\
++			  ,int_status, \
++			  viulite_regbase->DINVSZ,
++			  viulite_regbase->DINVFL,
++			  viulite_regbase->INVSZ);
+   }
+ 
+   if (0U != (int_status & (INTR_DMA_END_MASK | INTR_DMA_END_EN)))
+   {
+       int_status |= INTR_DMA_END_MASK;
++
++	  printk("#mn: INTR_DMA_END_MASK\n");
+   }
+ 
+   if (0U != (int_status & (INTR_ERR_MASK | INTR_ERR_EN)))
+   {
+       int_status |= INTR_ERR_MASK;
++	  printk("#mn INTR_ERR_MASK: 0x%x; DINVSZ=0x%x, DINVFL=0x%x,"\
++			  "INVSZ=0x%x\n"\
++			  ,int_status, \
++			  viulite_regbase->DINVSZ,
++			  viulite_regbase->DINVFL,
++			  viulite_regbase->INVSZ);
+   }
+ 
+   if (0U != (int_status & (INTR_HSYNC_MASK | INTR_HSYNC_EN)))
+   {
+       int_status |= INTR_HSYNC_MASK;
++	  printk("#mn: INTR_HSYNC_MASK\n" );
+   }
+ 
+   if (0U != (int_status & (INTR_LINE_END_MASK | INTR_LINE_END_EN)))
+   {
+       int_status |= INTR_LINE_END_MASK;
++	  printk("#mn: INTR_LINE_END_MASK\n");
+   }
+ 
+   if (0U != (int_status & (INTR_FRAME_END_MASK | INTR_FRAME_END_EN)))
+   {
+       int_status |= INTR_FRAME_END_MASK;
++	  printk("#mn: INTR_FRAME_END_MASK\n");
+   }
+ 
+   if (0U != (int_status & (INTR_FIELD_MASK | INTR_FIELD_EN)))
+   {
+       int_status |= INTR_FIELD_MASK;
++	  printk("#mn: INTR_FIELD_MASK\n");
+   }
+ 
+   if (0U != (int_status & (INTR_VSTART_MASK | INTR_VSTART_EN)))
+   {
+       int_status |= INTR_VSTART_MASK;
++	  printk("#mn: INTR_VSTART_MASK\n");
+   }
+ 
+   /* clear all pending irqs */
+diff --git a/drivers/viu/user/src/viulite_user.cpp b/drivers/viu/user/src/viulite_user.cpp
+index 11b3ea1..5063e25 100755
+--- a/drivers/viu/user/src/viulite_user.cpp
++++ b/drivers/viu/user/src/viulite_user.cpp
+@@ -520,6 +520,7 @@ VIU_LIB_RESULT VIU_DmaStart(const VIU_IDX aViuIdx)
+ 
+     if (lRetVal < 0) 
+     {
++	  printf("#mn:[%s] failed to start dma\n", __func__);
+       VDB_LOG_ERROR("Failed to start DMA.\n");
+       lRet = VIU_LIB_FAILURE;
+     } // if ioctl returned failure
+diff --git a/drivers/viu_and_sdi.tar.gz b/drivers/viu_and_sdi.tar.gz
+new file mode 100644
+index 0000000..9b86cb3
+Binary files /dev/null and b/drivers/viu_and_sdi.tar.gz differ
+diff --git a/include/isp_cam_xc7027_ar0144.h b/include/isp_cam_xc7027_ar0144.h
+new file mode 100755
+index 0000000..f3b0227
+--- /dev/null
++++ b/include/isp_cam_xc7027_ar0144.h
+@@ -0,0 +1,72 @@
++#ifndef XC7027_AR0144PUBLIC_H
++#define XC7027_AR0144PUBLIC_H
++
++#include "isp_csi.h"
++#include "isp_viu.h"
++#include "../drivers/cam_generic/kernel/include/ar0144_types.h"
++
++//*****************************************************************************
++// constants
++//*****************************************************************************
++
++//*****************************************************************************
++// types
++//*****************************************************************************
++
++//*****************************************************************************
++// public functionality declarations
++//*****************************************************************************
++
++/****************************************************************************/
++/** Connect to XC7027_AR0144 camera.
++* 
++* \param aViuIdx[in] index of the VIU interface to connect to.
++* 
++* \return CAM_LIB_SUCCESS if all ok
++*         CAM_LIB_FAILURE otherwise
++*****************************************************************************/
++CAM_LIB_RESULT XC7027_AR0144_Open(const VIU_IDX aViuIdx);
++
++/****************************************************************************/
++/** Disconnect from XC7027_AR0144 camera.
++* 
++* \param aViuIdx[in] index of the VIU interface to connect to.
++* 
++* \return CAM_LIB_SUCCESS if all ok
++*         CAM_LIB_FAILURE otherwise
++*****************************************************************************/
++CAM_LIB_RESULT XC7027_AR0144_Close(const VIU_IDX aViuIdx);
++
++/****************************************************************************/
++/** Configures XC7027_AR0144 camera registers.
++* 
++* \param apMessage[in] message to be sent
++* 
++* \return CAM_LIB_SUCCESS if all ok
++*         CAM_LIB_FAILURE otherwise
++*****************************************************************************/
++CAM_LIB_RESULT XC7027_AR0144_RegConfig(const VIU_IDX aViuIdx);
++
++CAM_LIB_RESULT XC7027_AR0144_Roi_Setting(const VIU_IDX aViuIdx, uint16_t xoffset, uint16_t yoffset, uint16_t xsize, uint16_t ysize);
++
++/****************************************************************************/
++/** Enables VIU transmission from XC7027_AR0144 camera.
++ * 
++ * \param apGraphPackage packed graph structure
++ * 
++ * \return CAM_LIB_SUCCESS if all ok
++ *         CAM_LIB_FAILURE otherwise
++ ****************************************************************************/
++CAM_LIB_RESULT XC7027_AR0144_DataEnable(const VIU_IDX aViuIdx);
++
++/****************************************************************************/
++/** Disables VIU transmission from XC7027_AR0144 camera.
++* 
++* \return CAM_LIB_SUCCESS if all ok, 
++*         CAM_LIB_FAILURE otherwise
++*****************************************************************************/
++CAM_LIB_RESULT XC7027_AR0144_DataDisable(const VIU_IDX aViuIdx);
++
++#endif /* XC7027_AR0144PUBLIC_H */
++
++/* EOF */
+diff --git a/isp/inc/seq_graph_meta.h b/isp/inc/seq_graph_meta.h
+index e049a55..b7d3a09 100755
+--- a/isp/inc/seq_graph_meta.h
++++ b/isp/inc/seq_graph_meta.h
+@@ -75,7 +75,8 @@ typedef enum VIU_CameraType_t
+     VIU_NONE,
+     VIU_OV10635,
+     VIU_OV10640,
+-	VIU_AR0144
++	VIU_AR0144,
++	VIU_XC7027_AR0144
+ } VIU_CameraType_t;
+ 
+ typedef struct GraphMipiCSIParam_t
