@@ -1,0 +1,7 @@
+
+http://mirrors.ustc.edu.cn/qtproject/official_releases/qtcreator/4.6/4.6.2/
+
+
+open qtcreator on terminal:
+add the follow line to you .bashrc
+PATH=~/qtcreator-4.6.2/bin/:$PATH
