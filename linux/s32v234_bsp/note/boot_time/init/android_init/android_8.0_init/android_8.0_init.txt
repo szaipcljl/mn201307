@@ -1,0 +1,132 @@
+
+
+
+http://androidxref.com/
+------------------------
+
+https://www.jianshu.com/p/befff3d70309
+
+android-8.0.0_r9:
+-----------------
+https://blog.csdn.net/sinat_34677820/article/details/78328708
+
+repo init -u git://mirrors.ustc.edu.cn/aosp/platform/manifest
+
+如果下载指定android版本（将上面初始化仓库的操作类似如下形式）
+repo init -u git://mirrors.ustc.edu.cn/aosp/platform/manifest -b android-8.0.0_r9
+
+repo sync -j4
+
+
+
+Android 8.0 : 系统启动流程之init进程
+=====================================
+init进程是用户空间的第一个进程,app应用程序都是以它为父进程的,
+init进程入口main函数,主要分为三个部分:
+	init进程第一阶段
+	init进程第二阶段
+	init.rc文件解析
+
+init进程第一阶段:
+-----------------
+	1. ueventd/watchdogd跳转及环境变量设置
+	2. 挂载文件系统并创建目录、设备节点
+	3. 初始化日志输出系统、挂载分区设备
+	4. 启用SELinux安全策略
+	5. 开始第二阶段前的准备
+
+	all the relevant code:
+	platform/system/core/init/init.cpp platform/system/core/init/ueventd.cpp
+	platform/system/core/init/watchdogd.cpp platform/system/core/init/log.cpp
+	platform/system/core/base/logging.cpp
+	platform/system/core/init/init_first_stage.cpp
+	platform/external/selinux/libselinux/src/callbacks.c
+	platform/external/selinux/libselinux/src/load_policy.c
+	platform/external/selinux/libselinux/src/getenforce.c
+	platform/external/selinux/libselinux/src/setenforce.c
+	platform/external/selinux/libselinux/src/android/android.c
+
+
+
+
+第二阶段:
+---------
+    创建进程会话密钥并初始化属性系统
+	进行SELinux第二阶段并恢复一些文件安全上下文
+	新建epoll并初始化子进程终止信号处理函数
+	设置其他系统属性并开启系统属性服务
+
+	all the relevant code:
+	platform/system/core/init/init.cpp platform/system/core/init/keyutils.h
+	platform/system/core/init/property_service.cpp
+	platform/external/selinux/libselinux/src/label.c
+	platform/system/core/init/signal_handler.cpp
+	platform/system/core/init/service.cpp
+	platform/system/core/init/property_service.cpp
+
+init.rc -- init进程启动的配置脚本
+---------------------------------
+在7.0以前，init进程只解析根目录下的init.rc文件
+7.0以后，init.rc一些业务被分拆到/system/etc/init，/vendor/etc/init，/odm/etc/init三个目录下，
+
+	Android Init Language语法
+	解析.rc文件
+	加入一些事件和一些Action
+	触发所有事件并不断监听新的事件
+
+	all the relevant code:
+	platform/system/core/init/README.md platform/system/core/init/init.cpp
+	platform/system/core/init/init_parser.cpp
+	platform/system/core/init/action.cpp platform/system/core/init/action.h
+	platform/system/core/init/keyword_map.h
+	platform/system/core/init/builtins.cpp platform/system/core/init/service.cpp
+	platform/system/core/init/service.h
+	platform/system/core/init/import_parser.cpp
+	platform/system/core/init/util.cpp
+
+
+.rc文件主要配置了两个东西，action和service;
+trigger和command是对action的补充，options是对service的补充.
+
+action加上trigger以及一些command,组成一个Section; 
+service加上一些option，也组成一个Section，.rc文件就是由一个个Section组成.
+
+.rc文件头部有一个import的语法，表示这些.rc也一并包含并解析,
+
+/init.rc 是最主要的一个.rc文件，它由init进程在初始化时加载，主要负责系统初始化,它会导入
+/init.${ro.hardware}.rc ，这个是系统级核心厂商提供的主要.rc文件
+
+1. /system/etc/init/ 用于系统本身，比如SurfaceFlinger, MediaService, and logcatd.
+2. /vendor/etc/init/ 用于SoC(系统级核心厂商，如高通),为他们提供一些核心功能和服务
+3. /odm/etc/init/
+	用于设备制造商（odm定制厂商，如华为、小米），为他们的传感器或外围设备提供一些核心功能和服务
+
+将init.rc根据不同服务分拆到不同目录，要比之前放在单个init.rc文件好.
+这种方案确保init读取的service和action信息能和同目录下的Services二进制文件更加符合,不再像以前单个init.rc那样.
+
+在 mount_all 语句中有 "early" 和 "late" 两个可选项，当 early
+设置的时候，init进程将跳过被 latemount 标记的挂载操作，并触发fs encryption state
+事件， 当 late 被设置的时候，init进程只会执行 latemount
+标记的挂载操作，但是会跳过导入的 .rc文件的执行.  默认情况下，不设置任何选项，init进程将执行所有挂载操作
+https://www.jianshu.com/p/769c58285c22
+
+--------------------
+Android Init Language语法的转化，三个核心的解析器: ActionParser,ServiceParser，ImportParser.
+而这几个解析器主要是实现ParseSection、ParseLineSection、EndSection、EndFile四个函数
+
+
+
+
+
+======================
+on early-init
+    # Set init and its forked children's oom_adj.
+    write /proc/1/oom_score_adj -1000
+	 
+	# Set the security context of /adb_keys if present.
+	restorecon /adb_keys
+		 
+	start ueventd
+
+ueventd_main定义于文件system/core/init/ueventd.cpp
+
