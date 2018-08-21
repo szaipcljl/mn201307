@@ -1,0 +1,23 @@
+Mastering the DMA and IOMMU APIs
+Embedded Linux Conference 2014
+
+
+DMA != DMA
+==========
+DMA mapping != DMA engine
+
+The topic we will focus on is how to manage system memory used for DMA.
+
+This presentation will not discuss the DMA engine API, nor will it
+address how to control DMA operations from a device point of view.
+
+Memory Access
+=============
+
+
+    CPU            Menory
+    Core                
+
+
+
+
