@@ -272,6 +272,305 @@ Even More Complex
 Memory Mappings
 ===============
 
+Memory Mapping Types
+~~~~~~~~~~~~~~~~~~~~
+
+Fully Coherent
+--------------
+Coherent (or consistent) memory is memory for which a write by either the
+device or the processor can immediately be read by the processor or device
+without having to worry about caching effects.
+Consistent memory can be expensive on some platforms, and the minimum
+allocation length may be as big as a page.
+
+Write Combining
+---------------
+Writes to the mapping may be buffered to improve performance. You need to
+make sure to flush the processor's write buffers before telling devices to read
+that memory. This memory type is typically used for (but not restricted to)
+graphics memory.
+
+Weakly Ordered
+--------------
+Reads and writes to the mapping may be weakly ordered, that is that reads
+and writes may pass each other. Not all architectures support non-cached
+weakly ordered mappings.
+
+Non-Coherent
+------------
+This memory mapping type permits speculative reads, merging of accesses
+and (if interrupted by an exception) repeating of writes without side effects.
+Accesses to non-coherent memory can always be buffered, and in most
+situations they are also cached (but they can be configured to be uncached).
+There is no implicit ordering of non-coherent memory accesses. When not
+explicitly restricted, the only limit to how out-of-order non-dependent accesses
+can be is the processor's ability to hold multiple live transactions.
+
+When using non-coherent memory mappings you are guaranteeing to the
+platform that you have all the correct and necessary sync points for this
+memory in the driver.
+
+Cache Management
+================
+Cache Management API
+--------------------
+#include <asm/cacheflush.h>
+#include <asm/outercache.h>
+
+arm64:
+(arch/arm64/include/asm/cacheflush.h)
+
+Conclusion
+----------
+#include <asm/cacheflush.h> X
+#include <asm/outercache.h> X
+
+Cache management operations are
+architecture and device specific.
+To remain portable, device drivers
+must not use the cache handling
+API directly.
+
+
+DMA Mapping API
+===============
+● Allocate memory suitable for
+  DMA operations
+● Map DMA memory to devices
+● Map DMA memory to userspace
+● Synchronize memory between
+  CPU and device domains
+
+#include <linux/dma-mapping.h>
+
+linux/dma-mapping.h
+│
+├─ linux/dma-attrs.h
+├─ linux/dma-direction.h
+├─ linux/scatterlist.h
+│
+#ifdef CONFIG_HAS_DMA
+└─ asm/dma-mapping.h
+#else
+└─ asm-generic/dma-mapping-broken.h
+#endif
+
+
+DMA Mapping API (ARM)
+---------------------
+linux/dma-mapping.h
+│
+├─ linux/dma-attrs.h
+├─ linux/dma-direction.h
+├─ linux/scatterlist.h
+│
+└─ arch/arm64/include/asm/dma-mapping.h
+	│
+	├─ asm-generic/dma-mapping-common.h
+	└─ asm-generic/dma-coherent.h
+	
+DMA Coherent Mapping
+====================
+Coherent Allocation
+-------------------
+/* asm-generic/dma-mapping.h */
+
+void *
+dma_alloc_coherent(struct device *dev, size_t size,
+					dma_addr_t *dma_handle,
+					gfp_t flag);
+
+This routine allocates a region of @size bytes of coherent memory. It also
+returns a @dma_handle which may be cast to an unsigned integer the same
+width as the bus and used as the device address base of the region.
+
+Returns: a pointer to the allocated region (in the processor's virtual address
+space) or NULL if the allocation failed.
+
+Note: coherent memory can be expensive on some platforms, and the
+minimum allocation length may be as big as a page, so you should
+consolidate your requests for consistent memory as much as possible. The
+simplest way to do that is to use the dma_pool calls.
+
+/* asm-generic/dma-mapping.h */
+
+void
+dma_free_coherent(struct device *dev, size_t size,
+void *cpu_addr,
+dma_addr_t dma_handle);
+
+Free memory previously allocated by dma_free_coherent(). Unlike with CPU
+memory allocators, calling this function with a NULL cpu_addr is not safe.
+
+
+Attribute-Based Allocation
+--------------------------
+/* asm-generic/dma-mapping.h */
+
+void *
+dma_alloc_attrs(struct device *dev, size_t size,
+				dma_addr_t *dma_handle, gfp_t flag,
+				struct dma_attrs *attrs);
+
+void
+dma_free_attrs(struct device *dev, size_t size,
+				void *cpu_addr, dma_addr_t dma_handle,
+				struct dma_attrs *attrs);
+
+Those two functions extend the coherent memory allocation API by allowing
+the caller to specify attributes for the allocated memory. When @attrs is NULL
+the behaviour is identical to the dma_*_coherent() functions.
+
+DMA Mapping Attributes
+----------------------
+● Allocation Attributes
+	– DMA_ATTR_WRITE_COMBINE
+	– DMA_ATTR_WEAK_ORDERING
+	– DMA_ATTR_NON_CONSISTENT
+	– DMA_ATTR_WRITE_BARRIER
+	– DMA_ATTR_FORCE_CONTIGUOUS
+● Allocation and mmap Attributes
+	– DMA_ATTR_NO_KERNEL_MAPPING
+● Map Attributes
+	– DMA_ATTR_SKIP_CPU_SYNC
+
+All attributes are optional. An architecture that doesn't implement an attribute
+ignores it and exhibit default behaviour.
+
+(See Documentation/DMA-attributes.txt)
+
+Memory Allocation Attributes
+----------------------------
+● DMA_ATTR_WRITE_COMBINE
+
+DMA_ATTR_WRITE_COMBINE specifies that writes to the mapping may be
+buffered to improve performance.
+
+This attribute is only supported by the ARM and ARM64 architectures.
+
+Additionally, the AVR32 architecture doesn't implement the attribute-based
+allocation API but supports write combine allocation with the
+dma_alloc_writecombine() and dma_free_writecombine() functions.
+
+● DMA_ATTR_WEAK_ORDERING
+
+DMA_ATTR_WEAK_ORDERING specifies that reads and writes to the
+mapping may be weakly ordered, that is that reads and writes may pass each
+other.
+
+This attribute is only supported by the CELL architecture (and isn't used by
+any driver)
+
+● DMA_ATTR_NON_CONSISTENT
+
+DMA_ATTR_NON_CONSISTENT lets the platform to choose to return either
+consistent or non-consistent memory as it sees fit. By using this API, you are
+guaranteeing to the platform that you have all the correct and necessary sync
+points for this memory in the driver.
+
+Only the OpenRISC architecture returns non-consistent memory in response
+to this attribute. The ARC, MIPS and PARISC architectures don't support this
+attribute but offer dedicated dma_alloc_noncoherent() and
+dma_free_noncoherent() functions for the same purpose.
+
+● DMA_ATTR_WRITE_BARRIER
+
+DMA_ATTR_WRITE_BARRIER is a (write) barrier attribute for DMA. DMA to a
+memory region with the DMA_ATTR_WRITE_BARRIER attribute forces all
+pending DMA writes to complete, and thus provides a mechanism to strictly
+order DMA from a device across all intervening buses and bridges. This
+barrier is not specific to a particular type of interconnect, it applies to the
+system as a whole, and so its implementation must account for the
+idiosyncrasies of the system all the way from the DMA device to memory.
+
+As an example of a situation where DMA_ATTR_WRITE_BARRIER would be
+useful, suppose that a device does a DMA write to indicate that data is ready
+and available in memory. The DMA of the “completion indication” could race
+with data DMA. Mapping the memory used for completion indications with
+DMA_ATTR_WRITE_BARRIER would prevent the race.
+
+This attribute is only implemented by the SGI SN2 (IA64) subarchitecture.
+
+● DMA_ATTR_FORCE_CONTIGUOUS
+By default the DMA-mapping subsystem is allowed to assemble the buffer
+allocated by the dma_alloc_attrs() function from individual pages if it can be
+mapped contiguously into device DMA address space. By specifying this
+attribute the allocated buffer is forced to be contiguous also in physical
+memory.
+
+This attribute is only supported by the ARM architecture.
+
+● DMA_ATTR_NO_KERNEL_MAPPING
+
+DMA_ATTR_NO_KERNEL_MAPPING lets the platform to avoid creating a
+kernel virtual mapping for the allocated buffer. On some architectures creating
+such mapping is non-trivial task and consumes very limited resources (like
+kernel virtual address space or dma consistent address space). Buffers
+allocated with this attribute can be only passed to user space by calling
+dma_mmap_attrs(). By using this API, you are guaranteeing that you won't
+dereference the pointer returned by dma_alloc_attr(). You can treat it as a
+cookie that must be passed to dma_mmap_attrs() and dma_free_attrs(). Make
+sure that both of these also get this attribute set on each call.
+
+This attribute is only supported by the ARM architecture.
+
+● DMA_ATTR_SKIP_CPU_SYNC
+
+When a buffer is shared between multiple devices one mapping must be
+created separately for each device. This is usually performed by calling the
+DMA mapping functions more than once for the given buffer. The first call
+transfers buffer ownership from CPU domain to device domain, which
+synchronizes CPU caches for the given region. However, subsequent calls to
+dma_map_*() for other devices will perform exactly the same potentially
+expensive synchronization operation on the CPU cache.
+
+DMA_ATTR_SKIP_CPU_SYNC allows platform code to skip synchronization
+of the CPU cache for the given buffer assuming that it has been already
+transferred to “device” domain. This is highly recommended but must be used
+with care. This attribute can be also used for the DMA mapping functions to
+force buffer to stay in device domain.
+
+
+DMA Mask
+========
+
+/* asm/dma-mapping.h */
+
+int dma_set_mask(struct device *dev, u64 mask),
+
+/* linux/dma-mapping.h */
+
+int dma_set_coherent_mask(struct device *dev, u64 mask);
+
+int dma_set_mask_and_coherent(struct device *dev,
+								u64 mask);
+
+/* linux/device.h */
+
+struct device {
+	...
+	u64 *dma_mask;
+	u64 coherent_dma_mask;
+	...
+};
+
+/* linux/dma-mapping.h */
+
+int dma_coerce_mask_and_coherent(struct device *dev,
+								u64 mask);
+
+Userspace Mapping
+=================
+
+
+
+
+
+
+
+
+
+
 
 
 

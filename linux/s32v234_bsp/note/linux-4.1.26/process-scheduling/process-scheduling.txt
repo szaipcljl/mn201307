@@ -1,0 +1,43 @@
+浅析Linux内核调度
+https://www.cnblogs.com/wangzahngjun/p/4911432.html
+
+1.调度器的概述
+==============
+
+Linux是抢占式多任务模式。 对CPU的占用时间由操作系统中的调度器决定。
+调度器决定了什么时候停止一个进程以便让其他进程有机会运行，同时挑选出一个其他的进程开始运行。
+
+2.调度策略
+==========
+在Linux上调度策略决定了调度器是如何选择一个新进程的时间。调度策略与进程的类型有关，内核现有的调度策略如下：
+
+[include/uapi/linux/sched.h]
+/*
+ * Scheduling policies
+ */
+#define SCHED_NORMAL		0
+#define SCHED_FIFO		1
+#define SCHED_RR		2
+#define SCHED_BATCH		3
+/* SCHED_ISO: reserved but not implemented yet */
+#define SCHED_IDLE		5
+#define SCHED_DEADLINE		6
+
+0 : 默认的调度策略，针对的是普通进程。
+1：针对实时进程的先进先出调度。适合对时间性要求比较高但每次运行时间比较短的进程。
+2：针对的是实时进程的时间片轮转调度。适合每次运行时间比较长得进程。
+3：针对批处理进程的调度，适合那些非交互性且对cpu使用密集的进程。
+SCHED_ISO：是内核的一个预留字段，目前还没有使用
+5：适用于优先级较低的后台进程。
+注：每个进程的调度策略保存在进程描述符task_struct中的policy字段
+
+struct task_struct {//include/linux/sched.h
+	...
+	unsigned int policy;
+	...
+};
+
+3.调度器中的机制
+================
+
+
