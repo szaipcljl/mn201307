@@ -1,0 +1,15 @@
+
+
+
+新的Linux内核使用udev代替了hotplug作为热拔插管理，虽然有udevd管理热拔插，
+但有时候我们还是需要在应用程序中检测热拔插事件以便快速地处理，比如在读写
+SD卡的时候拔下SD卡，那么需要立即检测出该情况，然后结束读写线程，防止VFS
+崩溃。Netlink是面向数据包的服务，为内核与用户层搭建了一个高速通道，是udev
+实现的基础。该工作方式是异步的，用户空间程序不必使用轮询等技术来检测热拔
+插事件。
+
+内核中使用uevent事件通知用户空间，uevent首先在内核中调用
+netlink_kernel_create()函数创建一个socket套接字,该函数原型在netlink.h有定
+义，其类型是表示往用户空间发送消息的NETLINK_KOBJECT_UEVENT,groups=1，由于
+uevent只往用户空间发送消息而不接受，因此其输入回调函数input和cb_mutex都设
+置为NULL。
