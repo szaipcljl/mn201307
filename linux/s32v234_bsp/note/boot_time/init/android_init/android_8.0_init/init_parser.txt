@@ -1,0 +1,250 @@
+
+
+
+==================
+init.c
+------
+1.
+main:
+    const BuiltinFunctionMap function_map;
+    Action::set_function_map(&function_map);
+
+keyword_map.h
+-------------
+class KeywordMap {
+public:
+    using FunctionInfo = std::tuple<std::size_t, std::size_t, Function>;
+    using Map = const std::map<std::string, FunctionInfo>;
+	...
+
+};
+
+builtins.h
+----------
+
+class BuiltinFunctionMap : public KeywordMap<BuiltinFunction> {
+public:
+    BuiltinFunctionMap() {
+    }
+private:
+    Map& map() const override;
+};
+
+
+builtins.cpp
+------------
+BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
+	...
+    static const Map builtin_functions = {
+		...
+        {"insmod",                  {1,     kMax, do_insmod}},
+		...
+    };
+    // clang-format on
+    return builtin_functions;
+}
+
+
+-------------
+class Action {
+public:
+	...
+    static void set_function_map(const KeywordMap<BuiltinFunction>* function_map) {
+        function_map_ = function_map;
+    }
+
+private:
+	...
+    static const KeywordMap<BuiltinFunction>* function_map_;
+};
+
+
+
+
+
+
+2.
+main:
+    Parser& parser = Parser::GetInstance();
+    parser.AddSectionParser("service",std::make_unique<ServiceParser>());
+    parser.AddSectionParser("on", std::make_unique<ActionParser>());
+    parser.AddSectionParser("import", std::make_unique<ImportParser>());
+
+init_parser.h
+-------------
+class Parser {
+public:
+    static Parser& GetInstance();
+	...
+    void AddSectionParser(const std::string& name,
+                          std::unique_ptr<SectionParser> parser);
+	...
+
+private:
+    Parser();
+	...
+    std::map<std::string, std::unique_ptr<SectionParser>> section_parsers_;
+	...
+};
+
+init_parser.cpp
+---------------
+Parser::Parser() {
+}
+
+Parser& Parser::GetInstance() {
+    static Parser instance;
+    return instance;
+}
+
+
+void Parser::AddSectionParser(const std::string& name,
+                              std::unique_ptr<SectionParser> parser) {
+    section_parsers_[name] = std::move(parser);
+}
+
+service.h
+---------
+class ServiceParser : public SectionParser {
+	...
+};
+
+action.h
+--------
+class ActionParser : public SectionParser {
+	...
+};
+
+import_parser.h
+---------------
+
+class ImportParser : public SectionParser {
+	...
+
+};
+
+3.
+main:
+        parser.ParseConfig("/init.rc");
+
+
+
+init_parser.h
+-------------
+class Parser {
+public:
+	...
+    bool ParseConfig(const std::string& path);
+	...
+};
+
+
+action, service, import
+=======================
+action:
+class ActionParser : public SectionParser {
+public:
+    ActionParser() : action_(nullptr) {
+    }
+    bool ParseSection(const std::vector<std::string>& args,
+                      std::string* err) override;
+    bool ParseLineSection(const std::vector<std::string>& args,
+                          const std::string& filename, int line,
+                          std::string* err) const override;
+    void EndSection() override;
+    void EndFile(const std::string&) override {
+    }
+private:
+    std::unique_ptr<Action> action_;
+};
+
+ps:
+ParseSection: 
+	args[0] = "On", => parse trigger
+	
+ParseLineSection:
+	Add Command to commands_
+
+action.h
+--------
+class Action {
+public:
+	...
+
+private:
+	...
+    std::vector<Command> commands_;
+	...
+};
+
+
+EndSection:
+	add action to ActionManager instance's private member actions_, its a vector.
+
+class ActionManager {
+public:
+	...
+private:
+		...
+    std::vector<std::unique_ptr<Action>> actions_;
+		...
+};
+
+
+
+  ActionManager                Action
+  +--------+        commands_  +----------+  
+  | Action |------------------>| Command  |
+  +--------+                   +----------+
+  | Action |                   | Command  |
+  +--------+                   +----------+
+  | ...    |                   | ...      |
+  +--------+                   +----------+
+  (vector)                      (vector)
+
+
+
+
+  Action
+  +-------------------------------------+
+  | std::map<std::string, std::string>  |
+  | property_triggers_;                 |
+  +-------------------------------------+
+  | std::string event_trigger_;         |
+  +-------------------------------------+
+  | std::vector<Command> commands_;     |
+  +-------------------------------------+
+                                         
+                                         
+                                         
+
+
+
+
+
+
+
+
+
+
+
+
+===================
+init_parser.h:
+--------------
+class Parser [init_parser.h] 
+class SectionParser [init_parser.h]
+
+action.h:
+---------
+class Command [action.h]
+class Action [action.h]
+class Trigger [action.h]
+class ActionManager [action.h]
+class ActionParser [action]
+
+======================
+class SectionParser [init_parser.h] <-- class ActionParser [action]
+
+
+
