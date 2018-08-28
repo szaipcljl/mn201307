@@ -1,0 +1,30 @@
+
+-------------------------------------------
+(S0) "import"
+(S1) ImportParser::ParseSection
+     |-> imports_.emplace_back(std::move(conf_file));
+
+(S2) ImportParser::EndFile
+     |-> for (const auto& s : current_imports) {
+            if (!Parser::GetInstance().ParseConfig(s)) {
+                PLOG(ERROR) << "could not import file '" << s << "' from '" << filename << "'";
+            }
+        }
+-----
+Parser::ParseConfig
+|-> return ParseConfigFile(path);
+    |-> read_file(path, &data)
+    |-> ParseData(path, data); //Parser::ParseData
+        |-> parser "service" and "action"
+
+
+-------------------------------------------
+
+
+  ImportParser
+  +------------------------------------+
+  | std::vector<std::string> imports_; |
+  +------------------------------------+     
+
+
+

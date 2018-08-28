@@ -190,4 +190,88 @@ class ActionParser [action]
 class SectionParser [init_parser.h] <-- class ActionParser [action]
 
 
+=====================
+
+
+frameworks/native/cmds/servicemanager/servicemanager.rc
+service servicemanager /system/bin/servicemanager
+    class core animation
+	user system
+	group system readproc
+	critical
+	onrestart restart healthd
+	onrestart restart zygote
+	onrestart restart audioserver
+	onrestart restart media
+	onrestart restart surfaceflinger
+	onrestart restart inputflinger
+	onrestart restart drm
+	onrestart restart cameraserver
+	writepid /dev/cpuset/system-background/tasks
+
+system/core/rootdir/init.rc
+on post-fs
+    # Load properties from
+    #     /system/build.prop,
+    #     /odm/build.prop,
+    #     /vendor/build.prop and
+    #     /factory/factory.prop
+    load_system_props
+    # start essential services
+    start logd
+    start servicemanager
+    start hwservicemanager
+    start vndservicemanager
+	...
+
+where to start service?
+-----------------------
+services needed to start in boot time was added to action's command
+
+
+//builtins.cpp
+BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
+    constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
+    // clang-format off
+    static const Map builtin_functions = {
+		...
+        {"start",                   {1,     1,    do_start}},
+		...
+    };
+    // clang-format on
+    return builtin_functions;
+}
+
+
+do_start
+|-> (1) Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
+|-> (2) svc->Start()
+
+
+(1) ServiceManager::FindServiceByName
+	|> auto svc = std::find_if(services_.begin(), services_.end(),
+								[&name] (const std::unique_ptr<Service>& s) {
+									return name == s->name();
+								});
+(2) Service::Start
+    ...
+    pid_t pid = -1;
+    if (namespace_flags_) {
+        pid = clone(nullptr, nullptr, namespace_flags_ | SIGCHLD, nullptr);
+    } else {
+        pid = fork();
+    }
+
+	...
+
+    if (pid == 0) { //child
+		...
+
+        std::vector<char*> strs;
+        ExpandArgs(args_, &strs);
+        if (execve(strs[0], (char**) &strs[0], (char**) ENV) < 0) {
+            PLOG(ERROR) << "cannot execve('" << strs[0] << "')";
+        }
+		...
+	}
 

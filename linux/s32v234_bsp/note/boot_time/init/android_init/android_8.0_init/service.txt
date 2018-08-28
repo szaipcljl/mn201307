@@ -1,0 +1,149 @@
+
+
+
+
+
+Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
+    constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
+    // clang-format off
+    static const Map option_parsers = {
+        {"capabilities",
+                        {1,     kMax, &Service::ParseCapabilities}},
+        {"class",       {1,     kMax, &Service::ParseClass}},
+        {"console",     {0,     1,    &Service::ParseConsole}},
+        {"critical",    {0,     0,    &Service::ParseCritical}},
+        {"disabled",    {0,     0,    &Service::ParseDisabled}},
+        {"group",       {1,     NR_SVC_SUPP_GIDS + 1, &Service::ParseGroup}},
+        {"ioprio",      {2,     2,    &Service::ParseIoprio}},
+        {"priority",    {1,     1,    &Service::ParsePriority}},
+        {"keycodes",    {1,     kMax, &Service::ParseKeycodes}},
+        {"oneshot",     {0,     0,    &Service::ParseOneshot}},
+        {"onrestart",   {1,     kMax, &Service::ParseOnrestart}},
+        {"oom_score_adjust",
+                        {1,     1,    &Service::ParseOomScoreAdjust}},
+        {"namespace",   {1,     2,    &Service::ParseNamespace}},
+        {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
+        {"setenv",      {2,     2,    &Service::ParseSetenv}},
+        {"socket",      {3,     6,    &Service::ParseSocket}},
+        {"file",        {2,     2,    &Service::ParseFile}},
+        {"user",        {1,     1,    &Service::ParseUser}},
+        {"writepid",    {1,     kMax, &Service::ParseWritepid}},
+    };
+    // clang-format on
+    return option_parsers;
+}
+
+--------------------------------------------------------------
+
+
+
+ +---------+
+ | Service |
+ +---------+
+
++----------------+
+| ServiceManager |
++----------------+
+
+ +--------------------------+    
+ | KeywordMap<OptionParser> |
+ +--------------------------+
+               ^
+               |
+               |
+               |
+ +--------------------------------+
+ | class Service::OptionParserMap |
+ +--------------------------------+        
+
+
+
+class Service {
+  public:
+...
+  private:
+    using OptionParser = bool (Service::*) (const std::vector<std::string>& args,
+                                            std::string* err);
+...
+};
+
+
+------------------------------
+(S0) "service" -> ServiceParser
+    Parser::ParseData
+    |-> section_parser = section_parsers_[args[0]].get(); 
+
+(S1) ServiceParser::ParseSection
+(S2) ServiceParser::ParseLineSection
+     |-> service_->ParseLine(args, err)  //<=>  Service::ParseLine
+         |-> static const OptionParserMap parser_map;
+             auto parser = parser_map.FindFunction(args[0], args.size() - 1, err);
+             return (this->*parser)(args, err);
+
+"class"
+bool Service::ParseClass(const std::vector<std::string>& args, std::string* err) {
+    classnames_ = std::set<std::string>(args.begin() + 1, args.end());
+    return true;
+}
+(S3) ServiceParser::EndSection()                                        
+     |-> ServiceManager::GetInstance().AddService(std::move(service_)); 
+         |->services_.emplace_back(std::move(service));
+
+//add service from ServiceParser to ServiceManager
+
+------------------------------
+
+      //<service的名字><执行程序路径><传递参数>  
+      //option是service的修饰词，影响什么时候、如何启动services  
+
+      +--------------------------------------------+
+      | service <name> <pathname> [ <argument> ]*  |
+      +--------------------------------------------+
+      |    <option>                                |
+      +--------------------------------------------+
+      |    <option>                                |
+      +--------------------------------------------+
+      |    ...                                     |
+      +--------------------------------------------+
+
+       ServiceParser::ParseSection   
+       |-> service_ = std::make_unique<Service>(name, str_args);
+                                                  |
+                                              (S1)|
+                                                  |
+      ServiceParser                               |
+      +------------------------------------+      |
++-----| std::unique_ptr<Service> service_; |<-----+
+|     +------------------------------------+<-------(S2)
+|                         |
+|                         |
+|                         |
+|                         |
+|     Service             v
+|     +-----------------------------------+
+|     | ...                               |
+|     +-----------------------------------+              
+|     | std::set<std::string> classnames_;|<---- (S2) 
+|     +-----------------------------------+
+|     | std::string name_;                |<---- (S1) <name>
+|     |-----------------------------------+
+|     | std::vector<int> keycodes_;       |
+|     +-----------------------------------+
+|     | int keychord_id_;                 |
+|     +-----------------------------------+
+|     | std::vector<std::string> args_;   |<---- (S1) <pathname> + [<argument>] ?
+|     +-----------------------------------+       
+|                                          
+|
+|     ServiceManager
+|(S3) +--------------------------------------------------+
++---->| std::vector<std::unique_ptr<Service>> services_; |
+      +--------------------------------------------------+
+
+=============================================
+All services whose binaries reside on the system, vendor, or odm partitions
+should have their service entries placed into a corresponding init .rc file,
+located in the /etc/init/ directory of the partition where they reside. There is
+a build system macro, LOCAL_INIT_RC, that handles this for developers. Each init
+.rc file should additionally contain any actions associated with its service.
+
