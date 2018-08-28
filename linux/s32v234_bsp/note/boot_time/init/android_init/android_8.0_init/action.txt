@@ -1,0 +1,193 @@
+
+
+
+action, service, import
+=======================
+action:
+class ActionParser : public SectionParser {
+public:
+    ActionParser() : action_(nullptr) {
+    }
+    bool ParseSection(const std::vector<std::string>& args,
+                      std::string* err) override;
+    bool ParseLineSection(const std::vector<std::string>& args,
+                          const std::string& filename, int line,
+                          std::string* err) const override;
+    void EndSection() override;
+    void EndFile(const std::string&) override {
+    }
+private:
+    std::unique_ptr<Action> action_;
+};
+
+ps:
+ParseSection: 
+	args[0] = "On", => parse trigger
+	
+ParseLineSection:
+	Add Command to commands_
+
+action.h
+--------
+class Action {
+public:
+	...
+
+private:
+	...
+    std::vector<Command> commands_;
+	...
+};
+
+
+EndSection:
+	add action to ActionManager instance's private member actions_, its a vector.
+
+class ActionManager {
+public:
+	...
+private:
+		...
+    std::vector<std::unique_ptr<Action>> actions_;
+		...
+};
+
+
+-------------------------------
+(A1): section_parser->ParseSection
+(A2): section_parser->ParseLineSection
+(A3): section_parser->EndSection
+
+-------------------------------
+
+  Command                                  
+  +---------------------------------+
+  | BuiltinFunction func_;          |
+  +---------------------------------+
+  | std::vector<std::string> args_; |
+  +---------------------------------+
+  | std::string filename_;          |
+  +---------------------------------+
+  | int line_;                      |
+  +---------------------------------+
+
+
+
+
+                 +---- section_parser->EndSection
+                 |
+                 |
+  ActionManager  |             Action::commands_
+  +--------+     |             +----------+  
+  | Action |<----+             | Command  |                             
+  +--------+        commands_  +----------+                             
+  | Action |------------------>| Command  |<-----------+                
+  +--------+                   +----------+            |                
+  | ...    |                   | ...      |            |                
+  +--------+                   +----------+            |                
+  (vector)                      (vector)               |                
+                                                       |                
+                                                       |                
+                                                       |                
+ +-------------------------------------------+         |                
+ | on <trigger> [&& <trigger>]*//设置触发器  |         |                
+ +-------------------------------------------+   (A2)  |                
+ |    <command>                              |---------+                
+ +-------------------------------------------+   
+ |    <command> //动作触发之后要执行的命令   |    
+ +-------------------------------------------+    
+
+(A2): ActionParser::ParseLineSection
+                          |                        
+                          |                        
+  action_->AddCommand <---+                        
+  |                                                
+  +-> auto function = function_map_->FindFunction(args[0], args.size() - 1, err);
+      AddCommand(function, args, filename, line);
+      |
+      +--> commands_.emplace_back(f, args, filename, line)
+
+
+
+
+
+
+      
+    +---Action
+    |   +-------------------------------------+
+    |   | std::map<std::string, std::string>  |
+    |   | property_triggers_;                 |      
+    |   +-------------------------------------+      
+    |   | std::string event_trigger_;         |<----(A1) section_parser->ParseSection
+    |   +-------------------------------------+          |--> action->InitTriggers
+    |   | std::vector<Command> commands_;     |                                 
+    |   +-------------------------------------+
+    | 
+    |(A3)section_parser->EndSection
+    |    |-> ActionManager::GetInstance().AddAction(std::move(action_));
+    |        |-> actions_.emplace_back(std::move(action)); 
+    |
+    |   ActionManager
+    |   +-------------------------------------------------------+
+    +-->| std::vector<std::unique_ptr<Action>> actions_;        |
+        +-------------------------------------------------------+
+    +-->| std::queue<std::unique_ptr<Trigger>> trigger_queue_;  |
+    |   +-------------------------------------------------------+
+    |   | std::queue<const Action*> current_executing_actions_; |
+    |   +-------------------------------------------------------+
+    |   | std::size_t current_command_;                         |
+    |   +-------------------------------------------------------+
+    |                                    
+    |  am.QueueEventTrigger      +--------------+                 
+    +<---------------------------| EventTrigger |==>"early-init", "init"
+    |                            +--------------+
+    |  am.QueueBuiltinAction     +----------------+
+    +<---------------------------+ BuiltinTrigger |==>"wait_for_coldboot_done"
+    |                            +----------------+
+    |  am.QueuePropertyTrigger   +-----------------+
+    +<---------------------------| PropertyTrigger |          
+                                 +-----------------+
+
+
+        Trigger    
+        +----------------------------+
+        | virtual ~Trigger() { }     |
+        +----------------------------+
+        | virtual bool CheckTriggers |                               
+        +----------------------------+
+
+                         +----------------+
+                    +----| BuiltinTrigger |
+                    |    +----------------+
+                    |
+      +---------+<--+    +--------------+
+      | Trigger |<-------| EventTrigger |
+      +---------+<--+    +--------------+
+                    | 
+                    |    +-----------------+
+                    +----+ PropertyTrigger |
+                         +-----------------+
+
+
+
+
+
+===================
+init_parser.h:
+--------------
+class Parser [init_parser.h] 
+class SectionParser [init_parser.h]
+
+action.h:
+---------
+class Command [action.h]
+class Action [action.h]
+class Trigger [action.h]
+class ActionManager [action.h]
+class ActionParser [action]
+
+======================
+class SectionParser [init_parser.h] <-- class ActionParser [action]
+
+
+
