@@ -147,3 +147,5 @@ located in the /etc/init/ directory of the partition where they reside. There is
 a build system macro, LOCAL_INIT_RC, that handles this for developers. Each init
 .rc file should additionally contain any actions associated with its service.
 
+=============================================
+restart
