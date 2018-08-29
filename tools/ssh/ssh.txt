@@ -25,26 +25,23 @@ ubuntu客户端
 
 访问其他ubuntu(或服务器):
 ssh -l 用户名 IP
-根据提示输入密码
 
 ssh username@ipaddress
 ssh username@hostname
 
 ================================================================================
-ssh 不输入密码远程登录 ssh-keygen -t rsa
+ssh免密码登录
+<https://jingyan.baidu.com/article/c275f6ba08267ae33c756758.html>
 
-目标机器的/home/admin下没有 .ssh目录
-HostA ----->HostB，guest在HostB拥有admin的sudo权限
+(1) 本地系统执行 ssh-keygen -t rsa 命令，生成密钥文件
 
-1 登录到HostB，在HostB的/home/admin目录下 执行 ssh-keygen -t rsa
--t 表示加密类型，用rsa；
-执行完创建了隐藏文件夹.ssh
+(2) 本地机器执行命令如：
+	chris@iceberg:~$ ssh-copy-id -i ~/.ssh/id_rsa.pub chris@192.168.5.244
+	将公钥文件传输的远程机器，并生效.
 
-2  生成两个文件id_rsa，id_rsa.pub，
+ 	查看远程机器的authorized_keys文件，可以看到对应的变化：本地机器的公钥已经增加到远程机器的配置文件中了
 
-3 .ssh/目录下,创建一个文件，命名为 authorized_keys，内容是 HostA ~/.ssh/id_rsa.pub的文件内容
-
-4 保存，退出HostB，到HostA上执行 
-    ssh admin@HostB  
-
-就可以不输密码直接登陆了
+注意事项:
+    免密码登录的处理是用户对用户的，切换其他用户后，仍然需要输入密码
+	公钥传到远程机器并生效的操作，可用其他方式实现，如scp后修改authorized_keys
+	远程机器的.ssh目录需要700权限，authorized_keys文件需要600权限
