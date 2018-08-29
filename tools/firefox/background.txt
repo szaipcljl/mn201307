@@ -1,0 +1,21 @@
+
+
+1. "Open menu" -> "Add-ons" -> "Themes" -> "Dark" enable
+
+2. "Extensions" -> search "Dark Background and Light Text" ->  add to firefox
+
+
+Add-ons:
+Awesome Screenshot Plus - Capture, Annotate & More 
+
+HTTPS Everywhere :
+自动尝试对所有的网址使用https协议进行访问，主要对那些支持https协议访问
+而默认是http的网站有意义，比如优酷。对于默认使用https或只支持http的站点
+就没有用了。https可以有效阻止无良网络运营商向网页中插入广告。
+
+Google Translate, ImTranslator, Dictionary, TTS:
+可以更改谷歌翻译的服务器: "option" -> "advanced" -> "Preferred domain for Google Translate"
+
+uBlock Origin: 
+一个连火狐官方都推荐的屏蔽广告插件，可以自定义屏蔽网页上的特定元素，语法规则与Adblock
+Plus兼容。

@@ -1,0 +1,292 @@
+
+
+
+service.cpp
+Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
+    constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
+    // clang-format off
+    static const Map option_parsers = {
+        {"capabilities",
+                        {1,     kMax, &Service::ParseCapabilities}},
+        {"class",       {1,     kMax, &Service::ParseClass}},
+        {"console",     {0,     1,    &Service::ParseConsole}},
+        {"critical",    {0,     0,    &Service::ParseCritical}},
+        {"disabled",    {0,     0,    &Service::ParseDisabled}},
+        {"group",       {1,     NR_SVC_SUPP_GIDS + 1, &Service::ParseGroup}},
+        {"ioprio",      {2,     2,    &Service::ParseIoprio}},
+        {"priority",    {1,     1,    &Service::ParsePriority}},
+        {"keycodes",    {1,     kMax, &Service::ParseKeycodes}},
+        {"oneshot",     {0,     0,    &Service::ParseOneshot}},
+        {"onrestart",   {1,     kMax, &Service::ParseOnrestart}},
+        {"oom_score_adjust",
+                        {1,     1,    &Service::ParseOomScoreAdjust}},
+        {"namespace",   {1,     2,    &Service::ParseNamespace}},
+        {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
+        {"setenv",      {2,     2,    &Service::ParseSetenv}},
+        {"socket",      {3,     6,    &Service::ParseSocket}},
+        {"file",        {2,     2,    &Service::ParseFile}},
+        {"user",        {1,     1,    &Service::ParseUser}},
+        {"writepid",    {1,     kMax, &Service::ParseWritepid}},
+    };
+    // clang-format on
+    return option_parsers;
+}
+
+=======
+options <-> Service members
+
+                 Service
+                 +------------------------------------------------------------+
+                 | flags_ |= SVC_CONSOLE;                                     |
+console          | std::string console_;                                      |
+                 +------------------------------------------------------------+
+class            | std::set<std::string> classnames_;                         |
+                 +------------------------------------------------------------+
+critical         | flags_ |= SVC_CRITICAL;                                    |
+                 +------------------------------------------------------------+
+disabled         | flags_ |= SVC_DISABLED;                                    |
+                 | flags_ |= SVC_RC_DISABLED;                                 |
+                 +------------------------------------------------------------+
+group            | std::vector<gid_t> supp_gids_;                             |
+                 +------------------------------------------------------------+
+ioprio           | IoSchedClass ioprio_class_;                                |
+                 +------------------------------------------------------------+
+priority         | int priority_;                                             |
+                 +------------------------------------------------------------+
+keycodes         | std::vector<int> keycodes_;                                |
+                 +------------------------------------------------------------+
+oneshot          | flags_ |= SVC_ONESHOT;                                     |
+                 +------------------------------------------------------------+
+onrestart        | Action onrestart_;                                         |
+                 +------------------------------------------------------------+
+oom_score_adjust | int oom_score_adjust_;                                     |
+                 +------------------------------------------------------------+
+namespace        | unsigned namespace_flags_;                                 |
+                 +------------------------------------------------------------+
+seclabel         | std::string seclabel_;                                     |
+                 +------------------------------------------------------------+
+setenv           | std::vector<ServiceEnvironmentInfo> envvars_;              |
+                 +------------------------------------------------------------+
+socket           | std::vector<std::unique_ptr<DescriptorInfo>> descriptors_; |
+                 +------------------------------------------------------------+
+file             | std::vector<std::unique_ptr<DescriptorInfo>> descriptors_; |
+                 +------------------------------------------------------------+
+user             | uid_t uid_;                                                |
+                 +------------------------------------------------------------+
+writepid         | std::vector<std::string> writepid_files_;                  |
+                 +------------------------------------------------------------+
+
+system/core/rootdir/zygote64.rc
+==============
+service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server
+    class main
+    priority -20
+    user root
+    group root readproc
+    socket zygote stream 660 root system
+    onrestart write /sys/android_power/request_state wake
+    onrestart write /sys/power/state on
+    onrestart restart audioserver
+    onrestart restart cameraserver
+    onrestart restart media
+    onrestart restart netd
+    onrestart restart wificond
+    writepid /dev/cpuset/foreground/tasks
+
+---------
+onrestart restart cameraserver         
+    +-------------------------+        
+--->| Service::ParseOnrestart |----------------------------------------+
+    +-------------------------+                                        |
+                                                                       |
+                                                                       |
+ Service                                                               |
+ +--------------------+     +---------------------------------+        |
+ | ...                |     | ...                             |        |
+ +--------------------+     +---------------------------------+        |
+ | Action onrestart_; |---->| std::vector<Command> commands_; |<-------+
+ +--------------------+     +---------------------------------+
+ | ...                |     | ...                             |
+ +--------------------+     +---------------------------------+
+                                       
+                                       
+
+
+                                                   socketpair
+                                                       |
+                                               +-------+---------+
+  SIGCHLD_handler   --- 2.写入信息 ----+       |                 |
+         ^                             |       |                 |
+         |                             v       v                 v
+         |                     +-----------------+            +-----------------+
+                               | signal_write_fd | -- 传输 -->|  signal_read_fd |
+1.产生 SIGCHLD 信号            +-----------------+            +-----------------+
+                                                                       ^
+         |                                                             |
+         |                                                             |
+  +--------------+                                                3.监听到数据
+  |  终止子信号  |                                                     |
+  +--------------+                                                     |
+                           +---------------+                   +----------------+
+                           | handle_signal | <---- 4.执行 -----|    epoll_fd    |
+                     +-----| (ev.data.ptr) |                   +----------------+
+                     |     +---------------+
+                     v
+   +-------------------------------------------------------------+
+   | ServiceManager::GetInstance().ReapAnyOutstandingChildren(); |
+   +-------------------------------------------------------------+
+
+ServiceManager::GetInstance().ReapAnyOutstandingChildren();
+|-> while (ReapOneProcess()) {
+    }
+    |-> waitpid
+    |-> Service* svc = FindServiceByPid(pid);
+    |-> svc->Reap();
+
+
+Service::Reap():
+(1) 
+    if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
+        KillProcessGroup(SIGKILL);
+    }
+
+(2)
+    // Oneshot processes go into the disabled state on exit,
+    // except when manually restarted.
+    if ((flags_ & SVC_ONESHOT) && !(flags_ & SVC_RESTART)) {
+        flags_ |= SVC_DISABLED;
+    }
+
+    ...
+(3)
+    flags_ &= (~SVC_RESTART);
+    flags_ |= SVC_RESTARTING; //(F1), set flags to SVC_RESTARTING     
+
+    // Execute all onrestart commands for this service.
+    onrestart_.ExecuteAllCommands();
+
+--------------
+init.cpp
+
+main:
+    restart_processes(); 
+    |-> process_needs_restart_at = 0;
+        ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_RESTARTING, [](Service* s) {
+            s->RestartIfNeeded(&process_needs_restart_at);
+        });
+
+void ServiceManager::ForEachServiceWithFlags(unsigned matchflags,
+                                             void (*func)(Service* svc)) const {
+    for (const auto& s : services_) {
+        if (s->flags() & matchflags) { //(F1), dependencies has been perform in reap,
+            func(s.get());
+        }
+    }
+}
+
+
+
+
+
+Options
+=======
+Options are modifiers to services. They affect how and when init runs the service.
+
+console [<console>]
+    This service needs a console. The optional second parameter chooses a
+	specific console instead of the default. The default "/dev/console" can be 
+	changed by setting the "androidboot.console" kernel parameter. In all cases 
+	the leading "/dev/" should be omitted, so "/dev/tty0" would be specified as 
+	just "console tty0".
+
+critical
+
+    This is a device-critical service. If it exits more than four times in
+
+four minutes, the device will reboot into recovery mode.
+
+disabled
+
+    This service will not automatically start with its class.
+
+It must be explicitly started by name.
+
+setenv <name> <value>
+
+    Set the environment variable name to value in the launched process.
+
+socket <name> <type> <perm> [ <user> [ <group> [ <seclabel> ] ] ]
+
+    Create a unix domain socket named /dev/socket/_name_ and pass its fd to the
+
+launched process. type must be "dgram", "stream" or "seqpacket". User and group default to 0. 'seclabel' is the SELinux security context for the socket. It defaults to the service security context, as specified by seclabel or computed based on the service executable file security context. For native executables see libcutils android_get_control_socket().
+
+file <path> <type>
+
+    Open a file path and pass its fd to the launched process. type must be
+
+"r", "w" or "rw". For native executables see libcutils android_get_control_file().
+
+user <username>
+
+    Change to 'username' before exec'ing this service.
+
+Currently defaults to root. (??? probably should default to nobody) As of Android M, processes should use this option even if they require Linux capabilities. Previously, to acquire Linux capabilities, a process would need to run as root, request the capabilities, then drop to its desired uid. There is a new mechanism through fs_config that allows device manufacturers to add Linux capabilities to specific binaries on a file system that should be used instead. This mechanism is described on http://source.android.com/devices/tech/config/filesystem.html. When using this new mechanism, processes can use the user option to select their desired uid without ever running as root. As of Android O, processes can also request capabilities directly in their .rc files. See the "capabilities" option below.
+
+group <groupname> [ <groupname>\* ]
+
+    Change to 'groupname' before exec'ing this service. Additional
+
+groupnames beyond the (required) first one are used to set the supplemental groups of the process (via setgroups()). Currently defaults to root. (??? probably should default to nobody)
+
+capabilities <capability> [ <capability>\* ]
+
+    Set capabilities when exec'ing this service. 'capability' should be a Linux
+
+capability without the "CAP\_" prefix, like "NET\_ADMIN" or "SETPCAP". See http://man7.org/linux/man-pages/man7/capabilities.7.html for a list of Linux capabilities.
+
+seclabel <seclabel>
+
+    Change to 'seclabel' before exec'ing this service.
+
+Primarily for use by services run from the rootfs, e.g. ueventd, adbd. Services on the system partition can instead use policy-defined transitions based on their file security context. If not specified and no transition is defined in policy, defaults to the init context.
+
+oneshot
+
+    Do not restart the service when it exits.
+
+class <name> [ <name>\* ]
+
+    Specify class names for the service. All services in a
+
+named class may be started or stopped together. A service is in the class "default" if one is not specified via the class option. Additional classnames beyond the (required) first one are used to group services. animation class
+
+    'animation' class should include all services necessary for both
+
+boot animation and shutdown animation. As these services can be launched very early during bootup and can run until the last stage of shutdown, access to /data partition is not guaranteed. These services can check files under /data but it should not keep files opened and should work when /data is not available.
+
+onrestart
+
+    Execute a Command (see below) when service restarts.
+
+writepid <file> [ <file>\* ]
+
+    Write the child's pid to the given files when it forks. Meant for
+
+cgroup/cpuset usage. If no files under /dev/cpuset/ are specified, but the system property 'ro.cpuset.default' is set to a non-empty cpuset name (e.g. '/foreground'), then the pid is written to file /dev/cpuset/_cpuset_name_/tasks.
+
+priority <priority>
+
+    Scheduling priority of the service process. This value has to be in range
+
+-20 to 19. Default priority is 0. Priority is set via setpriority().
+
+namespace <pid|mnt>
+
+    Enter a new PID or mount namespace when forking the service.
+
+oom_score_adjust <value>
+
+    Sets the child's /proc/self/oom_score_adj to the specified value,
+
+which must range from -1000 to 1000.
