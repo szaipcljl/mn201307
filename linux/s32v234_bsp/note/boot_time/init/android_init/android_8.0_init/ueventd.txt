@@ -87,8 +87,36 @@ Linux系统中，通过冷插拔机制来解决该问题。当内核启动后，
 冷插拔时，udev主动读取/sys目录下的信息，然后触发uevent给自己处理。之所以要有冷插拔，是因为内核加载部分驱动程序信息的时间，早于启动udev的时间。
 
 
-Android中的ueventd 
+Android8.0中的ueventd 
 ==================
+Android.mk
+# Create symlinks.
+LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
+    ln -sf ../init $(TARGET_ROOT_OUT)/sbin/ueventd; \
+    ln -sf ../init $(TARGET_ROOT_OUT)/sbin/watchdogd
+
+
+
+parse_line
+|-> parse_new_section
+	|-> parse_subsystem
+		|-> ueventd_subsystem* s = ueventd_subsystem_find_by_name(args[1]); 
+			//ignored duplicate definition of subsystem
+		|-> list_add_tail(&subsystem_list, &s->slist);
+
+static list_declare(subsystem_list);
+
+device.cpp:
+static list_declare(sys_perms);
+static list_declare(dev_perms);
+static list_declare(platform_names);
+
+/dev/.coldboot_done	: coldboot done
+
+
+s32v:
+root@rda600:/sbin# chown 1000:1000 init
+
 
 	  
 	  

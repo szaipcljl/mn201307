@@ -7,35 +7,25 @@ int main(int argc, const char *argv[])
 
 	pid = fork();
 
-	if(pid == -1)
-	{
+	if(pid == -1) {
 		perror("fork");
 		return -1;
-	}
-
-	else if(pid == 0)
-	{
+	} else if(pid == 0) {
 		pid_t pid1;
 
 		pid1 = fork();
 
-		if(pid1 == -1)
-		{
+		if(pid1 == -1) {
 
-		}
-		else if(pid1 == 0)
-		{
+		} else if(pid1 == 0) {
 			printf("child son\n");
-		}
-		else 
-		{
+		} else {
 			printf("child\n");
 		}
-	}
-	else 
-	{
+	} else {
 		printf("father\n");
 	}
+
 	while(1);
 	return 0;
 }

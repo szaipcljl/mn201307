@@ -1,0 +1,97 @@
+Linux睡眠唤醒机制--Kernel态
+
+一、对于休眠(suspend)的简单介绍       
+	在Linux中,休眠主要分三个主要的步骤:
+		1) 冻结用户态进程和内核态任务
+		2) 调用注册的设备的suspend的回调函数, 顺序是按照注册顺序
+		3) 休眠核心设备和使CPU进入休眠态, 冻结进程是内核把进程列表中所有的进程的
+			状态都设置为停止,并且保存下所有进程的上下文. 
+			当这些进程被解冻的时候,他们是不知道自己被冻结过的,只是简单的继续执行。
+
+	如何让Linux进入休眠呢?
+	用户可以通过读写sys文件, /sys/power/state 是实现控制系统进入休眠. 比如
+	# echo mem > /sys/power/state
+		命令系统进入休眠. 也可以使用
+	
+	# cat /sys/power/state
+		来得到内核支持哪几种休眠方式.
+
+		chris@iceberg:~$ cat /sys/power/state 
+		freeze mem disk
+
+	
+二、Linux Suspend 的流程
+
+1. 相关代码
+
+     • kernel/kernel/power/main.c
+	 • kernel/arch/arm/mach-xxx/pm.c
+	 • kernel/driver/base/power/main.c
+
+	 接下来让我们详细的看一下Linux是怎么休眠/唤醒的:
+	 用户对于/sys/power/state 的读写会调用到 kernel/kernel/power/main.c中的state_store()， 
+	 用户可以写入 const char * const pm_states[] 中定义的字符串， 比如"mem", "standby"。
+
+const char *const pm_states[PM_SUSPEND_MAX] = {
+#ifdef CONFIG_EARLYSUSPEND
+		 [PM_SUSPEND_ON]  = "on",
+#endif
+		 [PM_SUSPEND_STANDBY] = "standby",
+		 [PM_SUSPEND_MEM] = "mem",
+	 };
+
+	常见有standby(suspend to RAM)、mem(suspend to RAM)和disk(suspend to disk)，
+	只是standby耗电更多，返回到正常工作状态的时间更短。     
+
+	然后state_store()会调用enter_state() <注：这是经典Linux调用流程， 在Android系统中，
+	Kernel将调用request_suspend_state，而不是enter_state>，它首先会检查一些状态参数，
+	然后同步文件系统。
+
+2. 准备, 冻结进程
+	当进入到suspend_prepare()中以后，它会给suspend分配一个虚拟终端来输出信息，
+	然后广播一个系统要进入suspend的Notify，关闭掉用户态的helper进程，
+	然后一次调用suspend_freeze_processes()冻结所有的进程，这里会保存所有进程当前的状态， 
+	也许有一些进程会拒绝进入冻结状态，当有这样的进程存在的时候，
+	会导致冻结失败,此函数就会放弃冻结进程，并且解冻刚才冻结的所有进程。
+
+3. 让外设进入休眠
+	现在, 所有的进程(也包括workqueue/kthread) 都已经停止了，内核态任务有可能在
+	停止的时候握有一些信号量，所以如果这时候在外设里面去解锁这个信号量有可能会
+	发生死锁，所以在外设的suspend()函数里面作lock/unlock锁要非常小心， 这里建议
+	设计的时候就不要在suspend()里面等待锁。而且因为suspend的时候，有一些Log是无
+	法输出的，所以一旦出现问题,非常难调试。
+
+	然后kernel在这里会尝试释放一些内存。
+
+	最后会调用suspend_devices_and_enter()来把所有的外设休眠，在这个函数中，如果平
+	台注册了suspend_ops(通常是在板级定义中定义和注册，在kernel/arch/arm/mach-xx/pm.c中调用suspend_set_ops)， 
+	这里就会调用 suspend_ops->begin()；
+	然后调用dpm_suspend_start，他们会依次调用驱动的suspend() 回调来休眠掉所有的设备。
+
+	当所有的设备休眠以后， suspend_ops->prepare()会被调用，这个函数通常会作一些准
+	备工作来让板机进入休眠。 
+	接下来Linux，在多核的CPU中的非启动CPU会被关掉，通过注释看到是避免这些其他的CPU造成race
+	condio，接下来的以后只有一个CPU在运行了。
+
+	suspend_ops 是板级的电源管理操作, 通常注册在文件 arch/arch/mach-xxx/pm.c 中.
+
+	接下来， suspend_enter()会被调用， 这个函数会关闭arch irq，
+	调用 device_power_down()， 它会调用suspend_late()函数， 
+	这个函数是系统真正进入休眠最后调用的函数，通常会在这个函数中作最后的检查。
+	如果检查没问题， 接下来休眠所有的系统设备和总线，并且调用 suspend_pos->enter()
+	来使CPU进入省电状态，这时就已经休眠了。代码的执行也就停在这里了。
+
+三、Linux Resume流程
+
+	如果在休眠中系统被中断或者其他事件唤醒，接下来的代码就会开始执行，这个唤醒的顺序是和休眠的循序相反的，
+	所以系统设备和总线会首先唤醒，使能系统中断，使能休眠时候停止掉的非启动CPU，
+	以及调用suspend_ops->finish()， 
+	而且在suspend_devices_and_enter()函数中也会继续唤醒每个设备，使能虚拟终端，
+	最后调用 suspend_ops->end()。
+
+	在返回到enter_state()函数中的，当 suspend_devices_and_enter() 返回以后，外设已经唤醒了，
+	但是进程和任务都还是冻结状态， 这里会调用suspend_finish()来解冻这些进程和任务，
+	而且发出Notify来表示系统已经从suspend状态退出， 唤醒终端。
+
+	到这里，所有的休眠和唤醒就已经完毕了，系统继续运行了。
+
