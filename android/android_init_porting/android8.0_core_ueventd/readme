@@ -1,0 +1,8 @@
+
+ueventd => sinit
+
+cold plug
+
+hot plug:
+(1) when you insmod a module, device node will be create
+(2) device plug in
