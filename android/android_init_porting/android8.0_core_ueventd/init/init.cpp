@@ -109,7 +109,7 @@ static void install_reboot_signal_handlers() {
 
 int main(int argc, char** argv) {
 	if (!strcmp(basename(argv[0]), "ueventd")) {
-        return ueventd_main(argc, argv);
+		return ueventd_main(argc, argv);
 	}
 
     if (!strcmp(basename(argv[0]), "watchdogd")) {
@@ -264,16 +264,13 @@ int main(int argc, char** argv) {
 #define DEBUG_CODE
 #ifdef DEBUG_CODE
 	pid_t pid;
-
 	pid = fork();
 
-	if(pid == -1)
-	{
+	if (pid == -1) {
 		perror("fork");
 		return -1;
 	} else if(pid == 0) {
 		printf("child\n");
-
 
 		char* const path = (char* const)"/sbin/ueventd";
 		char* const args[] = { path, nullptr };
@@ -286,14 +283,30 @@ int main(int argc, char** argv) {
 		printf("father\n");
 	}
 
+	while (access(COLDBOOT_DONE, F_OK) != 0) {
+		usleep(10000);
+	}
+
+#if 0
+
+	//Bypass the login validation process and enter the shell interface directly
 	sleep(10);
-	std::cout << "#mn: after sleep! ls /dev"<< std::endl;
+	std::cout << "#mn: here need sleep?"<< std::endl;
 
 	char* const path = (char* const)"/bin/sh";
 	char* const args[] = { path, nullptr };
 	std::cout << "execv(\"" << path << "\")! "<< std::endl;
 	execv(path, args);
 	std::cout << "#mn: after sleep -2 !"<< std::endl;
+#else
+
+	// "/sbin/getty -L 115200 ttyLF0"
+	char* const path = (char* const)"/sbin/getty";
+	char* const args[] = { path, (char* const)"-L", (char* const)"115200", (char* const)"ttyLF0", nullptr };
+	std::cout << "execv(\"" << path << "\")! "<< std::endl;
+	execv(path, args);
+	std::cout << "#mn: execv(/sbin/getty) !"<< std::endl;
+#endif
 
 	while(1)
 		sleep(10);
