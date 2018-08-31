@@ -60,7 +60,24 @@ act = coldboot("/sys/class", fn);
 
 do_coldboot
 ------------
-
+do_coldboot
+|-> handle_device_fd
+    |-> handle_device_fd_with
+        |-> uevent_kernel_multicast_recv
+            parse_event
+            handle_uevent //callback
+            |-> handle_device_event(uevent);   ---+
+				handle_firmware_event(uevent);    |
+                                                  |
+                +---------------------------------+
+                |
+                +-> if (!strncmp(uevent->subsystem, "block", 5)) {
+                        handle_block_device_event(uevent);
+                    } else if (!strncmp(uevent->subsystem, "platform", 8)) {
+                        handle_platform_device_event(uevent);
+                    } else {
+                        handle_generic_device_event(uevent);
+                    }
 
 struct uevent
 -------------
@@ -76,23 +93,83 @@ struct uevent {
     int minor;
 };
 
+
+------------------------------
+             +--------------------------+
+             | config and resources     |
+             |  /ueventd.rc             |
+             |  /ueventd.device_name.rc |
+             +--------------------------+
+                          |
+                          | parse
+                          |
+                          v             +--------------+
+  +------+  start    +---------+        | device nodes |
+  | init |---------->| ueventd |------->|  /dev/xx     |
+  +------+           +---------+        +--------------+
+                     |         ^ uevent
+                     |         |
+                     |         |socket: (A1)
+                     v         |
++--------------------------+ +--------+
+|/sys/class/xx/uevent:(A2) | | kernel |
++--------------------------+ +--------+
+
+(A1): socket(PF_NETLINK, SOCK_DGRAM | SOCK_CLOEXEC, NETLINK_KOBJECT_UEVENT);
+
+(A2): coldboot
+    echo add > uevent
+    /sys/class/
+    /sys/block/
+    /sys/devices/
+
 echo add > uevent
 -----------------
 
-/sys/devices/virtual/block/loop0 # rm /dev/block/loop0 
+/sys/devices/virtual/block/loop0 # rm /dev/block/loop0
 /sys/devices/virtual/block/loop0 # ls /dev/block/loop*
 /dev/block/loop1  /dev/block/loop3  /dev/block/loop5  /dev/block/loop7
 /dev/block/loop2  /dev/block/loop4  /dev/block/loop6
 
-/sys/devices/virtual/block/loop0 # echo add > uevent 
+/sys/devices/virtual/block/loop0 # echo add > uevent
 
 /sys/devices/virtual/block/loop0 # ls /dev/block/loop*
 /dev/block/loop0  /dev/block/loop2  /dev/block/loop4  /dev/block/loop6
 /dev/block/loop1  /dev/block/loop3  /dev/block/loop5  /dev/block/loop7
 
-/sys/devices/virtual/block/loop0 # cat uevent 
+/sys/devices/virtual/block/loop0 # cat uevent
 MAJOR=7
 MINOR=0
 DEVNAME=loop0
 DEVTYPE=disk
+
+
+
+
+----------------------
++----------------------------------------------------------------------------+
+|                              ueventd process                               |
+|                                                                            |
+| +------------------------------+            +-----------------------+      |
+| | handle_platform_device_event |------------| handle_firmware_event |      |
+| +------------------------------+            +-----------------------+      |
+|                              |               |                             |
+|                              |     poll      |                             |
+| +------------------------------+            ++--------------------------+  |
+| | handle_generic_device_event  |------------| handle_block_device_event |  |
+| +------------------------------+            +---------------------------+  |
+|                                      ^                                     |
++--------------------------------------| ------------------------------------+
+                                       |
+                                       |  socket
+                                       |
+                                       v
+                                  +---------+
+                                  |  kernel |
+                                  +---------+
+
+
+
+
+
 
