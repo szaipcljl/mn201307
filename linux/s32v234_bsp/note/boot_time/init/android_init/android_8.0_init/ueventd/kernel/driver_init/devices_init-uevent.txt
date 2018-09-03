@@ -164,6 +164,20 @@ c.  kobject_uevent(&k->kobj, KOBJ_ADD); // notify userspace by sending an uevent
 //todo
 
 
+      +------------------------+
+      |   kset_create_and_add  |
+      |                        |
+      |                        |
+      | +--------------------+ |
+      | |    kset_register   | |
+      | |                    | |
+      | | +----------------+ | |
+      | | | kobject_uevent | | |
+      | | +----------------+ | |
+      | +--------------------+ |
+      +------------------------+
+
+
 kobject_uevent_env
 ------------------
 - send an uevent with environmental data

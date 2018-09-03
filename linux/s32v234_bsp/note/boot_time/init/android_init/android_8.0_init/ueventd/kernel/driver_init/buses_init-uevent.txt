@@ -1,0 +1,32 @@
+
+buses_init();
+-------------
+[drivers/base/bus.c]
+
+int __init buses_init(void)
+{
+
+	bus_kset = kset_create_and_add("bus", &bus_uevent_ops, NULL);
+
+	system_kset = kset_create_and_add("system", NULL, &devices_kset->kobj);
+
+}
+
+
+kset_create_and_add
+-------------------
+see devices_init-uevent.txt  for more info
+
+      +------------------------+
+      |   kset_create_and_add  |
+      |                        |
+      |                        |
+      | +--------------------+ |
+      | |    kset_register   | |
+      | |                    | |
+      | | +----------------+ | |
+      | | | kobject_uevent | | |
+      | | +----------------+ | |
+      | +--------------------+ |
+      +------------------------+
+

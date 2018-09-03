@@ -1,0 +1,162 @@
+when to send an uevent
+
+(1) probe -> regist device/kset, 
+(2) write "add" to uevent attribute
+(3) hotplug: insert a SD card
+
+kobject_uevent
+==============
+kobject_uevent - notify userspace by sending an uevent
+
+caller:
+-------
+(1)
+static struct mmc_driver mmc_driver = {
+	...
+	.probe		= mmc_blk_probe,
+	...
+};
+
+static int __init mmc_blk_init(void)
+{
+	...
+	res = mmc_register_driver(&mmc_driver);
+}
+
+module_init(mmc_blk_init);
+
+mmc_blk_probe  [drivers/mmc/card/block.c]
+|-> mmc_add_disk [drivers/mmc/card/block.c]
+	|-> add_disk [block/genhd.c]
+		|-> register_disk [block/genhd.c]
+			|-> kobject_uevent
+
+
+
+module_init
+-----------
+
+include/linux/init.h
+
+#ifndef MODULE
+...
+
+#define __define_initcall(fn, id) \
+	static initcall_t __initcall_##fn##id __used \
+	__attribute__((__section__(".initcall" #id ".init"))) = fn; \
+	LTO_REFERENCE_INITCALL(__initcall_##fn##id)
+
+
+#define device_initcall(fn)		__define_initcall(fn, 6)
+
+#define __initcall(fn) device_initcall(fn)
+#define module_init(x)	__initcall(x);
+#else
+
+...
+/* Each module must use one module_init(). */
+#define module_init(initfn)					\
+	static inline initcall_t __inittest(void)		\
+	{ return initfn; }					\
+	int init_module(void) __attribute__((alias(#initfn)));
+
+
+#endif
+
+
+do_basic_setup [main.c]
+|-> do_initcalls
+	|-> for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++)
+			do_initcall_level(level);
+			|->  for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+					do_one_initcall(*fn);
+
+(2)
+
+static DRIVER_ATTR_WO(uevent); [drivers/base/bus.c]
+
+uevent_store [drivers/base/bus.c]
+|-> kobject_uevent
+
+
+static BUS_ATTR(uevent, S_IWUSR, NULL, bus_uevent_store); [drivers/base/bus.c]
+bus_uevent_store [drivers/base/bus.c]
+|-> kobject_uevent
+
+(3)
+static DEVICE_ATTR_RW(uevent); [driers/base/core.c]
+uevent_store [driers/base/core.c]
+|-> kobject_uevent
+
+
+(4)
+
+device_add //add device to device hierarchy. [drivers/base/core.c]
+|-> kobject_uevent 
+
+caller:
+register_disk [block/genhd.c]
+|-> device_add
+
+device_register //register a device with the system. [drivers/base/core.c]
+|-> device_add
+
+phy_device_register
+|-> device_add
+
+
+(5)
+driver_register [drivers/base/dirver.c]
+|-> kobject_uevent
+
+(6)
+store_uevent [kernel/module.c]
+|-> kobject_uevent
+
+(7)
+kset_register [lib/kobject.c]
+|-> kobject_uevent
+
+struct module_attribute module_uevent =
+	__ATTR(uevent, 0200, NULL, store_uevent);
+
+(8) ...
+
+kobject_uevent_env
+------------------
+(1)
+led_trigger_set [drivers/leds/led-triggers.c]
+|->kobject_uevent_env
+
+(2) ...
+
+
+coldplug
+--------
+write "add" to uevent (/sys/block/, /sys/class/, /sys/devices/) to trigger an 
+uevent event
+//todo
+uevent_store [drivers/base/core.c]
+|-> kobject_action_type //translate action string to numeric type
+	|-> kobject_uevent
+
+
+hotplug
+=======
+(1) insmod a module (device exist)
+	probe -> regist device/driver
+
+(2) insert a device (like usb)
+//todo: sd card hotplug
+热插拔检测
+	SD卡的检测一共有三种方法： 
+	1， 在开机的时候通过CMD发送命令检测T卡是否存在，这种方式不支持热插拔。 
+	
+	2，通过T卡座来检测，信号TCARD_DETECT连在中断控制器上。在没有插卡时，
+	TCARD_DETECT信号为低电平。插入T卡后，信号 TCARD_DETECT
+	被拉高为高电平，从而产生一个中断。即实现了热插拔。
+	注意：由低到高或者由高到低的触发，是由硬件和软件共同协作，是可以设定的。
+
+	3，通过CD/DAT3 信号来检测，CD/DAT3 信号连在中断控制器上，并通过470K电阻下拉
+	，在没有T卡插入时，该信号为低电平，一但有T卡插入，T卡内部通过50Kohm把
+	DATA3 信号拉高至高电平，随即产生一个中断，实现了热插拔。

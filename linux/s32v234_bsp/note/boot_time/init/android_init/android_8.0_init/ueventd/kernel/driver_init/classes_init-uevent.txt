@@ -1,0 +1,28 @@
+
+
+classes_init();
+----------------
+[drivers/base/init.c]
+
+int __init classes_init(void)
+{
+	class_kset = kset_create_and_add("class", NULL, NULL);
+}
+
+
+
+kset_create_and_add
+-------------------
+see devices_init-uevent.txt  for more info
+      +------------------------+
+      |   kset_create_and_add  |
+      |                        |
+      |                        |
+      | +--------------------+ |
+      | |    kset_register   | |
+      | |                    | |
+      | | +----------------+ | |
+      | | | kobject_uevent | | |
+      | | +----------------+ | |
+      | +--------------------+ |
+      +------------------------+
