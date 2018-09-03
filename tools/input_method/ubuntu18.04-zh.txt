@@ -1,0 +1,12 @@
+ubuntu18.04 自带中文输入法设置
+
+1. "Settings" -> "Region & Language" -> "Manage Installed Language" -> "Language Support"
+
+	"Install/Remove Language" : install "Chinese(simplified)";
+	"keyboard input method system": "Ibus"
+	"Apply System-Wide"
+	
+2. "Region & Language" -> "+" -> "Add an Input Source" : Chinese ->
+	"Chinese(Intelligent Pinyin)" -> "Add"
+
+3. reboot
