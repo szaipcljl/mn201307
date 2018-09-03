@@ -44,117 +44,8 @@ init_cflags += \
 
 # --
 
-# If building on Linux, then build unit test for the host.
-ifeq ($(HOST_OS),linux)
 include $(CLEAR_VARS)
-LOCAL_CPPFLAGS := $(init_cflags)
-LOCAL_SRC_FILES:= \
-    parser/tokenizer.cpp \
-
-LOCAL_MODULE := libinit_parser
-LOCAL_CLANG := true
-include $(BUILD_HOST_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := init_parser_tests
-LOCAL_SRC_FILES := \
-    parser/tokenizer_test.cpp \
-
-LOCAL_STATIC_LIBRARIES := libinit_parser
-LOCAL_CLANG := true
-include $(BUILD_HOST_NATIVE_TEST)
-endif
-
-
-###
-
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-LOCAL_CFLAGS := $(init_cflags)
-LOCAL_SRCS:= \
-   $(LOCAL_PATH)/action.cpp \
-   $(LOCAL_PATH)/capabilities.cpp \
-   $(LOCAL_PATH)/descriptors.cpp \
-   $(LOCAL_PATH)/import_parser.cpp \
-   $(LOCAL_PATH)/init_parser.cpp \
-   $(LOCAL_PATH)/log.cpp \
-   $(LOCAL_PATH)/parser.cpp \
-   $(LOCAL_PATH)/service.cpp \
-   $(LOCAL_PATH)/util.cpp \
-
-#LOCAL_LIBS	:= libbase.a libselinux.a liblog.a libprocessgroup.a libcap.a
-LOCAL_LIBS	:= libbase.a libselinux.a liblog.a libprocessgroup.a libcap.a
-LOCAL_TARGET := libinit.a
-#LOCAL_SANITIZE := integer
-#LOCAL_CLANG := true
-include $(BUILD_APP)
-
-.PHONY: $(LOCAL_TARGET)
-
-$(LOCAL_TARGET): $(LOCAL_MODULE)
-	@echo "Build $@ Done."
-
-$(call add-target-into-build, $(LOCAL_TARGET))
-
-###############
-
-include $(CLEAR_VARS)
-LOCAL_CFLAGS := $(init_cflags)
-LOCAL_SRCS := \
-   $(LOCAL_PATH)/bootchart.cpp \
-   $(LOCAL_PATH)/builtins.cpp \
-   $(LOCAL_PATH)/devices.cpp \
-   $(LOCAL_PATH)/init.cpp \
-   $(LOCAL_PATH)/init_first_stage.cpp \
-   $(LOCAL_PATH)/keychords.cpp \
-   $(LOCAL_PATH)/property_service.cpp \
-   $(LOCAL_PATH)/reboot.cpp \
-   $(LOCAL_PATH)/signal_handler.cpp \
-   $(LOCAL_PATH)/ueventd.cpp \
-   $(LOCAL_PATH)/ueventd_parser.cpp \
-   $(LOCAL_PATH)/watchdogd.cpp \
-
-LOCAL_TARGET:= init
-LOCAL_C_INCLUDES += \
-    system/core/mkbootimg
-
-LOCAL_LIBS := \
-    libinit.a \
-    libbootloader_message.a \
-    libfs_mgr.a \
-    libfec.a \
-    libfec_rs.a \
-    libsquashfs_utils.a \
-    liblogwrap.a \
-    libext4_utils.a \
-    libcutils.a \
-    libbase.a \
-    libc.a \
-    libselinux.a \
-    liblog.a \
-    libcrypto_utils.a \
-    libcrypto.a \
-    libc++_static.a \
-    libdl.a \
-    libsparse.a \
-    libz.a \
-    libprocessgroup.a \
-    libavb.a
-
-
-include $(BUILD_APP)
-
-.PHONY: $(LOCAL_TARGET)
-
-$(LOCAL_TARGET): $(LOCAL_MODULE)
-	@echo "Build $@ Done."
-
-$(call add-target-into-build, $(LOCAL_TARGET))
-
-
-
-#=================================
-include $(CLEAR_VARS)
+UEVENTD_SEPARATED_BIN := y
 LOCAL_CFLAGS := $(init_cflags)
 LOCAL_SRCS := \
    $(LOCAL_PATH)/ueventd.cpp \
@@ -165,11 +56,20 @@ LOCAL_SRCS := \
    $(LOCAL_PATH)/watchdogd.cpp \
    $(LOCAL_PATH)/../base/stringprintf.cpp \
    $(LOCAL_PATH)/../base/file.cpp \
-   $(LOCAL_PATH)/../libcutils/uevent.c \
-   $(LOCAL_PATH)/init.cpp
+   $(LOCAL_PATH)/../libcutils/uevent.c
 
 
-LOCAL_TARGET := sinit
+ifeq ($(UEVENTD_SEPARATED_BIN), y)
+# "UEVENTD_SEPARATED_BIN defined, build ueventd"
+LOCAL_CFLAGS += -DUEVENTD_SEPARATED_BIN=1
+LOCAL_TARGET := ueventd
+else
+# "UEVENTD_SEPARATED_BIN not defined, build init"
+LOCAL_SRCS += $(LOCAL_PATH)/init.cpp
+LOCAL_TARGET := init
+endif
+
+
 
 LOCAL_LIBS :=
 

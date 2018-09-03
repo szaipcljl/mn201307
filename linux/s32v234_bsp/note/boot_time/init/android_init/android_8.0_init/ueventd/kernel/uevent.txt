@@ -1,0 +1,84 @@
+
+1. uevent event
+---------------
+include/linux/kobject.h
+
+// The actions here must match the index to the string array
+// in lib/kobject_uevent.c
+
+enum kobject_action {
+	KOBJ_ADD,
+	KOBJ_REMOVE,
+	KOBJ_CHANGE,
+	KOBJ_MOVE,
+	KOBJ_ONLINE,
+	KOBJ_OFFLINE,
+	KOBJ_MAX
+};
+
+
+lib/kobject_uevent.c
+/* the strings here must match the enum in include/linux/kobject.h */
+static const char *kobject_actions[] = {
+	[KOBJ_ADD] =		"add",
+	[KOBJ_REMOVE] =		"remove",
+	[KOBJ_CHANGE] =		"change",
+	[KOBJ_MOVE] =		"move",
+	[KOBJ_ONLINE] =		"online",
+	[KOBJ_OFFLINE] =	"offline",
+};
+
+
+2. uevent env
+Uevent事件具体以环境变量（即stings）的形式发送到用户空间。
+
+include/linux/kobject.h
+#define UEVENT_NUM_ENVP			32	/* number of env pointers */
+#define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
+struct kobj_uevent_env {
+	char *argv[3];
+	char *envp[UEVENT_NUM_ENVP];
+	int envp_idx;
+	char buf[UEVENT_BUFFER_SIZE];
+	int buflen;
+};
+
+
+3. send event method
+include/linux/kobject.h
+struct kset_uevent_ops {
+	int (* const filter)(struct kset *kset, struct kobject *kobj);
+	const char *(* const name)(struct kset *kset, struct kobject *kobj);
+	int (* const uevent)(struct kset *kset, struct kobject *kobj,
+		      struct kobj_uevent_env *env);
+};
+
+
+    filter，当任何Kobject需要上报uevent时，它所属的kset可以通过该接口过滤，阻止不希望上报的event，从而达到从整体上管理的目的。
+
+	    name，该接口可以返回kset的名称。如果一个kset没有合法的名称，则其下的所有Kobject将不允许上报uvent
+
+		    uevent，当任何Kobject需要上报uevent时，它所属的kset可以通过该接口统一为这些event添加环境变量。因为很多时候上报uevent时的环境变量都是相同的，因此可以由kset统一处理，就不需要让每个Kobject独自添加了。
+
+
+/*
+ * @uevent_ops: the set of uevent operations for this kset.  These are
+ * called whenever a kobject has something happen to it so that the kset
+ * can add new environment variables, or filter out the uevents if so
+ * desired.
+ */
+struct kset {
+	struct list_head list;
+	spinlock_t list_lock;
+	struct kobject kobj;
+	const struct kset_uevent_ops *uevent_ops;
+};
+
+
+int kobject_uevent(struct kobject *kobj, enum kobject_action action);
+int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
+			char *envp[]);
+
+
+================================================
+

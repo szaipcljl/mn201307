@@ -1,0 +1,172 @@
+
+//init/main.c
+asmlinkage __visible void __init start_kernel(void)
+{
+	...
+	/* Do the rest non-__init'ed, we're now alive */
+	rest_init();
+}
+
+static noinline void __init_refok rest_init(void)
+{
+	...
+	kernel_thread(kernel_init, NULL, CLONE_FS);
+	...
+}
+
+static int __ref kernel_init(void *unused)
+{
+	kernel_init_freeable();
+	...
+}
+
+static noinline void __init kernel_init_freeable(void)
+{
+	...
+	do_basic_setup();
+	...
+}
+
+//init/main.c
+
+/*
+ * Ok, the machine is now initialized. None of the devices
+ * have been touched yet, but the CPU subsystem is up and
+ * running, and memory and process management works.
+ *
+ * Now we can finally start doing some real work..
+ */
+static void __init do_basic_setup(void)
+{
+	...
+	driver_init();
+	...
+}
+
+//drivers/base/init.c
+/**
+ * driver_init - initialize driver model.
+ *
+ * Call the driver model init functions to initialize their
+ * subsystems. Called early from init/main.c.
+ */
+
+void __init driver_init(void)
+{
+	...
+	devices_init();
+	buses_init();
+	classes_init();
+	...
+}
+
+
+
+========================================
+
+                +---------------+
+                | start_kernel  |
+                |               |
+                |               |
+                | +-----------+ |
+                | | rest_init | |
+                | +-----|-----+ |
+                +-------|-------+
+                        |
+                        | kernel_thread
+                        v
+             +--------------------------+
+             |	    kernel_init         |
+             |                          |
+             |                          |
+             | +----------------------+ |
+             | | kernel_init_freeable | |
+             | |                      | |
+             | | +------------------+ | |
+             | | |  do_basic_setup  | | |
+             | | |                  | | |
+             | | |                  | | |
+             | | | +-------------+  | | |
+             | | | | driver_init |  | | |
+             | | | +-------------+  | | |
+             | | +------------------+ | |
+             | +----------------------+ |
+             +---------------------------+
+
+
+devices_init();
+===============
+drivers/base/core.c - core driver model code (device registration, etc)
+
+// drivers/base/core.c - core driver model code (device registration, etc)
+static const struct kset_uevent_ops device_uevent_ops = {  [drivers/base/core.c]
+	.filter =	dev_uevent_filter,
+	.name =		dev_uevent_name,
+	.uevent =	dev_uevent,
+};
+
+
+devices_init [drivers/base/core.c]
+(1) devices_kset = kset_create_and_add("devices", &device_uevent_ops, NULL);
+(2) dev_kobj = kobject_create_and_add("dev", NULL);
+(3) sysfs_dev_block_kobj = kobject_create_and_add("block", dev_kobj);
+(4) sysfs_dev_char_kobj = kobject_create_and_add("char", dev_kobj);
+
+(1)kset_create_and_add
+-----------------------
+kset_create_and_add - create a struct kset dynamically and add it to sysfs
+This function creates a kset structure dynamically and registers it
+with sysfs.  
+
+/sys/devices/ will be created.
+
+ps:
+/sys/class/
+|-- block
+|   |-- loop0 -> ../../devices/virtual/block/loop0
+...
+|-- input
+|   |-- event0 -> ../../devices/LNXSYSTM:00/LNXPWRBN:00/input/input0/event0
+...
+
+kset_create_and_add
+<1> kset = kset_create(name, uevent_ops, parent_kobj);
+<2> error = kset_register(kset);
+
+<1>kset_create
+--------------
+kset_create - create a struct kset dynamically
+a.  kset = kzalloc(sizeof(*kset), GFP_KERNEL);
+b.  retval = kobject_set_name(&kset->kobj, "%s", name); //init kset->kobj.name
+	kset->uevent_ops = uevent_ops;
+	kset->kobj.parent = parent_kobj;
+	kset->kobj.ktype = &kset_ktype;
+	kset->kobj.kset = NULL;
+
+<2>kset_register
+----------------
+kset_register - initialize and add a kset.
+a. kset_init(k); //initialize a kset for use
+b. err = kobject_add_internal(&k->kobj);
+	(a) kobj_kset_join(kobj);
+		kobj->parent = parent;
+		// add the kobject to its kset's list
+		// set kobj->parent
+	(b) error = create_dir(kobj);
+	(c) kobj->state_in_sysfs = 1;
+c.  kobject_uevent(&k->kobj, KOBJ_ADD); // notify userspace by sending an uevent
+	|-> return kobject_uevent_env(kobj, action, NULL);
+
+(b)create_dir
+------------
+//todo
+
+
+kobject_uevent_env
+------------------
+- send an uevent with environmental data
+//todo
+
+
+
+

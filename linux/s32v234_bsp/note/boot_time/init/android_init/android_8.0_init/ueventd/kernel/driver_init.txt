@@ -1,0 +1,5 @@
+driver_init - initialize driver model.
+
+[drivers/base/init.c]
+
+====================

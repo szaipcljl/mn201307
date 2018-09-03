@@ -161,3 +161,22 @@ void set_device_permission(int nargs, char **args)
         return;
     }
 }
+
+#ifdef UEVENTD_SEPARATED_BIN
+/*
+ * To execute "watchdogd":
+ * ln -s /sbin/ueventd /sbin/watchdogd
+ */
+
+#include "watchdogd.h"
+int main(int argc, char** argv) {
+	if (!strcmp(basename(argv[0]), "ueventd")) {
+		return ueventd_main(argc, argv);
+	}
+
+    if (!strcmp(basename(argv[0]), "watchdogd")) {
+        return watchdogd_main(argc, argv);
+    }
+	std::cout << "basename[\"ueventd\" or \"watchdogd\"] is not matched!" << std::endl;
+}
+#endif
