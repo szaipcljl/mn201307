@@ -1,0 +1,166 @@
+
+//lib/kobject_uevent_env.c
+int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
+		       char *envp_ext[])
+{
+
+	...
+(6-A) send netlink message: uevent_send_netlink_massage.txt
+#if defined(CONFIG_NET)
+	struct uevent_sock *ue_sk;
+
+	/* send netlink message */
+	list_for_each_entry(ue_sk, &uevent_sock_list, list) {
+
+(1)
+		if (!netlink_has_listeners(uevent_sock, 1))
+			continue;
+
+(2)
+		/* allocate message with the maximum possible size */
+		len = strlen(action_string) + strlen(devpath) + 2;
+		skb = alloc_skb(len + env->buflen, GFP_KERNEL);
+
+		if (skb) {
+			char *scratch;
+(3)
+			/* add header */
+			scratch = skb_put(skb, len);
+			sprintf(scratch, "%s@%s", action_string, devpath);
+(4)
+			/* copy keys to our continuous event payload buffer */
+			for (i = 0; i < env->envp_idx; i++) {
+				len = strlen(env->envp[i]) + 1;
+				scratch = skb_put(skb, len);
+				strcpy(scratch, env->envp[i]);
+			}
+(5)
+			NETLINK_CB(skb).dst_group = 1;
+			retval = netlink_broadcast_filtered(uevent_sock, skb,
+							    0, 1, GFP_KERNEL,
+							    kobj_bcast_filter,
+							    kobj);
+			/* ENOBUFS should be handled in userspace */
+			if (retval == -ENOBUFS || retval == -ESRCH)
+				retval = 0;
+		} else
+			retval = -ENOMEM;
+    }
+
+
+#endif
+...
+}
+
+
+========
+#ifdef CONFIG_NET
+struct uevent_sock {
+	struct list_head list;
+	struct sock *sk;
+};
+static LIST_HEAD(uevent_sock_list);
+#endif                               struct uevent_sock
+     +------------------+            +------------------------+
+ +-->| uevent_sock_list |<---------->| struct list_head list; |<---------+
+ |   +------------------+            +------------------------+          |
+ |                                   | struct sock *sk;       |          |
+ |                                   +------------------------+          v
+ |                                                                      ...
+ |   struct uevent_sock              struct uevent_sock                  ^
+ |   +------------------------+      +------------------------+          |
+ +-->| struct list_head list; |<---->| struct list_head list; |<---------+
+     +------------------------+      +------------------------+
+     | struct sock *sk;       |      | struct sock *sk;       |
+     +------------------------+      +------------------------+
+
+-----------------
+//
+[net/netlink/af_netlink.c]
+struct netlink_table *nl_table __read_mostly;
+
+//
+[net/netlink/af_netlink.h]
+struct netlink_table {
+	struct rhashtable	hash;
+	struct hlist_head	mc_list;
+	struct listeners __rcu	*listeners;
+	unsigned int		flags;
+	unsigned int		groups;
+	struct mutex		*cb_mutex;
+	struct module		*module;
+	int			(*bind)(struct net *net, int group);
+	void			(*unbind)(struct net *net, int group);
+	bool			(*compare)(struct net *net, struct sock *sock);
+	int			registered;
+};
+
+
+
+skb_put
+-------
+[net/core/skbuff.c]
+skb_put()修改指向数据区末尾的指针tail，使之往下移len字节，即使数据区向下扩大len字节，
+并更新数据区长度len。
+返回修改之前的tail 用于接下来的memcpy.
+增长数据区的长度来为memcpy准备空间.
+
+
+          skb
+         +----------+   +------>+----------------+
+         | ...      |   |       |                |
+         | head     |---+  +--->+----------------+---
+         | data     |------+    |                |^
+         |          |           |                |
+         | tail     |------+    |                ||
+         | end      |---+  |    |                ||nlen
+         | ...      |   |  |    |                |v
+         | len=nlen |   |  +--->+----------------+---
+         | ...      |   |       |                |
+         +----------+   |       |                |
+                        |       |                |
+                        +------>+----------------+
+                                |skb_shared_info |
+                                +----------------+
+
+
+
+
+
+          skb
+         +---------------+   +------>+----------------+
+         | ...           |   |       |                |
+         | head          |---+  +--->+----------------+---
+         | data          |------+    |                |^
+         |               |           |                |
+         | tail          |------+    |                ||
+         | end           |---+  |    |                ||nlen+len
+         | ...           |   |  |    |                ||
+         | len=nlen+len  |   |  |    |                ||
+         | ...           |   |  |    |                |v
+         +---------------+   |  +--->+----------------+---
+                             |       |                |
+                             +------>+----------------+
+                                     |skb_shared_info |
+                                     +----------------+
+
+
+
+netlink_broadcast_filtered
+//todo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

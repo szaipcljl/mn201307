@@ -37,9 +37,11 @@ cat ./smb_cfg.txt | sed -e "s/nma1x/$USERNAME/g" >> /etc/samba/smb.conf
 
 # create a directory for the anonymous share and set the correct permissions.
 # no password, not security
-#mkdir -p /samba/anonymous
-#chmod -R 0775 /samba/anonymous
-#chown -R nobody:nogroup /samba/anonymous
+:<<!
+mkdir -p /samba/anonymous
+chmod -R 0775 /samba/anonymous
+chown -R nobody:nogroup /samba/anonymous
+!
 
 # create a directory for the secured share and set the correct permissions.
 addgroup smbgrp
