@@ -411,3 +411,30 @@ mmc_gpio_cd_irqt [core/slot-gpio.c]
                | core/core.c |
                +-------------+
 
+===========
+poll mode: call mmc_rescan,
+inttrupt mode: gpio pin status change trigger an inttrupt to call mmc_rescan
+
+mmc_rescan [core/core.c]
+|-> mmc_rescan_try_freq [core/core.c]
+	|-> mmc_attach_sd [mmc/core/sd.c]
+		|-> mmc_send_app_op_cond [mmc/core/sd_ops.c]
+			//send command
+
+mmc_send_app_op_cond
++---------+-----+------------+----+----------------+------------------------------------------+
+|CMD38    | ac  | Argument   |Resp| Abbreviation   |             Description                  |
++---------+-----+------------+----+----------------+------------------------------------------+
+| ACMD414 | bcr | [31:0] OCR | R3 | SD_APP_OP_COND | Asks the accessed card to send           |
+|         |     |            |    |                | its operating condition register (OCR)   |
+|         |     |            |    |                | contents in the response on the CMD line.|
++---------+-----+------------+----+----------------+------------------------------------------+
+	                            
+polling mode:
+[   11.376551] mmc0: card 0001 removed
+[   11.379999] ###[mmc_remove_card 388] [dump_stack start]
+...
+[   11.464444] ###[mmc_remove_card 390] [dump_stack end]
+[   11.553059] #mn: mmc_send_app_op_cond faile mmc_attach_sdk
+[   11.553059] #mn: mmc_send_app_op_cond faile mmc_attach_sdk
+...
