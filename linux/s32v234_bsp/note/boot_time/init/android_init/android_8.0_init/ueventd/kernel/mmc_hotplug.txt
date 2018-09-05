@@ -1,0 +1,413 @@
+
+remove sd card log[sd_boot]:
+[  161.196552] mmc0: card 0001 removed
+[  161.200000] ###[mmc_remove_card 388] [dump_stack start]
+[  161.205760] CPU: 0 PID: 30 Comm: kworker/u8:1 Tainted: G           O 4.1.26-rt29 #2
+[  161.214399] Hardware name: Freescale S32V234 (DT)
+[  161.219559] Workqueue: kmmcd mmc_rescan
+[  161.223745] Call trace:
+[  161.226422] [<ffffffc0000873d4>] dump_backtrace+0x0/0x104
+[  161.232332] [<ffffffc0000874ec>] show_stack+0x14/0x1c
+[  161.237865] [<ffffffc000459978>] dump_stack+0x84/0xa8
+[  161.243395] [<ffffffc0003302b4>] mmc_remove_card+0x88/0xb8
+[  161.249404] [<ffffffc000334450>] mmc_sd_remove+0x64/0x74
+[  161.255221] [<ffffffc000334588>] mmc_sd_detect+0x84/0xb4
+[  161.261037] [<ffffffc00032f7a0>] mmc_rescan+0xac/0x2ac
+[  161.266665] [<ffffffc0000a8cd0>] process_one_work+0x1d0/0x2f4
+[  161.272958] [<ffffffc0000a9360>] worker_thread+0x290/0x3b4
+[  161.278969] [<ffffffc0000ad370>] kthread+0xd0/0xd8
+[  161.284252] ###[mmc_remove_card 390] [dump_stack end]
+[  161.304631] EXT3-fs error (device mmcblk0p2): ext3_find_entry: reading directory #409370 offset 0
+[  161.314136] EXT3-fs (mmcblk0p2): I/O error while writing superblock
+
+log2:
+[    1.023743] ###[mmc_alloc_host 479] [dump_stack start]
+[    1.029432] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #3
+[    1.036461] Hardware name: Freescale S32V234 (DT)
+[    1.041663] Call trace:
+[    1.044370] [<ffffffc0000873d4>] dump_backtrace+0x0/0x104
+[    1.050345] [<ffffffc0000874ec>] show_stack+0x14/0x1c
+[    1.055936] [<ffffffc0004599b0>] dump_stack+0x84/0xa8
+[    1.061527] [<ffffffc000330860>] mmc_alloc_host+0x38/0x1e4
+[    1.067599] [<ffffffc00033f6e4>] sdhci_alloc_host+0x34/0x58
+[    1.073766] [<ffffffc0003443a8>] sdhci_pltfm_init+0x6c/0x1e4
+[    1.080030] [<ffffffc0003455c4>] sdhci_esdhc_imx_probe+0x48/0x780
+[    1.086775] [<ffffffc0002f712c>] platform_drv_probe+0x50/0x9c
+[    1.093133] [<ffffffc0002f5ba4>] driver_probe_device+0x104/0x24c
+[    1.099780] [<ffffffc0002f5d9c>] __driver_attach+0x64/0x90
+[    1.105851] [<ffffffc0002f4198>] bus_for_each_dev+0x64/0x88
+[    1.112018] [<ffffffc0002f56a0>] driver_attach+0x20/0x28
+[    1.117896] [<ffffffc0002f533c>] bus_add_driver+0xf8/0x1c8
+[    1.123965] [<ffffffc0002f6244>] driver_register+0xbc/0x108
+[    1.130131] [<ffffffc0002f705c>] __platform_driver_register+0x60/0x68
+[    1.137260] [<ffffffc0005eab58>] sdhci_esdhc_imx_driver_init+0x1c/0x24
+[    1.144484] [<ffffffc000081028>] do_one_initcall+0xfc/0x18c
+[    1.150653] [<ffffffc0005d4a38>] kernel_init_freeable+0x148/0x1e8
+[    1.157397] [<ffffffc000457c98>] kernel_init+0x10/0xd8
+[    1.163131] ###[mmc_alloc_host 481] [dump_stack end]
+
+log3:
+[    1.242070] ###[_mmc_detect_change 1810] [dump_stack start]
+[    1.248245] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #12
+[    1.255371] Hardware name: Freescale S32V234 (DT)
+[    1.260573] Call trace:
+[    1.263282] [<ffffffc0000873d4>] dump_backtrace+0x0/0x104
+[    1.269256] [<ffffffc0000874ec>] show_stack+0x14/0x1c
+[    1.274847] [<ffffffc000459ac0>] dump_stack+0x84/0xa8
+[    1.280439] [<ffffffc00032e418>] _mmc_detect_change.isra.17+0x3c/0x74
+[    1.287567] [<ffffffc00032fac4>] mmc_start_host+0x60/0x6c
+[    1.293541] [<ffffffc000330b7c>] mmc_add_host+0x58/0x80
+[    1.299324] [<ffffffc000341cc0>] sdhci_add_host+0xbb4/0xc58
+[    1.305492] [<ffffffc000345d50>] sdhci_esdhc_imx_probe+0x6f0/0x7ac
+[    1.312332] [<ffffffc0002f712c>] platform_drv_probe+0x50/0x9c
+[    1.318690] [<ffffffc0002f5ba4>] driver_probe_device+0x104/0x24c
+[    1.325337] [<ffffffc0002f5d9c>] __driver_attach+0x64/0x90
+[    1.331409] [<ffffffc0002f4198>] bus_for_each_dev+0x64/0x88
+[    1.337576] [<ffffffc0002f56a0>] driver_attach+0x20/0x28
+[    1.343454] [<ffffffc0002f533c>] bus_add_driver+0xf8/0x1c8
+[    1.349524] [<ffffffc0002f6244>] driver_register+0xbc/0x108
+[    1.355690] [<ffffffc0002f705c>] __platform_driver_register+0x60/0x68
+[    1.362819] [<ffffffc0005eab58>] sdhci_esdhc_imx_driver_init+0x1c/0x24
+[    1.370043] [<ffffffc000081028>] do_one_initcall+0xfc/0x18c
+[    1.376212] [<ffffffc0005d4a38>] kernel_init_freeable+0x148/0x1e8
+[    1.382956] [<ffffffc000457da8>] kernel_init+0x10/0xd8
+[    1.388673] ###[_mmc_detect_change 1812] [dump_stack end]
+[    1.394665] #mn:[mmc_schedule_delayed_work]
+
+log4[delayed work]:
+[    1.183048] #mn: [mmc_alloc_host 481]
+[    1.196620] #mn: sdhci_esdhc_imx_probe: boarddata->cd_type =0
+[    1.261852] #mn:[mmc_schedule_delayed_work]
+[    1.366867] #mn: [mmc_rescan] out: MMC_CAP_NEEDS_POLL
+[    1.372486] #mn:[mmc_schedule_delayed_work]
+[    2.431910] #mn: [mmc_rescan] out: MMC_CAP_NEEDS_POLL
+
+log5:
+
+[    1.272125] ###[mmc_schedule_delayed_work 87] [dump_stack start]
+[    1.278774] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.1.26-rt29 #15
+[    1.285900] Hardware name: Freescale S32V234 (DT)
+[    1.291102] Call trace:
+[    1.293811] [<ffffffc0000873d4>] dump_backtrace+0x0/0x104
+[    1.299785] [<ffffffc0000874ec>] show_stack+0x14/0x1c
+[    1.305376] [<ffffffc000459a94>] dump_stack+0x84/0xa8
+[    1.310967] [<ffffffc00032dd30>] mmc_schedule_delayed_work+0x60/0xa0
+[    1.318000] [<ffffffc00032fa94>] mmc_start_host+0x68/0x74
+[    1.323974] [<ffffffc000330b50>] mmc_add_host+0x58/0x80
+[    1.329757] [<ffffffc000341c94>] sdhci_add_host+0xbb4/0xc58
+[    1.335925] [<ffffffc000345d24>] sdhci_esdhc_imx_probe+0x6f0/0x7ac
+[    1.342765] [<ffffffc0002f712c>] platform_drv_probe+0x50/0x9c
+[    1.349124] [<ffffffc0002f5ba4>] driver_probe_device+0x104/0x24c
+[    1.355771] [<ffffffc0002f5d9c>] __driver_attach+0x64/0x90
+[    1.361843] [<ffffffc0002f4198>] bus_for_each_dev+0x64/0x88
+[    1.368009] [<ffffffc0002f56a0>] driver_attach+0x20/0x28
+[    1.373888] [<ffffffc0002f533c>] bus_add_driver+0xf8/0x1c8
+[    1.379958] [<ffffffc0002f6244>] driver_register+0xbc/0x108
+[    1.386124] [<ffffffc0002f705c>] __platform_driver_register+0x60/0x68
+[    1.393254] [<ffffffc0005eab58>] sdhci_esdhc_imx_driver_init+0x1c/0x24
+[    1.400478] [<ffffffc000081028>] do_one_initcall+0xfc/0x18c
+[    1.406646] [<ffffffc0005d4a38>] kernel_init_freeable+0x148/0x1e8
+[    1.413391] [<ffffffc000457d7c>] kernel_init+0x10/0xd8
+[    1.419104] ###[mmc_schedule_delayed_work 89] [dump_stack end]
+
+
+
+remove sdcard flow
+======================
+
+struct
+------
+struct mmc_host {
+	...
+	struct delayed_work	detect;
+
+};
+
+------------
+
+[drivers/mmc/host/sdhci-esdhc-imx.c]
+static struct platform_driver sdhci_esdhc_imx_driver = {
+	...
+	.probe		= sdhci_esdhc_imx_probe,
+	...
+};
+module_platform_driver(sdhci_esdhc_imx_driver);
+
+
+sdhci_esdhc_imx_probe [drivers/mmc/host/sdhci-esdhc-imx.c]
+|-> sdhci_pltfm_init [drivers/mmc/host/sdhci-pltfm.c]
+	|-> sdhci_alloc_host [drivers/mmc/host/sdhci.c]
+		//Device allocation/registration
+		|-> mmc_alloc_host [drivers/mmc/core/host.c]
+			//initialise the per-host structure.
+			|-> INIT_DELAYED_WORK(&host->detect, mmc_rescan);
+
+
+--------------------
+mmc_rescan [drivers/mmc/core/core.c]
+|-> /*
+	 * if there is a _removable_ card registered, check whether it is
+	 * still present
+	 */
+	if (host->bus_ops && !host->bus_dead
+	    && !(host->caps & MMC_CAP_NONREMOVABLE))
+		host->bus_ops->detect(host);
+
+
+static const struct mmc_bus_ops mmc_sd_ops = { [drivers/mmc/core/sd.c]
+	...
+	.detect = mmc_sd_detect,
+	...
+
+};
+
+mmc_sd_detect [drivers/mmc/core/sd.c]
+//Card detection callback from host.
+|-> mmc_sd_remove [drivers/mmc/core/sd.c]
+	//Host is being removed. Free up the current card.
+	|-> mmc_remove_card [drivers/core/bus.c]
+		//Unregister a new MMC card with the driver model, and (eventually) free it.
+		|-> device_del----+ [drivers/base/core.c]
+			of_node_put   |
+			put_device    |
+                          |
++-------------------------+
+|
++--> kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+
+MMC_CAP_NEEDS_POLL
+------------------
+because request irq number failed //todo: check dts
+#define MMC_CAP_NEEDS_POLL	(1 << 5)	/* Needs polling for card-detection */
+
+
+sdhci_esdhc_imx_probe [drivers/mmc/host/sdhci-esdhc-imx.c]
+|-> sdhci_add_host [drivers/mmc/host/sdhci.c]
+	|-> mmc_add_host  [drivers/mmc/host/sdhci.c]
+		//initialise host hardware
+		|-> mmc_start_host [drivers/mmc/core/core.c]
+			|-> mmc_gpiod_request_cd_irq(host); [drivers/mmc/core/slot-gpio.c]
+				|-> if (irq < 0)
+						host->caps |= MMC_CAP_NEEDS_POLL;  //todo: check dts
+			|-> _mmc_detect_change [drivers/mmc/core/core.c]
+				//first time to call mmc_schedule_delayed_work
+				|-> host->detect_change = 1;
+					mmc_schedule_delayed_work(&host->detect, delay); [core/core.c]
+					|-> queue_delayed_work
+                                |
+                                |
++-------------------------------+
+|
++-> mmc_rescan [core/core.c]
+    |-> if (host->caps & MMC_CAP_NEEDS_POLL)
+        mmc_schedule_delayed_work(&host->detect, HZ);
+
+notes: rda600 use poll mode to detect card
+	detect pin maybe not set rightly.
+
+[drivers/core/core.c]
+/*
+ * Internal function. Schedule delayed work in the MMC work queue.
+ */
+static int mmc_schedule_delayed_work(struct delayed_work *work,
+				     unsigned long delay)
+{
+	return queue_delayed_work(workqueue, work, delay);
+}
+
+
+
+polling for card-detection
+==========================
+
+  +---------------------+
+  | _mmc_detect_change  | only on booting
+  | (core/core.c)       |--------+
+  +---------------------+        |
+                                 v
+                    +---------------------------+
+		 +--------->| mmc_schedule_delayed_work |
+         |          | [core/core.c]             |
+         |          |                           |
+         |          |   +--------------------+  |
+		 |  	    |   | queue_delayed_work |  |
+         |          |   +--------------------+  |
+         |          +------------|--------------+
+         |                       |
+         |                       |
+         |                       |
+   +-------------+               |
+   | mmc_rescan  |<--------------+
+   | core/core.c |
+   +-------------+
+
+
+
+
+
+
+
+
+Generic GPIO card-detect helper
+[drivers/mmc/core/slot-gpio.c]
+===============================
+mmc_gpio_request_cd - request a gpio for card-detection
+
+sdhci_esdhc_imx_probe
+|-> sdhci_esdhc_imx_probe_dt
+	|-> mmc_of_parse [drivers/mmc/core/host.c]
+		//parse host's device-tree node
+		|-> ret = mmc_gpiod_request_cd(host, "cd", 0, true,
+						   0, &cd_gpio_invert);
+
+function:
+    mmc_gpio_cd_irqt
+    mmc_gpio_alloc
+    mmc_gpio_get_ro
+    mmc_gpio_get_cd
+    mmc_gpio_request_ro
+    mmc_gpiod_request_cd_irq
+    mmc_gpio_set_cd_isr
+    mmc_gpio_request_cd
+    mmc_gpiod_request_cd
+    mmc_gpiod_request_ro
+
+
+insert sdcard flow
+======================
+//todo
+remove and insert sdcard, log[nfsboot]:
+
+//remove sd card
+root@rda600:~# [  325.876723] mmc0: card 0001 removed
+//insert sdcard
+root@rda600:~# [  332.879275] mmc0: host does not support reading read-only switch, assuming write-enable
+[  332.893601] mmc0: new high speed SDHC card at address 0001
+[  332.899645] mmcblk0: mmc0:0001 SD16G 15.0 GiB
+[  332.906125]  mmcblk0: p1 p2
+
+log2:
+[    1.284513] ###[mmc_sd_setup_card 836] [dump_stack start]
+[    1.284521] CPU: 0 PID: 30 Comm: kworker/u8:1 Not tainted 4.1.26-rt29 #17
+[    1.284523] Hardware name: Freescale S32V234 (DT)
+[    1.284536] Workqueue: kmmcd mmc_rescan
+[    1.284538] Call trace:
+[    1.284547] [<ffffffc0000873d4>] dump_backtrace+0x0/0x104
+[    1.284552] [<ffffffc0000874ec>] show_stack+0x14/0x1c
+[    1.284559] [<ffffffc0004599e4>] dump_stack+0x84/0xa8
+[    1.284566] [<ffffffc000334b04>] mmc_sd_setup_card+0x44/0x394
+[    1.284571] [<ffffffc000334ff4>] mmc_sd_init_card+0x178/0x600
+[    1.284577] [<ffffffc000335740>] mmc_attach_sd+0xe0/0x16c
+[    1.284582] [<ffffffc00032f93c>] mmc_rescan+0x248/0x2ac
+[    1.284587] [<ffffffc0000a8cd0>] process_one_work+0x1d0/0x2f4
+[    1.284592] [<ffffffc0000a9360>] worker_thread+0x290/0x3b4
+[    1.284598] [<ffffffc0000ad370>] kthread+0xd0/0xd8
+[    1.284601] ###[mmc_sd_setup_card 838] [dump_stack end]
+[    1.289461] mmc0: host does not support reading read-only switch, assuming write-enable
+[    1.295365] mmc0: new high speed SDHC card at address 0001
+[    1.295726] mmcblk0: mmc0:0001 SD16G 15.0 GiB
+[    1.296786]  mmcblk0: p1 p2
+
+mmc_rescan [mmc/core/core.c]
+|-> mmc_rescan_try_freq [mmc/core/core.c]
+	|-> mmc_attach_sd [mmc/core/sd.c]
+		//Starting point for SD card init.
+		|-> mmc_sd_init_card [mmc/core/sd.c]
+			// Handle the detection and initialisation of a card.
+			|-> mmc_sd_setup_card [mmc/core/sd.c]
+
+mmc_attach_sd
+{
+	//Detect and init the card.
+	err = mmc_sd_init_card(host, rocr, NULL);
+	mmc_release_host(host);
+	err = mmc_add_card(host->card);
+	mmc_claim_host(host);
+}
+
+mmc_rescan [mmc/core/core.c]
+|-> mmc_rescan_try_freq [mmc/core/core.c]
+	|-> mmc_attach_sd [mmc/core/sd.c]
+		|-> mmc_add_card [mmc/core/bus.c]
+			//Register a new MMC card with the driver model.
+			|-> device_add [drivers/base/core.c]
+				//add device to device hierarchy.
+				|-> kobject_uevent(&dev->kobj, KOBJ_ADD);
+
+
+
+mmc_sd_setup_card
+{
+	//...
+	if (ro < 0) {
+		pr_warn("%s: host does not support reading read-only switch, assuming write-enable\n",
+				mmc_hostname(host));
+	} else if (ro > 0) {
+		...
+	}
+}
+
+interrupt to detect sd card
+============================
+
+|-> mmc_start_host [drivers/mmc/core/core.c]
+	|-> mmc_gpiod_request_cd_irq(host); [drivers/mmc/core/slot-gpio.c]
+		|-> if (!ctx->cd_gpio_isr)
+				ctx->cd_gpio_isr = mmc_gpio_cd_irqt;
+			ret = devm_request_threaded_irq(host->parent, irq,
+				NULL, ctx->cd_gpio_isr,
+				IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+				ctx->cd_label, host);
+			//MMC_CAP_NEEDS_POLL will not be set.
+
+mmc_gpio_cd_irqt [core/slot-gpio.c]
+|-> mmc_detect_change [core/core.c]
+	//process change of state on a MMC socket
+	|-> _mmc_detect_change [core/core.c]
+		|-> host->detect_change = 1;
+			mmc_schedule_delayed_work(&host->detect, delay);
+			|-> queue_delayed_work
+                       |
+                       |
++----------------------+
+|
++-> mmc_rescan [core/core.c]
+
+
+-------------------------
+                       +---------------------+
+                       |  a card is inserted |
+                       |  or removee         |
+                       +---------------------+
+                                 |
+                                 v
+  +----------------+   +--------------------+
+  | mmc_start_host |   | mmc_gpio_cd_irqt   |
+  | (core/core.c)  |   | (core/slot-gpio.c) |
+  +----------------+   +--------------------+
+           |on booting       |
+           |                 |
+           v                 v
+         +---------------------+
+         | _mmc_detect_change  |
+         | (core/core.c)       |
+         +---------------------+
+                    |
+                    |
+                    v
+       +---------------------------+
+       | mmc_schedule_delayed_work |
+       | [core/core.c]             |
+       |                           |
+       |   +--------------------+  |
+       |   | queue_delayed_work |  |
+       |   +--------------------+  |
+       +-------------|-------------+
+                     |
+                     |
+                     v
+               +-------------+
+               | mmc_rescan  |
+               | core/core.c |
+               +-------------+
+
