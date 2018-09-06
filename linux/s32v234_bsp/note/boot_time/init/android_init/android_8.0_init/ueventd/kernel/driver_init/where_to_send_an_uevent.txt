@@ -1,8 +1,8 @@
 when to send an uevent
 
-(1) probe -> regist device/kset, 
+(1) when register device/kset,( after probe a device), the last step.
 (2) write "add" to uevent attribute
-(3) hotplug: insert a SD card
+(3) hotplug: insert a SD card -> device_add -> kobject_uevent
 
 kobject_uevent
 ==============
@@ -144,7 +144,7 @@ uevent_store [drivers/base/core.c]
 hotplug
 =======
 (1) insmod a module (device exist)
-	probe -> regist device/driver
+	register device/driver, (after probe a device)
 
 (2) insert a device (like usb)
 //todo: sd card hotplug

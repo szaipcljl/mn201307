@@ -1,0 +1,37 @@
+
+
+
+device/s32v/bsp/drivers/apex/drivers/kernel/src/linux/kernel_module.c
+module_platform_driver(apex_driver);
+
+
+
+[include/linux/platform_device.h]
+#define platform_driver_register(drv) \
+	__platform_driver_register(drv, THIS_MODULE)
+
+#define module_platform_driver(__platform_driver) \
+	module_driver(__platform_driver, platform_driver_register, \
+			platform_driver_unregister)
+
+[include/linux/device.h]
+#define module_driver(__driver, __register, __unregister, ...) \
+static int __init __driver##_init(void) \
+{ \
+	return __register(&(__driver) , ##__VA_ARGS__); \
+} \
+module_init(__driver##_init); \
+static void __exit __driver##_exit(void) \
+{ \
+	__unregister(&(__driver) , ##__VA_ARGS__); \
+} \
+module_exit(__driver##_exit);
+
+----------
+
+apex_driver_init
+|-> __platform_driver_register [drivers/base/platform.c]
+	//register a driver for platform-level devices
+	|-> driver_register [drivers/base/driver.c]
+		|-> kobject_uevent
+

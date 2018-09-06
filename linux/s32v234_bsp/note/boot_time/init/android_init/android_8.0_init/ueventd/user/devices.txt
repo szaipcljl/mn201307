@@ -1,0 +1,96 @@
+
+
+device_init
+============
+(1) open uevent socket  only if it hasn't been done before
+	device_fd.reset(uevent_open_socket(256 * 1024, true));
+
+(2) fcntl(device_fd, F_SETFL, O_NONBLOCK);
+
+(3) check if coldboot has already been done
+    if (access(COLDBOOT_DONE, F_OK) == 0) {
+        //LOG(VERBOSE) << "Skipping coldboot, already done!";
+        return;
+    }
+
+// access, faccessat - check user's permissions for a file
+(4)
+
+	if path == NULL:
+
+    coldboot_action_t act;
+	act = coldboot("/sys/class", fn);
+	if (!should_stop_coldboot(act)) {
+		act = coldboot("/sys/block", fn);
+		if (!should_stop_coldboot(act)) {
+			act = coldboot("/sys/devices", fn);
+		}
+	}
+
+(5)
+    // If we have a callback, then do as it says. If no, then the default is
+    // to always create COLDBOOT_DONE file.
+    if (!fn || (act == COLDBOOT_FINISH)) {
+        close(open(COLDBOOT_DONE, O_WRONLY|O_CREAT|O_CLOEXEC, 0000));
+    }
+
+
+coldboot
+~~~~~~~~
+/* Coldboot walks parts of the /sys tree and pokes the uevent files
+** to cause the kernel to regenerate device add events that happened
+** before init's device manager was started
+**
+** We drain any pending events from the netlink socket every time
+** we poke another uevent file to make sure we don't overrun the
+** socket's buffer.
+*/
+
+
+act = coldboot("/sys/class", fn);
+(1)
+    std::unique_ptr<DIR, decltype(&closedir)> d(opendir(path), closedir);
+
+(2)
+    if (d) {
+        return do_coldboot(d.get(), fn);
+    }
+
+(3)
+    return COLDBOOT_CONTINUE;
+
+do_coldboot
+------------
+do_coldboot
+|-> handle_device_fd
+    |-> handle_device_fd_with
+        |-> uevent_kernel_multicast_recv
+            parse_event
+            handle_uevent //callback
+            |-> handle_device_event(uevent);   ---+
+				handle_firmware_event(uevent);    |
+                                                  |
+                +---------------------------------+
+                |
+                +-> if (!strncmp(uevent->subsystem, "block", 5)) {
+                        handle_block_device_event(uevent);
+                    } else if (!strncmp(uevent->subsystem, "platform", 8)) {
+                        handle_platform_device_event(uevent);
+                    } else {
+                        handle_generic_device_event(uevent);
+                    }
+
+struct uevent
+-------------
+struct uevent {
+    const char* action;
+    const char* path;
+    const char* subsystem;
+    const char* firmware;
+    const char* partition_name;
+    const char* device_name;
+    int partition_num;
+    int major;
+    int minor;
+};
+
