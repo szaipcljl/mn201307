@@ -9,7 +9,7 @@ dns proxy = no
 #============================ Share Definitions ============================== 
 
 #[Anonymous]
-#path = /samba/anonymous
+#path = /home/samba/anonymous
 #browsable =yes
 #writable = yes
 #guest ok = yes
@@ -17,7 +17,7 @@ dns proxy = no
 #force user = nobody
 
 [secured]
-path = /samba/secured
+path = /home/samba/secured
 valid users = @smbgrp
 guest ok = no
 writable = yes

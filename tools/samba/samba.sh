@@ -38,23 +38,23 @@ cat ./smb_cfg.txt | sed -e "s/nma1x/$USERNAME/g" >> /etc/samba/smb.conf
 # create a directory for the anonymous share and set the correct permissions.
 # no password, not security
 :<<!
-mkdir -p /samba/anonymous
-chmod -R 0775 /samba/anonymous
-chown -R nobody:nogroup /samba/anonymous
+mkdir -p /home/samba/anonymous
+chmod -R 0775 /home/samba/anonymous
+chown -R nobody:nogroup /home/samba/anonymous
 !
 
 # create a directory for the secured share and set the correct permissions.
 addgroup smbgrp
-useradd till -G smbgrp
-# Enter the password of the user named 'till', others can use till to access
+useradd keeno -G smbgrp
+# Enter the password of the user named 'keeno', others can use keeno to access
 # your shared directory (smbgrp group)
 PASS=123
-echo -ne "$PASS\n$PASS\n" | smbpasswd -as till
+echo -ne "$PASS\n$PASS\n" | smbpasswd -as keeno
 #(echo newpassword; echo confirmNewPassword) | smbpasswd -s
 
-mkdir -p /samba/secured
-chmod -R 0770 /samba/secured
-chown root:smbgrp /samba/secured
+mkdir -p /home/samba/secured
+chmod -R 0770 /home/samba/secured
+chown root:smbgrp /home/samba/secured
 
 echo "Enter the password of the user named '$USERNAME'"
 smbpasswd -a $USERNAME
