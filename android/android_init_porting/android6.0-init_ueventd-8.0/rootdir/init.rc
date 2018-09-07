@@ -1,0 +1,31 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# IMPORTANT: Do not create world writable files or directories.
+# This is a common source of Android security bugs.
+#
+
+
+on early-init
+	mkdir tshi1 0755 root root 
+    chmod 0660 /var/volatile/tmp/this
+	start ueventd
+
+
+on init 
+	start getty	
+	#start devipc_deamon
+	#start devipc_example0
+	
+service devipc_deamon /usr/bin/devipc_deamon
+    class core
+    critical
+
+service devipc_example0 /usr/bin/devipc_example0
+    class core
+
+service ueventd  /sbin/ueventd
+    class core
+
+service getty /sbin/getty ---L --115200 --ttyLF0 
+    clase core
+	
