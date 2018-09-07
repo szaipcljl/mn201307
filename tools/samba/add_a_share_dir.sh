@@ -16,7 +16,8 @@ echo "You entered: $USERNAME"
 #
 
 # create a directory for the secured share and set the correct permissions.
-#addgroup smbgrp
+# add a user to smbgrp
+addgroup smbgrp
 useradd keeno -G smbgrp
 # Enter the password of the user named 'keeno', others can use keeno to access
 # your shared directory (smbgrp group)
@@ -28,5 +29,8 @@ mkdir -p /home/samba/secured
 chmod -R 0770 /home/samba/secured
 chown root:smbgrp /home/samba/secured
 
+#
+# set a user's(which is in /home/) password, need 'sudo'
+#
 echo "Enter the password of the user named '$USERNAME'"
 smbpasswd -a $USERNAME

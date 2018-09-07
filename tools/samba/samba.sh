@@ -44,6 +44,7 @@ chown -R nobody:nogroup /home/samba/anonymous
 !
 
 # create a directory for the secured share and set the correct permissions.
+# add a user to smbgrp
 addgroup smbgrp
 useradd keeno -G smbgrp
 # Enter the password of the user named 'keeno', others can use keeno to access
@@ -56,8 +57,11 @@ mkdir -p /home/samba/secured
 chmod -R 0770 /home/samba/secured
 chown root:smbgrp /home/samba/secured
 
+#
+# add a smb user, need 'sudo'
+#
 echo "Enter the password of the user named '$USERNAME'"
-smbpasswd -a $USERNAME
+sudo smbpasswd -a $USERNAME
 
 #
 # (4)restart Samba to apply the new configuration.
