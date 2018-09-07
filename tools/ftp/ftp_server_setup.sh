@@ -58,3 +58,9 @@ sudo chown ftp:ftp pub
 ftp://localhost
 #或
 ftp://127.0.0.1
+
+
+--------
+sudo rm /srv/ftp -rf
+sudo chown ftp:ftp /home/ftp
+sudo ln -s /home/ftp /srv/ftp

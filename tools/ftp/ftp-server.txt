@@ -1,0 +1,27 @@
+
+
+vsftpd - FTP 服务器安装
+
+vsftpd is an FTP daemon available in Ubuntu. It is easy to install, set up, and maintain. To install vsftpd you can run the following command:
+
+sudo apt install vsftpd
+
+Anonymous FTP Configuration
+
+By default vsftpd is not configured to allow anonymous download. If you wish to enable anonymous download edit /etc/vsftpd.conf by changing:
+
+anonymous_enable=Yes
+
+During installation a ftp user is created with a home directory of /srv/ftp. This is the default FTP directory.
+
+If you wish to change this location, to /srv/files/ftp for example, simply create a directory in another location and change the ftp user's home directory:
+
+sudo mkdir /srv/files/ftp
+sudo usermod -d /srv/files/ftp ftp
+
+After making the change restart vsftpd:
+
+sudo systemctl restart vsftpd.service
+
+Finally, copy any files and directories you would like to make available through anonymous FTP to /srv/files/ftp, or /srv/ftp if you wish to use the default.
+
