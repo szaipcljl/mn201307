@@ -26,7 +26,8 @@ echo -ne "$PASS\n$PASS\n" | smbpasswd -as keeno
 #(echo newpassword; echo confirmNewPassword) | smbpasswd -s
 
 mkdir -p /home/samba/secured
-chmod -R 0770 /home/samba/secured
+#chmod -R 0770 /home/samba/secured
+chmod -R g+w /home/samba/secured
 chown root:smbgrp /home/samba/secured
 
 #
