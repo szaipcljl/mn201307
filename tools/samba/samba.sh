@@ -73,7 +73,7 @@ service smbd restart
 # (5) display some infomation
 #
 echo "login name: $USERNAME	password: what you have entered"
-echo "/samba/secured(smbgrp) login name: till		password: $PASS"
+echo "/samba/secured(smbgrp) login name: keeno		password: $PASS"
 
 
 #========#
