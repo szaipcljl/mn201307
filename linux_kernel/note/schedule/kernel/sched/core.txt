@@ -1,0 +1,513 @@
+进程调度机制
+linux4.9
+
+kernel/sched/core.c
+===================
+Kernel scheduler and related syscalls
+
+
+
+structure
+---------
+1.就绪队列
+内核为每一个cpu创建一个进程就绪队列，该队列上的进程均由该cpu执行.
+
+DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues); //[kernel/sched/core.c]
+定义了一个 struct rq 结构体数组，每个数组元素是一个就绪队列，对应一个cpu。
+
+[kernel/sched/sched.h]
+// This is the main, per-CPU runqueue data structure.
+struct rq {
+	...
+
+	struct cfs_rq cfs; //CFS-related fields in a runqueue
+	struct rt_rq rt; //Real-Time classes' related field in a runqueue:
+	struct dl_rq dl; //Deadline class' related fields in a runqueue
+	...
+
+	/* cpu of this runqueue: */
+	int cpu;
+
+	...
+};
+
+struct rq struct 是本地cpu所有进程组成的就绪队列，内嵌了 3 个子就绪队列:
+	<1> struct cfs_rq cfs  组织普通进程, 采用完全公平调度策略cfs
+	<2> struct rt_rq rt    组织 实时进程, 采用实时调度策略
+	<3> struct dl_rq dl    调度空闲进程。
+
+研究普通进程的调度: 关心 struct cfs_rq cfs 队列；
+研究实时进程: 关心 struct rt_rq rt队列。
+
+1.1普通进程的就绪队列struct cfs_rq [kernel/sched/sched.h]
+---------------------------------------------------------
+
+/* CFS-related fields in a runqueue */
+struct cfs_rq {
+	...
+	struct rb_root tasks_timeline;
+	struct rb_node *rb_leftmost;
+
+	struct sched_entity *curr, *next, *last, *skip;
+
+	...
+	struct rq *rq;	/* cpu runqueue to which this cfs_rq is attached */
+	...
+};
+
+cfs_rq 就绪队列是以红黑树的形式来组织调度实体。
+tasks_timeline 就是红黑树的树根。
+rb_leftmost 指向了红黑树最左边的左孩子（下一个可调度的实体）。
+curr 指向当前正运行的实体，next 指向将被唤醒的进程，last 指向唤醒next进程的进程。
+rq 指向了该cfs_rq就绪队列所属的rq队列。
+
+
+1.2实时进程的就绪队列struct rt_rq [kernel/sched/sched.h]
+-------------------------------------------------------
+
+/* Real-Time classes' related field in a runqueue: */
+struct rt_rq {
+	...
+
+};
+
+
+2.调度实体
+----------
+[include/linux/sched.h]
+
+2.1 普通进程的调度实体sched_entity
+
+struct sched_entity {
+	...
+	struct rb_node		run_node;
+	...
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	int			depth;
+	struct sched_entity	*parent;
+	/* rq on which this entity is (to be) queued: */
+	struct cfs_rq		*cfs_rq;
+	/* rq "owned" by this entity/group: */
+	struct cfs_rq		*my_q;
+#endif
+	...
+};
+
+每个进程描述符中均包含一个struct sched_entity 变量，内核使用该结构体来将普通进程
+组织到采用完全公平调度策略的就绪队列中（struct rq中的cfs队列中），
+
+struct sched_entity 有两个作用:
+	一是, 包含有进程调度的信息
+	（比如进程的运行时间，睡眠时间等，调度程序参考这些信息决定是否调度进程），
+	二是, 使用该结构体来组织进程，
+
+	truct rb_node 类型结构体变量run_node是红黑树节点，struct sched_entity 调度实体将被
+	组织成红黑树的形式，意味着普通进程也被组织成红黑树的形式。
+	CONFIG_FAIR_GROUP_SCHED 是和组调度有关的成员，需要开启组调度。
+	parent 顾名思义指向了当前实体的上一级实体。
+	fs_rq 指向了该调度实体所在的就绪队列。
+
+	my_q 指向了本实体拥有的就绪队列（调度组），该调度组（包括组员实体）属于下一个级别，
+	和本实体不在同一个级别，该调度组中所有成员实体的parent域指向了本实体，这就解释了
+	上边的parent.
+	depth代表了此队列（调度组）的深度，每个调度组都比其parent调度组深度大1。
+	内核依赖my_q域实现组调度。
+
+2.2 实时进程的调度实体 sched_rt_entity
+
+struct sched_rt_entity {
+	struct list_head run_list;
+	...
+
+#ifdef CONFIG_RT_GROUP_SCHED
+	struct sched_rt_entity	*parent;
+	/* rq on which this entity is (to be) queued: */
+	struct rt_rq		*rt_rq;
+	/* rq "owned" by this entity/group: */
+	struct rt_rq		*my_q;
+#endif
+};
+struct sched_rt_entity 用来组织实时进程，实时进程被组织到 struct rq 中的rt队列中。
+每个进程描述符中也包含一个struct sched_rt_entity结构体。
+struct sched_rt_entity 结构体中并未包含struct rb_node类型结构体变量，而在第1行出现了
+struct list_head类型结构体变量run_list，实时进程的就绪队列是双向链表形式，而不是红黑数的形式。
+
+3.调度类
+--------
+[kernel/sched/sched.h]
+
+struct sched_class {
+	const struct sched_class *next;
+	...
+};
+
+内核声明了一个调度类sched_class的结构体类型，用来实现不同的调度策略，
+该结构体成员都是函数指针，这些指针指向的函数就是调度策略的具体实现，
+所有和进程调度有关的函数都直接或者间接调用了这些成员函数，来实现进程调度。
+
+每个进程描述符中都包含一个指向该结构体类型的指针sched_class，指向了所采用的调度类。
+
+完全公平调度策略类的定义和初始化:
+[kernel/sched/fair.c]
+// Completely Fair Scheduling (CFS) Class (SCHED_NORMAL/SCHED_BATCH)
+
+定义一个全局的调度策略变量:
+const struct sched_class fair_sched_class;
+
+初始化:
+// All the scheduling class methods:
+const struct sched_class fair_sched_class = {
+	.next			= &idle_sched_class,
+	...
+};
+
+
+
+4.进程描述符task_struct
+-----------------------
+[include/linux/sched.h]
+
+struct task_struct {
+	...
+	volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
+	...
+	int on_rq;
+
+	int prio, static_prio, normal_prio;
+	unsigned int rt_priority;
+	const struct sched_class *sched_class;
+	struct sched_entity se;
+	struct sched_rt_entity rt;
+#ifdef CONFIG_CGROUP_SCHED
+	struct task_group *sched_task_group;
+#endif
+	struct sched_dl_entity dl;
+	...
+	unsigned int policy;
+	...
+#ifdef CONFIG_SCHED_INFO
+	struct sched_info sched_info;
+#endif
+	...
+};
+
+只列出了和进程调度有关的成员。
+int prio, static_prio, normal_prio; 三个变量代表了普通进程的三个优先级，
+rt_priority 代表了实时进程的优先级。
+关于进程优先级的概念，可以看《深入理解linux内核架构》这本书的进程管理章节。
+
+const struct sched_class *sched_class;
+struct sched_entity se;
+struct sched_rt_entity rt;
+是我们上边提到的那些结构体在进程描述符中的定义。
+
+policy代表了当前进程的调度策略，内核给出了宏定义，它可以在这些宏中取值，
+关于详细的讲解还是去看《深入理解linux内核架构》这本书的进程管理部分。
+policy取了什么值，sched_class也应该取相应的调度类指针。
+
+
+
+进程调度过程分析：
+=================
+
+进程调度过程分为两部分:
+	一是对进程信息进行修改，主要是修改和调度相关的信息，比如进程的运行时间，睡眠时间，进程的状态，cpu的负荷等等，
+	二是进程的切换。
+	和进程调度相关的所有函数中，只有schedule函数是用来进行进程切换的，其他函数都是用来修改
+	进程的调度信息。
+	schedule函数分析//todo。
+	对于其他函数，我们将按照其功能，逐类来分析。
+
+1.scheduler_tick[kernel/sched/core.c ]
+----------------
+// This function gets called by the timer code, with HZ frequency.
+// We call it with interrupts disabled.
+
+该函数被时钟中断处理程序调用，将当前cpu的负载情况记载到运行队列struct rq的
+某些成员中，并更新当前进程的时间片。
+
+void scheduler_tick(void)
+{
+	int cpu = smp_processor_id(); //取当前的cpu号
+	struct rq *rq = cpu_rq(cpu); //获取当前cpu的就绪队列（每个cpu有一个）rq
+	struct task_struct *curr = rq->curr; //从就绪队列中获取当前运行进程的描述符
+
+	sched_clock_tick();
+
+	raw_spin_lock(&rq->lock);
+	//更新就绪队列中的clock和clock_task成员值，代表当前的时间，一般我们会用到clock_task。
+	update_rq_clock(rq);
+	//进入当前进程的调度类的task_tick函数中，更新当前进程的时间片，不同调度类该函数实现不同
+	curr->sched_class->task_tick(rq, curr, 0);
+	//更新就绪队列的cpu负载信息
+	cpu_load_update_active(rq);
+	calc_global_load_tick(rq);
+	raw_spin_unlock(&rq->lock);
+
+	perf_event_task_tick();
+
+#ifdef CONFIG_SMP
+	//判断当前cpu是否是空闲的，是的话idle_cpu返回1，否则返回0。
+	rq->idle_balance = idle_cpu(cpu);
+	//挂起SCHED_SOFTIRQ软中断函数，去做周期性的负载平衡操作。
+	trigger_load_balance(rq);
+#endif
+	//将最新的时钟滴答数jiffies存入就绪队列的last_sched_tick域中
+	rq_last_tick_reset(rq);
+}
+
+task_tick_fair函数[kernel/sched/fair.c]:
+------------------
+完全公平调度类的 task_tick
+
+const struct sched_class fair_sched_class = {
+	...
+	.task_tick		= task_tick_fair,
+	...
+};
+
+如果某个进程的调度类采用完全公平调度类，上个函数scheduler_tick 所执行的task_tick函数指针，
+就指向了task_tick_fair函数。
+完全公平调度对象的初始化，赋值语句.task_tick = task_tick_fair。
+
+
+/*
+ * scheduler tick hitting a task of our scheduling class:
+ */
+static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+{
+	struct cfs_rq *cfs_rq;
+	struct sched_entity *se = &curr->se; //获取当前进程的普通调度实体, 将指针存放到se中
+
+	/*
+	 * 遍历当前调度实体的上一级实体，以及上上一级实体，以此类推，
+	 * 然后在entity_tick函数中更新调度实体的运行时间等信息。
+	 * 循环遍历的原因:
+	 * 当开启了组调度后，调度实体的parent域存储它的上一级节点，该
+	 * 实体和它parent指向的实体不是同一级别，因此使用循环就把从当
+	 * 前级别（组）到最顶层的级别遍历完；
+	 * 如果未选择组支持，则循环只执行一次，仅对当前调度实体进行更新。
+	 */
+	for_each_sched_entity(se) { //Walk up scheduling entities hierarchy
+		cfs_rq = cfs_rq_of(se); //runqueue on which this entity is (to be) queued
+		entity_tick(cfs_rq, se, queued);
+	}
+
+	if (static_branch_unlikely(&sched_numa_balancing))
+		task_tick_numa(rq, curr);
+}
+
+
+
+entity_tick[kernel/sched/fair.] :
+-----------
+在该函数中对调度实体（进程）的运行时间等信息进行更新。
+
+static void
+entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr, int queued)
+{
+	/*
+	 * Update run-time statistics of the 'current'.
+	 */
+	update_curr(cfs_rq); //对当前进程的运行时间进行更新
+
+	/*
+	 * Ensure that runnable average is periodically updated.
+	 */
+	update_load_avg(curr, 1);
+	update_cfs_shares(cfs_rq);
+
+#ifdef CONFIG_SCHED_HRTICK
+	/*
+	 * queued ticks are scheduled to match the slice, so don't bother
+	 * validating it and just reschedule.
+	 */
+	//如果传进来的参数queued不为0的话，当前进程会被无条件设置重新调度标志（允许被抢占了）。
+	if (queued) {
+		resched_curr(rq_of(cfs_rq));
+		return;
+	}
+	/*
+	 * don't let the period tick interfere with the hrtick preemption
+	 */
+	if (!sched_feat(DOUBLE_TICK) &&
+			hrtimer_active(&rq_of(cfs_rq)->hrtick_timer))
+		return;
+#endif
+
+	// 如果当前cfs_rq队列等待调度的进程数量大于1，执行check_preempt_tick
+	// 函数检查当前进程的时间片是否用完，用完就需要调度别的进程来运行
+	//（如果当前进程“真实时间片”用完，该函数给当前进程设置need_resched标志，
+	// 然后schedule程序就可以重新在就绪队列中调度新的进程）
+	if (cfs_rq->nr_running > 1)
+		check_preempt_tick(cfs_rq, curr);
+}
+
+update_curr [kernel/sched/fair.c]:
+-----------
+
+更新进程运行时间最核心的一个函数。
+/*
+ * Update the current task's runtime statistics.
+ */
+static void update_curr(struct cfs_rq *cfs_rq)
+{
+	struct sched_entity *curr = cfs_rq->curr; //获取当前的调度实体
+	//从就绪队列rq的clock_task成员中获取当前时间，存入now中
+	u64 now = rq_clock_task(rq_of(cfs_rq));
+	u64 delta_exec;
+
+	if (unlikely(!curr))
+		return;
+
+	//用当前时间减去进程在上次时钟中断tick中的开始时间得到进程运行的时间间隔，存入delta_exec中。
+	delta_exec = now - curr->exec_start;
+	if (unlikely((s64)delta_exec <= 0))
+		return;
+
+	//当前时间又成为进程新的开始时间。
+	curr->exec_start = now;
+
+	schedstat_set(curr->statistics.exec_max,
+		      max(delta_exec, curr->statistics.exec_max));
+
+	//将进程运行的时间间隔delta_exec累加到调度实体的sum_exec_runtime成员中，
+	//该成员代表进程到目前为止运行了多长时间。
+	curr->sum_exec_runtime += delta_exec;
+	//将进程运行的时间间隔delta_exec也累加到公平调度就绪队列cfs_rq的exec_clock成员中。
+	schedstat_add(cfs_rq->exec_clock, delta_exec);
+
+	// 很关键，它将进程执行的真实运行时间转换成虚拟运行时间，然后累加到调度实体的
+	// vruntime域中，进程的虚拟时间非常重要，完全公平调度策略就是依赖该时间进行调度。
+	// 关于进程的真实时间和虚拟时间的概念，以及它们之间的转换算法，后面会提到，
+	// 详细的内容大家可以看看《深入理解linux内核架构》的进程管理章节。
+	curr->vruntime += calc_delta_fair(delta_exec, curr);
+	// 更新cfs_rq队列中的最小虚拟运行时间min_vruntime，该时间是就绪队列中所有进程
+	// 包括当前进程的已运行的最小虚拟时间，只能单调递增，
+	update_min_vruntime(cfs_rq);
+
+	//如果调度单位是进程（不是组），会更新进程描述符中的运行时间。
+	if (entity_is_task(curr)) {
+		struct task_struct *curtask = task_of(curr);
+
+		trace_sched_stat_runtime(curtask, delta_exec, curr->vruntime);
+		cpuacct_charge(curtask, delta_exec);
+		account_group_exec_runtime(curtask, delta_exec);
+	}
+
+	//更新cfs_rq队列的剩余运行时间，并计算出期望运行时间，必要的话可以对进程重新调度。
+	account_cfs_rq_runtime(cfs_rq, delta_exec);
+}
+
+update_min_vruntime [kernel/sched/fair.c]:
+-------------------
+
+
+static void update_min_vruntime(struct cfs_rq *cfs_rq)
+{
+	struct sched_entity *curr = cfs_rq->curr;
+
+	u64 vruntime = cfs_rq->min_vruntime;
+
+	//如果当前有进程正在执行，将当前进程已运行的虚拟时间保存在vruntime变量中。
+	if (curr) {
+		if (curr->on_rq)
+			vruntime = curr->vruntime;
+		else
+			curr = NULL;
+	}
+
+	//如果就绪队列中有下一个要被调度的进程（由rb_leftmost指针指向），则进入if
+	if (cfs_rq->rb_leftmost) {
+		struct sched_entity *se = rb_entry(cfs_rq->rb_leftmost,
+						   struct sched_entity,
+						   run_node);
+
+		//从当前进程和下个被调度进程中，选择最小的已运行虚拟时间，保存到vruntime中。
+		//保证了队列的min_vruntime域中存放的是就绪队列中最小的虚拟运行时间
+		if (!curr)
+			vruntime = se->vruntime;
+		else
+			vruntime = min_vruntime(vruntime, se->vruntime);
+	}
+
+	/* ensure we never gain time by being placed backwards. */
+	// 从当前队列的min_vruntime域和vruntime变量中，选最大的保存到队列的
+	// min_vruntime域中，完成更新。
+	//保证min_vruntime域中的值单调递增
+	cfs_rq->min_vruntime = max_vruntime(cfs_rq->min_vruntime, vruntime);
+#ifndef CONFIG_64BIT
+	smp_wmb();
+	cfs_rq->min_vruntime_copy = cfs_rq->min_vruntime;
+#endif
+}
+
+每个cfs_rq队列均有一个min_vruntime成员，装的是就绪队列中所有进程包括当前进程已运行的虚拟时间
+中最小的那个时间。本函数来更新这个时间。
+
+队列中的min_vruntime成员非常重要，用于在睡眠进程被唤醒后以及新进程被创建好时，
+进行虚拟时间补偿或者惩罚。
+
+
+
+calc_delta_fair [kernel/sched/fair.c]
+---------------
+
+/*
+ * delta /= w
+ */
+static inline u64 calc_delta_fair(u64 delta, struct sched_entity *se)
+{
+	// 判断当前进程nice值是否为0，如果是，直接返回真实运行时间delta
+	//（nice0级别的进程真实运行时间和虚拟运行时间值相等）
+	if (unlikely(se->load.weight != NICE_0_LOAD))
+		delta = __calc_delta(delta, NICE_0_LOAD, &se->load); // 如果不是，将真实时间转换成虚拟时间。
+
+	return delta;
+}
+
+__calc_delta函数[kernel/sched/fair.c]
+------------
+
+/*
+ * delta_exec * weight / lw.weight
+ *   OR
+ * (delta_exec * (weight * lw->inv_weight)) >> WMULT_SHIFT
+ *
+ * Either weight := NICE_0_LOAD and lw \e sched_prio_to_wmult[], in which case
+ * we're guaranteed shift stays positive because inv_weight is guaranteed to
+ * fit 32 bits, and NICE_0_LOAD gives another 10 bits; therefore shift >= 22.
+ *
+ * Or, weight =< lw.weight (because lw.weight is the runqueue weight), thus
+ * weight/lw.weight <= 1, and therefore our shift will also be positive.
+ */
+static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight *lw)
+{
+	u64 fact = scale_load_down(weight);
+	int shift = WMULT_SHIFT;
+
+	__update_inv_weight(lw);
+
+	if (unlikely(fact >> 32)) {
+		while (fact >> 32) {
+			fact >>= 1;
+			shift--;
+		}
+	}
+
+	/* hint to use a 32x32->64 mul */
+	fact = (u64)(u32)fact * lw->inv_weight;
+
+	while (fact >> 32) {
+		fact >>= 1;
+		shift--;
+	}
+
+	return mul_u64_u32_shr(delta_exec, fact, shift);
+}
+
+
+-----------------
+//todo
+ struct task ->
+

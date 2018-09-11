@@ -1,0 +1,16 @@
+
+
+create AmbaConfig for a new subsystem
+-------------------------------------
+(1)
+chris@qzsw-R730:~/projects/rda602/build/cfg[detached]$ ls ../../system/
+commonapi  devipc  dlt  init
+
+(2)
+	chris@qzsw-R730:~/projects/rda602/build/cfg[detached]$ touch system.cfg
+	chris@qzsw-R730:~/projects/rda602/build/cfg[detached]$ ls system.cfg 
+	system.cfg
+(3)
+	chris@qzsw-R730:~/projects/rda602/build/cfg[detached]$ ls ../../system/
+	AmbaConfig  commonapi  devipc  dlt  init
+
