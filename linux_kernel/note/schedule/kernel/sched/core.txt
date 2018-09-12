@@ -506,6 +506,209 @@ static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight
 	return mul_u64_u32_shr(delta_exec, fact, shift);
 }
 
+该函数执行了两种算法：
+	delta_exec * weight / lw.weight，
+	OR
+	(delta_exec * (weight * lw->inv_weight)) >> WMULT_SHIFT
+
+	计算的结果就是转换后的虚拟时间。
+
+	至此，scheduler_tick函数大致就分析完了，当然还有一些细节没有分析到，进程调度这块非常庞杂，
+	要想把所有函数分析完非常耗费时间和精力，以后如果分析到的话，再慢慢补充。
+	scheduler_tick 函数主要更新进程的运行时间，包括物理时间和虚拟时间。
+
+2.进程优先级设置的函数，
+-----------------------
+进程的优先级和调度关系密切，计算进程的虚拟运行时间要用到优先级，优先级决定进程
+权重，权重决定进程虚拟时间的增加速度，最终决定进程可运行时间的长短。权重越大的
+进程可以执行的时间越长。
+
+从effective_prio函数开始[kernel/sched/core.c]:
+------------------------
+
+/*
+ * Calculate the current priority, i.e. the priority
+ * taken into account by the scheduler. This value might
+ * be boosted by RT tasks, or might be boosted by
+ * interactivity modifiers. Will be RT if the task got
+ * RT-boosted. If not then it returns p->normal_prio.
+ */
+static int effective_prio(struct task_struct *p)
+{
+	//设置进程的普通优先级
+	p->normal_prio = normal_prio(p);
+	/*
+	 * If we are RT tasks or we were boosted to RT priority,
+	 * keep the priority unchanged. Otherwise, update priority
+	 * to the normal priority:
+	 */
+	// 通过进程的活动优先级可以判断出该进程是不是实时进程，如果是实时进程，
+	// 则返回p->prio，实时进程的活动优先级不变。否则返回p->normal_prio，这
+	// 说明普通进程的活动优先级等于它的普通优先级。
+	if (!rt_prio(p->prio))
+		return p->normal_prio;
+	return p->prio;
+}
+
+effective_prio 在进程创建时或者在用户的nice系统调用中都会被调用到，来设置进程
+的活动优先级（进程的三种优先级：活动优先级prio，静态优先级static_prio，普通优先级normal_prio），该函数设计的有一定技巧性，函数的返回值是用来设置进程的活动优先
+级，但是在函数体中也把进程的普通优先级设置了。
+
+normal_prio函数[kernel/sched/core.c]
+---------------
+/*
+ * Calculate the expected normal priority: i.e. priority
+ * without taking RT-inheritance into account. Might be
+ * boosted by interactivity modifiers. Changes upon fork,
+ * setprio syscalls, and whenever the interactivity
+ * estimator recalculates.
+ */
+static inline int normal_prio(struct task_struct *p)
+{
+	int prio;
+
+	//判断当前进程是不是空闲进程，是的话设置进程的普通优先级为-1
+	//（-1是空闲进程的优先级）
+	if (task_has_dl_policy(p))
+		prio = MAX_DL_PRIO-1;
+	// 否则, 判断进程是不是实时进程，是的话设置实时进程的普通优先级为0-99（数字
+	// 越小优先级越高），这块减去了p->rt_priority，比较奇怪，这是因为实时进程
+	// 描述符的rt_priority成员中事先存放了它自己的优先级（数字也是0-99，但在这
+	// 里数字越大，优先级越高），因此往p->prio中倒换的时候，需要处理一下，
+	// MAX_RT_PRIO值为100，因此MAX_RT_PRIO-1-（0，99）就倒换成了（99，0），
+	// 这仅仅是个小技巧。
+	else if (task_has_rt_policy(p))
+		prio = MAX_RT_PRIO-1 - p->rt_priority;
+	// 如果当前进程也不是实时进程（是普通进程喽），则将进程的静态优先级存入prio
+	// 中，然后返回（也就是说普通进程的普通优先级等于其静态优先级）。
+	else
+		prio = __normal_prio(p);
+	return prio;
+}
+
+normal_prio用来设置进程的普通优先级。
+
+
+总结:
+	共有三种进程：空闲进程，实时进程，普通进程；
+	每种进程都包含三种优先级：活动优先级，普通优先级，静态优先级。
+
+	空闲进程的普通优先级: 永远-1，
+	实时进程的普通优先级: 根据p->rt_priority设定（0-99），
+	普通进程的普通优先级: 根据其静态优先级设定（100-139）。
+
+
+3.进程权重设置的函数，
+--------------------
+ +--------+   决定    +------+  决定      +--------------+
+ | 优先级 |---------->| 权重 |----------->| 运行时间长短 |
+ +--------+           +------+            +--------------+
+
+
+
+
+权重相关的数据结构
+------------------
+
+[include/linux/sched.h]
+struct load_weight {
+	unsigned long weight;
+	u32 inv_weight;
+};
+
+每个 进程描述符，调度实体，就绪对列 中都包含一个该类型变量，用来保存各自的权重。
+
+成员weight中存放进程优先级所对应的权重。
+成员inv_weight中存放NICE_0_LOAD/weight的结果，这个结果乘以进程运行的时间间隔
+
+delta_exec就是进程运行的虚拟时间。
+因此引入权重就是为了计算进程的虚拟时间。
+在这里将中间的计算结果保存下来，后边就不用再计算了，直接可以用。
+
+[kernel/sched/sched.h]
+数组sched_prio_to_weight[40]
+---------------------
+
+/*
+ * Nice levels are multiplicative, with a gentle 10% change for every
+ * nice level changed. I.e. when a CPU-bound task goes from nice 0 to
+ * nice 1, it will get ~10% less CPU time than another CPU-bound task
+ * that remained on nice 0.
+ *
+ * The "10% effect" is relative and cumulative: from _any_ nice level,
+ * if you go up 1 level, it's -10% CPU usage, if you go down 1 level
+ * it's +10% CPU usage. (to achieve that we use a multiplier of 1.25.
+ * If a task goes up by ~10% and another task goes down by ~10% then
+ * the relative distance between them is ~25%.)
+ */
+const int sched_prio_to_weight[40] = {
+ /* -20 */     88761,     71755,     56483,     46273,     36291,
+ /* -15 */     29154,     23254,     18705,     14949,     11916,
+ /* -10 */      9548,      7620,      6100,      4904,      3906,
+ /*  -5 */      3121,      2501,      1991,      1586,      1277,
+ /*   0 */      1024,       820,       655,       526,       423,
+ /*   5 */       335,       272,       215,       172,       137,
+ /*  10 */       110,        87,        70,        56,        45,
+ /*  15 */        36,        29,        23,        18,        15,
+};
+
+该数组是普通进程的优先级和权重对应关系。
+数组元素是权重值，分别是优先级从100-139或者nice值从-20-+19所对应的权重值。
+nice值(-20-+19)是从用户空间看到的普通进程的优先级，和内核空间的优先级(100-139) 一一对应。
+struct load_weight中的weight成员存放正是这些权重值。 
+
+中间结果数组 sched_prio_to_wmult[40] （kernel/sched/sched.h）
+------------
+/*
+ * Inverse (2^32/x) values of the sched_prio_to_weight[] array, precalculated.
+ *
+ * In cases where the weight does not change often, we can use the
+ * precalculated inverse to speed up arithmetics by turning divisions
+ * into multiplications:
+ */
+const u32 sched_prio_to_wmult[40] = {
+ /* -20 */     48388,     59856,     76040,     92818,    118348,
+ /* -15 */    147320,    184698,    229616,    287308,    360437,
+ /* -10 */    449829,    563644,    704093,    875809,   1099582,
+ /*  -5 */   1376151,   1717300,   2157191,   2708050,   3363326,
+ /*   0 */   4194304,   5237765,   6557202,   8165337,  10153587,
+ /*   5 */  12820798,  15790321,  19976592,  24970740,  31350126,
+ /*  10 */  39045157,  49367440,  61356676,  76695844,  95443717,
+ /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
+};
+
+sched_prio_to_wmult 数组元素就是上个数组元素被NICE_0_LOAD除的结果，一一对应。
+struct load_weight中的inv_weight成员存放正是这些值。
+
+和权重设置相关的函数。
+--------------------
+从set_load_weight函数开始 [kernel/sched/core.c]:
+
+static void set_load_weight(struct task_struct *p)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (idle_policy(p->policy)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	load->weight = scale_load(sched_prio_to_weight[prio]);
+	load->inv_weight = sched_prio_to_wmult[prio];
+}
+
+
+
+
+
+
+
+
 
 -----------------
 //todo

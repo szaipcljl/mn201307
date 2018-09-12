@@ -1,0 +1,5 @@
+
+systemd-random-seed.service
+$ ll systemd/usr/lib/systemd/system/sysinit.target.wants/systemd-random-seed.service 
+lrwxrwxrwx 1 chris chris 30 9月   4 15:03 systemd/usr/lib/systemd/system/sysinit.target.wants/systemd-random-seed.service -> ../systemd-random-seed.service
+
