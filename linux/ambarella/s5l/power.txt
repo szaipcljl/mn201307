@@ -1,0 +1,6 @@
+
+s5l
+---
+1. only insert one camera module
+16v
+>=230mA 

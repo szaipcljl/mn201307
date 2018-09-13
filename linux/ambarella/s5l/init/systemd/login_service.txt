@@ -1,0 +1,15 @@
+
+prebuild/third-party/armv8-a/
+
+systemd/usr/lib/systemd/system/dbus-org.freedesktop.login1.service:9:Description=Login Service
+systemd/usr/lib/systemd/system/multi-user.target.wants/systemd-logind.service:9:Description=Login Service
+systemd/usr/lib/systemd/system/systemd-logind.service:9:Description=Login Service
+
+
+out/aibox/fakeroot/usr/lib/systemd/system:
+dbus-org.freedesktop.login1.service:9:Description=Login Service
+multi-user.target.wants/systemd-logind.service:9:Description=Login Service
+systemd-logind.service:9:Description=Login Service
+
+
+

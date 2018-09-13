@@ -1,0 +1,151 @@
+amba
+----
+make menuconfig
+
+（1）首先出现的选项界面：
+     Chip (S5L)  --->                          
+     Build for CPU (Cortex A53)  --->          
+     Ambarella Board Configuration  --->       
+ -*- Ambarella Firmware Configuration  --->    
+ [*] Ambarella Application Configuration  ---> 
+ [*] Ambarella Linux Configuration  --->       
+ [ ] Ambarella Oryx(MW) Configuration  --->    
+ [*] Ambarella Package Configuration  --->     
+ [*] Ambarella Prebuild  --->                  
+ [*] Ambarella File System Configuration  ---> 
+ [*] WUJI SYSTEM Configuration  --->           
+ [ ] Ambarella Unit Test Configuration  --->   
+ ---                                           
+     Load an Alternate Configuration File      
+     Save an Alternate Configuration File      
+note:
+make menuconfig, 显示的是顶层AmbaConfig 中的文件，source 各个subusystem下的AmbaConfig后，
+menuconfig 下现实的字符串。
+
+
+
+顶层AmbaConfig:
+mainmenu "Ambarella Build Configuration"
+...
+##### system
+source system/AmbaConfig
+...
+
+system/AmbaConfig:
+##### system                               
+                                           
+menuconfig BUILD_WUJI_SYSTEM               
+    bool "WUJI SYSTEM Configuration"       
+    default n                              
+    help                                   
+        Build WUJI SYSTEM.                 
+                                           
+if BUILD_WUJI_SYSTEM                       
+config CONFIG_SYSTEM_DEFCONFIG_STRING      
+    string "SYSTEM Default Configuration"  
+    default ""                             
+...
+endif
+
+boards/下AmbaConfig 没有source， 默认有？
+
+boards/AmbaConfig:
+
+choice
+    prompt "Board"                          
+    help
+        Select the board type of the target.
+
+config CONFIG_BSP_BOARD_AIBOX
+    bool "AIBOX"
+    depends on CONFIG_ARCH_S5L
+
+endchoice
+
+##### aibox
+
+choice
+    prompt "Board Revision"
+    default CONFIG_BOARD_VERSION_AIBOX_840_DDR3
+    depends on CONFIG_BSP_BOARD_AIBOX
+    help
+        Select the BSP of the S5L.
+
+...
+    
+config CONFIG_BOARD_VERSION_S5L66_AIBOX_912_DDR3
+    bool "AIBOX (S5L66 8Gbit DDR3 @ 912MHz)"
+    select DRAM_TYPE_DDR3
+
+endchoice
+
+
+每一个choice 对应一个选项，被顶层AmbaConfig source后，显示在顶层的界面上，
+
+(2)select: Ambarella Board Configuration 后进入的菜单界面：
+
+    Board (AIBOX)  --->                                     
+    Board Revision (AIBOX (S5L66 8Gbit DDR3 @ 912MHz))  --->
+[ ] Amboot Fast Boot Configuration  --->       
+
+note:
+boards/AmbaConfig 下的每一个choice 对应board 菜单下的一个选项,prompt 是提示，
+           
+
+(3) select: Board Revision (AIBOX (S5L66 8Gbit DDR3 @ 912MHz))
+
+( ) AIBOX (S5L63)                                               
+( ) AIBOX (S5L66)                                               
+( ) AIBOX (S5L 8Gbit DDR3 @ 456MHz)                             
+( ) AIBOX (S5L 8Gbit DDR3 @ 1056MHz with Core=804MHz, need chang
+( ) AIBOX (S5L22 8Gbit DDR3 @ 840MHz)                           
+(X) AIBOX (S5L66 8Gbit DDR3 @ 912MHz)  
+
+note:
+board revision 这个菜单下的 config， 对应这里的子选项。
+这里choice 直接代表一个菜单，其中的config 代表子选项目。
+
+
+
+=========================
+如果选择:WUJI SYSTEM Configuration, 
+进入该菜单：
+(wuji) SYSTEM Default Configuration     
+[ ]   Configure WUJI system commonapi   
+[ ]   Configure WUJI system android init
+[*]   Configure WUJI system dlt         
+[*]   Configure WUJI system devipc      
+[*]   Configure WUJI system hal         
+
+左上角括号内的"wuji", 对应：
+boards/aibox/config/s5l22_aibox_config中
+CONFIG_SYSTEM_DEFCONFIG_STRING="wuji"
+
+在system/AmbaConfig中对应子菜单
+if BUILD_WUJI_SYSTEM                     
+config CONFIG_SYSTEM_DEFCONFIG_STRING    
+    string "SYSTEM Default Configuration"
+    default ""                           
+...
+endif
+菜单的选项，如“Configure WUJI system commonapi”，对应于
+system/AmbaConfig中
+if BUILD_WUJI_SYSTEM   
+...
+config CONFIG_WUJI_SYSTEM_COMMONAPI                
+    bool "Configure WUJI system commonapi"         
+    default n                                      
+    help                                           
+        Configure to include WUJI system commonapi.
+
+...
+endif
+
+这个子菜单的选中，对应于
+boards/aibox/config/s5l22_aibox_config
+CONFIG_WUJI_SYSTEM_COMMONAPI=y
+
+更改会保存在boards/aibox/.config 中
+
+
+

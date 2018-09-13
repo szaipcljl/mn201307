@@ -686,28 +686,56 @@ struct load_weight中的inv_weight成员存放正是这些值。
 
 static void set_load_weight(struct task_struct *p)
 {
+	// 进程p的静态优先级转换成数组下标（减去100，从100-139--->0-39）
 	int prio = p->static_prio - MAX_RT_PRIO;
+	//获取当前进程的调度实体中的权重结构体指针，存入load中
 	struct load_weight *load = &p->se.load;
 
 	/*
 	 * SCHED_IDLE tasks get minimal weight:
 	 */
+	//当前进程是空闲进程，则设置相应的权重和中间计算结果
 	if (idle_policy(p->policy)) {
 		load->weight = scale_load(WEIGHT_IDLEPRIO);
 		load->inv_weight = WMULT_IDLEPRIO;
 		return;
 	}
 
+	// 设置实时进程和普通进程的权重和中间计算结果。
 	load->weight = scale_load(sched_prio_to_weight[prio]);
 	load->inv_weight = sched_prio_to_wmult[prio];
 }
 
+ set_load_weight用来设置进程p的权重。
+
+
+就绪队列中也包含权重结构体，使用update_load_set 设置。[kernel/sched/fair.c]
+--------------
+static inline void update_load_set(struct load_weight *lw, unsigned long w)
+{
+	lw->weight = w;
+	lw->inv_weight = 0;
+}
+update_load_set 设置就绪队列的权重
 
 
 
+static inline void update_load_add(struct load_weight *lw, unsigned long inc)
+{
+	lw->weight += inc;
+	lw->inv_weight = 0;
+}
+当有进程加入就绪队列，使用update_load_add增加就绪队列的权重。
 
 
+static inline void update_load_sub(struct load_weight *lw, unsigned long dec)
+{
+	lw->weight -= dec;
+	lw->inv_weight = 0;
+}
+当有进程从就绪队列移除时，使用该函数减少就绪队列的权重。
 
+就绪队列的load_weight.inv_weight成员总是0，因为不会使用到就绪队列的该域。
 
 
 -----------------
