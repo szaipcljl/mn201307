@@ -1,0 +1,26 @@
+./kernel/linux-4.9/init/do_mounts_rd.c:298:     create_dev("/dev/root", ROOT_DEV);
+./kernel/linux-4.9/init/do_mounts_rd.c:300:     return rd_load_image("/dev/root");
+./kernel/linux-4.9/init/do_mounts_initrd.c:59:  create_dev("/dev/root.old", Root_RAM0);
+./kernel/linux-4.9/init/do_mounts_initrd.c:61:  mount_block_root("/dev/root.old", root_mountflags & ~MS_RDONLY);
+./kernel/linux-4.9/init/do_mounts_initrd.c:101:         int fd = sys_open("/dev/root.old", O_RDWR, 0);
+./kernel/linux-4.9/init/do_mounts.c:493:        fd = sys_open("/dev/root", O_RDWR | O_NDELAY, 0);
+./kernel/linux-4.9/init/do_mounts.c:537:                int err = create_dev("/dev/root", ROOT_DEV);
+./kernel/linux-4.9/init/do_mounts.c:540:                        pr_emerg("Failed to create /dev/root: %d\n", err);
+./kernel/linux-4.9/init/do_mounts.c:541:                mount_block_root("/dev/root", root_mountflags);
+./kernel/linux-4.9/Documentation/devices.txt:206:                  0 = /dev/root
+./kernel/linux-4.9/Documentation/devices.txt:3185:/dev/root     root device     symbolic        Current root filesystem
+./kernel/linux-4.9/Documentation/filesystems/proc.txt:1664:36 35 98:0 /mnt1 /mnt2 rw,noatime master:1 - ext3 /dev/root rw,errors=continue
+./kernel/linux/init/do_mounts_rd.c:298: create_dev("/dev/root", ROOT_DEV);
+./kernel/linux/init/do_mounts_rd.c:300: return rd_load_image("/dev/root");
+./kernel/linux/init/do_mounts_initrd.c:59:      create_dev("/dev/root.old", Root_RAM0);
+./kernel/linux/init/do_mounts_initrd.c:61:      mount_block_root("/dev/root.old", root_mountflags & ~MS_RDONLY);
+./kernel/linux/init/do_mounts_initrd.c:101:             int fd = sys_open("/dev/root.old", O_RDWR, 0);
+./kernel/linux/init/do_mounts.c:493:    fd = sys_open("/dev/root", O_RDWR | O_NDELAY, 0);
+./kernel/linux/init/do_mounts.c:537:            int err = create_dev("/dev/root", ROOT_DEV);
+./kernel/linux/init/do_mounts.c:540:                    pr_emerg("Failed to create /dev/root: %d\n", err);
+./kernel/linux/init/do_mounts.c:541:            mount_block_root("/dev/root", root_mountflags);
+./kernel/linux/Documentation/devices.txt:206:                  0 = /dev/root
+./kernel/linux/Documentation/devices.txt:3185:/dev/root root device     symbolic        Current root filesystem
+./kernel/linux/Documentation/filesystems/proc.txt:1664:36 35 98:0 /mnt1 /mnt2 rw,noatime master:1 - ext3 /dev/root rw,errors=continue
+
+

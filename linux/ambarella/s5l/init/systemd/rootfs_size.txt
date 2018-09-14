@@ -1,0 +1,67 @@
+
+check rootfs size:
+boards/aibox/.config
+
+#
+# Systemd Features
+#
+...
+CONFIG_AMBARELLA_ROOTFS_SIZE=262144
+CONFIG_AMBARELLA_ROOTFS_INODES=6000
+
+modify:
+make menuconfig
+
+------- Ambarella Build Configuration -------
+---------------------------------------------
+    Chip (S5L)  --->
+    Build for CPU (Cortex A53)  --->
+    Ambarella Board Configuration  --->
+-*- Ambarella Firmware Configuration  --->
+[*] Ambarella Application Configuration  --->
+[*] Ambarella Linux Configuration  --->
+[ ] Ambarella Oryx(MW) Configuration  --->
+[*] Ambarella Package Configuration  --->
+[*] Ambarella Prebuild  --->
+[*] Ambarella File System Configuration  --->
+[*] WUJI SYSTEM Configuration  --->
+
+
+----- Ambarella File System Configuration ---
+---------------------------------------------
+      Linux Root File System (EXT4)  --->
+      System Init Method (systemd)  --->
+      Systemd Features  --->
+(default) Default board rootfs directory
+()    Root Password
+[ ]   create normal user name
+[ ]   Ambarella Backup CPIO
+      Busybox (Prebuild)  --->
+(262144) Ambarella RootFS Size(KB)
+(6000) Ambarella RootFS inodes number
+[ ]   Enable USB0 network adaptor  --->
+
+
++----------------------- Ambarella RootFS Size(KB) -----------------------+
+|  Please enter a decimal value. Fractions will not be accepted.  Use the |
+|  <TAB> key to move from the input field to the buttons below it.        |
+| +---------------------------------------------------------------------+ |
+| |262144                                                               | |
+| +---------------------------------------------------------------------+ |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                         <  Ok  >      < Help >                          |
++-------------------------------------------------------------------------+
+
+
+======================
+you can also modify config/s5l22_aibox_config
+CONFIG_AMBARELLA_ROOTFS_SIZE=262144
+
+CONFIG_AMBARELLA_ROOTFS_SIZE=524288
+
+now, the new value is set by default
+
+----------
+drivers/block/brd.c:446:int rd_size = CONFIG_BLK_DEV_RAM_SIZE;
+

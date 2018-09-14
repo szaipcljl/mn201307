@@ -1,0 +1,51 @@
+
+
+==================================
+init/do_mounts_rd.c
+
+Documentation/devices.txt
+Documentation/filesystems/proc.txt
+
+Makefile
+========
+init/Makefile:
+mounts-y			:= do_mounts.o
+mounts-$(CONFIG_BLK_DEV_RAM)	+= do_mounts_rd.o
+
+defconfig
+=========
+boards/aibox/config/kernel/aibox_emmc_kernel_config:
+CONFIG_BLK_DEV_RAM=y
+
+
+
+do_mounts_rd.c
+==============
+
+rd_load_disk
+------------
+
+int __init rd_load_disk(int n)
+{
+	if (rd_prompt)
+		change_floppy("root floppy disk to be loaded into RAM disk");
+	create_dev("/dev/root", ROOT_DEV);
+	create_dev("/dev/ram", MKDEV(RAMDISK_MAJOR, n));
+	return rd_load_image("/dev/root");
+}
+
+
+
+init/do_mounts.c
+mount_root:
+		int err = create_dev("/dev/root", ROOT_DEV);
+		mount_block_root("/dev/root", root_mountflags);
+
+rest_init [main.c]
+|-> kernel_thread(kernel_init, NULL, CLONE_FS); 
+
+kernel_init [main.c]
+|-> kernel_init_freeable [main.c]
+|   |-> prepare_namespace [do_mounts.c]
+|   	|-> mount_root [do_mounts.c]
+|-> try_to_run_init_process("/sbin/init")

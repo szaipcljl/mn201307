@@ -1,0 +1,52 @@
+
+drivers/block/brd.c:446:int rd_size = CONFIG_BLK_DEV_RAM_SIZE;
+
+aibox board shell:
+# df -h
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               247.1M    240.2M         0 100% /
+devtmpfs                107.2M         0    107.2M   0% /dev
+tmpfs                   115.4M         0    115.4M   0% /dev/shm
+tmpfs                   115.4M    224.0K    115.1M   0% /run
+tmpfs                   115.4M         0    115.4M   0% /sys/fs/cgroup
+tmpfs                   115.4M    392.0K    115.0M   0% /tmp
+tmpfs                   115.4M     32.0K    115.3M   0% /var/run
+tmpfs                   115.4M         0    115.4M   0% /var/tmp
+tmpfs                    23.1M         0     23.1M   0% /run/user/0
+
+# cat /proc/cmdline 
+noinitrd root=/dev/mmcblk0p7 rootwait rw rootfstype=ext4 init=/linuxrc
+# df /dev/mmcblk0p7
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               247.1M    240.2M         0 100% /
+
+
+# df /home/default/
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               247.1M    240.2M         0 100% /
+-------------------------
+fakeroot/etc/fstab
+# <file system>    <mount pt>     <type>     <options>              <dump> <pass>
+#/dev/root         /               ext2       rw,noauto               0      1
+
+-------------------------
+【https://unix.stackexchange.com/questions/17563/find-out-what-device-dev-root-represents-in-linux】
+    For the / mount point, you are just told that it corresponds to /dev/root, which is not the real device you are looking for.
+
+    Of course, you can look at the kernel command line and see on which initial root filesystem Linux was instructed to boot (root parameter):
+
+    $ cat /proc/cmdline mem=512M console=ttyS2,115200n8 root=/dev/mmcblk0p2 rw rootwait
+
+    However, this doesn’t mean that what you see is the current root device. Many Linux systems boot on intermediate root filesystems (like initramdisks and initramfs), which are just used to access the final one.
+
+One thing this points out was that the thing in /proc/cmdline is not necessarily the actual final device root actually live on.
+
+That's from the busybox people, who I assume know what they are talking about when it comes to boot situations.
+
+https://www.linuxquestions.org/questions/slackware-14/slackware-current-dev-root-688189/page2.html
+------------------------
+/dev/root has always been present as a virtual mount point, even if you never saw it. So has rootfs (compare hthis to the special virtual devices like proc and tmpfs which have no preceeding /dev)
+I'm sure Pat understands some of this as he used to use a similar trick with zipslack -it came with a 'universal' pre-made fstab with / mounted on /dev/fd2 which did the same thing -that is it 'just worked', no matter what the real device was -the only thing that mattered was having the right entry in the bootloader conf file or giving the correct device at the boot prompt.
+---------------------------
+
+/dev/root is a virtual device like 'proc' or /dev/tcp'. There is no device node in /dev for these things -it's already in the kernel as a virtual device.
