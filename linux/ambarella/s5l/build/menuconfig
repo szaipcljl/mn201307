@@ -1,3 +1,22 @@
 
 Kconfig的作用是用来配置内核，它就是各种配置界面的源文件
 AmbaConfig
+
+------------
+
+menu: 不可编辑的menu，
+menuconfig: 带选项的menu
+
+menu和choice的区别:
+menu: 可以多选 
+choice: 单项选择
+
+//see linux/Documentation/kbuild/kconfig-languages.txt
+------------------------------------------------------
+mainmenu:
+
+	"mainmenu" <prompt>
+
+This sets the config program's title bar if the config program chooses
+to use it. It should be placed at the top of the configuration, before any
+other statement.

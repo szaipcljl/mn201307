@@ -1,0 +1,21 @@
+
+###[mount_root 545] [dump_stack start]
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.88 #1
+Hardware name: Roadefend AIBOX Board (DT)
+Call trace:
+[<ffffff8008086d40>] dump_backtrace+0x0/0x1e8
+[<ffffff8008086f3c>] show_stack+0x14/0x20
+[<ffffff8008309638>] dump_stack+0x94/0xb4
+[<ffffff8008621334>] mount_root+0xe0/0x164
+[<ffffff8008621518>] prepare_namespace+0x160/0x1a8
+[<ffffff8008620c8c>] kernel_init_freeable+0x1c4/0x1e4
+[<ffffff80084d5588>] kernel_init+0x10/0x100
+[<ffffff8008082680>] ret_from_fork+0x10/0x50
+###[mount_root 547] [dump_stack end]
+EXT4-fs (mmcblk0p7): recovery complete
+EXT4-fs (mmcblk0p7): mounted filesystem with ordered data mode. Opts: (null)
+VFS: Mounted root (ext4 filesystem) on device 179:7.
+devtmpfs: mounted
+Freeing unused kernel memory: 320K
+
+

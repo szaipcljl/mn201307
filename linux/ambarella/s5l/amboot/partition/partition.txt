@@ -1,0 +1,9 @@
+
+./boards/aibox/bsp/bsp.h:75:#define AMBOOT_LNX_SIZE (CONFIG_AMBARELLA_ROOTFS_SIZE * 1024)
+./amboot/include/fio/partition.h:116:#ifndef AMBOOT_LNX_SIZE
+./amboot/include/fio/partition.h:117:#define AMBOOT_LNX_SIZE            0
+./amboot/src/bld/partition.c:79:        part_size[PART_LNX] = AMBOOT_LNX_SIZE;
+./amboot/src/bld/header.S:320:#if defined(AMBOOT_LNX_SIZE)
+./amboot/src/bld/header.S:321:size_lnx: .word           AMBOOT_LNX_SIZE
+
+
