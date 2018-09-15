@@ -1,0 +1,27 @@
+
+STM32F411  
+
+    Save to MyST Share Print 
+
+The STM32F411 microcontrollers are part of the STM32 Dynamic Efficiency™ lines. These devices are the entry level to the High Performance F4 Series and offer the best balance of dynamic power consumption (in run mode) and processing performance, while integrating a high number of added-value features in packages as small as 3 x 3 mm.
+
+The STM32F411 MCUs deliver the performance of Cortex®-M4 core with floating point unit, running at 100 MHz, while achieving outstandingly low power consumption values in run and stop modes.
+
+With a new, Batch Acquisition Mode (BAM), optimizing power consumption for data batching, the STM32F411 takes the Dynamic Efficiency to a new level. This BAM allows exchanging batches of data through communication peripherals with the rest of the device (including the CPU) being in power saving mode.
+
+    Performance: At 100 MHz, the STM32F411 delivers 125 DMIPS/339 CoreMark performance executing from Flash memory, with 0-wait states using ST’s ART Accelerator. The DSP instructions and the floating point unit enlarge the range of addressable applications.
+
+    Power efficiency: ST’s 90 nm process, ART Accelerator and the dynamic power scaling enables the current consumption when executing from Flash memory to be as low as 100 µA/MHz. In Stop mode, the power consumption can be as low as 10 µA.
+
+    Integration: The STM32F411 devices carry 256 to 512 Kbytes of Flash and up to 128 Kbytes of SRAM.
+    The available packages range from 49 to 100 pins.
+        3x USARTs running at up to 12.5 Mbit/s,
+        5x SPI (muxed with I2S) running at up to 50 Mbit/s,
+        3x I²C up to 1Mbps
+        1x SDIO running at up to 48MHz and available on all packages,
+        1x USB 2.0 OTG full speed,
+        2x full duplex I²S up to 32-bit/192KHz,
+        3x simplex I²S up to 32-bit/192KHz,
+        12-bit ADC reaching 2.4 MSPS,
+        11 timers, 16- and 32-bit, running at up to 100 MHz
+
