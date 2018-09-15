@@ -1,0 +1,18 @@
+IPC Common API is a C++ abstraction framework for Interprocess Communication
+(IPC). It is supposed to be neutral to IPC implementations and therefore can be
+used with any kind of IPC mechanism if a middleware specific IPC Common API
+binding is provided.
+
+IPC Common API allows applications (i.e., clients and servers using C++)
+	developed against IPC Common API to be linked with different IPC Common API
+	backends without any changes to the application code. Thus, components which
+	have been developed for a system which uses specific IPC X could be deployed
+	for another system which uses IPC Y easily - just by exchanging the IPC
+	Common API backend without recompiling the application code. The actual
+	interface definitions will be created using Franca IDL, which is the Common
+	IDL solution favored by GENIVI.
+
+	IPC Common API is not restricted to GENIVI members (see public GENIVI
+			licensing policy). It is available as open source code, which is
+	split into runtime code for the target system and code generation tooling
+	(see http://projects.genivi.org/) to be used on development systems.
