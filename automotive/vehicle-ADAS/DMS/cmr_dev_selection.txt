@@ -1,0 +1,28 @@
+
+
+AR0144
+------
+The AR0144CS from ON Semiconductor is a 1.0 MP CMOS Digital Image Sensor with
+Global Shutter. The sensor provides high dynamic range and produces clear, low
+noise images in both low-light and bright scenes. It supports functions
+including auto-exposure control, windowing, row/column-skip mode, pixel-binning
+and both video and single frame modes. The high quality sensor is ideal for
+position tracking, battery powered and space constrained applications like
+handheld scanners. It can be programmed through a simple two-wire serial
+interface.
+
+Product Details
+Part Number :     AR0144CS
+Manufacturer :    ON Semiconductor (美国安森美半导体)
+Description :     1/4-Inch, 1.0 MP CMOS Digital Image Sensor with Global Shutter
+
+General Parameters
+Type :           Digital Image Sensor
+Shutter Type :   Global Shutter
+Pixel :          1 MP
+Pixel Size :     3.0 µm x 3.0 µm
+Resolution :     1280(H) x 800(V)
+Chroma :         Monochrome
+Optical Format : 1/4 inch
+Frame Rate :     60 fps
+Mega Pixels :    1 MP
