@@ -1,0 +1,32 @@
+
+dfss.Service
+============
+[Unit]
+Description="DFSS daemon"
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/bin/DfssServer -b 4 -D 1 -d 1  --video-enable 1 -s /usr/local/etc/dfsscfg.xml -t
+TimeoutStartSec=5
+TimeoutStopSec=2
+KillMode=process
+MemoryLimit=128M
+
+[Install]
+WantedBy=multi-user.target
+
+
+notes:
+------
+Type=
+如果设为 simple (设置了 ExecStart= 但未设置 BusName= 时的默认值)， 那么表示
+ExecStart= 进程就是该服务的主进程。 如果此进程需要为其他进程提供服务，
+那么必须在该进程启动之前先建立好通信渠道(例如套接字)，
+以加快后继单元的启动速度。 
+
+ExecStart=
+    在启动该服务时需要执行的命令行(命令+参数)。 
+	除非 Type=oneshot ，否则必须且只能设置一个命令行。 
+
+./boards/aibox/rootfs/default/usr/local/bin/DfssServer

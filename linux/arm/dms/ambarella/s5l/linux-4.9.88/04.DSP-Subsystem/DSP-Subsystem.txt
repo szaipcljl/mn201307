@@ -1,0 +1,56 @@
+
+reference:
+S5L-S03-001-0.3_Ambarella_S5L_HW_PRM.pdf
+
+
+
+
+
+
+4.1 DSP: System Overview
+------------------------
+
+
+
+                    +-------------------------------------------+
+                    | +-----------+ +--------------+ +--------+ |   +----------+
+SLVS      +-----+   | |           | |              | | DSP    | |   | DRAM     |
+MIPI      |     |   | |           | |              | | CPUs   | |   +----------+
+LVDS   -->| VIN |-->| | SENSOR    | | IMAGE SERNOR | +--------+ |        ^|
+LVCMOS    |     |   | | INTERFACE | |   PIPELINE   | +--------+ |        |v
+YUV       +-----+   | |           | | PROCESSING   | | LOCAL  | |   +----------+
+                    | |           | |              | | MEMORY | |-->| DRAM     |
+                    | +-----------+ +--------------+ +--------+ |<--|CONTROLLER|
+                    | +------------------+ +------------------+ |   +----------+
+          +-----+   | |                  | |                  | |        |^
+          |     |   | | VIDEO            | |   VIDEO          | |        v|
+DIGITAL<--|VOUT |<--| | POST-            | |    DSP           | |   +----------+
+          |     |   | | PROCESSING       | |   (CODEC)        | |   |          |
+          +-----+   | |                  | |                  | |   |CORTEX-A53|
+                    | +------------------+ +------------------+ |   |          |
+                    +-------------------------------------------+   +----------+
+
+Figure 4-1. The S5L DSP Subsystem and its Relationship with System Modules.
+
+notes:
+------
+VIN: video input module
+vout: video output module
+
+There is no direct hardware access to the DSP Sybsystem from memory-mapped
+registers. The Cortex-A53 uses a dedicated DRAM memory location to send commands
+to or receive status updates from the DSP Subsystem.
+
+
+4.2 DSP: Image Processing
+-------------------------
+
+
+
+
+
+
+
+
+
+

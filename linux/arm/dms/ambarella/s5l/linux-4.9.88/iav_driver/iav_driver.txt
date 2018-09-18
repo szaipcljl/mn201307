@@ -1,0 +1,95 @@
+
+IAV Device Driver
+-----------------
+S5L device driver, includes a set of Linux device drivers that encapsulate
+the lower level complexities of the S5L DSP core functionalities.
+
+exposing a series of APIs that can be inwoked by ioctl() system calls.
+Thes APIs are used by applications to configure and control the S5L SOC in
+detail, including control of image, andio and video.
+
+note:
+IAV: control of image, audio and video?
+
+
+Prototyppes for the APIs and structures can be found in iav_ioctl.h.
+
+The IAV driver provides mechanisms to control some of the lower level
+hardware devices, such as the VIN module (sensor), VOUT module, and 
+DSP cores.
+
+the IAV driver also allows for coordination of the system to read the
+input image stream, process the image stream, and encode the image stream 
+to an H.264 and/or Motion-JPEG bit stream.
+
+
+
+
+the work flow of the data process:
+
+   +-----+    +------------+    +---------+     +----------+
+   |     |    |            |    | VOUT    |     | Audio    |
+   | VIN |--->|  Image     |--->| Preview |     | Codec    |
+   |     |    | Processing |    |         |     |          |
+   +-----+    +------------+    +---------+     +----------+
+                         |
+                         +--------+
+                                  v
+              +---------+       +----------+    +----------+
+              |         |       |  Video   |    | Video    |
+              | Overlay |------>| Encoding |--->| Encoding |
+              |         |       |          |    |          |
+              +---------+       +----------+    +----------+
+code:
+kernel/private/drivers/iav/arch_s5l
+
+====================================
+iav_drv.c
+
+static struct ambpriv_driver iav_driver = {
+	.probe = iav_drv_probe,
+	.remove = iav_drv_remove,
+	.driver = {
+		.name = "iav_s5l",
+		.owner = THIS_MODULE,
+#ifdef CONFIG_PM
+		.pm = &iav_pm_ops,
+#endif
+	}
+};
+
+
+static int __init iav_init(void)
+{
+	int rval = 0;
+
+	iav_device = ambpriv_create_bundle(&iav_driver, NULL, -1, NULL, -1);
+	if (IS_ERR(iav_device))
+		rval = PTR_ERR(iav_device);
+
+	return rval;
+}
+
+module_init(iav_init);
+
+ambpriv_create_bundle
+---------------------
+kernel/drivers/base/ambpriv.c
+//todo
+
+
+iav_drv_probe
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+

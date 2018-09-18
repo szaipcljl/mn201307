@@ -3,3 +3,160 @@ systemd-random-seed.service
 $ ll systemd/usr/lib/systemd/system/sysinit.target.wants/systemd-random-seed.service 
 lrwxrwxrwx 1 chris chris 30 9月   4 15:03 systemd/usr/lib/systemd/system/sysinit.target.wants/systemd-random-seed.service -> ../systemd-random-seed.service
 
+
+chris@qzsw-R730:~/projects/RDA602/out/aibox/fakeroot$ find . -name "system"
+./usr/local/lib/systemd/system
+./usr/lib/systemd/system
+./etc/systemd/system
+
+在启动时按一定的顺序载入：
+
+以系统模式运行时的载入顺序 (--system).
+            路径                      描述
+	/etc/systemd/system 	        本地配置
+	/usr/local/lib/systemd/system 	local 包中的文件
+	/usr/lib/systemd/system 	    安装包中的文件
+
+
+
+chris@qzsw-R730:~/projects/RDA602/out/aibox/fakeroot/usr/local/lib/systemd/system$ ls
+4G.service            idsp-image.service    rtmp-cli.service    vcom-jsatl.service
+aplayd.service        ifvgrh-demo.service   rtspClient.service  vcom-obd.service
+bufrec.service        ifvgrh.service        rtspServer.service  vcom-st.service
+darwin.service        ifv.service           snapshot.service    vcom-uart.service
+dfss.service          ip-route.service      trec.service        vehicle-status-demo.service
+diskmgr.service       media.service         uart-ptmx.service   vehicle-status.service
+eth0-monitor.service  mp4rec.service        vcom-4gv.service    vsync-guard.service
+fnkey.service         netsvr.service        vcom-box.service    webclient-4gv.service
+gpsd.service          ntpd.service          vcom-can.service    webclient.service
+hostapd.service       onvif-server.service  vcom-hmi.service 
+
+chris@qzsw-R730:~/projects/RDA602/out/aibox/fakeroot/usr/local/lib/systemd/system$ cat dfss.service 
+[Unit]
+Description="DFSS daemon"
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/bin/DfssServer -b 4 -D 1 -d 1  --video-enable 1 -s /usr/local/etc/dfsscfg.xml -t
+TimeoutStartSec=5
+TimeoutStopSec=2
+KillMode=process
+MemoryLimit=128M
+
+[Install]
+WantedBy=multi-user.target
+
+Systemd及service文件解析
+************************
+Systemd是Linux下的一款系统和服务管理器，兼容SysV和LSB的启动脚本。
+Systemd的特征有：
+	(1) 支持并行化任务；
+	(2) 同时采用socket式与D-Bus总线式激活服务；
+	(3) 按需启动守护进程（daemon）；
+	(4) 利用linux的cgroups监视进程；
+	(5) 支持快照和系统恢复；
+	(6) 维护挂载点和自动挂载点；
+	(7) 各服务间基于依赖关系进行精密控制。
+
+其中的监视和控制功能的主要命令就是systemctl。
+
+Systemd有很多不同类型的使用单元，主要包括：
+	(1) 系统服务（.service）、
+	(2) 挂载点（.mount）、
+	(3) sockets（.sockets）、
+	(4) 系统设备（.device）、
+	(5) 交换分区（.swap）、
+	(6) 文件路径（.path）、
+	(7) 启动目标（.target）。
+
+
+单元文件可以从两个地方进行加载，优先级从低到高分别是：
+	/usr/lib/systemd/system/: 软件包安装的单元
+	/etc/system/system/:      系统管理员安装的单元
+
+service文件
+-----------
+这个文件由三个部分组成：Unit\Service\Install
+[Unit]主要是为了解决依赖关系。
+
+[service]可选择几种不同的服务启动方式，启动方式通过Type参数进行设置。
+    Type=simple（默认值）：systemd认为该服务将立即启动。服务进程不会fork。
+	如果该服务要启动其他服务，不要使用此类型启动，除非该服务是socket激活型。
+
+	Type=forking：systemd认为当该服务进程fork，且父进程退出后服务启动成功。
+	对于常规的守护进程（daemon），除非你确定此启动方式无法满足需求，使用此
+	类型启动即可。使用此启动类型应同时指定 PIDFile=，以便systemd能够跟踪服务的主进程。
+
+	Type=oneshot：这一选项适用于只执行一项任务、随后立即退出的服务。可能需要同时设置
+	RemainAfterExit=yes 使得 systemd 在服务进程退出之后仍然认为服务处于激活状态。
+
+	Type=notify：与 Type=simple 相同，但约定服务会在就绪后向 systemd
+	发送一个信号。这一通知的实现由 libsystemd-daemon.so 提供。
+
+	Type=dbus：若以此方式启动，当指定的 BusName
+	出现在DBus系统总线上时，systemd认为服务就绪。
+
+
+
+
+修改现存单元文件
+----------------
+
+要更改由软件包提供的单元文件，先创建名为 /etc/systemd/system/<单元名>.d/
+的目录（如/etc/systemd/system/httpd.service.d/），然后放入 *.conf文件，
+其中可以添加或重置参数。这里设置的参数优先级高于原来的单元文件。
+
+
+例如，如果想添加一个额外的依赖，创建这么一个文件即可：
+/etc/systemd/system/<unit>.d/customdependency.conf[Unit]Requires=<新依赖>After=<新依赖>
+然后运行以下命令使更改生效：
+systemctl daemon-reload# systemctl restart<单元>
+
+ 
+
+此外，把旧的单元文件从 /usr/lib/systemd/system/ 复制到/etc/systemd/system/，
+然后进行修改，也可以达到同样效果。
+systemctl enable <单元>
+
+在 /etc/systemd/system/ 目录中的单元文件的优先级总是高于
+/usr/lib/systemd/system/ 目录中的同名单元文件。注意，当/usr/lib/
+中的单元文件因软件包升级变更时，/etc/
+中自定义的单元文件不会同步更新。此外，你还得执行 systemctl reenable
+<unit>，手动重新启用该单元。因此，建议使用前面一种利用 *.conf 的方法。
+
+
+可以使用journalctl来进行systemd相关启动日志的查看。
+journalctl -b -0  # 显示本次启动的信息
+journalctl -b -1  # 显示上次启动的信息
+
+see http://www.jinbuguo.com/systemd/systemd.service.html for more info
+
+
+在启动时按一定的顺序载入：
+
+表1. 以系统模式运行时的载入顺序 (--system).
+            路径                             	描述
+    /run/systemd/generator.early 	Generated units (early)
+	/etc/systemd/system 	        本地配置
+	/run/systemd/systemd 	        Volatile units
+	/run/systemd/generator 	        Generated units (middle)
+	/usr/local/lib/systemd/system 	local 包中的文件
+	/usr/lib/systemd/system 	    安装包中的文件
+	/run/systemd/generator.late 	Generated units (late)
+
+	 
+	表2. 用户模式下的载入顺序 (--user).
+
+	路径                                        	描述
+	/tmp/systemd-generator.early.XXXXXX 	Generated units (early)
+	/etc/systemd/user 	                    Local configuration
+	/run/systemd/user 	                    Volatile units
+	/tmp/systemd-generator.XXXXXX 	        Generated units (middle)
+	/usr/local/lib/systemd/user 	        Units for local packages
+	/usr/lib/systemd/user 	                Units for installed packages
+	/tmp/systemd-generator.late.XXXXXX 	    Generated units (late)
+
+
+	按顺序从高到低，先载入的会覆盖后载入的。一般，自己定义的 .service ，
+	放在/etc/systemd/system里，如果是打包，放在/usr/lib/systemd/system里，

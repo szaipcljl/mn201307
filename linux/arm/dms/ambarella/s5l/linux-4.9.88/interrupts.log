@@ -1,0 +1,44 @@
+
+
+
+# cat /proc/interrupts 
+           CPU0       CPU1       CPU2       CPU3       
+  4:     447002     478531     502151     455880     GIC-0  27 Level     arch_timer
+ 10:        649          0          0          0     GIC-0  93 Level     e8005000.uart
+ 11:          0          0          0          0     GIC-0 115 Edge      e8003000.i2c
+ 12:        441          0          0          0     GIC-0 114 Edge      e8001000.i2c
+ 13:        241          0          0          0     GIC-0 113 Edge      e8007000.i2c
+ 14:          0          0          0          0     GIC-0  89 Level     e801d000.adc
+ 22:       7812          0          0          0     GIC-0 101 Level     e0005000.dma
+ 23:      26484          0          0          0     GIC-0  69 Edge      e0015000.gdma
+ 28:       4614          0          0          0     GIC-0 125 Level     e0033000.uart
+ 29:          3          0          0          0     GIC-0 100 Level     e0006000.udc
+ 30:      64094          0          0          0     GIC-0  98 Level     ehci_hcd:usb1
+ 31:          1          0          0          0     GIC-0  99 Level     ohci_hcd:usb2
+ 32:      22483          0          0          0     GIC-0 107 Level     e0002000.sdmmc0
+ 33:      26839          0          0          0     GIC-0 106 Level     e001f000.sdmmc2
+ 34:          1          0          0          0     GIC-0  97 Level     eth0
+ 35:     131841          0          0          0     GIC-0 126 Level     e0022000.spi
+ 39:      66884          0          0          0     GIC-0  77 Edge      vdsp
+ 40:     159606          0          0          0     GIC-0  78 Edge      vcap
+ 41:      88468          0          0          0     GIC-0  79 Edge      venc
+ 42:      26598          0          0          0     GIC-0  65 Edge      vin0_idsp
+ 43:      26598          0          0          0     GIC-0  66 Edge      vin0_idsp_sof
+ 44:      26598          0          0          0     GIC-0  68 Edge      vin0_idsp_last_pixel
+ 45:      26648          0          0          0     GIC-0  71 Edge      vin1_idsp
+ 46:      26648          0          0          0     GIC-0  72 Edge      vin1_idsp_sof
+ 47:      26648          0          0          0     GIC-0  74 Edge      vin1_idsp_last_pixel
+ 48:          0          0          0          0     GIC-0  86 Edge      vout_lcd
+ 49:      66633          0          0          0     GIC-0  87 Edge      vout_tv
+ 50:      67058          0          0          0     GIC-0  35 Edge      hwtimer
+ 51:          0          0          0          0      GPIO   1 Edge      btn_vsrc
+ 52:          1          0          0          0      GPIO  12 Edge      btn_TVMode
+ 53:          0          0          0          0      GPIO  24 Edge      btn_TestMode
+IPI0:    176282     287591     308578     297098       Rescheduling interrupts
+IPI1:       118        112        111         97       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       Timer broadcast interrupts
+IPI4:         7          0          0          0       IRQ work interrupts
+IPI5:         0          0          0          0       CPU wake-up interrupts
+Err:          0
+

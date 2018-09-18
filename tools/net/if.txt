@@ -1,0 +1,20 @@
+
+man ifup
+--------
+ifup - bring a network interface up
+
+ifdown - take a network interface down
+
+ifquery - parse interface configuration
+
+
+DESCRIPTION
+	The  ifup  and ifdown commands may be used to configure (or,
+	respectively, deconfigure) network interfaces based on interface
+    definitions in the file /etc/network/interfaces.  ifquery command
+    may be used to parse interfaces configuration.
+
+man ifconfig
+------------
+ifconfig - configure a network interface
+

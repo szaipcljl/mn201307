@@ -1,0 +1,546 @@
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:10:	status=$(mount | grep -n "/dev/mmcblk1" | grep -n "on /sdcard" | wc -l)
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:14:			rm -rf /sdcard/*
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:19:			test_stream -f /sdcard/test&
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:22:		sd_status=$(df | grep "/sdcard" | awk -F" " '{print $5}')
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:25:				rm -rf /sdcard/test_A*
+./boards/aibox/rootfs/test/etc/aiboxtest/video_test/record_sd.sh:28:				rm -rf /sdcard/test_B*
+./boards/aibox/rootfs/default/usr/sbin/media-automount:33:    mdir=/sdcard
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/rtspclient matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-uart matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/DfssServer matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-st matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/webclient-4gv matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-jsatl matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/mp4rec matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/webclient matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/ymodem matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-box matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-hmi matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/mediaProcess matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/vcom-can matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/gpsd matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/darwin matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/trec matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/rtmp-cli matches
+Binary file ./boards/aibox/rootfs/default/usr/local/bin/diskmgr matches
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/get_sdcard_capacity:9:  df -m | grep "/dev/mmcblk1p1" | sed 's/\/dev\/mmcblk1p1/OK/g'| sed 's/\///g' | sed 's/[[:space:]][[:space:]]*/,/g' | sed 's/,sdcard//g'
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/lock_file:10:MEDIA_ROOT=/sdcard
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/update:12:MNT_ROOT=/sdcard
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/format_sdcard:5:MEDIA_ROOT=/sdcard
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/locklist:5:MEDIA_DIR="/sdcard"
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/delete_sdcard_videos:10:MNT_ROOT=/sdcard
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/delete_sdcard_videos:13:    echo "Failed, USAGE: http://ip/cgi-bin/delete_sdcard_videos?files=<file1.mp4>+<file2.mp4>+...+<fileN.mp4>";
+./boards/aibox/rootfs/default/usr/local/webSvr/web/cgi-bin/playlist:5:MEDIA_SRV_DIR="/sdcard"
+./boards/aibox/rootfs/default/usr/local/etc/mp4rec.conf:2:home = "/sdcard"
+./boards/aibox/rootfs/default/usr/local/etc/webclient.xml:73:    <gz_dst_path>/sdcard/not_upload_alarms/</gz_dst_path>
+./boards/aibox/rootfs/default/usr/local/etc/diskmgr.conf:3:    home = "/sdcard"
+./boards/aibox/rootfs/default/usr/local/etc/diskmgr.conf:39:    home = "/sdcard/trec"
+./boards/aibox/rootfs/default/usr/local/etc/webclient-4gv.xml:65:		<gz_dst_path>/sdcard/not_upload_alarms/</gz_dst_path>
+./prebuild/third-party/noarch/media-automount/usr/sbin/media-automount:28:    mdir=/sdcard
+
+./unit_test/private/shmoo_test/shmoo_memtester.sh:59:shmoo_result_path=/sdcard/
+./unit_test/private/shmoo_test/shmoo_memtester.sh:70:		echo Waiting for sdcard mounting in loop $i ...> /dev/ttyS0
+./unit_test/private/shmoo_test/shmoo_memtester.sh:73:		echo No sdcard found! > /dev/ttyS0
+./unit_test/private/shmoo_test/shmoo_memtester.sh:76:		echo sdcard is found! > /dev/ttyS0
+./unit_test/private/iav_test/arch_s5l/guard_sd_space.c:56:#define SDCARD_MOUNT_PATH "/sdcard/"
+./unit_test/private/package_test/arch_s5l/test_smartrc_pa.c:185:		"and download the uncovered area map, motion map, static area map in /sdcard/:\n"
+./unit_test/private/package_test/arch_s5l/test_smartrc_pa.c:186:		"     # %s -A -m 7 -u -o -a -f /sdcard/ \n\n", itself);
+./unit_test/private/package_test/arch_s5l/test_stitch.c:126:static char file_prefix[MAX_STRING_LENGTH] = "/sdcard";
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:69:#define DFT_MOUNT_POINT	"/sdcard"
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:105:struct sdcard_desc {
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:110:struct sdcard_desc sdcard_info[] = {
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:150:static void get_sdcard_info()
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:159:	for (i = 0; i < ARRAY_SIZE(sdcard_info); i++) {
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:161:				prefix, sdcard_info[i].dev);
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:168:		ret = read(fd, sdcard_info[i].desc,
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:169:				sizeof(sdcard_info[i].desc));
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:176:	printf("sdcard info:\n");
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:177:	for (i = 0; i < ARRAY_SIZE(sdcard_info); i++) {
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:178:		printf("%10s: %s", sdcard_info[i].dev, sdcard_info[i].desc);
+./unit_test/linux/benchmark/sd_benchmark/sd_benchmark.c:1022:		get_sdcard_info();
+./unit_test/linux/benchmark/sd_test/sd_test.c:44:static int file_max = 0;						//write max file number on sdcard
+./unit_test/linux/benchmark/sd_test/sd_test.c:57:static int isSync = 0;						// don't synchronize buffer to sdcard by default
+./unit_test/linux/benchmark/sd_test/sd_test.c:98:		{"","Format sdcard device in FAT32 "},
+./unit_test/linux/benchmark/sd_test/sd_test.c:104:	printf("\nTest sdcard quality by show every wirte speed\n");
+./unit_test/linux/benchmark/sd_test/sd_test.c:120:int format_sdcard(void)
+./unit_test/linux/benchmark/sd_test/sd_test.c:182:				if ( format_sdcard() < 0)
+./unit_test/linux/benchmark/sd_test/sd_test.c:323:				printf("sdcard has been full\n");
+
+Binary file ./rootfs/bin/mkfs.yaffs2 matches
+./out/aibox/fakeroot/usr/sbin/media-automount:33:    mdir=/sdcard
+Binary file ./out/aibox/fakeroot/usr/local/bin/dsplog_cap matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/rtspclient matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-uart matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/DfssServer matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-st matches
+./out/aibox/fakeroot/usr/local/bin/playback_4k.sh:33:/usr/local/bin/autoplay /sdcard/4k_cut_clips
+./out/aibox/fakeroot/usr/local/bin/playback_4k.sh:35:#/usr/local/bin/mudec -f /sdcard/Seiki-4K-Demo-Clip.h264 -s 3840x2160 --udec
+Binary file ./out/aibox/fakeroot/usr/local/bin/webclient-4gv matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-jsatl matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/mp4rec matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/webclient matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/ymodem matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-box matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-hmi matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/mediaProcess matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/vcom-can matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/gpsd matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/darwin matches
+./out/aibox/fakeroot/usr/local/bin/efm_test.sh:45:	echo "		like /sdcard/xxx_0.yuv, /sdcard/xxx_1.yuv"
+./out/aibox/fakeroot/usr/local/bin/efm_test.sh:46:	echo "		like /sdcard/xxx_0.me0, /sdcard/xxx_1.me0"
+./out/aibox/fakeroot/usr/local/bin/efm_test.sh:47:	echo "		like /sdcard/xxx_0.me1, /sdcard/xxx_1.me1"
+./out/aibox/fakeroot/usr/local/bin/efm_test.sh:52:	echo "/usr/local/bin/efm_test.sh ov4689 /sdcard/1080p_0.yuv 1080p"
+./out/aibox/fakeroot/usr/local/bin/efm_test.sh:53:	echo "/usr/local/bin/efm_test.sh imx274 /sdcard/SXGA_0.me0 SXGA"
+Binary file ./out/aibox/fakeroot/usr/local/bin/trec matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/rtmp-cli matches
+Binary file ./out/aibox/fakeroot/usr/local/bin/diskmgr matches
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/get_sdcard_capacity:9:  df -m | grep "/dev/mmcblk1p1" | sed 's/\/dev\/mmcblk1p1/OK/g'| sed 's/\///g' | sed 's/[[:space:]][[:space:]]*/,/g' | sed 's/,sdcard//g'
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/lock_file:10:MEDIA_ROOT=/sdcard
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/update:12:MNT_ROOT=/sdcard
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/format_sdcard:5:MEDIA_ROOT=/sdcard
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/locklist:5:MEDIA_DIR="/sdcard"
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/delete_sdcard_videos:10:MNT_ROOT=/sdcard
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/delete_sdcard_videos:13:    echo "Failed, USAGE: http://ip/cgi-bin/delete_sdcard_videos?files=<file1.mp4>+<file2.mp4>+...+<fileN.mp4>";
+./out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/playlist:5:MEDIA_SRV_DIR="/sdcard"
+./out/aibox/fakeroot/usr/local/etc/mp4rec.conf:2:home = "/sdcard"
+./out/aibox/fakeroot/usr/local/etc/webclient.xml:73:    <gz_dst_path>/sdcard/not_upload_alarms/</gz_dst_path>
+./out/aibox/fakeroot/usr/local/etc/diskmgr.conf:3:    home = "/sdcard"
+./out/aibox/fakeroot/usr/local/etc/diskmgr.conf:39:    home = "/sdcard/trec"
+./out/aibox/fakeroot/usr/local/etc/webclient-4gv.xml:65:		<gz_dst_path>/sdcard/not_upload_alarms/</gz_dst_path>
+Binary file ./out/aibox/images/bst_bld_kernel_lnx_release.bin matches
+Binary file ./out/aibox/images/lnx_release.bin matches
+Binary file ./out/aibox/images/lnx_release.elf matches
+Binary file ./out/aibox/images/bst_bld_kernel_lnx_release.elf matches
+Binary file ./out/aibox/rootfs/ext4 matches
+Binary file ./out/aibox/app/utility/dsp_tool/dsplog_cap matches
+Binary file ./out/aibox/app/utility/dsp_tool/arch_s5l/dsplog_utils.o matches
+Binary file ./out/aibox/amboot/.temp/lnx.fw matches
+
+./app/utility/dsp_tool/arch_s5l/dsplog_utils.c:245:	printf("  # %s -m all -l 3 -r 0 -o /sdcard/dsplog1.bin -p 100000000 \n\n", itself);
+./app/utility/amb_scripts/playback_4k.sh:33:/usr/local/bin/autoplay /sdcard/4k_cut_clips
+./app/utility/amb_scripts/playback_4k.sh:35:#/usr/local/bin/mudec -f /sdcard/Seiki-4K-Demo-Clip.h264 -s 3840x2160 --udec
+./app/utility/amb_scripts/efm_test.sh:45:	echo "		like /sdcard/xxx_0.yuv, /sdcard/xxx_1.yuv"
+./app/utility/amb_scripts/efm_test.sh:46:	echo "		like /sdcard/xxx_0.me0, /sdcard/xxx_1.me0"
+./app/utility/amb_scripts/efm_test.sh:47:	echo "		like /sdcard/xxx_0.me1, /sdcard/xxx_1.me1"
+./app/utility/amb_scripts/efm_test.sh:52:	echo "/usr/local/bin/efm_test.sh ov4689 /sdcard/1080p_0.yuv 1080p"
+./app/utility/amb_scripts/efm_test.sh:53:	echo "/usr/local/bin/efm_test.sh imx274 /sdcard/SXGA_0.me0 SXGA"
+./app/utility/mptool/include/am_mp_sdcard.h:2: * am_mp_sdcard.h
+./app/utility/mptool/src/am_mp_server.c:56:#include "am_mp_sdcard.h"
+./app/utility/mptool/src/am_mp_sdcard.c:2: * am_mp_sdcard.c
+./app/utility/mptool/src/am_mp_sdcard.c:46:#include "am_mp_sdcard.h"
+./app/utility/mptool/src/am_mp_sdcard.c:51:#define SDCARD_PATH "/sdcard/"
+./app/utility/mptool/src/am_mp_sdcard.c:136:static int32_t sdcard_test(const char *mount_dir,
+./app/utility/mptool/src/am_mp_sdcard.c:252:      if (sdcard_test(mount_dir,
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:272:            LOG_DEBUG("failed to find /dev/sda1, please check sdcard\n");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:283:    if(statfs("/tmp/sdcard",&diskInfo) < 0){
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:284:        LOG_DEBUG("/tmp/sdcard statfs failed, errno = %d\n",errno);
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:289:    LOG_DEBUG("sdcard TOTAL_SIZE == %llu MB\n",totalsize>>20);
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:291:    LOG_DEBUG("sdcard DISK_FREE == %llu MB\n",freeDisk>>20);
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:295:int check_prepare_sdcard(void){
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:299:    system("/bin/mkdir -p /tmp/sdcard");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:300:    system("/bin/mount -t vfat /dev/sda1 /tmp/sdcard");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:302:    LOG_DEBUG("run_record_mode, sdcard driver installed\n");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:306: void umount_sdcard(void){
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:307:    system("/bin/umount /tmp/sdcard");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:308:    LOG_DEBUG("run_record_mode, sdcard driver uninstalled\n");
+./app/ipcam/fastboot_app/utils/bpi_utils.cpp:318:void install_sdcard_driver(void){
+./app/ipcam/fastboot_app/utils/bpi_utils.h:55:int check_prepare_sdcard(void);
+./app/ipcam/fastboot_app/utils/bpi_utils.h:56:void umount_sdcard(void);
+./app/ipcam/fastboot_app/utils/bpi_utils.h:58:void install_sdcard_driver(void);
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:448:load_sdcard_drive()
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:450:	echo "########### load sdcard ###############"
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:451:	mkdir -p /tmp/sdcard
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:456:		echo "start to load sdcard .."
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:474:		mount -t vfat /dev/sda1 /tmp/sdcard
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:476:			canceled_or_failed "mount sdcard failed"
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:478:		echo "sdcard load done .."
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:480:		echo "sdcard skipped."
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:504:	read -p "Enter 's' to record into sdcard, 'm' to record into memory: " mode
+./app/ipcam/fastboot_app/elektra_tools/power_measure_tool.sh:506:	load_sdcard_drive $mode
+./app/ipcam/fastboot_app/bpi_app/hibernate_main.cpp:231:            printf("        -v,--enable_vca_buf_dump       enable vca buf dump, default to /sdcard.\n");
+./app/ipcam/fastboot_app/bpi_app/bpi_app_config.h:44:#define SDCARD_PATH "/sdcard/"
+./app/ipcam/fastboot_app/bpi_app/bpi_app_config.c:694:            strcpy(config->storage_folder, "/sdcard/video/");
+./app/ipcam/fastboot_app/bpi_app/bpi_app_config.c:695:            iniparser_set(ini_dict, "storage_folder", "/sdcard/video/", "app");
+./app/ipcam/fastboot_app/bpi_unit_test/bpi_test_vca.cpp:100:            printf("        -v,--enable_vca_buf_dump       enable vca buf dump, default to /sdcard.\n");
+./oryx/cgi/rest_api/include/am_rest_api_system.h:42:    AM_REST_RESULT  system_sdcard_handle();
+./oryx/cgi/rest_api/include/am_rest_api_system.h:45:    AM_REST_RESULT  system_sdcard_info_handle();
+./oryx/cgi/rest_api/include/am_rest_api_system.h:46:    AM_REST_RESULT  system_sdcard_mode_handle();
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:182:  //sdcard
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:184:  AM_REST_SD_HANDLE_ERR,       //server handle sdcard failed
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:185:  AM_REST_SD_ACTION_ERR,       //invalid sdcard action type
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:186:  AM_REST_SD_OP_TYPE_ERR,      //invalid sdcard operate type
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:187:  AM_REST_SD_INFO_TYPE_ERR,    //invalid sdcard info operate type
+./oryx/cgi/rest_api/include/am_rest_api_utils.h:188:  AM_REST_SD_MODE_OPTION_ERR,  //invalid sdcard mode option
+./oryx/cgi/rest_api/src/am_rest_api_media.cpp:39:#define DEFAULT_MP4_FILE_PATH "/sdcard/video"
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:53:    if ("sdcard" == cmd_group) {
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:54:      ret = system_sdcard_handle();
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:66:AM_REST_RESULT AMRestAPISystem::system_sdcard_handle()
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:75:        ret = system_sdcard_info_handle();
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:77:        ret = system_sdcard_mode_handle();
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:81:        snprintf(msg, MAX_MSG_LENGHT, "invalid sdcard operate type: %s",
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:93:AM_REST_RESULT  AMRestAPISystem::system_sdcard_info_handle()
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:213:      snprintf(msg, MAX_MSG_LENGHT, "invalid sdcard info type: %s",
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:224:AM_REST_RESULT  AMRestAPISystem::system_sdcard_mode_handle()
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:253:      snprintf(msg, MAX_MSG_LENGHT, "invalid sdcard mode manipulate option: %s",
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:264:AM_REST_RESULT  AMRestAPISystem::system_sdcard_info_handle()
+./oryx/cgi/rest_api/src/am_rest_api_system.cpp:271:AM_REST_RESULT  AMRestAPISystem::system_sdcard_mode_handle()
+./oryx/cgi/web_apps/web_page/js/oryx.js:1317:  $.get("/oryx/system/sdcard/info/life",
+./oryx/cgi/web_apps/web_page/js/oryx.js:1368:  $.get("/oryx/system/sdcard/info/err",
+./oryx/cgi/web_apps/web_page/oryx.html:816:            <div id="sdcard_control" style="margin-top:10px">
+./oryx/cgi/web_apps/web_page/oryx.html:817:              <label for="sdcard_life">1.Use Situation:  </label>
+./oryx/cgi/web_apps/web_page/oryx.html:818:              <div id="sdcard_life" style="margin-top:10px;margin-bottom:20px">
+./oryx/cgi/web_apps/web_page/oryx.html:834:              <div id="sdcard_err" style="margin-top:10px;margin-bottom:20px">
+./oryx/cgi/web_apps/web_page/oryx.html:842:            </div><!-- end of <div id="sdcard_control">-->
+./oryx/document/getting_started/markdown/getting_started.md:237:> Generally, the default path of USB device is /storage/sda and the default path of SD card is /sdcard/.
+./oryx/document/getting_started/markdown/getting_started.md:286:    Type the commands of `test_media_service_air_api -m 0 --start-file-writing` to start file writing and `test_media_service_air_api -m 0 --stop-file-writing` to stop file writing. If it works well, user can find mp4 files in the path of file_location(e.g.`/sdcard/video/1`).
+./oryx/document/getting_started/markdown/getting_started.md:292:    Type the command of `test_media_service_air_api -v 0 --h26x-event-start --history-duration 10 --future-duration -1 ` to trigger the event. After that, user can find mp4 event files in the path of file_location(e.g.`/sdcard/video/event0`).
+./oryx/document/getting_started/markdown/getting_started.md:297:    Type the command of `test_media_service_air_api -d 256` to start jpeg file writing, `test_media_service_air_api -b 256` to stop jpeg file writing. If it works well, user can find jpeg files in the path of file_location(e.g.`/sdcard/video/jpeg`).
+./oryx/document/getting_started/markdown/getting_started.md:301:    Type the command of `test_media_service_air_api -v 3 --jpeg-event-start --jpeg-history-num 2 -- jpeg-future-num 2` to trigger jpeg event. After that, user can find jpeg files in the path of file_location(e.g.`/sdcard/video/jpeg/event0`).
+./oryx/document/getting_started/markdown/getting_started.md:306:    Type the command of `test_oryx_data_export -f /sdcard/export/`. It will create with related files such as "export_audio_0.acc", "export_audio_1.opus", "export_video_0.h265" in the path of /storage/sda/export/.
+./oryx/video/control/vca/plugins/face_detect/am_face_recognition.h:41:#define DEF_FACE_RECOG_CONFIG_FILE "/sdcard/model.w"
+./oryx/video/control/vca/plugins/face_detect/face-detect.acs:50:  model_file = "/sdcard/model.w",
+./oryx/stream/common/mp4_processer/am_mp4_file_fixer.cpp:189:      std::string sdcard_str = "/sdcard";
+./oryx/stream/common/mp4_processer/am_mp4_file_fixer.cpp:194:      if (damaged_mp4_name.find(sdcard_str) != std::string::npos) {
+./oryx/stream/common/mp4_processer/am_mp4_file_fixer.cpp:195:        INFO("damaged mp4 file is on the sdcard.");
+./oryx/stream/common/mp4_processer/am_mp4_file_fixer.cpp:199:        ERROR("damaged mp4 file is neither on the sdcard nor "
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:405:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:434:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:457:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:464:              INFO("find a sdcard str : %s", temp_location.c_str());
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:481:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:514:                  "than sdcard free space, use file location in config file.");
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:519:                  "than sdcard free space, set file location on %s.",
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:525:        NOTICE("Do not find storage or sdcard string in mount information.");
+./oryx/stream/record/muxers/muxer-ts/base/am_muxer_ts_base.cpp:549:                "set file location on sdcard or usb storage.");
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:209:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:238:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:261:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:268:              INFO("find a sdcard str : %s", temp_location.c_str());
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:285:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:318:                     "than sdcard free space, use file location in config file.");
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:323:                     "than sdcard free space, set file location on %s.",
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:329:        NOTICE("Do not find storage or sdcard string in mount information.");
+./oryx/stream/record/muxers/muxer-mp4/base/am_muxer_mp4_base.cpp:353:                  "set file location on sdcard or usb storage.");
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:391:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:420:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:445:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:452:              INFO("Find a sdcard str : %s in %s", temp_location.c_str(),
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:470:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:503:                  "than sdcard free space in %s, use file location in "
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:509:                  "than sdcard free space, set file location on %s.",
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:515:        NOTICE("Do not find storage or sdcard string in mount information in"
+./oryx/stream/record/muxers/muxer-jpeg/base/am_muxer_jpeg_base.cpp:542:                "set file location on sdcard or usb storage in %s.",
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:520:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:549:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:572:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:579:              INFO("find a sdcard str : %s", temp_location.c_str());
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:596:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:629:                  "than sdcard free space, use file location in config file.");
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:634:                  "than sdcard free space, set file location on %s.",
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:640:        NOTICE("Do not find storage or sdcard string in mount information.");
+./oryx/stream/record/muxers/muxer-time-elapse-mp4/am_muxer_time_elapse_mp4.cpp:664:                "set file location on sdcard or usb storage.");
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:220:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:249:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:272:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:279:              INFO("find a sdcard str : %s", temp_location.c_str());
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:296:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:329:                     "than sdcard free space, use file location in config file.");
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:334:                     "than sdcard free space, set file location on %s.",
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:340:        NOTICE("Do not find storage or sdcard string in mount information.");
+./oryx/stream/record/muxers/muxer-av3/base/am_muxer_av3_base.cpp:364:                  "set file location on sdcard or usb storage.");
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:504:  std::string sdcard_str = "/sdcard";
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:533:        WARN("The file location in config file is not on sdcard or storage, "
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:558:        } else if ((find_str_position = read_line.find(sdcard_str))
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:565:              INFO("Find a sdcard str : %s in %s", temp_location.c_str(),
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:583:          WARN("File location specified by config file is not on sdcard "
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:616:                  "than sdcard free space in %s, use file location in "
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:622:                  "than sdcard free space, set file location on %s in %s.",
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:628:        NOTICE("Do not find storage or sdcard string in mount information in"
+./oryx/stream/record/muxers/muxer-periodic-mjpeg/am_muxer_periodic_mjpeg.cpp:655:                "set file location on sdcard or usb storage in %s.",
+./oryx/include/upgrade/am_upgrade_if.h:83:    /* set whether upgrade from sdcard or not */
+./oryx/include/upgrade/am_upgrade_if.h:84:    uint32_t use_sdcard;
+./oryx/include/upgrade/am_upgrade_if.h:104:    /* set whether firmware is stored in sdcard or ADC partition */
+./oryx/include/upgrade/am_upgrade_if.h:105:    virtual bool set_use_sdcard(const uint32_t flag) = 0;
+./oryx/include/services/am_api_system.h:226:    uint32_t use_sdcard; //!< set whether upgrade from sdcard or not
+./oryx/upgrade/include/am_upgrade.h:46:    virtual bool set_use_sdcard(const uint32_t flag) override;
+./oryx/upgrade/include/am_upgrade.h:104:    uint32_t            m_use_sdcard;
+./oryx/upgrade/unit_test/test_upgrade.cpp:44:#define SDCARD_DIR          "/sdcard"
+./oryx/upgrade/unit_test/test_upgrade.cpp:54:static int32_t use_sdcard = 0;
+./oryx/upgrade/unit_test/test_upgrade.cpp:66:  {"use_sdcard", HAS_ARG, 0, 'c'},
+./oryx/upgrade/unit_test/test_upgrade.cpp:148:          use_sdcard = !!atoi(optarg);
+./oryx/upgrade/unit_test/test_upgrade.cpp:242:    if (use_sdcard) {
+./oryx/upgrade/unit_test/test_upgrade.cpp:244:      if (!upgrade_ptr->set_use_sdcard(1)) {
+./oryx/upgrade/unit_test/test_upgrade.cpp:245:        printf("set use sdcard failed.\n");
+./oryx/upgrade/unit_test/test_upgrade.cpp:262:      if (!upgrade_ptr->set_use_sdcard(0)) {
+./oryx/upgrade/unit_test/test_upgrade.cpp:263:        printf("set not use sdcard failed.\n");
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:65:           "status=0,\nsdcard=0\n}\n return abc\n")
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:84:      m_use_sdcard(0),
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:297:bool AMFWUpgrade::set_use_sdcard(const uint32_t use_sdcard)
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:309:    use_sd = !!(use_sdcard);
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:310:    INFO("set_use_sdcard=%d\n", use_sd);
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:312:      m_use_sdcard = (*m_config)[USE_SDCARD].get<int32_t>(0);
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:313:      if (use_sd != m_use_sdcard) {
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:314:        m_use_sdcard = use_sd;
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:315:        (*m_config)[USE_SDCARD] = (int32_t)m_use_sdcard;
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:819:        if (m_use_sdcard || copy_fw_to_ADC()) {
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1370:         upgrade_paras.use_sdcard, upgrade_paras.timeout);
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1385:    if (upgrade_paras.use_sdcard) {
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1386:      INFO("sdcard is used.");
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1388:      if (!upgrade_ptr->set_use_sdcard(1)) {
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1389:        ERROR("set use sdcard failed.");
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1393:      INFO("sdcard is not used.");
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1404:      if (!upgrade_ptr->set_use_sdcard(0)) {
+./oryx/upgrade/upgrade_fw/am_upgrade.cpp:1405:        ERROR("set not use sdcard failed.");
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:148:/* mount sdcard with fs type "vfat" or "exfat" */
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:149:static bool mount_sdcard(const string &mount_dir)
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:202:        printf("Try to mount sdcard with exfat...\n");
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:687:static bool get_use_sdcard_flag(uint32_t &use_sdcard)
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:699:      use_sdcard = (*config)[USE_SDCARD].get<int32_t>(0);
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:710:static bool get_fw_path(const bool use_sdcard, string &fw_path)
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:739:      if (use_sdcard) {
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:946:    if(!get_use_sdcard_flag(use_sd)) {
+./oryx/upgrade/upgrade_fw/pba_upgrade.cpp:952:      if (!mount_sdcard(SD_MOUNT_DIR)) {
+./oryx/upgrade/upgrade_fw/pba_upgrade.h:56:#define SD_MOUNT_DIR                "/sdcard"
+./oryx/upgrade/upgrade_fw/pba_upgrade.h:60:#define USE_SDCARD                  "sdcard"
+./oryx/services/unit_test/test_system_service_air_api.cpp:60:  printf(" c -- set use sdcard to do upgrade\n");
+./oryx/services/unit_test/test_system_service_air_api.cpp:78:  printf("use sdcard : %s\n", up_args.use_sdcard ? "YES":"NO");
+./oryx/services/unit_test/test_system_service_air_api.cpp:99:    up_args.use_sdcard = 0;
+./oryx/services/unit_test/test_system_service_air_api.cpp:135:        printf("Please set whether upgrade from sdcard (0:use adc partition "
+./oryx/services/unit_test/test_system_service_air_api.cpp:136:            "1:use sdcard):\n");
+./oryx/services/unit_test/test_system_service_air_api.cpp:143:        up_args.use_sdcard = in_num;
+./oryx/services/unit_test/test_system_service_air_api.cpp:144:        printf("Set whether upgrade from sdcard successfully.\n");
+./oryx/app/zatanna_demo/test_zatanna.cpp:43:static string g_vca_path = "/sdcard/vca";
+./oryx/app/zatanna_demo/zatanna_tts.cpp:493:    std::string dir = "/sdcard/audio/";
+./oryx/app/zatanna_demo/web/websocket/zatanna_ws_server.cpp:49:#define DEFAULT_SVC_FILE_PATH "/sdcard/vca"
+./oryx/app/batman_demo/test_batman.cpp:43:static string g_vca_path = "/sdcard/vca";
+./oryx/app/batman_demo/iscwest/vca/face-detect.acs:50:  model_file = "/sdcard/model.w",
+./oryx/app/batman_demo/etc/oryx/video/vca/face-detect.acs:50:  model_file = "/sdcard/model.w",
+./oryx/app/dms_demo_vout/etc/oryx/video/vca/driver-monitor.acs:50:  model_data_path = "/sdcard/data",
+./oryx/app/dms_demo_vout/etc/oryx/video/vca/driver-monitor.acs:51:  config_file = "/sdcard/data/faceengine.conf",
+./oryx/app/fr_door_demo/test_fr_door.cpp:43:static string g_vca_path = "/sdcard/vca";
+./kernel/linux-4.9/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:70:- sdcard-supply: The supply connected to SDMMC0_VDD.
+./kernel/linux-4.9/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:79:- sdcard-supply: The supply connected to SDMMC0_VDD.
+./kernel/linux-4.9/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:108:		sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-popmetal.dts:439:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-miqi.dts:320:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-firefly.dtsi:395:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:212:			OMAP5_IOPAD(0x01e2, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_clk */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:213:			OMAP5_IOPAD(0x01e4, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_cmd */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:214:			OMAP5_IOPAD(0x01e6, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data2 */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:215:			OMAP5_IOPAD(0x01e8, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data3 */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:216:			OMAP5_IOPAD(0x01ea, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data0 */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:217:			OMAP5_IOPAD(0x01ec, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data1 */
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-cm-t54.dts:581:					/* VCC_DV_SDIO: vdds_sdcard */
+./kernel/linux-4.9/arch/arm/boot/dts/exynos5250-snow-common.dtsi:147:						regulator-name = "sdcard";
+./kernel/linux-4.9/arch/arm/boot/dts/exynos5800-peach-pi.dts:370:			vqmmc_sdcard: ldo4_reg: LDO4 {
+./kernel/linux-4.9/arch/arm/boot/dts/exynos5800-peach-pi.dts:984:						regulator-name = "sdcard";
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-rock2-som.dtsi:257:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/exynos5420-peach-pit.dts:370:			vqmmc_sdcard: ldo4_reg: LDO4 {
+./kernel/linux-4.9/arch/arm/boot/dts/exynos5420-peach-pit.dts:1015:						regulator-name = "sdcard";
+./kernel/linux-4.9/arch/arm/boot/dts/omap5-board-common.dtsi:598:					/* VCC_DV_SDIO: vdds_sdcard */
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi:46:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/arm/boot/dts/tegra114-tn7.dts:209:						regulator-name = "vi-sdcard";
+./kernel/linux-4.9/arch/arm/boot/dts/rk3288-firefly-reload-core.dtsi:243:	sdcard-supply = <&vccio_sd>;
+./kernel/linux-4.9/arch/sh/boot/dts/j2_mimas_v2.dts:77:			sdcard@0 {
+./kernel/linux-4.9/arch/arm64/boot/dts/amd/husky.dts:68:	sdcard0: sdcard@0 {
+./kernel/linux-4.9/arch/arm64/boot/dts/amd/amd-overdrive-rev-b0.dts:68:	sdcard0: sdcard@0 {
+./kernel/linux-4.9/arch/arm64/boot/dts/amd/amd-overdrive-rev-b1.dts:72:	sdcard0: sdcard@0 {
+./kernel/linux-4.9/arch/arm64/boot/dts/amd/amd-overdrive.dts:46:	sdcard0: sdcard@0 {
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:450:				sdcard_pins: sdcard {
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:452:						groups = "sdcard_d0",
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:453:						       "sdcard_d1",
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:454:						       "sdcard_d2",
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:455:						       "sdcard_d3",
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:456:						       "sdcard_cmd",
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:457:						       "sdcard_clk";
+./kernel/linux-4.9/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:458:						function = "sdcard";
+./kernel/linux-4.9/arch/arm64/boot/dts/exynos/exynos7-espresso.dts:90:				regulator-name = "vqmmc-sdcard";
+./kernel/linux-4.9/arch/arm64/boot/dts/exynos/exynos7-espresso.dts:188:				regulator-name = "vmmc-sdcard";
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc.h:147:	u32			sdcard_irq_mask;
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:57:	host->sdcard_irq_mask &= ~(i & TMIO_MASK_IRQ);
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:58:	sd_ctrl_write32_as_16_and_16(host, CTL_IRQ_MASK, host->sdcard_irq_mask);
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:63:	host->sdcard_irq_mask |= (i & TMIO_MASK_IRQ);
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:64:	sd_ctrl_write32_as_16_and_16(host, CTL_IRQ_MASK, host->sdcard_irq_mask);
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:649:static bool __tmio_mmc_sdcard_irq(struct tmio_mmc_host *host,
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:690:	ireg = status & TMIO_SDIO_MASK_ALL & ~host->sdcard_irq_mask;
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:708:	ireg = status & TMIO_MASK_IRQ & ~host->sdcard_irq_mask;
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:718:	if (__tmio_mmc_sdcard_irq(host, ireg, status))
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:1123:	_host->sdcard_irq_mask = sd_ctrl_read16_and_16_as_32(_host, CTL_IRQ_MASK);
+./kernel/linux-4.9/drivers/mmc/host/tmio_mmc_pio.c:1134:	_host->sdcard_irq_mask &= ~irq_mask;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:82: * @sdcardclk_hw:	Struct for the clock we might provide to a PHY.
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:83: * @sdcardclk:		Pointer to normal 'struct clock' for sdcardclk_hw.
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:93:	struct clk_hw	sdcardclk_hw;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:94:	struct clk      *sdcardclk;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:398: * sdhci_arasan_sdcardclk_recalc_rate - Return the card clock rate
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:407:static unsigned long sdhci_arasan_sdcardclk_recalc_rate(struct clk_hw *hw,
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:412:		container_of(hw, struct sdhci_arasan_data, sdcardclk_hw);
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:418:static const struct clk_ops arasan_sdcardclk_ops = {
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:419:	.recalc_rate = sdhci_arasan_sdcardclk_recalc_rate,
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:525:	struct clk_init_data sdcardclk_init;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:534:					    &sdcardclk_init.name);
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:541:	sdcardclk_init.parent_names = &parent_clk_name;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:542:	sdcardclk_init.num_parents = 1;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:543:	sdcardclk_init.flags = CLK_GET_RATE_NOCACHE;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:544:	sdcardclk_init.ops = &arasan_sdcardclk_ops;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:546:	sdhci_arasan->sdcardclk_hw.init = &sdcardclk_init;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:547:	sdhci_arasan->sdcardclk =
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:548:		devm_clk_register(dev, &sdhci_arasan->sdcardclk_hw);
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:549:	sdhci_arasan->sdcardclk_hw.init = NULL;
+./kernel/linux-4.9/drivers/mmc/host/sdhci-of-arasan.c:552:				  sdhci_arasan->sdcardclk);
+./kernel/linux-4.9/drivers/usb/storage/scsiglue.c:275:		 * Some USB cardreaders have trouble reading an sdcard's last
+./kernel/linux-4.9/drivers/pinctrl/bcm/pinctrl-cygnus-mux.c:245:	CYGNUS_PIN_DESC(84, "sdio1_clk_sdcard", 1, 0x14, 6),
+./kernel/linux-4.9/drivers/pinctrl/bcm/pinctrl-cygnus-mux.c:255:	CYGNUS_PIN_DESC(94, "sdio0_clk_sdcard", 1, 0x14, 26),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:366:static const unsigned int byt_score_sdcard_pins[] = {
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:369:static const unsigned short byt_score_sdcard_mux_values[] = {
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:372:static const struct byt_mixed_func_mux byt_score_sdcard_mux[] = {
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:373:	MIXED_FUNC("sdcard", byt_score_sdcard_mux_values),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:446:	PIN_GROUP_MIXED("sdcard_grp",
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:447:			byt_score_sdcard_pins, byt_score_sdcard_mux),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:486:static const char * const byt_score_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:500:	"sdcard_grp", "sdio_grp", "emmc_grp", "lpc_grp", "sata_grp",
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-baytrail.c:512:	FUNCTION("sdcard", byt_score_sdcard_groups),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:455:static const unsigned bxt_southwest_sdcard_pins[] = {
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:462:	PIN_GROUP("sdcard_grp", bxt_southwest_sdcard_pins, 1),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:467:static const char * const bxt_southwest_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:472:	FUNCTION("sdcard", bxt_southwest_sdcard_groups),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:951:static const unsigned apl_southwest_sdcard_pins[] = {
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:959:	PIN_GROUP("sdcard_grp", apl_southwest_sdcard_pins, 1),
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:965:static const char * const apl_southwest_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux-4.9/drivers/pinctrl/intel/pinctrl-broxton.c:971:	FUNCTION("sdcard", apl_southwest_sdcard_groups),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:165:static const unsigned int sdcard_d0_pins[] = { PIN(CARD_1, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:166:static const unsigned int sdcard_d1_pins[] = { PIN(CARD_0, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:167:static const unsigned int sdcard_d2_pins[] = { PIN(CARD_5, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:168:static const unsigned int sdcard_d3_pins[] = { PIN(CARD_4, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:169:static const unsigned int sdcard_cmd_pins[] = { PIN(CARD_3, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:170:static const unsigned int sdcard_clk_pins[] = { PIN(CARD_2, EE_OFF) };
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:477:	GROUP(sdcard_d1,	2,	14),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:478:	GROUP(sdcard_d0,	2,	15),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:479:	GROUP(sdcard_d3,	2,	12),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:480:	GROUP(sdcard_d2,	2,	13),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:481:	GROUP(sdcard_cmd,	2,	10),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:482:	GROUP(sdcard_clk,	2,	11),
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:566:static const char * const sdcard_groups[] = {
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:567:	"sdcard_d0", "sdcard_d1", "sdcard_d2", "sdcard_d3",
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:568:	"sdcard_cmd", "sdcard_clk",
+./kernel/linux-4.9/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:686:	FUNCTION(sdcard),
+./kernel/linux-4.9/drivers/power/avs/rockchip-io-domain.c:243:		"sdcard",	/* SDMMC0_VDD (sdmmc) */
+./kernel/linux-4.9/drivers/power/avs/rockchip-io-domain.c:259:		"sdcard",	/* SDMMC0_VDD (sdmmc) */
+./kernel/linux/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:70:- sdcard-supply: The supply connected to SDMMC0_VDD.
+./kernel/linux/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:79:- sdcard-supply: The supply connected to SDMMC0_VDD.
+./kernel/linux/Documentation/devicetree/bindings/power/rockchip-io-domain.txt:108:		sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/rk3288-popmetal.dts:439:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/rk3288-miqi.dts:320:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/rk3288-firefly.dtsi:395:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:212:			OMAP5_IOPAD(0x01e2, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_clk */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:213:			OMAP5_IOPAD(0x01e4, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_cmd */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:214:			OMAP5_IOPAD(0x01e6, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data2 */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:215:			OMAP5_IOPAD(0x01e8, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data3 */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:216:			OMAP5_IOPAD(0x01ea, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data0 */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:217:			OMAP5_IOPAD(0x01ec, PIN_INPUT_PULLUP | MUX_MODE0) /* sdcard_data1 */
+./kernel/linux/arch/arm/boot/dts/omap5-cm-t54.dts:581:					/* VCC_DV_SDIO: vdds_sdcard */
+./kernel/linux/arch/arm/boot/dts/exynos5250-snow-common.dtsi:147:						regulator-name = "sdcard";
+./kernel/linux/arch/arm/boot/dts/exynos5800-peach-pi.dts:370:			vqmmc_sdcard: ldo4_reg: LDO4 {
+./kernel/linux/arch/arm/boot/dts/exynos5800-peach-pi.dts:984:						regulator-name = "sdcard";
+./kernel/linux/arch/arm/boot/dts/rk3288-rock2-som.dtsi:257:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/exynos5420-peach-pit.dts:370:			vqmmc_sdcard: ldo4_reg: LDO4 {
+./kernel/linux/arch/arm/boot/dts/exynos5420-peach-pit.dts:1015:						regulator-name = "sdcard";
+./kernel/linux/arch/arm/boot/dts/omap5-board-common.dtsi:598:					/* VCC_DV_SDIO: vdds_sdcard */
+./kernel/linux/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi:46:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/arm/boot/dts/tegra114-tn7.dts:209:						regulator-name = "vi-sdcard";
+./kernel/linux/arch/arm/boot/dts/rk3288-firefly-reload-core.dtsi:243:	sdcard-supply = <&vccio_sd>;
+./kernel/linux/arch/sh/boot/dts/j2_mimas_v2.dts:77:			sdcard@0 {
+./kernel/linux/arch/arm64/boot/dts/amd/husky.dts:68:	sdcard0: sdcard@0 {
+./kernel/linux/arch/arm64/boot/dts/amd/amd-overdrive-rev-b0.dts:68:	sdcard0: sdcard@0 {
+./kernel/linux/arch/arm64/boot/dts/amd/amd-overdrive-rev-b1.dts:72:	sdcard0: sdcard@0 {
+./kernel/linux/arch/arm64/boot/dts/amd/amd-overdrive.dts:46:	sdcard0: sdcard@0 {
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:450:				sdcard_pins: sdcard {
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:452:						groups = "sdcard_d0",
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:453:						       "sdcard_d1",
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:454:						       "sdcard_d2",
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:455:						       "sdcard_d3",
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:456:						       "sdcard_cmd",
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:457:						       "sdcard_clk";
+./kernel/linux/arch/arm64/boot/dts/amlogic/meson-gxbb.dtsi:458:						function = "sdcard";
+./kernel/linux/arch/arm64/boot/dts/exynos/exynos7-espresso.dts:90:				regulator-name = "vqmmc-sdcard";
+./kernel/linux/arch/arm64/boot/dts/exynos/exynos7-espresso.dts:188:				regulator-name = "vmmc-sdcard";
+./kernel/linux/drivers/mmc/host/tmio_mmc.h:147:	u32			sdcard_irq_mask;
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:57:	host->sdcard_irq_mask &= ~(i & TMIO_MASK_IRQ);
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:58:	sd_ctrl_write32_as_16_and_16(host, CTL_IRQ_MASK, host->sdcard_irq_mask);
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:63:	host->sdcard_irq_mask |= (i & TMIO_MASK_IRQ);
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:64:	sd_ctrl_write32_as_16_and_16(host, CTL_IRQ_MASK, host->sdcard_irq_mask);
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:649:static bool __tmio_mmc_sdcard_irq(struct tmio_mmc_host *host,
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:690:	ireg = status & TMIO_SDIO_MASK_ALL & ~host->sdcard_irq_mask;
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:708:	ireg = status & TMIO_MASK_IRQ & ~host->sdcard_irq_mask;
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:718:	if (__tmio_mmc_sdcard_irq(host, ireg, status))
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:1123:	_host->sdcard_irq_mask = sd_ctrl_read16_and_16_as_32(_host, CTL_IRQ_MASK);
+./kernel/linux/drivers/mmc/host/tmio_mmc_pio.c:1134:	_host->sdcard_irq_mask &= ~irq_mask;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:82: * @sdcardclk_hw:	Struct for the clock we might provide to a PHY.
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:83: * @sdcardclk:		Pointer to normal 'struct clock' for sdcardclk_hw.
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:93:	struct clk_hw	sdcardclk_hw;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:94:	struct clk      *sdcardclk;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:398: * sdhci_arasan_sdcardclk_recalc_rate - Return the card clock rate
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:407:static unsigned long sdhci_arasan_sdcardclk_recalc_rate(struct clk_hw *hw,
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:412:		container_of(hw, struct sdhci_arasan_data, sdcardclk_hw);
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:418:static const struct clk_ops arasan_sdcardclk_ops = {
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:419:	.recalc_rate = sdhci_arasan_sdcardclk_recalc_rate,
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:525:	struct clk_init_data sdcardclk_init;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:534:					    &sdcardclk_init.name);
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:541:	sdcardclk_init.parent_names = &parent_clk_name;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:542:	sdcardclk_init.num_parents = 1;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:543:	sdcardclk_init.flags = CLK_GET_RATE_NOCACHE;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:544:	sdcardclk_init.ops = &arasan_sdcardclk_ops;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:546:	sdhci_arasan->sdcardclk_hw.init = &sdcardclk_init;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:547:	sdhci_arasan->sdcardclk =
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:548:		devm_clk_register(dev, &sdhci_arasan->sdcardclk_hw);
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:549:	sdhci_arasan->sdcardclk_hw.init = NULL;
+./kernel/linux/drivers/mmc/host/sdhci-of-arasan.c:552:				  sdhci_arasan->sdcardclk);
+./kernel/linux/drivers/usb/storage/scsiglue.c:275:		 * Some USB cardreaders have trouble reading an sdcard's last
+./kernel/linux/drivers/pinctrl/bcm/pinctrl-cygnus-mux.c:245:	CYGNUS_PIN_DESC(84, "sdio1_clk_sdcard", 1, 0x14, 6),
+./kernel/linux/drivers/pinctrl/bcm/pinctrl-cygnus-mux.c:255:	CYGNUS_PIN_DESC(94, "sdio0_clk_sdcard", 1, 0x14, 26),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:366:static const unsigned int byt_score_sdcard_pins[] = {
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:369:static const unsigned short byt_score_sdcard_mux_values[] = {
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:372:static const struct byt_mixed_func_mux byt_score_sdcard_mux[] = {
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:373:	MIXED_FUNC("sdcard", byt_score_sdcard_mux_values),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:446:	PIN_GROUP_MIXED("sdcard_grp",
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:447:			byt_score_sdcard_pins, byt_score_sdcard_mux),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:486:static const char * const byt_score_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:500:	"sdcard_grp", "sdio_grp", "emmc_grp", "lpc_grp", "sata_grp",
+./kernel/linux/drivers/pinctrl/intel/pinctrl-baytrail.c:512:	FUNCTION("sdcard", byt_score_sdcard_groups),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:455:static const unsigned bxt_southwest_sdcard_pins[] = {
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:462:	PIN_GROUP("sdcard_grp", bxt_southwest_sdcard_pins, 1),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:467:static const char * const bxt_southwest_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:472:	FUNCTION("sdcard", bxt_southwest_sdcard_groups),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:951:static const unsigned apl_southwest_sdcard_pins[] = {
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:959:	PIN_GROUP("sdcard_grp", apl_southwest_sdcard_pins, 1),
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:965:static const char * const apl_southwest_sdcard_groups[] = { "sdcard_grp" };
+./kernel/linux/drivers/pinctrl/intel/pinctrl-broxton.c:971:	FUNCTION("sdcard", apl_southwest_sdcard_groups),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:165:static const unsigned int sdcard_d0_pins[] = { PIN(CARD_1, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:166:static const unsigned int sdcard_d1_pins[] = { PIN(CARD_0, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:167:static const unsigned int sdcard_d2_pins[] = { PIN(CARD_5, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:168:static const unsigned int sdcard_d3_pins[] = { PIN(CARD_4, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:169:static const unsigned int sdcard_cmd_pins[] = { PIN(CARD_3, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:170:static const unsigned int sdcard_clk_pins[] = { PIN(CARD_2, EE_OFF) };
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:477:	GROUP(sdcard_d1,	2,	14),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:478:	GROUP(sdcard_d0,	2,	15),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:479:	GROUP(sdcard_d3,	2,	12),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:480:	GROUP(sdcard_d2,	2,	13),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:481:	GROUP(sdcard_cmd,	2,	10),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:482:	GROUP(sdcard_clk,	2,	11),
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:566:static const char * const sdcard_groups[] = {
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:567:	"sdcard_d0", "sdcard_d1", "sdcard_d2", "sdcard_d3",
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:568:	"sdcard_cmd", "sdcard_clk",
+./kernel/linux/drivers/pinctrl/meson/pinctrl-meson-gxbb.c:686:	FUNCTION(sdcard),
+./kernel/linux/drivers/power/avs/rockchip-io-domain.c:243:		"sdcard",	/* SDMMC0_VDD (sdmmc) */
+./kernel/linux/drivers/power/avs/rockchip-io-domain.c:259:		"sdcard",	/* SDMMC0_VDD (sdmmc) */
+./kernel/external/realtek/rtl8192eu_431_10675/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8189es_434_11294/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8812au_4320_16317p16683/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8723ds_5112_18132/include/drv_types_sdio.h:45:	#include <sdcardddk.h>
+./kernel/external/realtek/rtl8192cu_402_9000/include/drv_types_sdio.h:35:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8188eus_4308_13968/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8821au_430_10674/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8812au_515_19247/include/drv_types_sdio.h:45:	#include <sdcardddk.h>
+./kernel/external/realtek/rtl8812au_438_12175/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8188eus_430_10600/include/drv_types_sdio.h:45:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8188e/include/drv_types_sdio.h:35:#include <sdcardddk.h>
+./kernel/external/realtek/rtl8188fu/include/drv_types_sdio.h:42:	#include <sdcardddk.h>
