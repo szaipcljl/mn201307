@@ -1,0 +1,8 @@
+
+bld/usb_drv.c
+
+
+bld/memfwprog.c
+
+after "Start to run ..."
+main

@@ -1,0 +1,99 @@
+
+usr/local/bin/init.sh is s5l unit test demo
+usr/local/bin/init-xcam is aibox init
+
+func_main()
+{
+	func_load_etc_cfg
+	func_load_sd_param_pre
+	func_load_iav_driver
+	func_load_vout_driver
+	func_load_vin_driver    "$1"
+	func_load_lens_driver  "$2"
+	func_load_misc_drivers
+	func_debug_raise_clock  "$2"
+	func_load_ucode
+	func_load_sd_param_post
+	func_load_dsplog_driver
+	func_load_demos
+}
+
+
+func_main  "$1"  "$2"
+
+(1) func_load_etc_cfg
+
+	a. export 3 variates in /etc/ambarella.conf
+	   source this file
+
+	   here is the varites:
+	     AMBARELLA_ARCH
+		 SYS_BOARD_BSP
+		 SYS_BOARD_VERSION
+
+	b. set socket send and receive max buf size
+	   echo 655360 > /proc/sys/net/core/wmem_max
+
+(2) func_load_sd_param_pre
+
+(3) func_load_iav_driver
+    modprobe iav driver
+
+(4) func_load_vout_driver
+	modprobe display device driver
+	// ambdve is used
+
+now driver modules loaded by systemd, see  /etc/modprobe.d/ambarella.conf
+and /etc/modules-load.d/ambarella.conf for more info.
+
+(5) func_load_vin_driver
+    insmod sensor driver
+
+	now the sensor drivers is loaded by systemd, see
+	/etc/modules-load.d/ambarella.conf:
+		ar0144_mipi_brg
+		ar0230_brg
+
+	/etc/modprobe.d/ambarella.conf:
+		options b6 id=0x101
+		options ar0144_mipi_brg brg_id=0x0
+		options ar0230_brg brg_id=0x1
+	
+(6) func_load_lens_driver
+	//we have no lens module
+
+(7) func_load_misc_drivers
+	//no misc drivers required
+
+(8) func_debug_raise_clock
+	//not required, use default settings
+
+(9) func_load_ucode
+	// load dsp microcode
+	load_ucode /lib/firmware
+
+(10) func_load_sd_param_post
+	//not required
+
+(11) func_load_dsplog_driver
+	//not required
+
+(12) func_load_demos
+	start demos
+
+the steps required by us is:
+----------------------------
+(3) func_load_iav_driver
+(4) func_load_vout_driver
+(5) func_load_vin_driver
+
+(9) func_load_ucode
+
+(12) func_load_demos //maybe not affect display
+
+(3)(4)(5) was loaded by systemd
+(9)(12) was performed by /usr/local/bin/init-xcam
+
+
+----------------------------
+sensor -> b6 -> vin

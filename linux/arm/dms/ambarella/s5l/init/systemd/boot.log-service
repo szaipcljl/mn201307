@@ -1,0 +1,318 @@
+
+Booting Linux on physical CPU 0x0
+Linux version 4.9.88 (chris@qzsw-R730) (gcc version 7.1.1 20170707 (Linaro GCC 7.1-2017.08) ) #1 SMP PREEMPT Tue Sep 25 13:00:49 CST 2018
+Boot CPU: AArch64 Processor [410fd034]
+Reserved memory: created CMA memory pool at 0x0000000021000000, size 16 MiB
+OF: reserved mem: initialized node linux,cma, compatible id shared-dma-pool
+percpu: Embedded 19 pages/cpu @ffffffc022182000 s40344 r8192 d29288 u77824
+Detected VIPT I-cache on CPU0
+CPU features: enabling workaround for ARM erratum 845719
+Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 137088
+Kernel command line: noinitrd root=/dev/mmcblk0p7 rootwait rw rootfstype=ext4 init=/linuxrc
+log_buf_len individual max cpu contribution: 16384 bytes
+log_buf_len total cpu_extra contributions: 49152 bytes
+log_buf_len min size: 65536 bytes
+log_buf_len: 131072 bytes
+early log buf free: 64160(97%)
+PID hash table entries: 4096 (order: 3, 32768 bytes)
+Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes)
+Inode-cache hash table entries: 65536 (order: 7, 524288 bytes)
+Memory: 515340K/557056K available (4478K kernel code, 362K rwdata, 1244K rodata, 320K init, 269K bss, 25332K reserved, 16384K cma-reserved)
+Virtual kernel memory layout:
+    modules : 0xffffff8000000000 - 0xffffff8008000000   (   128 MB)
+    vmalloc : 0xffffff8008000000 - 0xffffffbebfff0000   (   250 GB)
+      .text : 0xffffff8008080000 - 0xffffff80084e0000   (  4480 KB)
+    .rodata : 0xffffff80084e0000 - 0xffffff8008620000   (  1280 KB)
+      .init : 0xffffff8008620000 - 0xffffff8008670000   (   320 KB)
+      .data : 0xffffff8008670000 - 0xffffff80086ca808   (   363 KB)
+       .bss : 0xffffff80086ca808 - 0xffffff800870df94   (   270 KB)
+    fixed   : 0xffffffbefe7fd000 - 0xffffffbefec00000   (  4108 KB)
+    PCI I/O : 0xffffffbefee00000 - 0xffffffbeffe00000   (    16 MB)
+    vmemmap : 0xffffffbf00000000 - 0xffffffc000000000   (     4 GB maximum)
+              0xffffffbf00008000 - 0xffffffbf00888000   (     8 MB actual)
+    memory  : 0xffffffc000200000 - 0xffffffc022200000   (   544 MB)
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+Preemptible hierarchical RCU implementation.
+	Build-time adjustment of leaf fanout to 64.
+NR_IRQS:64 nr_irqs:64 0
+CPU features: GIC system register CPU interface present but disabled by higher exception level
+gclk_vo: Error: target rate is too slow: 30!
+gclk_vo: Error: target rate is too slow: 30!
+arm_arch_timer: Architected cp15 timer(s) running at 63.00MHz (virt).
+clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0xe879c5e9b, max_idle_ns: 440795204668 ns
+sched_clock: 56 bits at 63MHz, resolution 15ns, wraps every 2199023255548ns
+Console: colour dummy device 80x25
+console [tty0] enabled
+Calibrating delay loop (skipped), value calculated using timer frequency.. 126.00 BogoMIPS (lpj=252000)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 2048 (order: 2, 16384 bytes)
+Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes)
+ASID allocator initialised with 65536 entries
+Detected VIPT I-cache on CPU1
+CPU1: Booted secondary processor [410fd034]
+Detected VIPT I-cache on CPU2
+CPU2: Booted secondary processor [410fd034]
+Detected VIPT I-cache on CPU3
+CPU3: Booted secondary processor [410fd034]
+Brought up 4 CPUs
+SMP: Total of 4 processors activated.
+CPU features: detected feature: 32-bit EL0 Support
+CPU: All CPU(s) started at EL1
+alternatives: patching kernel code
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+futex hash table entries: 1024 (order: 5, 131072 bytes)
+pinctrl core: initialized pinctrl subsystem
+NET: Registered protocol family 16
+vdso: 2 pages (1 code @ ffffff80084e6000, 1 data @ ffffff8008674000)
+DMA: preallocated 256 KiB pool for atomic allocations
+ambarella-pinctrl e8009000.pinctrl: Ambarella pinctrl driver registered
+ambarella-gpio e8009000.pinctrl:gpio@0: Ambarella GPIO driver registered
+HugeTLB registered 2 MB page size, pre-allocated 0 pages
+ambarella-dma e0005000.dma: Ambarella DMA Engine 
+ambarella-i2c e8003000.i2c: Ambarella I2C adapter[0] probed!
+ambarella-i2c e8001000.i2c: Ambarella I2C adapter[1] probed!
+ambarella-i2c e8007000.i2c: Ambarella I2C adapter[2] probed!
+clocksource: Switched to clocksource arch_sys_counter
+ambarella-sd e0002000.sdmmc0: Max frequency is 120000000Hz
+random: fast init done
+mmc0: new HS200 MMC card at address 0001
+ambarella-sd e001f000.sdmmc2: Max frequency is 100000000Hz
+NET: Registered protocol family 2
+TCP established hash table entries: 8192 (order: 4, 65536 bytes)
+TCP bind hash table entries: 8192 (order: 5, 131072 bytes)
+TCP: Hash tables configured (established 8192 bind 8192)
+UDP hash table entries: 512 (order: 2, 16384 bytes)
+UDP-Lite hash table entries: 512 (order: 2, 16384 bytes)
+NET: Registered protocol family 1
+RPC: Registered named UNIX socket transport module.
+RPC: Registered udp transport module.
+RPC: Registered tcp transport module.
+RPC: Registered tcp NFSv4.1 backchannel transport module.
+workingset: timestamp_bits=62 max_order=18 bucket_order=0
+squashfs: version 4.0 (2009/01/31) Phillip Lougher
+exFAT: Version 1.2.9
+fuse init (API version 7.26)
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 251)
+io scheduler noop registered
+io scheduler deadline registered
+io scheduler cfq registered (default)
+ambarella-gdma e0015000.gdma: Ambarella GDMA driver init
+e8005000.uart: ttyS0 at MMIO 0xe8005000 (irq = 10, base_baud = 18750000) is a ambuart
+console [ttyS0] enabled
+ambarella-uart e0032000.uart: Serial[1] use txdma
+ambarella-uart e0032000.uart: Serial[1] use rxdma
+e0032000.uart: ttyS1 at MMIO 0xe0032000 (irq = 27, base_baud = 187500) is a ambuart
+ambarella-uart e0033000.uart: Serial[2] use txdma
+ambarella-uart e0033000.uart: Serial[2] use rxdma
+e0033000.uart: ttyS2 at MMIO 0xe0033000 (irq = 28, base_baud = 187500) is a ambuart
+Unable to detect cache hierarchy for CPU 0
+brd: module loaded
+loop: module loaded
+SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256).
+CSLIP: code copyright 1989 Regents of the University of California.
+ambarella-wdt e800c000.wdt: Ambarella Watchdog Timer Probed.
+mmcblk0: mmc0:0001 DG4008 7.28 GiB 
+mmcblk0boot0: mmc0:0001 DG4008 partition 1 4.00 MiB
+mmcblk0boot1: mmc0:0001 DG4008 partition 2 4.00 MiB
+mmcblk0rpmb: mmc0:0001 DG4008 partition 3 4.00 MiB
+ mmcblk0: bst bld ptb atf pri rmd lnx raw
+input: AmbADCkey as /devices/platform/e8000000.apb/e801d000.adc/input/input0
+ambarella-adc e801d000.adc: ADC key input driver probed!
+ambarella-adc e801d000.adc: 2 channels
+Initializing XFRM netlink socket
+NET: Registered protocol family 17
+Key type dns_resolver registered
+console [netcon0] enabled
+netconsole: network logging started
+###[mount_root 545] [dump_stack start]
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.88 #1
+Hardware name: Roadefend AIBOX Board (DT)
+Call trace:
+[<ffffff8008086d40>] dump_backtrace+0x0/0x1e8
+[<ffffff8008086f3c>] show_stack+0x14/0x20
+[<ffffff8008309638>] dump_stack+0x94/0xb4
+[<ffffff8008621334>] mount_root+0xe0/0x164
+[<ffffff8008621518>] prepare_namespace+0x160/0x1a8
+[<ffffff8008620c8c>] kernel_init_freeable+0x1c4/0x1e4
+[<ffffff80084d5588>] kernel_init+0x10/0x100
+[<ffffff8008082680>] ret_from_fork+0x10/0x50
+###[mount_root 547] [dump_stack end]
+EXT4-fs (mmcblk0p7): recovery complete
+EXT4-fs (mmcblk0p7): mounted filesystem with ordered data mode. Opts: (null)
+VFS: Mounted root (ext4 filesystem) on device 179:7.
+devtmpfs: mounted
+Freeing unused kernel memory: 320K
+
+Welcome to Ambarella Flexible Linux S5L (1.5.0)!
+
+         Expecting device dev-ttyS0.device...
+[  OK  ] Reached target Network.
+[  OK  ] Reached target Remote File Systems.
+[  OK  ] Reached target Paths.
+[  OK  ] Reached target Swap.
+[  OK  ] Created slice Root Slice.
+[  OK  ] Listening on Delayed Shutdown Socket.
+[  OK  ] Listening on /dev/initctl Compatibility Named Pipe.
+[  OK  ] Listening on Journal Socket (/dev/log).
+[  OK  ] Listening on udev Kernel Socket.
+[  OK  ] Listening on udev Control Socket.
+[  OK  ] Created slice User and Session Slice.
+[  OK  ] Listening on Journal Socket.
+[  OK  ] Created slice System Slice.
+         Starting Remount Root and Kernel File Systems...
+         Starting udev Coldplug all Devices...dsp: loading out-of-tree module taints kernel.
+
+         Starting Setup Virtual Console...
+         Starting Load Kernel Modules...
+         Starting Apply Ambarella Specific Kernel Variables...
+         Mounting Debug Fimgproc: module license 'Proprietary' taints kernel.
+ile System...
+ Disabling lock debugging due to kernel taint
+        Mounting Huge Pages File System...
+         Mounting POSIX Message Queue File System...
+         Starting Create list of required static device nodes...rrent kernel...
+[  OK  ] Created slice system-serial\x2dgetty.slice.
+         Starting Journal Service...
+[  OK  ] Started Journal Service.
+asoc-simple-card sound: nau8810-hifi <-> e001a000.i2s mapping ok
+[  OK  ] Reached target Slices.
+asoc-simple-card sound: amba_dummy_codec <-> e001a000.i2s mapping ok
+asoc-simple-card sound: ASoC: no sink widget found for LMICN
+asoc-simple-card sound: ASoC: Failed to add route Mic Internal -> direct -> LMICN
+asoc-simple-card sound: ASoC: no sink widget found for LMICP
+asoc-simple-card sound: ASoC: Failed to add route Mic Internal -> direct -> LMICP
+asoc-simple-card sound: ASoC: no source widget found for RSPK
+asoc-simple-card sound: ASoC: Failed to add route RSPK -> direct -> Speaker
+asoc-simple-card sound: ASoC: no source widget found for LSPK
+asoc-simple-card sound: ASoC: Failed to add route LSPK -> direct -> Speaker
+         Mounting Temporary Directory...
+[  OK  ] Mounted POSIX Message Queue File System.
+[  OK  ] Mounted Huge Pages File System.
+ambarella-spi e0022000.spi: Ambarella spi controller 2 created.
+[  OK  ] Mounted Debug File System.
+[  OK  ] Mounted Temporary Directory.
+[  OK  ] Started Remount Root and Kernel File Systems.
+[  OK  ] Started Setup Virtual Console.
+[  OK  ] Started Apply Ambarella Specific Kernel Variables.
+[  OK  ] Started Create list of required static device nodes ...current kernel.
+[  OK  ] Started udev Coldplug all Devices.
+         Starting Create Static Device Nodes in /dev...
+         Starting Load/Save Random Seed...
+[  OK  ] Started Create Static Device Nodes in /dev.
+[  OK  ] Started Load/Save Random Seed.
+         Starting udev Kernel Device Manager...
+[  OK  ] Reached target Local File Systems (Pre).
+systemd-udevd[157]: starting version 215
+         Mounting /var/lib/pulse...
+         Mounting /var/run...
+         Mounting /var/tmp...
+[  OK  ] Mounted /var/tmp.
+[  OK  ] Mounted /var/run.
+input: gpio_keys as /devices/platform/gpio_keys/input/input1
+[  OK  ] Mounted /var/lib/pulse.
+[  OK  ] Started udev Kernel Device Manager.
+ambarella-udc e0006000.udc: ambarella_udc: version 21 Jan 2016
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+libphy: Fixed MDIO Bus: probed
+ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+ehci-ambarella: AMBARELLA-EHCI Host Controller driver
+[  OK  ] Found device /dev/ttyS0.
+ambarella-ehci e0018000.ehci: EHCI Host Controller
+ambarella-ehci e0018000.ehci: new USB bus registered, assigned bus number 1
+[  OK  ] Reached target Sound Card.
+ambarella-ehci e0018000.ehci: irq 30, io mem 0xe0018000
+[  OK  ] Reached target Local File Systems.
+ambarella-ehci e0018000.ehci: USB 2.0 started, EHCI 1.00
+         Starting Trigger Flushing of Journal to Persistent Storausb usb1: New USB device found, idVendor=1d6b, idProduct=0002
+ge...
+usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb1: Product: EHCI Host Controller
+usb usb1: Manufacturer: Linux 4.9.88 ehci_hcd
+usb usb1: SerialNumber: AmbUSB
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+ambarella-ohci e0019000.ohci: Ambarella OHCI
+ambarella-ohci e0019000.ohci: new USB bus registered, assigned bus number 2
+ambarella-ohci e0019000.ohci: irq 31, io mem 0xe0019000
+         Starting Create Volatile Files and Directories...
+[  OK  ] Started Create Volatile Files and Directories.
+systemd-journald[135]: Received request to flush runtime journal from PID 1
+usb usb2: New USB device found, idVendor=1d6b, idProduct=0001
+usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb2: Product: Ambarella OHCI
+usb usb2: Manufacturer: Linux 4.9.88 ohci_hcd
+usb usb2: SerialNumber: AmbUSB
+hub 2-0:1.0: USB hub found
+hub 2-0:1.0: 1 port detected
+[  OK  ] Started Trigger Flushing of Journal to Persistent Storage.
+         Starting Update UTMP about System Boot/Shutdown...
+[  OK  ] Started Update UTMP about System Boot/Shutdown.
+libphy: Ambarella MDIO Bus: probed
+ambarella-eth e000e000.ethernet: Enhance Ethernet PHY[0]: 0x0007c0f1!
+ambarella-eth e000e000.ethernet: MAC Address[c6:29:88:b5:53:f4].
+using random self ethernet address
+using random host ethernet address
+usb0: HOST MAC 22:92:3d:f6:42:c5
+usb0: MAC 76:3b:18:b5:5d:95
+using random self ethernet address
+using random host ethernet address
+g_ether gadget: Ethernet Gadget, version: Memorial Day 2008
+g_ether gadget: g_ether ready
+[  OK  ] Started Load Kernel Modules.
+         Mounting FUSE Control File System...
+         Mounting Configuration File System...
+         Starting Apply Kernel Variables...
+[  OK  ] Mounted Configuration File System.
+[  OK  ] Mounted FUSE Control File System.
+[  OK  ] Started Apply Kernel Variables.
+[  OK  ] Reached target System Initialization.
+[  OK  ] Listening on Journal Gateway Service Socket.
+[  OK  ] Listening on Telnet Server Activation Socket.
+[  OK  ] Reached target Timers.
+[  OK  ] Listening on D-Bus System Message Bus Socket.
+[  OK  ] Listening on Sound System.
+[  OK  ] Reached target Sockets.
+[  OK  ] Reached target Basic System.
+         Starting Save/Restore Sound Card State...
+         Starting "Internet server daemon"...
+         Starting D-Bus System Message Bus...
+[  OK  ] Started D-Bus System Message Bus.
+         Starting Login Service...
+         Starting The nginx HTTP and reverse proxy server...
+         Starting Permit User Sessions...
+         Starting Simple CGI Server...
+         Starting Sound Service...
+[  OK  ] Started Save/Restore Sound Card State.
+[  OK  ] Started "Internet server daemon".
+[  OK  ] Started Permit User Sessions.
+         Starting Serial Getty on ttyS0...
+[  OK  ] Started Serial Getty on ttyS0.
+[  OK  ] Reached target Login Prompts.
+[  OK  ] Started Simple CGI Server.
+[  OK  ] Started Login Service.
+[  OK  ] Started The nginx HTTP and reverse proxy server.
+[  OK  ] Started Sound Service.
+         Starting "Init xCamera Script"...
+[  OK  ] Reached target Multi-User System.
+net eth0: adv: sym 0, asym: 0
+ambarella_fb bogus_bus:framebuffer@0: 720x576, clut8bpp, 8 bits per pixel
+ambarella_fb bogus_bus:framebuffer@1: 720x576, clut8bpp, 8 bits per pixel
+         Starting "Audio player daemon"...
+         Starting "UART ptmx Communication daemon"...
+[  OK  ] Started "UART ptmx Communication daemon".
+         Starting wifi route ppp0 service...
+[  OK  ] Started wifi route ppp0 service.
+[  OK  ] Started "Audio player daemon".
+         Starting "xCamera TCP server"...
+[  OK  ] Started "xCamera TCP server".
+         Starting "IDSP image 3A daemon"...
+[  OK  ] Started "IDSP image 3A daemon".
+random: crng init done
+
+
+Welcome to Ambarella
+Ambarella login: 

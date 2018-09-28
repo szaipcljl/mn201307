@@ -1,0 +1,99 @@
+
+1. load kernel modules
+----------------------
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-modules-load.service
+
+./usr/lib/systemd/system/systemd-modules-load.service:
+[Unit]
+Description=Load Kernel Modules
+Documentation=man:systemd-modules-load.service(8) man:modules-load.d(5)
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=systemd-readahead-collect.service systemd-readahead-replay.service
+Before=sysinit.target shutdown.target
+ConditionCapability=CAP_SYS_MODULE
+ConditionDirectoryNotEmpty=|/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/usr/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/usr/local/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/etc/modules-load.d
+ConditionDirectoryNotEmpty=|/run/modules-load.d
+ConditionKernelCommandLine=|modules-load
+ConditionKernelCommandLine=|rd.modules-load
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/systemd/systemd-modules-load
+
+notes:
+(a) ConditionCapability
+	检测 systemd 的 capability 集合中是否存在特定的 capabilities(7) 。
+	参数应设为例如 "CAP_MKNOD" 这样的 capability 名称。 注意，此选项不是检测特定的
+	capability 是否实际可用， 而是仅检测特定的 capability 在绑定集合中是否存在。
+	可以在名称前面加上感叹号(!)前缀表示逻辑反转。
+
+(b) ConditionDirectoryNotEmpty=
+	ConditionKernelCommandLine=
+	这组选项用于在启动单元之前，首先测试特定的条件是否为真。
+	若为真则开始启动，否则将会(悄无声息地)跳过此单元(仅是跳过，而不是进入"failed"状态)。 
+
+(c)
+# ls /etc/modules-load.d/
+ambarella.conf
+# cat /etc/modules-load.d/ambarella.conf
+# Load Ambarella device drivers
+iav
+ambdve
+b6
+ar0144_mipi_brg
+ar0230_brg
+sha204-i2c
+g_ether
+
+
+/etc/modprobe.d/ambarella.conf
+# Driver options
+options snd-soc-core pmdown_time=50
+
+options b6 id=0x101
+options ar0144_mipi_brg brg_id=0x0
+options ar0230_brg brg_id=0x1
+options snd-soc-nau8810-amb pwr_gpios_en=0
+# Force module load sequence
+softdep snd-soc-ambarella     pre: snd-soc-core
+softdep snd-soc-ambarella-i2s pre: snd-soc-ambarella
+softdep snd-soc-nau8810-amb   pre: snd-soc-ambarella-i2s
+softdep snd-soc-ambdummy      pre: snd-soc-nau8810-amb post: snd_soc_simple_card
+softdep snd_soc_simple_card   pre: snd-soc-ambdummy
+
+# Make iav depend on audio codec
+softdep iav     pre: snd_soc_simple_card
+
+# Make all other modules depend on iav
+softdep ambdve  pre: vout
+softdep ambhdmi pre: vout
+softdep ambad   pre: iav
+
+# backlight load sequence
+softdep pwm_pl  pre: backlight
+softdep backlight pre: pwm_ambarella
+softdep ohci-hcd pre: ehci_ambarella
+
+# Black list
+blacklist it66121
+blacklist snd-soc-ak4954-amb
+blacklist snd-soc-ak4642-amb
+blacklist ambarella_fb
+
+2. sensor driver
+----------------
+kernel/private/platform/vin/sensors/onsemi_ar0144_mipi_brg
+
+mipi ?
+720x1080?
+30fps?
+
+
+
+

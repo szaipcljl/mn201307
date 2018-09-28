@@ -1,0 +1,90 @@
+
+
+./usr/lib/systemd/system/systemd-remount-fs.service:9:Description=Remount Root and Kernel File Systems
+./usr/lib/systemd/system/local-fs.target.wants/systemd-remount-fs.service:9:Description=Remount Root and Kernel File Systems
+
+./usr/lib/systemd/system/systemd-udev-trigger.service:9:Description=udev Coldplug all Devices
+./usr/lib/systemd/system/sysinit.target.wants/systemd-udev-trigger.service:9:Description=udev Coldplug all Devices
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-vconsole-setup.service:9:Description=Setup Virtual Console
+./usr/lib/systemd/system/systemd-vconsole-setup.service:9:Description=Setup Virtual Console
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-modules-load.service:9:Description=Load Kernel Modules
+./usr/lib/systemd/system/systemd-modules-load.service:9:Description=Load Kernel Modules
+
+./usr/lib/systemd/system/proc-ambarella-parameter.service:9:Description=Apply Ambarella Specific Kernel Variables
+./usr/lib/systemd/system/sysinit.target.wants/proc-ambarella-parameter.service:9:Description=Apply Ambarella Specific Kernel Variables
+
+./usr/lib/systemd/system/sysinit.target.wants/kmod-static-nodes.service:9:Description=Create list of required static device nodes for the current kernel
+./usr/lib/systemd/system/kmod-static-nodes.service:9:Description=Create list of required static device nodes for the current kernel
+
+./usr/lib/systemd/system/systemd-journald.service:9:Description=Journal Service
+./usr/lib/systemd/system/sysinit.target.wants/systemd-journald.service:9:Description=Journal Service
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup-dev.service:9:Description=Create Static Device Nodes in /dev
+./usr/lib/systemd/system/systemd-tmpfiles-setup-dev.service:9:Description=Create Static Device Nodes in /dev
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-random-seed.service:9:Description=Load/Save Random Seed
+./usr/lib/systemd/system/systemd-random-seed.service:9:Description=Load/Save Random Seed
+
+./usr/lib/systemd/system/systemd-udevd.service:9:Description=udev Kernel Device Manager
+./usr/lib/systemd/system/sysinit.target.wants/systemd-udevd.service:9:Description=udev Kernel Device Manager
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-journal-flush.service:9:Description=Trigger Flushing of Journal to Persistent Storage
+./usr/lib/systemd/system/systemd-journal-flush.service:9:Description=Trigger Flushing of Journal to Persistent Storage
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup.service:9:Description=Create Volatile Files and Directories
+./usr/lib/systemd/system/systemd-tmpfiles-setup.service:9:Description=Create Volatile Files and Directories
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-update-utmp.service:9:Description=Update UTMP about System Boot/Shutdown
+./usr/lib/systemd/system/systemd-update-utmp.service:9:Description=Update UTMP about System Boot/Shutdown
+
+./usr/lib/systemd/system/sysinit.target.wants/systemd-sysctl.service:9:Description=Apply Kernel Variables
+./usr/lib/systemd/system/systemd-sysctl.service:9:Description=Apply Kernel Variables
+
+./usr/lib/systemd/system/basic.target.wants/alsa-restore.service:7:Description=Save/Restore Sound Card State
+./usr/lib/systemd/system/alsa-restore.service:7:Description=Save/Restore Sound Card State
+
+./etc/systemd/system/inetd.service:2:Description="Internet server daemon"
+./etc/systemd/system/multi-user.target.wants/inetd.service:2:Description="Internet server daemon"
+
+./usr/lib/systemd/system/dbus.service:2:Description=D-Bus System Message Bus
+./usr/lib/systemd/system/multi-user.target.wants/dbus.service:2:Description=D-Bus System Message Bus
+
+./usr/lib/systemd/system/dbus-org.freedesktop.login1.service:9:Description=Login Service
+./usr/lib/systemd/system/multi-user.target.wants/systemd-logind.service:9:Description=Login Service
+./usr/lib/systemd/system/systemd-logind.service:9:Description=Login Service
+
+./usr/lib/systemd/system/multi-user.target.wants/nginx.service:2:Description=The nginx HTTP and reverse proxy server
+./usr/lib/systemd/system/nginx.service:2:Description=The nginx HTTP and reverse proxy server
+
+./usr/lib/systemd/system/multi-user.target.wants/systemd-user-sessions.service:9:Description=Permit User Sessions
+./usr/lib/systemd/system/systemd-user-sessions.service:9:Description=Permit User Sessions
+
+./usr/lib/systemd/system/fcgiwrap.service:2:Description=Simple CGI Server
+./usr/lib/systemd/system/multi-user.target.wants/fcgiwrap.service:2:Description=Simple CGI Server
+
+./usr/lib/systemd/system/multi-user.target.wants/pulseaudio.service:2:Description=Sound Service
+./usr/lib/systemd/system/pulseaudio.service:2:Description=Sound Service
+
+./usr/lib/systemd/system/serial-getty@.service:9:Description=Serial Getty on %I
+
+./etc/systemd/system/init-xcam.service:2:Description="Init xCamera Script"
+
+./usr/local/lib/systemd/system/aplayd.service:2:Description="Audio player daemon"
+
+./usr/local/lib/systemd/system/uart-ptmx.service:2:Description="UART ptmx Communication daemon"
+
+./usr/local/lib/systemd/system/ip-route.service:2:Description=wifi route ppp0 service
+
+./usr/local/lib/systemd/system/netsvr.service:2:Description="xCamera TCP server"
+
+./usr/local/lib/systemd/system/idsp-image.service:2:Description="IDSP image 3A daemon"
+
+
+
+
+
+
+
+

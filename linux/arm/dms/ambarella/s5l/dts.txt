@@ -1,0 +1,1 @@
+boards/aibox/bsp/aibox.dts

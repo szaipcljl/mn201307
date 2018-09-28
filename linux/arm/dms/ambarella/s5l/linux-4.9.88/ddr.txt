@@ -1,0 +1,6 @@
+
+s5l66_aibox_913_ddr3.ini
+  <DRAM_SIZE value="8 Gbits"/>
+
+  bst:有个bstconfig
+  see system doc

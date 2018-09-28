@@ -1,0 +1,25 @@
+
+chris@qzsw-R730:~/projects/RDA602$ find . -name "init.sh"
+./device/s5l/app/utility/amb_scripts/init.sh
+./out/aibox/fakeroot/usr/local/bin/init.sh
+./kernel/private/platform/uvc/Document/example/init.sh
+
+chris@qzsw-R730:~/projects/RDA602$ grep -nsR "init.sh" out/aibox/fakeroot/ 
+out/aibox/fakeroot/usr/local/bin/fisheye_dewarp.sh:31:/usr/local/bin/init.sh --imx172;
+out/aibox/fakeroot/usr/local/bin/playback_4k.sh:31:/usr/local/bin/init.sh --na
+out/aibox/fakeroot/usr/local/bin/mediaserver.sh:31:/usr/local/bin/init.sh "$1"
+out/aibox/fakeroot/usr/local/bin/shmoo.sh:43:/usr/local/bin/init.sh "$1"
+out/aibox/fakeroot/usr/local/bin/demo.sh:48:	/usr/local/bin/init.sh "$1"
+out/aibox/fakeroot/usr/local/bin/demo.sh:76:	/usr/local/bin/init.sh $init_cmd
+out/aibox/fakeroot/usr/local/bin/demo.sh:110:	/usr/local/bin/init.sh --mn34220pl
+out/aibox/fakeroot/usr/local/bin/demo.sh:116:	/usr/local/bin/init.sh --mn34220pl
+out/aibox/fakeroot/usr/local/bin/demo.sh:122:	/usr/local/bin/init.sh --imx172
+out/aibox/fakeroot/usr/local/bin/demo.sh:128:	/usr/local/bin/init.sh --imx290
+out/aibox/fakeroot/usr/local/bin/demo.sh:135:	/usr/local/bin/init.sh --imx226
+out/aibox/fakeroot/usr/local/bin/aoss.sh:88:	/usr/local/bin/init.sh --na
+out/aibox/fakeroot/usr/local/bin/aoss.sh:123:	/usr/local/bin/init.sh --ov2710
+out/aibox/fakeroot/usr/local/bin/aoss.sh:150:	/usr/local/bin/init.sh --mt9p031
+out/aibox/fakeroot/usr/local/bin/efm_test.sh:215:/usr/local/bin/init.sh --$sensor
+Binary file out/aibox/fakeroot/usr/lib/libimg_algo_s5l_dyn.so matches
+Binary file out/aibox/fakeroot/lib/firmware/orccode.bin matches
+

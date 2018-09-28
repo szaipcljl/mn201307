@@ -1,0 +1,280 @@
+video input control unit
+========================
+
+IAV driver
+=========
+reference:
+----------
+see S5L-SDK-002-1.5-Ambarella_S5L_DG_Flexible_Linux_SDK_IAV_Driver.pdf
+
+1.overview
+--------------------
+(1) the IAV driver provides mechanisms to control some of the lower level hardware
+	devices, such as the VIN module(sensor), VOUT module, and DSP cores.
+	exposing a series of APIs that can be invoked by ioctl() system calls.
+	including control of image, audio and video.
+(2) allows for coordination of the system to read the input image stream,
+	process the image stream, and encode the image stream to an H.264 and/or
+	Motion-JPEG bit stream.
+
+the work flow of the data process:
+
+   +-----+    +------------+    +---------+     +----------+
+   |     |    |            |    | VOUT    |     | Audio    |
+   | VIN |--->|  Image     |--->| Preview |     | Codec    |
+   |     |    | Processing |    |         |     |          |
+   +-----+    +------------+    +---------+     +----------+
+                         |
+                         +--------+
+                                  v
+              +---------+       +----------+    +----------+
+              |         |       |  Video   |    | Video    |
+              | Overlay |------>| Encoding |--->| Encoding |
+              |         |       |          |    |          |
+              +---------+       +----------+    +----------+
+
+1.3 Key Features of the APIs
+----------------------------
+(1) several groups of APIs that the application level software can invoke to
+control the entire data processing flow. The APIs allow for control of the
+following functionality:
+	a. VIN control unit
+	b. VOUT conrtol unit
+	c. Image processing
+	d. H.265 / H.264 / Motion-JPEG encode
+	e. RAW image / YUV image / ME1 image / ME0 image capture
+(2) the key features of the API package may be summarized as follows:
+	//todo
+
+1.4 IAV Driver State Model
+--------------------------
+	a state machine
+	//todo
+
+1.5 Encoding Data Flow
+----------------------
+	//todo
+
+1.6 Decoding Feed Data
+----------------------
+
+
+**********************************************************************
+
+a. VIN control unit
+===================
+
+sendor -> b6 -> vin
+
+code path
+---------
+kernel/private/platform/
+├── crypto
+├── cryptochip
+│   └── atmel_atsha204
+├── debug
+├── dsplog
+├── eis
+├── gyro
+│   └── mpu9250_spi
+├── uvc
+│   ├── Document
+│   │   ├── example
+│   │   └── screenshot
+│   │       └── uac_48k_switch_to_16k
+│   └── src
+└── vin
+    ├── bridges
+    │   └── ambrg
+    │       ├── b5
+    │       └── b6
+    ├── decoders
+    │   ├── adv7441a
+    │   ├── ambdd
+    │   ├── lt6911
+    │   └── tc358840
+    └── sensors
+        ├── micron_ar0230_brg
+        ├── onsemi_ar0144_mipi_brg
+
+
+sensor
+======
+source code path and build
+--------------------------
+(1) target
+aibox board:
+/lib/modules/4.9.88/extra/ar0144_mipi_brg.ko
+
+(2) dir
+onsemi_ar0144_mipi_brg/
+├── ar0144.c
+├── ar0144.h
+├── ar0144_table.c
+├── Kbuild
+└── make.inc
+
+
+(3) build
+platform/vin/sensors/onsemi_ar0144_mipi_brg/Kbuild:
+obj-m := ar0144_mipi_brg.o
+ar0144_mipi_brg-y := ar0144.o
+
+code analysis
+-------------
+ar0144.c
+
+struct
+------
+struct vin_device *vdev; //a vin device
+struct vin_brg_config ar0144_brg_cfg; //for vin bridge
+struct vin_brg_info brg_info;
+
+
+
+
+
+
+
+
+(1)
+module_init(ar0144_init);
+module_exit(ar0144_exit);
+MODULE_DESCRIPTION("AR0144 1/4-Inch, 1280x800, 1.0-Megapixel CMOS Digital Image Sensor");
+
+ar0144_init
+|-> ar0144_probe
+
+(2) ar0144_probe
+	<1> amba_brg_query_info(brg_id, &brg_info) [platform/vin/bridges/ambrg/ambrg.c]
+	// after loading bridge driver first, bridge list should not be empty
+	// find bridge with brg_id, and populate vin_brg_info struct's name field and
+	// max_chan field. now, the sensor has been bind to bridge specified by brg_id
+
+	notes:
+	------
+	static int brg_id = 0xF;
+	module_param(brg_id, int, 0644);
+	MODULE_PARM_DESC(brg_id, "indicate which bridge is bind to");
+
+	brg_id is a module param, it will be specified when modprobe, see
+	etc/modprobe.d/ambarella.conf:
+		options ar0144_mipi_brg brg_id=0x0
+
+	<2> allocate a vin_device struct, and initialize it
+	vdev = ambarella_vin_create_device("ar0144",
+		SENSOR_AR0144, sizeof(struct ar0144_priv)); [private/drivers/iav/arch_s5l/iav_vin.c]
+	// kzalloc a vin_device struct, and specify the name and sensor_id
+
+	initialize intf_id, dev_type, sub_type, default_mode, default_hdr_mode,
+	agc_db_max, agc_db_min and agc_db_step fields
+
+
+	notes:
+	enum {  // device/s5l/include/iav_vin_ioctl.h:112:
+		//...
+		SENSOR_AR0144 = 0x0000000C,
+		//...
+	};
+
+	<3>  populate vin_brg_config struct(i2c control register), and register vin device
+
+	/* i2c control register */
+	ar0144_brg_cfg.intf_type = AMBA_VIN_BRG_SEN_USE_I2C;
+	ar0144_brg_cfg.dev_addr = addr;
+	ar0144_brg_cfg.reg_addr_width = 16;
+	ar0144_brg_cfg.reg_data_width = 16;
+
+	rval = amba_brg_register_device(vdev, &ar0144_ops,
+		ar0144_brg_formats, ARRAY_SIZE(ar0144_brg_formats),
+		ar0144_plls, ARRAY_SIZE(ar0144_plls),
+		sizeof(struct ar0144_priv), &ar0144_brg_cfg);
+	//[vin/bridges/ambrg/ambrg.c]
+
+	notes:
+	(a)
+	static int addr = 0x20 >> 1;
+	module_param(addr, int, 0644);
+	MODULE_PARM_DESC(addr, "device address");
+
+	addr is a module param, and the default value is 0x20>>1;
+
+	(b)
+	the device will be registered into ambrg_list
+
+	(c) ar0144_brg_formats is defined in ar0144_table.c:
+		static struct vin_video_format ar0144_brg_formats[] = {
+			{
+			},
+		};
+
+	(d)
+		static struct vin_ops ar0144_ops = {
+			.init_device		= ar0144_init_device,
+			.set_format		= ar0144_set_format,
+			.set_shutter_row	= ar0144_set_shutter_row,
+			.shutter2row		= ar0144_shutter2row,
+			.set_frame_rate	= ar0144_set_fps,
+			.set_agc_index	= ar0144_set_agc_index,
+			.set_mirror_mode	= ar0144_set_mirror_mode,
+			.read_reg			= ar0144_read_reg,
+			.write_reg		= ar0144_write_reg,
+		};
+	(e) 
+	static struct vin_video_pll ar0144_plls[] = { [ar0144_table.c]
+		{0, 27000000, 74250000},
+	};
+
+
+
+
+	+-------------------+
+    | struct vin_device |
+    +-------------------+
+
+
+    +----------------+ 1.memcpy    +------------------------+  
+    | struct vin_ops |------------>| struct vin_ops tmp_ops |--> sensor_ctrl.ops
+    +----------------+             +------------------------+
+
+   +-------------------------+          +-------------------------+
+   | struct vin_video_format | memcpy   | struct vin_video_format |
+   |  r0144_brg_formats[]    |-------->| *tmp_formats;           | 
+   +-------------------------+          +-------------------------+
+
+
+   +----------------------+               
+   | struct vin_video_pll |
+   | ar0144_plls[]        |
+   +----------------------+               
+
+
+
+
+
+    ambrg_list
+   +-----------------------+
+   | struct vin_brg_device |    struct vin_brg_device
+   +-----------------------+    +--------------------+
+   | struct vin_brg_device |    |  sensor_ctrl.ops   |
+   +-----------------------+    |                    |
+   | struct vin_brg_device |    |                    |
+   +-----------------------+    |                    |
+                                |                    |
+                                |                    |
+                                +--------------------+
+//todo
+
+	<4> ambarella_vin_free_device(vdev);
+	due to the info in vdev has been copy to ambrg_list's memeber by memcpy
+
+
+
+(3) APIs
+
+
+
+Q&A
+===
+see S5L-SDK-002-1.5-Ambarella_S5L_DG_Flexible_Linux_SDK_IAV_Driver.pdf
+Q1: how to checks the total VIN source and sets the last VIN source as the active source.

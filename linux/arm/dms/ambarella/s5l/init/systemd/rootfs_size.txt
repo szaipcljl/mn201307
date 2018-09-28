@@ -55,13 +55,22 @@ make menuconfig
 
 
 ======================
-you can also modify config/s5l22_aibox_config
+(1) you can also modify config/s5l22_aibox_config:
 CONFIG_AMBARELLA_ROOTFS_SIZE=262144
 
 CONFIG_AMBARELLA_ROOTFS_SIZE=524288
 
 now, the new value is set by default
 
+(2) boards/aibox/bsp/bsp.h
+-#define AMBOOT_LNX_SIZE                (CONFIG_AMBARELLA_ROOTFS_SIZE * 1024)
++#define AMBOOT_LNX_SIZE                (524288 * 1024)
+
+s5l boards shell:
+# df 
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               375.0M    245.6M    106.2M  70% /
+
 ----------
-drivers/block/brd.c:446:int rd_size = CONFIG_BLK_DEV_RAM_SIZE;
+/*drivers/block/brd.c:446:int rd_size = CONFIG_BLK_DEV_RAM_SIZE;*/
 

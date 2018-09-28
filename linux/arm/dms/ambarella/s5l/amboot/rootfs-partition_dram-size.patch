@@ -1,0 +1,53 @@
+diff --git a/aibox/bsp/bsp.h b/aibox/bsp/bsp.h
+index 0b0bd38..92da2fa 100755
+--- a/aibox/bsp/bsp.h
++++ b/aibox/bsp/bsp.h
+@@ -78,7 +78,11 @@
+ #define AMBOOT_ADC_SIZE		0
+ #endif
+ 
++#ifdef CONFIG_BOARD_VERSION_S5L66_AIBOX_912_DDR3
++#define DRAM_SIZE		0x40000000
++#else
+ #define DRAM_SIZE		0x20000000
++#endif
+ 
+ #define	DEFAULT_GPIO0_AFSEL	0xFDF001EB
+ #define	DEFAULT_GPIO0_DIR	0x020FC210
+diff --git a/aibox/bsp/s5l66_aibox_912_ddr3.ini b/aibox/bsp/s5l66_aibox_912_ddr3.ini
+index 6e2ca84..dd8229a 100755
+--- a/aibox/bsp/s5l66_aibox_912_ddr3.ini
++++ b/aibox/bsp/s5l66_aibox_912_ddr3.ini
+@@ -37,7 +37,7 @@
+   <NAND_TIMING_INTERVAL_0 value="0x20202020"/>
+   <DRAM_ZQ_CALIB value="0x60"/>
+   <DRAM_TYPE value="DDR3"/>
+-  <DRAM_SIZE value="4 Gbits"/>
++  <DRAM_SIZE value="8 Gbits"/>
+   <DRAM_RSVD_SPACE value="0x00100000"/>
+   <DRAM_RESET_CTRL_GPIO value="-1"/>
+   <DRAM_FREQUENCY value="912 MHz"/>
+diff --git a/aibox/config/s5l22_aibox_config b/aibox/config/s5l22_aibox_config
+index 226328d..8768b01 100755
+--- a/aibox/config/s5l22_aibox_config
++++ b/aibox/config/s5l22_aibox_config
+@@ -49,7 +49,7 @@ MEMFWPROG_RAM_START=0x00400000
+ #
+ KERNEL_RAM_START=0x00280000
+ AMBARELLA_INITRD_PHYS=0x00800000
+-IDSP_RAM_START=0x10000000
++IDSP_RAM_START=0x22200000
+ DSP_FASTDATA_SIZE=0x0000000
+ DSP_FASTAUDIO_SIZE=0x0000000
+ FRAMEBUFFER_SIZE=0x0000000
+@@ -543,8 +543,8 @@ CONFIG_AMBARELLA_ROOT_PASSWORD=""
+ CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
+ # CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
+ # CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
+-#CONFIG_AMBARELLA_ROOTFS_SIZE=524288
+-CONFIG_AMBARELLA_ROOTFS_SIZE=458752
++CONFIG_AMBARELLA_ROOTFS_SIZE=819200
++#CONFIG_AMBARELLA_ROOTFS_SIZE=458752
+ #CONFIG_AMBARELLA_ROOTFS_SIZE=393216
+ CONFIG_AMBARELLA_ROOTFS_INODES=6000
+ # CONFIG_AMBARELLA_USB0 is not set

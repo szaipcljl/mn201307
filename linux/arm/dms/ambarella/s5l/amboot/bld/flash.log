@@ -1,0 +1,332 @@
+
+Boot From: USB 
+SYS_CONFIG: 0x001f046f, POC: 111
+Cortex freq: 720000000
+iDSP freq: 432000000
+Dram freq: 456000000
+Core freq: 432000000
+AHB freq: 216000000
+APB freq: 108000000
+ENET freq: 50000000
+SD freq: 25000000
+SDXC freq: 50000000
+Entered USB download mode (2)...
+init_usb_dev done
+init_usb_hardware done
+entering usb_task
+
+Boot From: USB 
+SYS_CONFIG: 0x001f046f, POC: 111
+Cortex freq: 720000000
+iDSP freq: 432000000
+Dram freq: 456000000
+Core freq: 432000000
+AHB freq: 216000000
+APB freq: 108000000
+ENET freq: 50000000
+SD freq: 25000000
+SDXC freq: 50000000
+Entered USB download mode (2)...
+init_usb_dev done
+init_usb_hardware done
+entering usb_task
+Start to send data 16 bytes...
+Send completed!
+entering usb_task
+start to recv data, crc=0x6960a86b
+total rcv data length = 4152 bytes, crc32 = 0x6960a86b
+entering usb_task
+start to recv data, crc=0x61b82f98
+total rcv data length = 12 bytes, crc32 = 0x61b82f98
+entering usb_task
+start to recv data, crc=0x2144df1c
+total rcv data length = 4 bytes, crc32 = 0x2144df1c
+entering usb_task
+start to recv data, crc=0x45392e0e
+total rcv data length = 16 bytes, crc32 = 0x45392e0e
+entering usb_task
+start to recv data, crc=0x5c45d2a7
+\total rcv data length = 476658252 bytes, crc32 = 0x5c45d2a7
+Start to run...
+
+#mn:ambaboot/src/bld/memfwprog.c main
+
+------------------------------------------------------
+In-memory Firmware Flash Programming Utility (by C.C.)
+Ambarella(R) Copyright (C) 2004-2008
+------------------------------------------------------
+Version: 3.7 - 2018��年09��月20��日 17:29:20 - 4b964b6-dirty
+#mn:ambaboot/src/bld/rct.c rct_show_boot_from: 
+Boot From: EMMC(SD) 4Bit DS 
+#mn:ambaboot/src/bld/rct.c rct_show_pll: 
+SYS_CONFIG: 0x001f046f, POC: 111
+Cortex freq: 720000000
+iDSP freq: 432000000
+Dram freq: 456000000
+Core freq: 432000000
+AHB freq: 216000000
+APB freq: 108000000
+ENET freq: 50000000
+SD freq: 25000000
+SDXC freq: 50000000
+#mn:ambaboot/src/bld/memfwprog.c main: 
+
+hook_pre_memfwprog
+#mn: bsp/bsp_fw.c hook_pre_memfwprog
+
+bst code found in firmware
+        crc32:          0xeaf4c4f9
+        ver_num:        3.7
+        ver_date:       2018/9/20
+        img_len:        4096
+        mem_addr:       0x00000000
+        flag:           0x00000001
+        magic:          0xa324eb90
+verifying image crc ... done
+program bst into SD
+Set eMMC BOOT_BUS_WIDTH: 4Bit DS
+Set eMMC PARTITION_CONFIG: BP1
+progress: 100%
+program ok
+
+bld code found in firmware
+        crc32:          0x5146be97
+        ver_num:        3.7
+        ver_date:       2018/9/20
+        img_len:        168912
+        mem_addr:       0x00000000
+        flag:           0x00000000
+        magic:          0xa324eb90
+verifying image crc ... done
+program bld into SD
+progress: 100%
+program ok
+
+pri code found in firmware
+        crc32:          0x2279084c
+        ver_num:        3.7
+        ver_date:       2018/9/20
+        img_len:        6596616
+        mem_addr:       0x00280000
+        flag:           0x00000000
+        magic:          0xa324eb90
+verifying image crc ... done
+program pri into SD
+progress: 100%
+program ok
+
+lnx code found in firmware
+        crc32:          0x29eb3f16
+        ver_num:        3.7
+        ver_date:       2018/9/20
+        img_len:        469762048
+        mem_addr:       0x00000000
+        flag:           0x00000001
+        magic:          0xa324eb90
+verifying image crc ... done
+program lnx into SD
+progress: 100%
+program ok
+
+DTB found in firmware!
+
+program ok
+#mn:ambaboot/src/bld/memfwprog.c main: 
+
+------ Report ------
+bst:    success
+bld:    success
+pri:    success
+lnx:    success
+#mn:ambaboot/src/bld/memfwprog.c main: 
+
+hook_post_memfwprog
+#mn: bsp/bsp_fw.c hook_post_memfwprog
+#mn:ambaboot/src/bld/memfwprog.c main: 
+
+        - Program Terminated -
+#mn:ambaboot/src/bld/memfwprog.c main: 
+
+        - Re-enter USB Download Mode to Verify -
+
+Boot From: USB 
+SYS_CONFIG: 0x001f046f, POC: 111
+Cortex freq: 720000000
+iDSP freq: 432000000
+Dram freq: 456000000
+Core freq: 432000000
+AHB freq: 216000000
+APB freq: 108000000
+ENET freq: 50000000
+SD freq: 25000000
+SDXC freq: 50000000
+Entered USB download mode (2)...
+init_usb_dev done
+init_usb_hardware done
+entering usb_task
+
+
+ambaboot source code
+**************************************
+(1)Boot From: USB 
+
+src/bld/rct.c
+
+void rct_show_boot_from(u32 boot_from)
+{
+	printf("Boot From: ");
+	...
+	switch (boot_from) {
+	case RCT_BOOT_FROM_NAND:
+		...
+}
+
+
+(2)
+SYS_CONFIG: 0x001f046f, POC: 111
+Cortex freq: 720000000
+iDSP freq: 432000000
+Dram freq: 456000000
+Core freq: 432000000
+AHB freq: 216000000
+APB freq: 108000000
+ENET freq: 50000000
+SD freq: 25000000
+SDXC freq: 50000000
+
+src/bld/rct.c
+
+void rct_show_pll(void)
+{
+	u32 sysconfig = readl(SYS_CONFIG_REG);
+	int pll_freq;
+
+	printf("SYS_CONFIG: 0x%08x, POC: %03b\n", sysconfig, (sysconfig >> 1) & 0x7);
+	printf("Cortex freq: %d\n", get_cortex_freq_hz());
+	printf("iDSP freq: %d\n", get_idsp_freq_hz());
+	printf("Dram freq: %d\n", get_ddr_freq_hz());
+	printf("Core freq: %d\n", get_core_bus_freq_hz());
+	printf("AHB freq: %d\n", get_ahb_bus_freq_hz());
+	printf("APB freq: %d\n", get_apb_bus_freq_hz());
+
+	pll_freq = get_enet_freq_hz();
+	if (pll_freq)
+		printf("ENET freq: %d\n", pll_freq);
+
+	pll_freq = get_sd_freq_hz();
+	if (pll_freq)
+		printf("SD freq: %d\n", pll_freq);
+
+	pll_freq = get_sdio_freq_hz();
+	if (pll_freq)
+		printf("SDIO freq: %d\n", pll_freq);
+
+	pll_freq = get_sdxc_freq_hz();
+	if (pll_freq)
+		printf("SDXC freq: %d\n", pll_freq);
+}
+
+(3)
+Entered USB download mode (2)...
+
+src/bld/usb_drv.c
+
+
+void usb_boot(u8 usbdl_mode)
+{
+	int flag = 0;
+
+	usb_boot_logo();
+
+	init_usb_pll();
+	switch (usbdl_mode)
+	{
+	case 0x80:	/* Useless? */
+		flag = USB_FLAG_FW_PROG;
+		break;
+	case USB_DL_NORMAL:
+		flag = USB_FLAG_KERNEL;
+		break;
+	case USB_DL_DIRECT_USB:
+		flag = 0;
+		break;
+	}
+
+	printf("#mn: Entered USB download mode (%d)...\n", usbdl_mode);
+	usb_download((void *)MEMFWPROG_RAM_START, 0, flag);
+}
+
+
+config/amboot.mem.in:
+config MEMFWPROG_RAM_START
+	hex "Firmware programmer starting address"
+	default 0x00400000
+	help
+		The firmware programmer starting address - The firmware
+		programmer will be downloaded into dram and run itself
+		to program corresponding firmware image into storage media.
+
+./src/bld/arm64/run_once.S:70:memfwprog_start_address:	.word MEMFWPROG_RAM_START
+
+
+(4)init_usb_dev done
+src/bld/usb_drv.c
+init_usb_dev
+
+(5)
+init_usb_hardware done
+init_usb_hardware
+
+usb_init
+{
+	/* initialize software data structure */
+	init_usb_dev();
+
+	/* initialize hardware */
+	init_usb_hardware();
+
+	request_irq(USBC_IRQ, IRQ_LEVEL_HIGH, usb_isr, NULL);
+
+	/* re-enable USB connection by SW */
+	writel(USB_DEV_CTRL_REG, readl(USB_DEV_CTRL_REG) | USB_DEV_REMOTE_WAKEUP);
+}
+
+
+
+
+(6)
+
+entering usb_task
+Start to send data 16 bytes...
+Send completed!
+
+usb_task
+|-> rx_fsm
+	|-> process_cmd_send_data
+
+"Send completed!"
+usb_task
+|-> process_bulk_in
+
+(7)
+
+entering usb_task
+start to recv data, crc=0x93554d41
+total rcv data length = 12 bytes, crc32 = 0x93554d41
+
+rx_fsm
+|-> process_cmd_recv_data
+
+******************
+usb_drv.c: usb_download
+-> MEMFWPROG_RAM_START
+
+
+
+bld/memfwprog.c
+main
+|-> fwprog_cmd = (fwprog_cmd_t *) &__memfwprog_command;
+	printf("\nhook_pre_memfwprog\n");
+|-> hook_pre_memfwprog(fwprog_cmd);
+
+hook_pre_memfwprog [boards/aibox/bsp/bsp_fw.c]

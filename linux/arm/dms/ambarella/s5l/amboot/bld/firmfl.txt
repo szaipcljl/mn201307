@@ -1,0 +1,13 @@
+
+
+main [src/bld/memfwprog.c]
+|-> flprog_write_partition [Amboot/src/bld/firmfl.c]
+
+
+log see flash.log
+
+-------------------
+src/bld/usb_drv.c
+
+usb_download
+|-> printf("Start to run...\n");

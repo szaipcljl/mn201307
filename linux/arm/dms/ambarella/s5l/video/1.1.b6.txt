@@ -1,0 +1,162 @@
+
+b6
+
+platform/vin/bridges/ambrg
+
+build target
+-------------
+lib/modules/4.9.88/extra/ambrg.ko 
+lib/modules/4.9.88/extra/b6.ko
+
+
+path
+----
+
+platform/vin/bridges/ambrg/
+├── ambrg.c
+├── b5
+│   └── //...
+├── b6
+│   ├── b6.c
+│   ├── b6_compress.c
+│   ├── b6.h
+│   ├── b6_i2c.c
+│   ├── b6_i2c.h
+│   ├── b6_link.c
+│   ├── b6_pll.c
+│   ├── b6_vin.c
+│   ├── b6_vout.c
+│   ├── b6_vout.h
+│   ├── Kbuild
+│   └── make.inc
+├── Kbuild
+└── make.inc
+
+
+ambrg/Kbuild
+obj-m := ambrg.o
+
+ambrg/b6/Kbuild
+obj-m := b6.o
+
+
+Ambarella bridge controller
+===========================
+//serdes bridge controller
+platform/vin/bridges/ambrg/ambrg.c //Ambarella bridge controller
+
+dts
+---
+boards/aibox/bsp/aibox.dts
+/ {
+	//...
+    iav {
+			/* node for vin bridge */
+		vinbrg0 {
+			compatible = "ambarella,vinbrg";
+			brgrst-gpios = <&gpio 11 0>;
+			bus-addr = <0x20000>;
+		};
+
+		vinbrg1 {
+			compatible = "ambarella,vinbrg";
+			brgrst-gpios = <&gpio 39 0>;
+			bus-addr = <0x20001>;
+		};
+    };
+	//...
+};
+
+
+
+(1)
+module_init(ambrg_init);
+module_exit(ambrg_exit);
+
+ambrg_init
+|-> ambrg_device = ambpriv_create_bundle(&ambrg_driver, NULL, -1, NULL, -1);
+ 	[linux/drivers/base/ambpriv.c]
+
+static struct ambpriv_driver ambrg_driver = {
+	.probe = ambrg_probe,
+	//...
+};
+
+ambrg_probe: do nothing
+
+(2) ambpriv_create_bundle
+//todo
+
+Ambarella B6 series SERDES bridge
+=================================
+platform/vin/bridges/ambrg/b6/b6.c
+
+(1)
+module_init(b6_init);
+
+b6_init
+|-> for (i = 0; i < B6N_MAX_NUM; i++) {
+		chan_id = (id >> (i << 3)) & 0xFF;
+		if (chan_id) {
+			rval = b6_drv_probe(i, chan_id);
+		}
+	}
+
+notes:
+#define B6N_MAX_NUM				2 [b6.h]
+id low 8bit 
+id high 8bit
+
+/etc/modprobe.d/ambarella.conf:
+options b6 id=0x101
+options ar0144_mipi_brg brg_id=0x0
+options ar0230_brg brg_id=0x1
+// its means two briages
+// brg_id: 0 chan_id:1 <= ar0144_mipi_brg
+// brg_id: 1 chan_id:1 <=ar0230_brg
+
+
+(2) b6_drv_probe
+	<1> kzalloc vin_brg_device struct for ambrg
+		kzalloc vin_ops struct for ambrg->sensor_ctrl.ops 
+		//sensor ops
+		kzalloc vin_device_config struct for ambrg->vin_cfg
+		//vin cfg
+		initialize ambrg fields: name, id, ch_id, master_clk, sensor_ctrl.bus_id, vout_info
+	<2> register ambrg 
+		rval = amba_register_vin_brg(ambrg, &b6_ops); //[ambrg/ambrg.c]
+		//a. parse device tree
+		//b. initialize ambrg->ops with b6_ops
+		//c. add ambrg into ambrg_list
+		//b6_ops: see source code b6.c
+
+
+B6FS Serializer Chip
+====================
+The Ambarella B6FS serializer chip captures Bayer RGB sensor input, 
+serving as a bridge between a remotely-located sensor and an Ambarella
+B6NS de-serializer chip or A9AQ Soc.
+
+B6S family:
+	1. B6FS: Far-end
+	2. B6Ns: Near-end
+		the B6NS de-serializer chip combines the 1- or 2-lane video stream from
+		B6FS and sends it via a MIPI-CSI interface to an AMbarella Soc.
+	3. B6DNS and B6DFS: (Display Near-End and Far-end)
+		The B6DFS chip transfers data in MIPI-DSI or Open LDI format from the 
+		A9AQ chip to multiple remote external displays. 
+		When using an SoC other than A9AQ, the B6DNS display chip is also 
+		required (SoC->B6DNS->B6DFS->Display).
+
+
+
+B6NS De-Serializer Chip
+=======================
+Serializer-Deserializer(SERDES) Input Module:
+	the B6NS (Data path is Sensor->B6FS VIN->B6FS SERDES TX-> B6NS SERDES RX
+	-> B6NS DSI/SLVS TX -> SoC)
+
+
+
+
+
