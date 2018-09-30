@@ -1,0 +1,3 @@
+
+1. sudo blkid
+2. ls -l /dev/disk/by-uuid/

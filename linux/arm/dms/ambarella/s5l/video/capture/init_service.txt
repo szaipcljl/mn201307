@@ -6,8 +6,13 @@ started by udev
 chris@qzsw-R730:~/projects/RDA602$ grep -nsR "init-xcam" out/aibox/fakeroot/
 out/aibox/fakeroot/usr/local/bin/set_volume.sh:5:CFG="/usr/local/bin/init-xcam"
 out/aibox/fakeroot/usr/local/bin/get_local_info.sh:14:cp /usr/local/bin/init-xcam ${INFO_DIR}/bin
+
 out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/get_volume_level:8:LEVEL=`grep "set_volume_level" /usr/local/bin/init-xcam | awk '{print $2}'`
 out/aibox/fakeroot/usr/local/webSvr/web/cgi-bin/set_volume_level:22:    sed -i "/set_volume_level/c\set_volume_level ${FORM_level}" /usr/local/bin/init-xcam    
-out/aibox/fakeroot/etc/systemd/system/init-xcam.service:9:ExecStart=/usr/local/bin/init-xcam
-out/aibox/fakeroot/etc/udev/rules.d/09-load-ucode.rules:3:SUBSYSTEM=="ambpriv", KERNEL=="iav_s5l", TAG+="systemd", ENV{SYSTEMD_WANTS}="init-xcam.service"
+
+out/aibox/fakeroot/etc/systemd/system/init-xcam.service:
+	ExecStart=/usr/local/bin/init-xcam
+
+out/aibox/fakeroot/etc/udev/rules.d/09-load-ucode.rules:
+	SUBSYSTEM=="ambpriv", KERNEL=="iav_s5l", TAG+="systemd", ENV{SYSTEMD_WANTS}="init-xcam.service"
 

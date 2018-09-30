@@ -1,0 +1,3 @@
+VLC多媒体播放器（最初命名为VideoLAN客户端）是VideoLAN计划的多媒体播放器。它支持众多音频与视频解码器及文件格式，并支持DVD影音光盘，VCD影音光盘及各类流式协议。它也能作为unicast或
+multicast的流式服务器在IPv4或
+IPv6的高速网络连接下使用。它融合了FFmpeg计划的解码器与libdvdcss程序库使其有播放多媒体文件及加密DVD影碟的功能。
