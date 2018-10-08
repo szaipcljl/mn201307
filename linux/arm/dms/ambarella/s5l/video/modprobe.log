@@ -1,0 +1,25 @@
+
+
+# modprobe b6 id=0x101
+# modprobe ar0144_mipi_brg brg_id=0x0
+# modprobe ar0230_brg brg_id=0x1
+
+-------------------
+[   78.854500] VIN: Ambarella serdes bridge controller ambrg init!
+[   78.857077] VIN: Ambarella serdes bridge b6n0 init(id 0x1), bus addr 0x20000!
+[   78.857097] VIN: Ambarella serdes bridge b6n1 init(id 0x1), bus addr 0x20001!
+[   90.322519] VIN: Bind to bridge b6n!
+[   90.396149] VIN: b6n0: sys config: 0x60806080
+[   91.520079] VIN: Serdes rate: 2.3G
+[   91.696901] VIN: Serdes link pass!
+[   91.696906] VIN: [0]load:0x1, active:0x1, broken:0x0
+[   91.733212] VIN: Register 1x[ar0144] on bridge b6n0[i2c1, 0x20(2:2)]!
+[  100.914864] VIN: Bind to bridge b6n!
+[  100.984149] VIN: b6n1: sys config: 0x60806080
+[  102.112093] VIN: Serdes rate: 2.3G
+[  102.288899] VIN: Serdes link pass!
+[  102.288904] VIN: [1]load:0x1, active:0x1, broken:0x0
+[  102.318514] VIN: AR0230 init(4-lane HISPI), sensor ID: 0x56
+[  102.318521] VIN: Register 1x[ar0230] on bridge b6n1[i2c1, 0x20(2:2)]!
+# 
+

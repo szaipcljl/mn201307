@@ -47,3 +47,7 @@ sudo umount /mnt
 auto mount
 sudo vi /etc/fstab 
 192.168.5.244:/home/chris /mnt/chris nfs rw 0 0
+
+develop board mount
+---------------------
+mount -t nfs -o tcp -o nolock 192.168.2.8:/home/chris/projects /mnt
