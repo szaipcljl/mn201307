@@ -1,0 +1,88 @@
+Example usage of APIs
+
+(1) open the device
+
+	int fd_iav;
+
+	if ((fd_iav = open("/dev/iav", O_RDWR, 0)) < 0) {
+		perror("open /dev/iav");
+		return -1;
+	}
+
+	//...
+	close(fd_iav);
+
+(2) check the total VIN source
+reference: device/s5l/unit_test/private/vin_test/vin_init.c: check_source_info()
+
+	struct vindev_devinfo			vsrc_info;
+
+	vsrc_info.vsrc_id = vsrc_id;
+	if (ioctl(fd_iav, IAV_IOC_VIN_GET_DEVINFO, &vsrc_info) < 0) {
+		perror("IAV_IOC_VIN_GET_DEVINFO");
+		return;
+	}
+
+===============================
+X: related with camera
+
+/home/chris/projects/RDA602/device/s5l/unit_test/private/
+├── amba_debug
+├── audio_test
+│   ├── aacdec
+│   └── aacenc
+├── calibration
+│   └── arch_s5l
+├── iav_test          --------X
+│   └── arch_s5l
+│       ├── asm_neon
+│       ├── data
+│       └── scripts
+├── idsp_test         --------X
+│   └── arch_s5l
+├── package_test
+│   └── arch_s5l
+├── shmoo_test
+├── vin_test          --------X
+│   └── decoder
+├── vout_test         --------X
+└── vsync_test
+
+main
+==============================
+device/s5l/unit_test/private/iav_test/arch_s5l/test_encode.c
+
+enter preview
+-------------
+steps:
+(0) open the iav device
+(1) vout setup
+	vout_init() || vout_change() [unit_test/private/vout_test/vout_init.c]
+
+(2) vin setup
+	vin_init() [unit_test/private/vin_test/vin_init.c]
+
+(3) change source buffer paramter that needs idle state
+	do_change_parameter_during_idle() [iav_test/arch_s5l/test_encode.c]
+	(a) setup resource limit
+		setup_resource_limit()
+		<a> // set source buffer max size
+		<b> // set stream max size
+		<c> //...
+	(b) setup source buffer
+		setup_source_buffer() [iav_test/arch_s5l/test_encode.c]
+	(c) set VCAP configuration
+		set_vcap_vin_state() [iav_test/arch_s5l/encode_base.c]
+
+(4) enable preview
+	do_enable_preview() [iav_test/arch_s5l/encode_base.c]
+
+encoding control
+-------------
+(1) change encoding format
+	do_change_encode_config()
+(2) change encoding format
+	do_change_encode_config()
+(3) start encoding
+	do_start_encoding()
+
