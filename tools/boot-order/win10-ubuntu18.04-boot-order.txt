@@ -1,0 +1,10 @@
+
+
+1.
+sudo cp /etc/default/grub /etc/default/grub.bak
+sudo vim /etc/default/grub
+GRUB_DEFAULT=0 =>  GRUB_DEFAULT=4
+
+2. 
+sudo update-grub
+# update grub.cfg
