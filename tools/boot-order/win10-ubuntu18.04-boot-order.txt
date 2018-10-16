@@ -1,0 +1,27 @@
+
+GRUB_DEFAULT=0
+===================
+*Ubuntu
+ Advanced options for Ubuntu
+ Windows Boot Manager (on /dev/nvme0n1p1)
+ System setup
+
+===================
+
+GRUB_DEFAULT=2
+===================
+ Ubuntu
+ Advanced options for Ubuntu
+*Windows Boot Manager (on /dev/nvme0n1p1)
+ System setup
+
+===================
+
+1.
+sudo cp /etc/default/grub /etc/default/grub.bak
+sudo vim /etc/default/grub
+GRUB_DEFAULT=0 =>  GRUB_DEFAULT=2
+
+2. 
+sudo update-grub
+# update grub.cfg
