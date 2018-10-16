@@ -1,0 +1,90 @@
+
+
+test_tuning 是直接调用的3A参数， 
+test_image  是有middleware的，增加了比较多的接口。
+
+
+build test_image
+================
+select BUILD_AMBARELLA_UNIT_TESTS_PACKAGE
+
+device/s5l/unit_test/private/package_test/arch_s5l/make.inc
+
+ifeq ($(BUILD_AMBARELLA_MIDDLEWARE_PROC), y)
+
+LOCAL_TARGET    := test_image
+LOCAL_SRCS      := $(LOCAL_PATH)/test_image.c
+...
+endif
+
+
+device/s5l/oryx/image_quality/AmbaConfig
+menuconfig BUILD_AMBARELLA_ORYX_IMAGE_QUALITY
+  ...
+  select BUILD_AMBARELLA_MIDDLEWARE_PROC
+
+two config flag:
+	BUILD_AMBARELLA_UNIT_TESTS_PACKAGE
+	BUILD_AMBARELLA_MIDDLEWARE_PROC
+
+
+sensor adj params
+=================
+code path
+---------
+<a> boards/aibox/img_data/adj_params/:
+	ar0144_aeb_param.c  ar0144_aliso_adj_param.c  ar0230_aeb_param.c
+	ar0230_aliso_adj_param.c  yuv_input_aeb_param.c  yuv_input_aliso_adj_param.c
+
+<b> prebuild/imgproc/img_data/arch_s5l/adj_params/:
+	ar0144_aeb_param.c ...
+
+
+code path macro
+---------------
+device/s5l/packages/img_mw/mw/arch_s5l/src/make.inc
+	ADJ_PARAMS_PATH := $(AMB_TOPDIR)/prebuild/imgproc/img_data/arch_$(AMBARELLA_ARCH)/adj_params
+	BOARD_ADJ_PARAMS_PATH := $(AMB_TOPDIR)/boards/$(AMB_BOARD)/img_data/adj_params
+
+
+
+build control flag
+------------------
+
+.config:
+CONFIG_SENSOR_AR0144_MIPI_BRG=y
+
+device/s5l/packages/img_mw/mw/arch_s5l/src/make.inc:
+
+else ifeq ($(CONFIG_SENSOR_AR0144_MIPI_BRG), y)
+BOARD_BIN_AAA_3D	+= $(wildcard ${BOARD_PREBUILD_3D_PATH}/*ar0144*_3D.bin)
+BOARD_BIN_AAA_3D	+= $(wildcard ${BOARD_PREBUILD_3D_PATH}/*ar0144*_3D_hdr.bin)
+BOARD_BIN_AAA_SRC	+= $(wildcard ${BOARD_ADJ_PARAMS_PATH}/*ar0144*.c)
+else ifeq ($(CONFIG_SENSOR_AR0144_MIPI), y)
+...
+
+else ifeq ($(CONFIG_SENSOR_AR0144_MIPI_BRG), y)
+BOARD_BIN_AAA_3D	+= $(wildcard ${BOARD_PREBUILD_3D_PATH}/*ar0144*_3D.bin)
+BOARD_BIN_AAA_3D	+= $(wildcard ${BOARD_PREBUILD_3D_PATH}/*ar0144*_3D_hdr.bin)
+BOARD_BIN_AAA_SRC	+= $(wildcard ${BOARD_ADJ_PARAMS_PATH}/*ar0144*.c)
+else ifeq ($(CONFIG_SENSOR_AR0144_MIPI), y)
+...
+
+BOARD_BIN_AAA_PARAM = $(patsubst ${BOARD_ADJ_PARAMS_PATH}/%.c, ${BOARD_PARAM_FOLDER}/%.bin, ${BOARD_BIN_AAA_SRC})
+
+
+ifeq ($(BOARD_BIN_AAA_PARAM),)
+
+else
+board_create_aaa_binary: $(BOARD_BIN_AAA_PARAM) create_aaa_binary
+	@mkdir -p $(IMAGE_DATA_DIR)/adj_params/
+	@cp -f $(BOARD_BIN_AAA_PARAM) $(IMAGE_DATA_DIR)/adj_params/
+	@mkdir -p $(IMAGE_DATA_DIR)/sensors/
+	@cp -f ${BOARD_BIN_AAA_3D} $(IMAGE_DATA_DIR)/sensors/
+	@echo "Build $@ Done."
+endif
+
+$(call add-target-into-build, board_create_aaa_binary)
+
+
+

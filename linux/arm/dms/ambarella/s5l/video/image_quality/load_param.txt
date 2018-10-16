@@ -1,0 +1,70 @@
+
+
+
+binding param with sensor
+=========================
+
+device/s5l/unit_test/private/idsp_test/arch_s5l/load_param.c
+
+(1) 
+do_prepare_aaa [test_tuning.c]
+|-> binding_param_with_sensor [load_param.c]
+	|-> img_aaa_config [load_param.c]
+
+image_aaa_config:
+
+switch(vin_aaa_info[index].aaa_info.sensor_id){
+	...
+
+case SENSOR_AR0144:
+		p_sensor_cfg = &ar0144_aeb_sensor_config; //ar0144_aeb_param.c
+		p_tile_cfg = &ar0144_aeb_tile_config; //ar0144_aeb_param.c
+		p_gain_tbl = &ar0144_aeb_gain_table; //ar0144_aeb_param.c
+		p_sht_nl_tbl = &ar0144_aeb_sht_nl_table; //ar0144_aeb_sht_nl_table.c
+		p_wb_param = &ar0144_aeb_wb_param; //ar0144_aeb_param.c
+		if(HDR_PIPELINE_OFF == hdr_pipeline){
+			p_ae_lines = &ar0144_aeb_expo_lines; //ar0144_aeb_param.c
+			p_digit_wdr_param = &ar0144_aeb_digit_wdr_config; //ar0144_aeb_param.c
+		}else{
+			printf("error: can't find the proper ae lines for mode %d, expo num %d\n", hdr_pipeline, expo_num);
+			return -1;
+		}
+		break;
+		...
+}
+
+
+
+#include "ar0144_aliso_adj_param.c"
+#include "ar0144_aeb_param.c"
+
+
+(2)
+binding_param_with_sensor
+|-> load_containers
+	load_sbp_bin
+	load_cc_bin
+	enable_cc
+	img_aaa_config
+
+
+
+load_containers:
+	switch(sensor_id){
+		...
+	case SENSOR_AR0144:
+				fcc[index].fc_ae_target = &ar0144_aliso_fc_ae_target; //ar0144_aliso_adj_param.c
+				fcc[index].fc_wb_ratio = &ar0144_aliso_fc_wb_ratio;
+				fcc[index].fc_blc = &ar0144_aliso_fc_blc; //ar0144_aliso_adj_param.c
+				fcc[index].fc_antialiasing = &ar0144_aliso_fc_antialiasing; //ar0144_aliso_adj_param.c
+				fcc[index].fc_grgbmismatch = &ar0144_aliso_fc_grgbmismatch; //ar0144_aliso_adj_param.c
+				fcc[index].fc_dpc = &ar0144_aliso_fc_dpc; //ar0144_aliso_adj_param.c
+				fcc[index].fc_cfanf_low = &ar0144_aliso_fc_cfanf; //ar0144_aliso_adj_param.c
+				fcc[index].fc_le = (HDR_PIPELINE_OFF == hdr_pipeline)? \
+					NULL : &ar0144_aliso_fc_2x_hdr_le; //ar0144_aliso_adj_param.c
+				fcc[index].fc_demosaic = &ar0144_aliso_fc_demosaic; //ar0144_aliso_adj_param.c
+				fcc[index].fc_cc = &ar0144_aliso_fc_cc; //ar0144_aliso_adj_param.c
+				fcc[index].fc_tone = (HDR_PIPELINE_OFF == hdr_pipeline)? \
+					&ar0144_aliso_fc_tone : &ar0144_aliso_fc_2x_hdr_tone; //ar0144_aliso_adj_param.c
+				fcc[index].fc_rgb2yuv = &ar0144_aliso_fc_rgb2yuv; //ar0144_aliso_adj_param.c
+				...

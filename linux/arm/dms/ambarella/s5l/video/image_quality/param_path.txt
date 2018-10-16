@@ -1,0 +1,41 @@
+
+chris@qzsw-R730:~/projects/RDA602/boards/aibox/bsp[master]$ tree
+../../../out/aibox/fakeroot/etc/idsp/
+../../../out/aibox/fakeroot/etc/idsp/
+├── adj_params
+│   ├── ar0144_aeb_param.bin
+│   ├── ar0144_aliso_adj_param.bin
+│   ├── ar0230_aeb_param.bin
+│   └── ar0230_aliso_adj_param.bin
+├── cfg
+├── reg.bin
+├── sc2310_03_3d_hdr.bin
+├── sensors
+│   ├── ar0144_01_3D.bin
+│   ├── ar0144_01_3D_hdr.bin
+│   ├── ar0144_02_3D.bin
+│   ├── ar0144_02_3D_hdr.bin
+│   ├── ar0144_03_3D.bin
+│   ├── ar0144_03_3D_hdr.bin
+│   ├── ar0144_04_3D.bin
+│   ├── ar0144_04_3D_hdr.bin
+│   ├── ar0230_01_3D.bin
+│   ├── ar0230_01_3D_hdr.bin
+│   ├── ar0230_02_3D.bin
+│   ├── ar0230_02_3D_hdr.bin
+│   ├── ar0230_03_3D.bin
+│   ├── ar0230_03_3D_hdr.bin
+│   ├── ar0230_04_3D.bin
+│   └── ar0230_04_3D_hdr.bin
+└── yuv_input_reg.bin
+
+
+
+chris@qzsw-R730:~/projects/RDA602$ mgrep -nsR "ar0144_aeb_tile_config" .
+./boards/aibox/img_data/adj_params/ar0144_aeb_param.c:37:img_aeb_tile_config_t ar0144_aeb_tile_config ={
+./prebuild/imgproc/img_data/arch_s5l/adj_params/ar0144_aeb_param.c:37:img_aeb_tile_config_t ar0144_aeb_tile_config ={
+
+./device/s5l/unit_test/private/idsp_test/arch_s5l/load_param.c:3340: p_tile_cfg = &ar0144_aeb_tile_config;
+Binary file ./out/aibox/fakeroot/usr/unittest/cali_awb matches Binary file ./out/aibox/fakeroot/usr/unittest/test_tuning matches
+
+load_param.c ?
