@@ -1,0 +1,117 @@
+
+idsp_test/arch_s5l/test_tuning.c
+
+main:
+====
+(1) init_param
+(2) fd_iav = open("/dev/iav", O_RDWR, 0)
+(3) do_init_netlink()
+(4) img_config_lens_cali(&lens_cali_info)
+(5) while (1)
+		usleep(33*1000);
+
+init_param
+----------
+
+img_config_lens_cali
+--------------------
+defined in
+	prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l.a
+	prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l_dyn.so
+
+
+do_init_netlink()
+-----------------
+(1) init_netlink();
+(2) pthread_create(&nl_thread, NULL, (void *)netlink_loop, (void *)NULL);
+(3) while (1) {
+		if (check_iav_work() > 0)
+			break;
+		usleep(10000);
+	}
+
+init_netlink
+------------
+nl_image_config_t nl_image_config;
+
+int init_netlink(void)
+{
+
+(1) nl_image_config.fd_nl = socket(AF_NETLINK,
+		SOCK_RAW, NL_PORT_IMAGE);
+
+(2) memset(&saddr, 0, sizeof(saddr));
+	pid = getpid();
+	saddr.nl_family = AF_NETLINK;
+	saddr.nl_pid = pid;
+	saddr.nl_groups = 0;
+	saddr.nl_pad = 0;
+
+(3)
+	bind(nl_image_config.fd_nl, (struct sockaddr *)&saddr, sizeof(saddr));
+	nl_image_config.nl_connected = 0;
+	nl_image_config.image_init = 0;
+}
+
+netlink_loop [idsp_netlink.c]
+------------
+(1) establish connection with kernel
+	nl_send_image_session_cmd(NL_SESS_CMD_CONNECT); [idsp_netlink.c]
+
+(2) check_iav_work(void): [test_tuning]
+
+	ioctl(fd_iav, IAV_IOC_GET_IAV_STATE, &state)
+
+	if (state == IAV_STATE_PREVIEW || state == IAV_STATE_ENCODING)
+		return 1;
+(3) if check_iav_work return 1, iav state is in preview or encoding.then do the 
+following steps:
+	<a> do_prepare_aaa [test_tuning.c]
+	<b> wait_irq_count [test_tuning.c]
+		|-> ioctl(fd_iav, IAV_IOC_WAIT_NEXT_IDSP_FRAME, channel_map);
+	<c> do_start_aaa
+
+if check_iav_work return 0, iav state is in idle, not do the above steps.
+
+(4)
+	while (nl_image_config.nl_connected) {
+		ret = recv_image_msg_from_kernel();
+		ret = process_image_msg();
+	}
+
+do_prepare_aaa
+==============
+(1)
+	vin_channel_num=get_vin_chan_num_and_system_res(fd_iav,img_config);
+(2)
+	get_img_config_and_vin_aaa_info( img_config,vin_aaa_info)
+(3) img_config_vin_channel_num(vin_channel_num)
+(4) 
+	ioctl(fd_iav, IAV_IOC_QUERY_ENC_MODE_CAP, &mode_cap)
+(5) 
+	img_lib_init(fd_iav,&img_lib_cfg);
+	defined in:
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l.a
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l_dyn.so
+(6) 
+	init_ik_mode(img_config, &ik_mode, &mode_cap); [test_tuning.c]
+
+(7)
+	img_config_pipeline(fd_iav, img_config);
+	defined in:
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l.a
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l_dyn.so
+(8)
+	binding_param_with_sensor(fd_iav, vin_aaa_info, img_config, &ik_mode)
+	[load_param.c]
+(9)
+	img_prepare_isp(fd_iav)
+	defined in:
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l.a matc
+		prebuild/imgproc/img_lib/arch_s5l/libimg_algo_s5l_dyn.so
+
+	
+
+
+
+
