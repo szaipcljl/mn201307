@@ -1,0 +1,5 @@
+android hal
+
+hardware/libhardware/include/hardware/camera3.h
+hardware/libhardware/include/hardware/camera_common.h
+hardware/libhardware/include/hardware/hardware.h

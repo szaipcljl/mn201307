@@ -1,0 +1,10 @@
+
+https://hub.docker.com/r/roadefend/ambaenv/
+sudo docker pull roadefend/ambaenv
+sudo docker run -ti roadefend/ambaenv bash
+
+
+repo 现在是private
+docker login -u roadefend
+密码
+

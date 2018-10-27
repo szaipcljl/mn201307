@@ -40,12 +40,14 @@ case SENSOR_AR0144:
 
 
 (2)
-binding_param_with_sensor
-|-> load_containers
-	load_sbp_bin
-	load_cc_bin
-	enable_cc
-	img_aaa_config
+
+do_prepare_aaa [test_tuning.c]
+|-> binding_param_with_sensor [load_param.c]
+	|-> load_containers
+		load_sbp_bin
+		load_cc_bin
+		enable_cc
+		img_aaa_config
 
 
 
