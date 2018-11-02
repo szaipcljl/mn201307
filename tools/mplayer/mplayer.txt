@@ -1,0 +1,16 @@
+
+
+1. 查看mplayer所支持的format
+mplayer -rawvideo format=help
+
+2.
+在mplayer中查看YUV格式的图片或视频，可使用如下命令：
+mplayer -demuxer rawvideo -rawvideo w=320:h=240:format=yuy2 qvga.yuv -loop 0
+由于是raw data文件，文件中只包含图像数据，参数需由命令行提供，如width,
+	height和format。
+	注意format的可选项有：420：yv12 i420
+	422：yuy2 uyvy
+
+eg.
+mplayer -demuxer rawvideo -rawvideo w=1280:h=720:format=yv12 1.yuv_prev_M_1280x720.yuv -loop 0
+

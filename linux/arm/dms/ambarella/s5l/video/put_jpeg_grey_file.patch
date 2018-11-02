@@ -1,0 +1,79 @@
+diff --git a/private/iav_test/arch_s5l/make.inc b/private/iav_test/arch_s5l/make.inc
+index 4b5f3db..dc97cad 100644
+--- a/private/iav_test/arch_s5l/make.inc
++++ b/private/iav_test/arch_s5l/make.inc
+@@ -471,13 +471,17 @@ ifeq ($(BUILD_AMBARELLA_DATATX_PACKAGE), y)
+ include $(CLEAR_VARS)
+ 
+ LOCAL_TARGET	:= test_yuvcap
+-LOCAL_SRCS	:= $(LOCAL_PATH)/test_yuvcap.c
++LOCAL_SRCS	:= $(LOCAL_PATH)/test_yuvcap.c \
++               $(LOCAL_PATH)/../data2jpeg/data2jpeg.c
+ ifeq ($(CONFIG_ARMV8_AARCH32), y)
+ LOCAL_SRCS	+= $(LOCAL_PATH)/asm_neon/chrome_convert_aarch32.S
+ else
+ LOCAL_SRCS	+= $(LOCAL_PATH)/asm_neon/chrome_convert_aarch64.S
+ endif
+ LOCAL_CFLAGS	:= -I$(AMB_TOPDIR)/device/$(AMBARELLA_ARCH)/packages/data_transfer
++
++LOCAL_LDFLAGS   := -Wl,-rpath-link=$(FAKEROOT_DIR)/usr/lib \
++        -L$(FAKEROOT_DIR)/usr/lib -ljpeg
+ LOCAL_LIBS	:= libdatatx.a
+ 
+ include $(BUILD_APP)
+diff --git a/private/iav_test/arch_s5l/test_yuvcap.c b/private/iav_test/arch_s5l/test_yuvcap.c
+index 72188ce..15008eb 100644
+--- a/private/iav_test/arch_s5l/test_yuvcap.c
++++ b/private/iav_test/arch_s5l/test_yuvcap.c
+@@ -426,6 +426,10 @@ static int save_yuv_data(int fd, void *yuv_info, u8 is_dec_yuv,
+ 	int luma_size, chroma_size;
+ 	u16 width, height, pitch, format;
+ 
++	FILE *fp = NULL;
++	const char *pathname = "pic1.jpeg";
++	const char *mode = "w+";
++
+ 	if (is_dec_yuv) {
+ 		width = ((struct iav_decode_status *)yuv_info)->pic_width;
+ 		height = ((struct iav_decode_status *)yuv_info)->pic_height;
+@@ -472,6 +476,17 @@ static int save_yuv_data(int fd, void *yuv_info, u8 is_dec_yuv,
+ 			1000000 + (curr.tv_usec - pre.tv_usec));
+ 	}
+ 
++	printf("put_jpeg_grey_file\n");
++	fp = fopen(pathname, mode);
++	if (!fp)
++		printf("error:  open %s failed !\n", pathname);
++
++	int quality = 100;
++	put_jpeg_grey_file(fp, luma, width, height, quality);
++
++	fclose(fp);
++
++
+ 	/* Write YUV data from memory to file */
+ 	if (amba_transfer_write(fd, luma, luma_size, transfer_method) < 0) {
+ 		perror("Failed to save luma data into file !\n");
+@@ -805,12 +820,14 @@ static int capture_yuv(int buff_id, int count)
+ 							}
+ 						}
+ 					} else {
++						printf("#mn-else: save_yuv_data\n");
+ 						if (save_yuv_data(fd_yuv[buf], (void *)(&yuv_desc), 0, luma, chroma) < 0) {
+ 							printf("Failed to save YUV data of buf [%d].\n", buf);
+ 							rval = -1;
+ 							break;
+ 						}
+ 					}
++					printf("#mn830: save_yuv_data\n");
+ 
+ 					curr_format = yuv_format;
+ 					if (save[buf] == 0) {
+@@ -1645,6 +1662,7 @@ int main(int argc, char **argv)
+ 	} else {
+ 		switch (capture_select) {
+ 		case CAPTURE_PREVIEW_BUFFER:
++			printf("#mn:[%s][%d]123 CAPTURE_PREVIEW_BUFFER\n", __func__, __LINE__);
+ 			capture_yuv(yuv_buffer_id, frame_count);
+ 			break;
+ 		case CAPTURE_ME1_BUFFER:
