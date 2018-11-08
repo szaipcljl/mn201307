@@ -1,0 +1,10 @@
+下面这两部分代码主要的目的是用netlink机制实现用户程序和内核的通信。
+具体就是用户程序执行./netlink -S [我是参数] 或./netlink -G 时，内核
+会返回"S know you!" 和“I know you!” 这两种字符串， 然后输出。 
+内核和用户程序均加有打印。
+
+其中Makefile、rulers.dir 在Knetlink/下， netlink.c 、netlink.h 、Makefile
+在Knetlink/netlink/目录下。 编译时在Knetlink目录下执行Make即可
+
+old kernel
+//todo: new kernel
