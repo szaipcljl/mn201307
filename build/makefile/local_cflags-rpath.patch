@@ -1,0 +1,42 @@
+diff --git a/dfssservice/make.inc b/dfssservice/make.inc
+index 23ba0f0..211404a 100644
+--- a/dfssservice/make.inc
++++ b/dfssservice/make.inc
+@@ -18,6 +18,7 @@ $(call add-target-into-build, $(LOCAL_TARGET))
+ 
+ 
+ include $(CLEAR_VARS)
++AAA_LIB_PATH := $(AMB_TOPDIR)/prebuild/imgproc/img_lib/arch_$(AMBARELLA_ARCH)
+ 
+ APP_PATH := $(FAKEROOT_DIR)/usr/bin
+ LOCAL_TARGET	:= dfssservice
+@@ -27,21 +28,27 @@ LOCAL_SRCS		:= $(LOCAL_PATH)/src/main.cpp \
+ 				   $(LOCAL_PATH)/src/DfssThread.cpp \
+                    $(LOCAL_PATH)/src/FaceFeature.cpp \
+                    $(LOCAL_PATH)/src/s5l_yuvcap.cpp \
++				   $(LOCAL_PATH)/src/s5l_roi.cpp \
+ 				   $(LOCAL_PATH)/src/CameraCapture.cpp  \
+ 				   $(LOCAL_PATH)/src/XMLParse.cpp
+ 
+ LOCAL_CFLAGS	:= -I$(LOCAL_PATH)/../../system/base/include \
+ 				   -I$(LOCAL_PATH)/include \
+                    -I$(PREBUILD_3RD_PARTY_DIR)/tinyxml2/usr/include \
++				   -I$(AMB_TOPDIR)/device/include \
++				   -Wl,-rpath-link=$(FAKEROOT_DIR)/usr/lib \
++				   -Wl,-rpath-link=$(AAA_LIB_PATH) \
+ 				   -std=c++11
+ 
++LOCAL_LIBS = libbase.so libdlt.so libamp.so libamdev.so
++
+ LOCAL_LDFLAGS	:= -lrt  \
+ 				   -L$(PREBUILD_3RD_PARTY_DIR)/tinyxml2/usr/lib -ltinyxml2  \
+ 				   -L$(LOCAL_PATH)/usr/lib -led2 -lfd2 -ldfss -lopenblas  \
+ 				   -pthread 
+ 				   
+-				   
+-LOCAL_LIBS = libbase.so libdlt.so
++LOCAL_LDFLAGS   += -L$(AAA_LIB_PATH) -limg_algo_$(AMBARELLA_ARCH)_dyn
++LOCAL_LDFLAGS	+= -L$(AAA_LIB_PATH) -limg_dsp_$(AMBARELLA_ARCH)_dyn
+ 
+ include $(BUILD_APP)
+ 
