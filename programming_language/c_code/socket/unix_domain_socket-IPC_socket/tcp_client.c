@@ -8,9 +8,15 @@
 int main(int argc, const char *argv[])
 {
 	/* create a socket */
-	int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-
+	int sockfd;
 	struct sockaddr_un address;
+
+	sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+	if (sockfd == -1) {
+		printf("[client] socket failed:%d", errno);
+		return -1;
+	}
+
 	address.sun_family = AF_UNIX;
 	strcpy(address.sun_path, "server_socket");
 
