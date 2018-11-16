@@ -1,0 +1,26 @@
+
+==================================
+调试中加入debugfs有时可以起到事半功倍的效果
+linux debugfs查看gpio状态:
+
+/ # cat /proc/filesystems | grep "debugfs"
+nodev   debugfs
+
+1. mount debugfs
+mount -t debugfs debugfs /sys/kernel/debug
+
+2. cat /sys/kernel/debug/gpio 
+
+
+
+------------------
+3. 查看regulator
+/sys/kernel/debug/regulator/ldo10/voltage 
+
+4. 查看clk
+cat /sys/kernel/debug/clk/gclk_sd/clk_rate
+
+
+============================
+CONFIG_GPIO_SYSFS   定义此宏后 会在/sys/class/gpio/下面到处gpio的设备文件
+可以通过此设备文件对gpio进行控制与读取   
