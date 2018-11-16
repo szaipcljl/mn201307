@@ -1,0 +1,312 @@
+diff --git a/private/package_test/arch_s5l/test_image.c b/private/package_test/arch_s5l/test_image.c
+index 4f05002..c834fba 100644
+--- a/private/package_test/arch_s5l/test_image.c
++++ b/private/package_test/arch_s5l/test_image.c
+@@ -3,6 +3,7 @@
+  *
+  * History:
+  *    2010/03/25 - [Jian Tang] created file
++ *    2018/11/15 - [Ma Ning] roi support
+  *
+  * Copyright (c) 2016 Ambarella, Inc.
+  *
+@@ -68,6 +69,34 @@
+ #include "AmbaDSP_ImgUtility.h"
+ #include "img_customer_interface_arch.h"
+ 
++#define ROI_SUPPORT_ENABLE
++
++#ifdef ROI_SUPPORT_ENABLE
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <unistd.h>
++#include <sys/epoll.h>
++
++#define DEBUG_ROI
++#define UNIX_DOMAIN_SOCKET
++
++#ifdef UNIX_DOMAIN_SOCKET
++#include <sys/un.h>
++#else
++#include <netinet/in.h>
++#define PORT 1500
++#endif
++#define BACKLOG 5
++#define MAX_EVENTS (BACKLOG+2)
++
++int skfd;
++
++struct roi_info {
++	int chan_id;
++	mw_ae_metering_table roi_tbl;
++};
++#endif /*ROI_SUPPORT_ENABLE*/
++
+ #define	CHECK_RANGE(value, min, max) do {	\
+ 			if (((value) > (max)) || ((value) < (min))) {		\
+ 				printf("Error:The value must be [%d~%d]!\n", (min), (max));	\
+@@ -2324,6 +2353,7 @@ static void sigstop(int signo)
+ 		mw_stop_aaa();
+ 	}
+ 	close(fd_iav);
++	close(skfd);
+ 	exit(1);
+ }
+ 
+@@ -2614,6 +2644,241 @@ static int run_test_options(u32 option)
+ 	return rval;
+ }
+ 
++#ifdef ROI_SUPPORT_ENABLE
++
++void adjust_roi(mw_ae_metering_table *roi_tbl, int chan_id)
++{
++	int ret = 0;
++
++	mw_set_ae_metering_mode_multi(MW_AE_CUSTOM_METERING,chan_id);
++	ret = mw_set_ae_metering_table_multi(roi_tbl, chan_id);
++#ifdef DEBUG_ROI
++	printf("mw_set_ae_metering_table_multi: ret=%d\n", ret);
++#endif
++	if (ret < 0) {
++		printf("mw_set_ae_metering_table_multi error: ret=%d\n", ret);
++	}
++}
++
++#ifdef DEBUG_ROI
++int test_adjust_roi(void)
++{
++	int num = 1;
++	int chan_id = 0;
++
++	printf("num=%d\r\n", num);
++
++	mw_ae_metering_table custom_ae_metering_table[2] = {
++		{	//Left half window as ROI
++#if 0
++			{
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++			}
++#else
++			{
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++				5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0,
++			}
++#endif
++		},
++
++		{	//Right half window as ROI
++			{
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++			}
++		},
++	};
++
++
++	adjust_roi(&custom_ae_metering_table[num], chan_id);
++
++	return 0;
++}
++#endif /*DEBUG_ROI*/
++
++void roi_info_handler(int fd)
++{
++	int ret = 0;
++	int new_fd = fd;
++	struct roi_info ae_roi_info;
++
++	memset(&ae_roi_info, 0, sizeof(ae_roi_info));
++
++	while (1) {
++		ret = recv(new_fd, &ae_roi_info, sizeof(ae_roi_info), 0);
++		if (ret > 0) {
++
++#ifdef DEBUG_ROI
++			printf("\n[server] Received:\n");
++			printf("chan_id: %d\n", ae_roi_info.chan_id);
++
++			int *proi = ae_roi_info.roi_tbl.metering_weight;
++			//int mtr_wgt = sizeof(ae_roi_info.roi_tbl.metering_weight);
++			int mtr_wgt = 12*8;
++			printf("mtr_wgt=%d\n", mtr_wgt);
++
++			for (int i=0; i < mtr_wgt; i++) {
++				if (i % 12 == 0) {
++					printf("\r\n");
++				}
++				printf("%d, ", proi[i]);
++			}
++			printf("\r\n");
++#endif
++			adjust_roi(&ae_roi_info.roi_tbl, ae_roi_info.chan_id);
++		} else {
++			if((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)) {
++				continue;
++			}
++			close(new_fd);
++			break;
++		}
++	}
++}
++
++struct srv_sock_dev {
++	int listenfd;
++	int new_fd;
++
++#ifdef UNIX_DOMAIN_SOCKET
++	struct sockaddr_un srv_addr;
++	struct sockaddr_un client_addr;
++#else
++	struct sockaddr_in srv_addr;
++	struct sockaddr_in client_addr;
++#endif
++
++	int domain;
++	int type;
++	int len;
++};
++
++void init_sock_dev(struct srv_sock_dev *srv_sk_dev)
++{
++	srv_sk_dev->type = SOCK_STREAM;
++
++#ifdef UNIX_DOMAIN_SOCKET
++	/* delete the socket file */
++	srv_sk_dev->domain = AF_UNIX;
++	unlink("/dev/socket/server_roi");
++#else
++
++	srv_sk_dev->domain = AF_INET;
++#endif
++
++	srv_sk_dev->listenfd = socket(srv_sk_dev->domain, srv_sk_dev->type, 0);
++	if (srv_sk_dev->listenfd == -1) {
++		printf("[server] socket failed:%d", errno);
++		return ;
++	}
++
++#ifdef UNIX_DOMAIN_SOCKET
++	srv_sk_dev->srv_addr.sun_family = AF_UNIX;
++	strcpy(srv_sk_dev->srv_addr.sun_path, "/dev/socket/server_roi");
++#else
++	srv_sk_dev->srv_addr.sin_family = AF_INET;
++	srv_sk_dev->srv_addr.sin_port = htons(PORT);
++	srv_sk_dev->srv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
++	bzero(&(srv_sk_dev->srv_addr.sin_zero), 8);
++#endif
++	srv_sk_dev->len = sizeof(srv_sk_dev->srv_addr);
++
++	if (bind(srv_sk_dev->listenfd, (struct sockaddr*)&srv_sk_dev->srv_addr, sizeof(srv_sk_dev->srv_addr)) < 0) {
++		printf("[server] bind error\n");
++		close(srv_sk_dev->listenfd);
++		return ;
++	}
++
++	listen(srv_sk_dev->listenfd, BACKLOG);
++
++
++	skfd = srv_sk_dev->listenfd;
++}
++
++void sock_dev_accept(struct srv_sock_dev *srv_sk_dev)
++{
++	srv_sk_dev->new_fd = accept(srv_sk_dev->listenfd, (struct sockaddr*)&srv_sk_dev->client_addr, (socklen_t *)&srv_sk_dev->len);
++}
++
++static int start_adjust_roi_server(void)
++{
++	struct srv_sock_dev roi_srv_dev;
++
++	struct epoll_event ev, events[MAX_EVENTS];
++	int nfds, epfd, fd, i;
++
++	memset(&roi_srv_dev, 0, sizeof(roi_srv_dev));
++	init_sock_dev(&roi_srv_dev);
++
++	epfd = epoll_create(MAX_EVENTS);
++	ev.events = EPOLLIN | EPOLLOUT;
++	ev.data.fd = roi_srv_dev.listenfd;
++
++	if (epoll_ctl(epfd, EPOLL_CTL_ADD, roi_srv_dev.listenfd, &ev) == -1) {
++		printf("%s:add listenfd %d error\n", __func__, roi_srv_dev.listenfd);
++		return -1;
++	}
++
++	while (1) {
++		printf("epoll_wait\n");
++		nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
++
++		for (i = 0; i < nfds; i++) {
++			fd = events[i].data.fd;
++			if (fd == roi_srv_dev.listenfd) {
++				sock_dev_accept(&roi_srv_dev);
++				if (roi_srv_dev.new_fd == -1) {
++					printf("[server] receive failed\n");
++					continue;
++				}
++
++				/*add this to epoll fds*/
++				ev.events = EPOLLIN | EPOLLOUT;
++				ev.data.fd = roi_srv_dev.new_fd;
++
++				if (epoll_ctl(epfd, EPOLL_CTL_ADD, roi_srv_dev.new_fd, &ev) == -1) {
++					printf("%s:add fd %d error\n", __func__, roi_srv_dev.new_fd);
++					continue;
++				}
++				printf("[server] add a connected new_fd to epoll fds\n");
++			} else {
++				printf("[server] not listenfd\n");
++				if (events[i].events & EPOLLIN) {
++					printf("[server] events[%d] receive success\n", i);
++					roi_info_handler(fd);
++				} else if (events[i].events & EPOLLOUT) {
++					//send data to client
++					;//TODO
++				}
++			}
++
++		}
++	}
++
++	return 0;
++}
++#endif /*ROI_SUPPORT_ENABLE*/
++
+ int main(int argc, char ** argv)
+ {
+ 	signal(SIGINT, sigstop);
+@@ -2676,9 +2941,14 @@ int main(int argc, char ** argv)
+ 		}
+ 		switch (work_mode) {
+ 			case BACKGROUND_MODE:
++#ifdef ROI_SUPPORT_ENABLE
++				printf("#mn: BACKGROUND_MODE\n");
++				start_adjust_roi_server();
++#else
+ 				while (1) {
+ 					sleep(2);
+ 				}
++#endif /*ROI_SUPPORT_ENABLE*/
+ 				break;
+ 			case INTERACTIVE_MODE:
+ 				if (run_interactive_mode() < 0) {

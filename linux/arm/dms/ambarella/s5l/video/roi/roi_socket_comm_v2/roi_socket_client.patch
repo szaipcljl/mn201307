@@ -1,0 +1,350 @@
+diff --git a/.gitignore b/.gitignore
+index 9f047ce..0bcea66 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1 +1,4 @@
+ AmbaConfig
++cscope*
++tags
++tags.o.fn
+diff --git a/dfssservice/include/roi_hal.h b/dfssservice/include/roi_hal.h
+new file mode 100644
+index 0000000..7e9eebe
+--- /dev/null
++++ b/dfssservice/include/roi_hal.h
+@@ -0,0 +1,11 @@
++#ifndef _ROI_HAL_H
++#define _ROI_HAL_H
++
++struct roi_info {
++	int chan_id;
++	mw_ae_metering_table roi_tbl;
++};
++
++int create_socket_session();
++void send_roi_info(int sockfd, struct roi_info *pdata, int size);
++#endif
+diff --git a/dfssservice/make.inc b/dfssservice/make.inc
+index 23ba0f0..c003950 100644
+--- a/dfssservice/make.inc
++++ b/dfssservice/make.inc
+@@ -18,6 +18,7 @@ $(call add-target-into-build, $(LOCAL_TARGET))
+ 
+ 
+ include $(CLEAR_VARS)
++AAA_LIB_PATH := $(AMB_TOPDIR)/prebuild/imgproc/img_lib/arch_$(AMBARELLA_ARCH)
+ 
+ APP_PATH := $(FAKEROOT_DIR)/usr/bin
+ LOCAL_TARGET	:= dfssservice
+@@ -27,21 +28,62 @@ LOCAL_SRCS		:= $(LOCAL_PATH)/src/main.cpp \
+ 				   $(LOCAL_PATH)/src/DfssThread.cpp \
+                    $(LOCAL_PATH)/src/FaceFeature.cpp \
+                    $(LOCAL_PATH)/src/s5l_yuvcap.cpp \
++				   $(LOCAL_PATH)/src/s5l_roi.cpp \
+ 				   $(LOCAL_PATH)/src/CameraCapture.cpp  \
+ 				   $(LOCAL_PATH)/src/XMLParse.cpp
+ 
+ LOCAL_CFLAGS	:= -I$(LOCAL_PATH)/../../system/base/include \
+ 				   -I$(LOCAL_PATH)/include \
+                    -I$(PREBUILD_3RD_PARTY_DIR)/tinyxml2/usr/include \
++				   -I$(AMB_TOPDIR)/device/include \
++				   -Wl,-rpath-link=$(FAKEROOT_DIR)/usr/lib \
++				   -Wl,-rpath-link=$(AAA_LIB_PATH) \
+ 				   -std=c++11
+ 
++LOCAL_LIBS = libbase.so libdlt.so libamp.so libamdev.so
++
+ LOCAL_LDFLAGS	:= -lrt  \
+ 				   -L$(PREBUILD_3RD_PARTY_DIR)/tinyxml2/usr/lib -ltinyxml2  \
+ 				   -L$(LOCAL_PATH)/usr/lib -led2 -lfd2 -ldfss -lopenblas  \
+ 				   -pthread 
+ 				   
+-				   
+-LOCAL_LIBS = libbase.so libdlt.so
++LOCAL_LDFLAGS   += -L$(AAA_LIB_PATH) -limg_algo_$(AMBARELLA_ARCH)_dyn
++LOCAL_LDFLAGS	+= -L$(AAA_LIB_PATH) -limg_dsp_$(AMBARELLA_ARCH)_dyn
++
++include $(BUILD_APP)
++
++.PHONY: $(LOCAL_TARGET)
++
++$(LOCAL_TARGET): $(LOCAL_MODULE)
++	@mkdir -p $(APP_PATH)/
++	@cp -dpRf $< $(APP_PATH)/
++	@echo "Build $@ Done."
++
++$(call add-target-into-build, $(LOCAL_TARGET))
++
++######
++include $(CLEAR_VARS)
++AAA_LIB_PATH := $(AMB_TOPDIR)/prebuild/imgproc/img_lib/arch_$(AMBARELLA_ARCH)
++
++APP_PATH := $(FAKEROOT_DIR)/usr/bin
++LOCAL_TARGET	:= roi_test
++
++LOCAL_SRCS		:= $(LOCAL_PATH)/src/s5l_roi.cpp
++
++LOCAL_CFLAGS	:= -I$(LOCAL_PATH)/../../system/base/include \
++				   -I$(LOCAL_PATH)/include \
++                   -I$(PREBUILD_3RD_PARTY_DIR)/tinyxml2/usr/include \
++				   -I$(AMB_TOPDIR)/device/include \
++				   -Wl,-rpath-link=$(FAKEROOT_DIR)/usr/lib \
++				   -Wl,-rpath-link=$(AAA_LIB_PATH) \
++				   -std=c++11
++
++LOCAL_LIBS = libbase.so libdlt.so libamp.so libamdev.so
++
++LOCAL_LDFLAGS	:= -lrt -pthread
++
++LOCAL_LDFLAGS   += -L$(AAA_LIB_PATH) -limg_algo_$(AMBARELLA_ARCH)_dyn
++LOCAL_LDFLAGS	+= -L$(AAA_LIB_PATH) -limg_dsp_$(AMBARELLA_ARCH)_dyn
+ 
+ include $(BUILD_APP)
+ 
+diff --git a/dfssservice/src/s5l_roi.cpp b/dfssservice/src/s5l_roi.cpp
+new file mode 100644
+index 0000000..9b53c07
+--- /dev/null
++++ b/dfssservice/src/s5l_roi.cpp
+@@ -0,0 +1,241 @@
++/*******************************************************************************
++ * stl_roi.cpp
++ *
++ * History:
++ *    2018/11/13 - [Ma Ning] created file
++ *
++ * Copyright (c) 2018 Roadefend, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *******************************************************************************/
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/types.h>
++#include <netinet/in.h>
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <arpa/inet.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++#include <mw_struct.h>
++
++#include <roi_hal.h>
++
++#define UNIX_DOMAIN_SOCKET
++
++#ifndef UNIX_DOMAIN_SOCKET
++#define DEST_PORT 1500
++#define DEST_IP "127.0.0.1"
++#endif /*UNIX_DOMAIN_SOCKET*/
++
++#define DEBUG_ROI
++
++
++
++int parse_roi(mw_ae_metering_table *roi_tbl, void* roi_data)
++{
++	// parse roi
++	return true;
++}
++
++
++
++int create_socket_session()
++{
++#ifdef UNIX_DOMAIN_SOCKET
++	int sockfd;
++	struct sockaddr_un dest_addr;
++	int domain = AF_UNIX;
++#else
++	int sockfd;
++	struct sockaddr_in dest_addr;
++	int domain = AF_INET;
++#endif
++
++	sockfd = socket(domain, SOCK_STREAM, 0);
++	if (sockfd == -1) {
++		printf("[client] create socket failed:%d", errno);
++		return -1;
++	}
++
++#ifdef UNIX_DOMAIN_SOCKET
++	dest_addr.sun_family = AF_UNIX;
++	strcpy(dest_addr.sun_path, "/dev/socket/server_roi");
++#else
++	dest_addr.sin_family = AF_INET;
++	dest_addr.sin_port = htons(DEST_PORT);
++	dest_addr.sin_addr.s_addr = inet_addr(DEST_IP);
++	bzero(&(dest_addr.sin_zero), 8);
++#endif
++
++	if (connect(sockfd, (struct sockaddr*)&dest_addr, sizeof(dest_addr))==-1) {
++		printf("[client] connect failed:%d\n", errno);
++		return -1;
++	}
++	printf("[client] connect success\n");
++
++	return sockfd;
++}
++
++void send_roi_info(int sockfd, struct roi_info *pdata, int size)
++{
++#if 0
++	struct roi_info ae_roi_info_tbl[2] = {
++		{
++			0,
++			{	//Left half window as ROI
++				{
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				}
++			}
++		},
++		{
++			0,
++			{	//Right half window as ROI
++				{
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				}
++			},
++		}
++
++	};
++
++	//send(sockfd, "received successfully!\n", sizeof("received successfully!\n"), 0);
++	send(sockfd, &ae_roi_info_tbl[1], sizeof(ae_roi_info_tbl[1]), 0);
++#else
++
++	send(sockfd, pdata, size, 0);
++#endif
++}
++
++#ifdef DEBUG_ROI
++int main(int argc, const char *argv[])
++{
++	int i = 0;
++	int sockfd;
++
++	struct roi_info *pdata = NULL;
++#if 0
++	struct roi_info ae_roi_info = {
++		0,
++		{	//Left half window as ROI
++			{
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++			}
++		}
++	};
++
++	pdata = &ae_roi_info;
++#else
++	struct roi_info ae_roi_info_tbl[2] = {
++		{
++			0,
++			{	//Left half window as ROI
++				{
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++					1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
++				}
++			}
++		},
++		{
++			0,
++			{	//Right half window as ROI
++				{
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++					0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++				}
++			},
++		}
++
++	};
++
++	if (argc > 1) {
++		i = atoi(argv[1]);
++	}
++
++	if (i < 2) {
++		pdata = &ae_roi_info_tbl[i];
++		printf("#mn: [client] ae_roi_info_tbl[%d] used\n", i);
++	}
++#endif
++
++	sockfd = create_socket_session();
++
++
++	if (i < 2) {
++		send_roi_info(sockfd, pdata, sizeof(struct roi_info));
++	}
++
++	if (i == 2) {
++		int j = 11;
++		while (j--) {
++			pdata = &ae_roi_info_tbl[j%2];
++			send_roi_info(sockfd, pdata, sizeof(struct roi_info));
++			usleep(500*1000);
++			printf("#mn: [client] ae_roi_info_tbl[%d] used, j=%d\n", i, j);
++
++		}
++
++	}
++
++	close(sockfd);
++
++	return 0;
++}
++#endif /*DEBUG_ROI*/

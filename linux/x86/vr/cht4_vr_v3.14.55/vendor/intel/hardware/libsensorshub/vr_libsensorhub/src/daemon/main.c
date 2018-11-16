@@ -288,8 +288,8 @@ bool socket_to_windows_thread()
 	init_socket2w();
 
 	epfd = epoll_create(MAX_EVENTS);
-	 ev.events = EPOLLIN | EPOLLOUT;
-    ev.data.fd = listenfd;
+	ev.events = EPOLLIN | EPOLLOUT;
+	ev.data.fd = listenfd;
 
 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &ev) == -1) {
 		ALOGE("%s:figo:add listenfd %d error\n", __func__, listenfd);
@@ -301,7 +301,7 @@ retry:
 		nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
 
 		for (i = 0; i < nfds; i++) {
-            		fd = events[i].data.fd;
+			fd = events[i].data.fd;
 			if (fd == listenfd) {
 				if (has_disconnect && old_connfd >0) {
 					ALOGE("%s:figo:del fd %d due to disconnect\n", __func__, old_connfd);
@@ -310,27 +310,27 @@ retry:
 					has_disconnect = false;
 				}
 				/*accept client connect*/
-					if (accept_client_connect())
-			                        goto retry;
+				if (accept_client_connect())
+					goto retry;
 
 				/*add this to epoll fds*/
 				ev.events = EPOLLIN | EPOLLOUT;
-                          ev.data.fd = socket2w_fd;
+				ev.data.fd = socket2w_fd;
 
-					if (epoll_ctl(epfd, EPOLL_CTL_ADD, socket2w_fd, &ev) == -1) {
-		        ALOGE("%s:figo:add fd %d error\n", __func__, socket2w_fd);
-		            goto retry;
-	                    }
+				if (epoll_ctl(epfd, EPOLL_CTL_ADD, socket2w_fd, &ev) == -1) {
+					ALOGE("%s:figo:add fd %d error\n", __func__, socket2w_fd);
+					goto retry;
+				}
 			}
-            			if (events[i].events & EPOLLIN) {
-							; //TBD
-            }else if (events[i].events & EPOLLOUT) {
-           //len =  send_data_to_pc("welcome", 24);
-		//   ALOGE("figo:send data len=%d\n", len);
-		//   sleep(1);
-            		;//TBD
-            	}
-        }
+			if (events[i].events & EPOLLIN) {
+				; //TBD
+			}else if (events[i].events & EPOLLOUT) {
+				//len =  send_data_to_pc("welcome", 24);
+				//   ALOGE("figo:send data len=%d\n", len);
+				//   sleep(1);
+				;//TBD
+			}
+		}
 	}
 
 	return true;
