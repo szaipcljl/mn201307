@@ -19,8 +19,7 @@ int main(int argc , char **argv)
 	socklen_t clilen;
 
 	/*(1) 初始化监听套接字listenfd*/
-	if((listenfd = socket(AF_INET , SOCK_STREAM , 0)) < 0)
-	{
+	if ((listenfd = socket(AF_INET , SOCK_STREAM , 0)) < 0) {
 		perror("socket error");
 		exit(1);
 	}//if
@@ -33,38 +32,32 @@ int main(int argc , char **argv)
 	servaddr.sin_port = htons(PORT);
 
 	/*(3) 绑定套接字和端口*/
-	if(bind(listenfd , (struct sockaddr*)&servaddr , sizeof(servaddr)) < 0)
-	{
+	if (bind(listenfd , (struct sockaddr*)&servaddr , sizeof(servaddr)) < 0) {
 		perror("bind error");
 		exit(1);
 	}//if
 
 	/*(4) 监听客户请求*/
-	if(listen(listenfd , LISTENQ) < 0)
-	{
+	if (listen(listenfd , LISTENQ) < 0) {
 		perror("listen error");
 		exit(1);
 	}//if
 
 	/*(5) 接受客户请求*/
-	for( ; ; )
-	{
+	for ( ; ; ) {
 		clilen = sizeof(cliaddr);
-		if((connfd = accept(listenfd , (struct sockaddr *)&cliaddr , &clilen)) < 0 )
-		{
+		if((connfd = accept(listenfd , (struct sockaddr *)&cliaddr , &clilen)) < 0 ) {
 			perror("accept error");
 			exit(1);
 		}//if
 
 		//新建子进程单独处理链接
-		if((childpid = fork()) == 0) 
-		{
+		if ((childpid = fork()) == 0) {
 			close(listenfd);
 			//str_echo
 			ssize_t n;
 			char buff[MAX_LINE];
-			while((n = read(connfd , buff , MAX_LINE)) > 0)
-			{
+			while ((n = read(connfd , buff , MAX_LINE)) > 0) {
 				write(connfd , buff , n);
 			}
 			exit(0);
