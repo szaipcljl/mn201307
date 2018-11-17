@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define BACKLOG 5
+#define BACKLOG 2
 
 int main(int argc, const char *argv[])
 {

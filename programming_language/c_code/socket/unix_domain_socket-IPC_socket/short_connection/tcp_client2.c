@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define DEBUG_INFO "[client2]"
+
 int main(int argc, const char *argv[])
 {
 	/* create a socket */
@@ -14,7 +16,7 @@ int main(int argc, const char *argv[])
 
 	sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (sockfd == -1) {
-		printf("[client] socket failed:%d", errno);
+		printf(DEBUG_INFO " socket failed:%d", errno);
 		return -1;
 	}
 
@@ -24,16 +26,18 @@ int main(int argc, const char *argv[])
 	/* connect to the server */
 	int result = connect(sockfd, (struct sockaddr *)&address, sizeof(address));
 	if (result == -1) {
-		perror("connect failed: ");
+		perror(DEBUG_INFO " connect failed: ");
 		exit(1);
 	}
 
 	/* exchange data */
-	char ch = 'A';
+	char ch = 'B';
 	write(sockfd, &ch, 1);
 	read(sockfd, &ch, 1);
-	printf("get char from server: %c\n", ch);
+	printf(DEBUG_INFO "get char from server: %c\n", ch);
 
+	while (1)
+		usleep(1000*1000);
 	/* close the socket */
 	close(sockfd);
 
