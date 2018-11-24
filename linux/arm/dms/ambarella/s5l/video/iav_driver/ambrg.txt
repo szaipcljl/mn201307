@@ -1,0 +1,18 @@
+
+
+private/platform/vin/bridges/ambrg/ambrg.c
+Ambarella bridge controller: virtual bridge controller
+
+
+static LIST_HEAD(ambrg_list);
+static struct ambpriv_device *ambrg_device;
+
+
+
+struct vin_brg_device
+struct vin_brg_ops
+
+
+
+interfaces
+-----------------------

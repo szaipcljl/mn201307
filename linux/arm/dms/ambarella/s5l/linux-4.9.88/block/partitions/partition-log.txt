@@ -1,0 +1,61 @@
+
+#mn: rescan_partitions,
+###[rescan_partitions 462] [dump_stack start]
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.88 #1
+Hardware name: Roadefend RDA602 Board (DT)
+Call trace:
+[<ffffff8008086d40>] dump_backtrace+0x0/0x1e8
+[<ffffff8008086f3c>] show_stack+0x14/0x20
+[<ffffff8008309638>] dump_stack+0x94/0xb4
+[<ffffff80082fcac8>] rescan_partitions+0xc8/0x310
+[<ffffff80081aa484>] __blkdev_get+0x22c/0x340
+[<ffffff80081aa970>] blkdev_get+0x148/0x378
+[<ffffff80082fa478>] device_add_disk+0x3b8/0x3f8
+[<ffffff8008637de8>] brd_init+0xac/0x17c
+[<ffffff80080828e8>] do_one_initcall+0x38/0x128
+[<ffffff8008620c0c>] kernel_init_freeable+0x144/0x1e4
+[<ffffff80084d5588>] kernel_init+0x10/0x100
+[<ffffff8008082680>] ret_from_fork+0x10/0x50
+###[rescan_partitions 464] [dump_stack end]
+#mn: check_partition, check_part loop: i=0 
+#mn: check_partition, check_part loop: i=1 
+brd: module loaded
+loop: module loaded
+SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256).
+CSLIP: code copyright 1989 Regents of the University of California.
+ambarella-wdt e800c000.wdt: Ambarella Watchdog Timer Probed.
+mmcblk0: mmc0:0001 DG4008 7.28 GiB 
+mmcblk0boot0: mmc0:0001 DG4008 partition 1 4.00 MiB
+mmcblk0boot1: mmc0:0001 DG4008 partition 2 4.00 MiB
+mmcblk0rpmb: mmc0:0001 DG4008 partition 3 4.00 MiB
+#mn: rescan_partitions,
+###[rescan_partitions 462] [dump_stack start]
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.88 #1
+Hardware name: Roadefend RDA602 Board (DT)
+Call trace:
+[<ffffff8008086d40>] dump_backtrace+0x0/0x1e8
+[<ffffff8008086f3c>] show_stack+0x14/0x20
+[<ffffff8008309638>] dump_stack+0x94/0xb4
+[<ffffff80082fcac8>] rescan_partitions+0xc8/0x310
+[<ffffff80081aa484>] __blkdev_get+0x22c/0x340
+[<ffffff80081aa970>] blkdev_get+0x148/0x378
+[<ffffff80082fa478>] device_add_disk+0x3b8/0x3f8
+[<ffffff80083d4f3c>] mmc_add_disk+0x24/0x100
+[<ffffff80083d6b14>] mmc_blk_probe+0x1ec/0x310
+[<ffffff80083c7acc>] mmc_bus_probe+0x1c/0x28
+[<ffffff8008388f78>] driver_probe_device+0x200/0x410
+[<ffffff8008389254>] __driver_attach+0xcc/0x118
+[<ffffff8008386bac>] bus_for_each_dev+0x4c/0x98
+[<ffffff80083886e0>] driver_attach+0x20/0x28
+[<ffffff800838815c>] bus_add_driver+0x1f4/0x290
+[<ffffff8008389ac8>] driver_register+0x60/0xf8
+[<ffffff80083c7c98>] mmc_register_driver+0x18/0x20
+[<ffffff8008638b0c>] mmc_blk_init+0x78/0xa0
+[<ffffff80080828e8>] do_one_initcall+0x38/0x128
+[<ffffff8008620c0c>] kernel_init_freeable+0x144/0x1e4
+[<ffffff80084d5588>] kernel_init+0x10/0x100
+[<ffffff8008082680>] ret_from_fork+0x10/0x50
+###[rescan_partitions 464] [dump_stack end]
+#mn: check_partition, check_part loop: i=0 
+#mn: check_partition, check_part loop: i=1 
+ mmcblk0: bst bld ptb atf pri rmd lnx raw

@@ -1,0 +1,106 @@
+
+kernel/linux-4.9/block/partitions/check.c
+static int (*check_part[])(struct parsed_partitions *) = {
+
+	...
+#ifdef CONFIG_AMBPTB_PARTITION
+	ambptb_partition,
+#endif
+	NULL
+};
+
+
+block/partitions/ambptb.c
+
+int ambptb_partition(struct parsed_partitions *state)
+{
+}
+
+
+
+rescan_partitions [block/partition-generic.c]
+|-> check_partition [block/partitions/check.c]
+	|-> struct parsed_partitions *state;
+		state = allocate_partitions(hd);
+	|-> check_part[i++](state);
+
+
+
+----------------------------------
+kernel_init
+|-> kernel_init_freeable
+	|-> do_one_initcall
+		|-> brd_init
+			|-> device_add_disk
+				|-> blkdev_get
+					|-> __blkdev_get
+						|-> rescan_partitions
+// brd: module loaded
+log:
+#mn: rescan_partitions,
+###[rescan_partitions 462] [dump_stack start]
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.88 #1
+Hardware name: Roadefend RDA602 Board (DT)
+Call trace:
+[<ffffff8008086d40>] dump_backtrace+0x0/0x1e8
+[<ffffff8008086f3c>] show_stack+0x14/0x20
+[<ffffff8008309638>] dump_stack+0x94/0xb4
+[<ffffff80082fcac8>] rescan_partitions+0xc8/0x310
+[<ffffff80081aa484>] __blkdev_get+0x22c/0x340
+[<ffffff80081aa970>] blkdev_get+0x148/0x378
+[<ffffff80082fa478>] device_add_disk+0x3b8/0x3f8
+[<ffffff8008637de8>] brd_init+0xac/0x17c
+[<ffffff80080828e8>] do_one_initcall+0x38/0x128
+[<ffffff8008620c0c>] kernel_init_freeable+0x144/0x1e4
+[<ffffff80084d5588>] kernel_init+0x10/0x100
+[<ffffff8008082680>] ret_from_fork+0x10/0x50
+###[rescan_partitions 464] [dump_stack end]
+#mn: check_partition, check_part loop: i=0 
+#mn: check_partition, check_part loop: i=1 
+brd: module loaded
+loop: module loaded
+SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256).
+CSLIP: code copyright 1989 Regents of the University of California.
+ambarella-wdt e800c000.wdt: Ambarella Watchdog Timer Probed.
+mmcblk0: mmc0:0001 DG4008 7.28 GiB 
+mmcblk0boot0: mmc0:0001 DG4008 partition 1 4.00 MiB
+mmcblk0boot1: mmc0:0001 DG4008 partition 2 4.00 MiB
+mmcblk0rpmb: mmc0:0001 DG4008 partition 3 4.00 MiB
+
+//rescan hardware partition first
+
+-----------------------------------
+
+kernel_init
+|-> kernel_init_freeable
+	|-> do_one_initcall
+		|-> mmc_blk_init
+			|-> mmc_register_driver
+				|-> driver_register
+					|-> bus_add_driver
+						|-> driver_attach
+							|-> bus_for_each_dev
+								|-> __driver_attach
+									|-> driver_probe_device
+										|-> mmc_bus_probe
+											|-> mmc_blk_probe
+												|-> mmc_add_disk
+													|-> device_add_disk
+														|-> blkdev_get
+															|-> __blkdev_get
+																|-> rescan_partitions
+mmcblk0: bst bld ptb atf pri rmd lnx raw
+//software partition
+//user aera
+
+
+
+
+
+
+
+
+
+
+
+

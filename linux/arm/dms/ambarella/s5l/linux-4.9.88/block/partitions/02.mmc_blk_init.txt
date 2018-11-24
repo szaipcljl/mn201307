@@ -1,0 +1,18 @@
+
+mmc_blk_init
+============
+|-> mmc_blk_init
+	|-> mmc_register_driver
+		|-> driver_register
+			|-> bus_add_driver
+				|-> driver_attach
+					|-> bus_for_each_dev
+						|-> __driver_attach
+							|-> driver_probe_device
+								|-> mmc_bus_probe
+									|-> mmc_blk_probe
+										|-> mmc_add_disk
+											|-> device_add_disk
+												|-> blkdev_get
+													|-> __blkdev_get
+														|-> rescan_partitions

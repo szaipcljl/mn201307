@@ -1,0 +1,116 @@
+
+
+vin controller interfaces:
+private/drivers/iav/arch_s5l/iav_vin.c
+
+---------------------------------------
+vin controller         ->     vin device
+
+struct vin_controller
+struct vin_device
+
+--------------------------------------
+1.  vin controller list
+static LIST_HEAD(vin_controller_list);
+
+
+
+2. init vin when iav has been probed
+iav_drv_probe [iav_drv.c]
+|-> iav_vin_init [iav_vin.c] //init and add four vin controller to vin_cnontroller_list
+	|-> vin_controller_init
+		//init: primary, pip, virtual, global
+
+
+
+
+
+kernel/private/drivers/iav/arch_s5l/iav_vin.h:
+vin controller id:
+enum {
+	VIN_PRIMARY = 0,
+	VIN_PIP,
+	VIN_VIRTUAL,
+	VIN_GLOBAL,
+};
+
+
+vin interfaces
+-------------------------------
+
+
+
+
+
+
+
+========================
+
+1.
+vin_device will be registed in vin_controller, 
+vin_controller's member dev_active point to the registed vin_device instance.
+
+2.
+dev_active will be used in iav_drv.c:
+
+#ifdef CONFIG_PM
+iav_freeze
+|-> vdev = iav->vinc[i]->dev_active;
+|-> vin_pm_suspend(vdev);
+
+iav_suspend
+|-> vdev = iav->vinc[i]->dev_active;
+|->  vin_pm_suspend(vdev);
+
+iav_resume
+|-> vdev = iav->vinc[i]->dev_active;
+|-> vin_pm_resume(vdev);
+
+static const struct dev_pm_ops iav_pm_ops = {
+	/* Fixme, will change as suspend_late & resume_early. */
+	.suspend = iav_suspend,
+	.resume = iav_resume,
+
+	/* Hibernation */
+	.freeze = iav_freeze,
+	.thaw = iav_thaw,
+	.freeze_noirq = iav_freeze_noirq,
+	.thaw_noirq = iav_thaw_noirq,
+	.restore_noirq = iav_thaw_noirq,
+	.restore = iav_thaw,
+
+};
+#endif
+
+dev_active also will be used in  iav_enc_api.c:
+sync_vinc_to_standby
+|-> vdev = iav->vinc[VIN_GLOBAL]->dev_active;
+|-> vdev->ops->set_stream_mode(vdev, 0);
+
+sync_vinc_to_normal
+|-> vdev = iav->vinc[VIN_GLOBAL]->dev_active;
+|-> vdev->ops->set_stream_mode(vdev, 1);
+
+iav_cross_check_vin
+|-> hdr_mode = iav->vinc[vinc_id]->dev_active->cur_format->hdr_mode;
+
+iav_check_vin
+|-> iav->vinc[vinc_id]->dev_active->cur_format
+
+update_system_resource
+|-> hdr_mode = iav->vinc[vinc_id]->dev_active->cur_format->hdr_mode;
+
+pdate_sys_res_chan_cfg
+|-> hdr_mode = iav->vinc[vinc_id]->dev_active->cur_format->hdr_mode;
+
+
+ar0144
+==========================
+register to
+ar0144_ops  --> ambrg->sensor_ctrl.ops
+//ambrg is the struct vin_brg_device instance match which is in ambrg_list,
+
+register ambrg's ops to struct vin_device instance
+
+
+

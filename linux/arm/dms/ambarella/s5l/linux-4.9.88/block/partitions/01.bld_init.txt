@@ -1,0 +1,8 @@
+
+brd_init
+========
+|-> brd_init
+	|-> device_add_disk
+		|-> blkdev_get
+			|-> __blkdev_get
+				|-> rescan_partitions

@@ -1,3 +1,12 @@
 列出所有存储设备，以获取外置存储设备的路径。
 查看当前所有磁盘分区:
 sudo blkid -o list
+
+df -T 查看挂载的文件系统类型：
+df -T -h
+
+lsblk - list block devices
+lsblk -f
+
+
+ -f, --fs: Output  info  about  filesystems.
