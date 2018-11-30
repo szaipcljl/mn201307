@@ -1,5 +1,12 @@
 i2c-tool
 
+=======================
+/ # modprobe i2c-dev
+[  547.223423] i2c /dev entries driver
+/ # ls /dev/i2c-
+i2c-0  i2c-1  i2c-2
+
+
 i2cset - set I2C registers
 ==========================
 https://linux.die.net/man/8/i2cset
