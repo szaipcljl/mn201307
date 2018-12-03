@@ -45,7 +45,7 @@ i2cset -y ${I2C_BUS_NUM} ${primary_devaddr_7bit} ${FPD3_PORT_SEL_ADDR}  0x01
 i2cset -y ${I2C_BUS_NUM} ${primary_devaddr_7bit} ${RX_PORT_CTL_ADDR}  0x81
 i2cset -y 1 0x30 ${BCC_CONFIG} 0x58
 sleep 1
-i2cset -y ${I2C_BUS_NUM} ${primary_devaddr_7bit} ${SER_ALIAS_ID_ADDR} ${REMOTE_SER_ADDR_8bit}
+i2cset -y ${I2C_BUS_NUM} ${primary_devaddr_7bit} ${SER_ALIAS_ID_ADDR} ${REMOTE_SER_ADDR_8BIT}
 
 # ar0144
 i2cset -y ${I2C_BUS_NUM} ${primary_devaddr_7bit} ${SLAVE_ID0_ADDR} ${AR0144_ADDR_8BIT}
