@@ -1,0 +1,22 @@
+
+
+kernel/private/platform/vin/bridges/ti_ds90ub954/ds90ub954.c
+kernel/private/platform/vin/bridges/ambrg/ambrg.c
+
+struct
+----------------
+static struct vin_brg_ops ds90ub954_ops = {
+	.brg_write_reg			= ds90ub954_dbg_write,
+	.brg_read_reg			= ds90ub954_dbg_read,
+	.brg_write_chan_reg	= ds90ub954_write_chan_reg,
+	.brg_read_chan_reg	= ds90ub954_read_chan_reg,
+	.brg_hw_init_pre		= ds90ub954_hw_init,
+	.brg_set_clk_si		= ds90ub954_set_clk_si,
+	.brg_vin_config_pre	= ds90ub954_vin_config,
+	.brg_vout_config		= ds90ub954_vout_config,
+};
+
+ambrg_set_format
+|-> rval = ambrg_hw_init(ambrg); [ambrg.c]
+	|-> broken_id = ambrg->ops->brg_hw_init_pre(ambrg, ambrg->ch_id.active_id); [ds90ub954.c]
+	// .brg_hw_init_pre		= ds90ub954_hw_init,

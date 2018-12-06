@@ -1,0 +1,5 @@
+
+find ./ -name "i2c-test.c"
+./linux/arm/dms/s32v234_bsp/note/linux-4.1.26/communication_modules/ch41_inter-integrated-circuit_i2c/i2c-test/i2c-test.c
+./linux/arm/dms/s32v234_bsp/note/linux-4.1.26/communication_modules/ch41_inter-integrated-circuit_i2c/i2c-test_v1/i2c-test.c
+

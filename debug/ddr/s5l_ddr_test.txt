@@ -1,0 +1,4 @@
+
+/usr/unittest/bandwidth-arm
+/usr/unittest/memtester-arm 10M
+ cat /proc/ambarella/clock

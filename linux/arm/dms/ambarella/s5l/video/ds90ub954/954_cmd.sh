@@ -25,6 +25,7 @@ export REMOTE_SER_ADDR_8BIT=0xBA
 export AR0144_ADDR_8BIT=0x20
 
 if [ $1x = "1"x ];then
+	modprobe i2c-dev
 	echo "ds90ub954 power down and camera module power on"
 	#
 	# ds90ub914 power down

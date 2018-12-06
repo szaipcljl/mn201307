@@ -1,0 +1,70 @@
+
+
+path:
+----
+kernel/private/platform/vin/bridges/ambrg/ambrg.c
+kernel/private/platform/vin/sensors/onsemi_ar0144_mipi_brg/ar0144.c
+
+ar0144_init [ar0144.c]
+|-> ar0144_probe [ar0144.c]
+	|-> amba_brg_register_device [ambrg.c]
+		|-> ambarella_vin_register_device [iav_vin.c]
+
+--------------------------------------
+private/drivers/iav/arch_s5l/iav_vin.c
+ambarella_vin_register_device
+//struct vin_device *vdev
+(1)
+	/* find the corresponding vin controller */
+	vinc = vin_get_controller(vdev);
+(2)
+	vsrc_id = find_first_zero_bit(vin_device_map, AMBA_VINDEV_MAX_NUM);
+	set_bit(vsrc_id, vin_device_map);
+	vdev->vsrc_id = vsrc_id;
+(3)
+	/* add to the device list of corresponding vin controller */
+	list_add_tail(&vdev->list, &vinc->dev_list);
+(4)
+	/* active the first registered vdev */
+	if (!vinc->dev_active) {
+		vinc->dev_active = vdev;
+		if (!vinc->iav->vin_enabled[vinc->id]) {
+			/* setup default pll clock source needed by device to work */
+			ambarella_vin_set_pll(vdev, 0);
+			vin_hw_poweron(vdev);
+			if (vdev->ops->init_device)
+				vdev->ops->init_device(vdev);
+		} else {
+	}
+
+-----------------------------------
+vin_hw_poweron [iav_vin.c]
+(1)
+	/* find the corresponding vin controller */
+	vinc = vin_get_controller(vdev);
+(2)
+
+	for (i = 0; i < 3; i++) {
+		if (gpio_is_valid(vinc->pwr_gpio[i]))
+			gpio_direction_output(vinc->pwr_gpio[i], vinc->pwr_gpio_active[i]);
+	}
+
+(3)
+	if (gpio_is_valid(vinc->rst_gpio))
+		gpio_direction_output(vinc->rst_gpio, vinc->rst_gpio_active);
+
+(4)
+	/* default reset time is 5ms */
+	reset_time = max_t(u32, vdev->reset_time_ms, 5);
+	msleep(reset_time);
+	vin_debug("HW reset, delay %d ms\n", reset_time);
+
+	if (gpio_is_valid(vinc->rst_gpio))
+		gpio_direction_output(vinc->rst_gpio, !vinc->rst_gpio_active);
+
+	vdev->power_on_flag = true;
+
+
+--------------------------------
+
+

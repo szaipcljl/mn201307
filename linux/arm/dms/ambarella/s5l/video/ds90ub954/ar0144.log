@@ -1,0 +1,22 @@
+[   15.009065] ###[ar0144_init_device 117] [dump_stack start]
+[   15.014762] CPU: 0 PID: 132 Comm: modprobe Tainted: P           O    4.9.110
+#1
+[   15.022330] Hardware name: Roadefend RDA602 Board (DT)
+[   15.027648] Call trace:
+[   15.030180] [<ffffff8008087e18>] dump_backtrace+0x0/0x1e8
+[   15.035769] [<ffffff8008088014>] show_stack+0x14/0x20
+[   15.040997] [<ffffff80082f9938>] dump_stack+0x94/0xb4
+[   15.046230] [<ffffff80006a01b4>] ar0144_init_device+0x2c/0xc8
+[ar0144_mipi_brg]
+[   15.053806] [<ffffff8000691c1c>] ambrg_init_device+0x27c/0x318 [ambrg]
+[   15.060677] [<ffffff800063b33c>] ambarella_vin_register_device+0x2f4/0x570
+[iav]
+[   15.068343] [<ffffff8000692600>] amba_brg_register_device+0x400/0x5b8 [ambrg]
+[   15.075737] [<ffffff80006a30ac>] ar0144_init+0xac/0xe8 [ar0144_mipi_brg]
+[   15.082678] [<ffffff8008083138>] do_one_initcall+0x38/0x128
+[   15.088447] [<ffffff8008120cec>] do_init_module+0x60/0x194
+[   15.094125] [<ffffff800810d0ec>] load_module+0x1034/0x10b8
+[   15.099802] [<ffffff800810d420>] SyS_finit_module+0xd0/0xe8
+[   15.105571] [<ffffff8008082f40>] el0_svc_naked+0x34/0x38
+[   15.111090] ###[ar0144_init_device 119] [dump_stack end]
+

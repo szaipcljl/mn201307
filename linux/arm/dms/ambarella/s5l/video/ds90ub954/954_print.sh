@@ -1,0 +1,61 @@
+#!/bin/sh
+
+
+echo " # i2cget -y 1 0x30 0x4c #UB954_FPD3_PORT_SEL_REG"
+i2cget -y 1 0x30 0x4c
+echo " # i2cget -y 1 0x30 0x0c #UB954_RX_PORT_CTL_REG"
+i2cget -y 1 0x30 0x0c
+echo " # i2cget -y 1 0x30 0x58 #UB954_BCC_CONFIG_REG"
+i2cget -y 1 0x30 0x58
+echo " # i2cget -y 1 0x30 0x5c #UB954_SER_ALIAS_ID_REG"
+i2cget -y 1 0x30 0x5c
+echo " # i2cget -y 1 0x30 0x5d #UB954_SLAVE_ID0_REG"
+i2cget -y 1 0x30 0x5d
+echo " # i2cget -y 1 0x30 0x65 #UB954_SLAVE_ALIAS_ID0_REG"
+i2cget -y 1 0x30 0x65
+echo " # i2cget -y 1 0x30 0x00 #UB954_I2C_DEVICE_ID_REG"
+i2cget -y 1 0x30 0x00
+echo " # i2cget -y 1 0x30 0x04 #UB954_DEVICE_STS_REG"
+i2cget -y 1 0x30 0x04
+
+#CSI control
+echo " # i2cget -y 1 0x30 0x20 #UB954_FWD_CTL1_REG"
+i2cget -y 1 0x30 0x20
+echo " # i2cget -y 1 0x30 0x21 #UB954_FWD_CTL2_REG"
+i2cget -y 1 0x30 0x21
+echo " # i2cget -y 1 0x30 0x33 #UB954_CSI_CTL_REG"
+i2cget -y 1 0x30 0x33
+echo " # i2cget -y 1 0x30 0x7c #UB954_PORT_CONFIG2_REG"
+i2cget -y 1 0x30 0x7c
+echo " # i2cget -y 1 0x30 0x70 #UB954_RAW10_ID_REG"
+i2cget -y 1 0x30 0x70
+echo " # i2cget -y 1 0x30 0x71 #UB954_RAW12_ID_REG"
+i2cget -y 1 0x30 0x71
+
+
+echo "--------------------------------------"
+echo " # i2cget -y 1 0x30 0x35 #TX port pass"
+i2cget -y 1 0x30 0x35
+echo " # i2cget -y 1 0x30 0x73 #line count H"
+i2cget -y 1 0x30 0x73 #line count H
+echo " # i2cget -y 1 0x30 0x74 #line count L"
+i2cget -y 1 0x30 0x74 #line count L
+echo " # i2cget -y 1 0x30 0x75 #linen length H"
+i2cget -y 1 0x30 0x75 #linen length H
+echo " # i2cget -y 1 0x30 0x76 #line length L"
+i2cget -y 1 0x30 0x76 #line length L
+echo " # i2cget -y 1 0x30 0x4d #fpd3_port_sel"
+i2cget -y 1 0x30 0x4d #fpd3_port_sel
+echo " # i2cget -y 1 0x30 0x4e #RX_PORT_STS2 0x4e"
+i2cget -y 1 0x30 0x4e #RX_PORT_STS2 0x4e
+echo " # i2cget -y 1 0x30 0x4f # RX_FREQ_HIGH 0x4f"
+i2cget -y 1 0x30 0x4f # RX_FREQ_HIGH 0x4f
+echo " # i2cget -y 1 0x30 0x50 #RX_FREQ_LOW 0x50 "
+i2cget -y 1 0x30 0x50 #RX_FREQ_LOW 0x50
+echo " # i2cget -y 1 0x30 0x55 #RX_PAR_ERR_HI 0x55 "
+i2cget -y 1 0x30 0x55 #RX_PAR_ERR_HI 0x55
+echo " # i2cget -y 1 0x30 0x56 #RX_PAR_ERR_LO "
+i2cget -y 1 0x30 0x56 #RX_PAR_ERR_LO
+echo " # i2cget -y 1 0x30 0x6D #PORT_CONFIG "
+i2cget -y 1 0x30 0x6D #PORT_CONFIG
+
