@@ -1,0 +1,43 @@
+
+[   19.295576] ###[ds90ub954_vin_config 684] [dump_stack start]
+[   19.301447] CPU: 3 PID: 161 Comm: test_encode Tainted: P           O
+4.9.110 #1
+[   19.309286] Hardware name: Roadefend RDA602 Board (DT)
+[   19.314604] Call trace:
+[   19.317138] [<ffffff8008087e18>] dump_backtrace+0x0/0x1e8
+[   19.322726] [<ffffff8008088014>] show_stack+0x14/0x20
+[   19.327954] [<ffffff80082f9938>] dump_stack+0x94/0xb4
+[   19.333189] [<ffffff800069910c>] ds90ub954_vin_config+0x34/0xf8 [ds90ub954]
+[   19.340405] [<ffffff8000691974>] amba_brg_set_vin_config+0xbc/0xe8 [ambrg]
+[   19.347528] [<ffffff800069f690>] ar0144_set_format+0x130/0x1f8 [ar0144p_brg]
+[   19.354833] [<ffffff8000691e78>] ambrg_set_format+0x1c0/0x548 [ambrg]
+[   19.361613] [<ffffff800063da24>] vin_set_video_mode+0x1d4/0xb40 [iav]
+[   19.368387] [<ffffff800063f5f4>] vin_device_ioctl+0x1264/0x2590 [iav]
+[   19.375158] [<ffffff80006048ac>] iav_ioctl+0x114/0x1d0 [iav]
+[   19.381018] [<ffffff800818c01c>] do_vfs_ioctl+0xa4/0x878
+[   19.386515] [<ffffff800818c834>] SyS_ioctl+0x44/0x78
+[   19.391654] [<ffffff8008082f40>] el0_svc_naked+0x34/0x38
+[   19.397174] ###[ds90ub954_vin_config 686] [dump_stack end]
+
+
+[   10.770330] ###[ambarella_set_vin_config 564] [dump_stack start]
+[   10.776568] CPU: 0 PID: 161 Comm: test_encode Tainted: P           O
+4.9.110 #1
+[   10.784407] Hardware name: Roadefend RDA602 Board (DT)
+[   10.789725] Call trace:
+[   10.792259] [<ffffff8008087e18>] dump_backtrace+0x0/0x1e8
+[   10.797847] [<ffffff8008088014>] show_stack+0x14/0x20
+[   10.803076] [<ffffff80082f9938>] dump_stack+0x94/0xb4
+[   10.808419] [<ffffff800063a55c>] ambarella_set_vin_config+0x34/0x958 [iav]
+[   10.815546] [<ffffff80006920b8>] ambrg_set_format+0x400/0x548 [ambrg]
+[   10.822324] [<ffffff800063daf4>] vin_set_video_mode+0x1d4/0xb40 [iav]
+[   10.829097] [<ffffff800063f6c4>] vin_device_ioctl+0x1264/0x2590 [iav]
+[   10.835866] [<ffffff80006048ac>] iav_ioctl+0x114/0x1d0 [iav]
+[   10.841727] [<ffffff800818c01c>] do_vfs_ioctl+0xa4/0x878
+[   10.847224] [<ffffff800818c834>] SyS_ioctl+0x44/0x78
+[   10.852363] [<ffffff8008082f40>] el0_svc_naked+0x34/0x38
+[   10.857961] ###[ambarella_set_vin_config 566] [dump_stack end]
+[   10.864027] #mn: SENSOR_PARALLEL_LVCMOS
+[   10.868007] #mn: lane_number=0
+ [   10.871291] #mn: ar0144_set_fps,vdev->cur_pll->pixelclk=0x46cf710
+

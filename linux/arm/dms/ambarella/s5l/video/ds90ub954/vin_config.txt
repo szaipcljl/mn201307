@@ -1,0 +1,104 @@
+
+
+
+
+ambrg_set_format [ambrg.c]
+|
+|-> while (1):
+|   |-> rval = ambrg_init_device(vdev);
+|   |-> ambrg_set_pll(vdev, format->pll_idx);
+|   |-> ambrg->ops->brg_config //if !NULL
+|   |-> ambrg->sensor_ctrl.ops->set_format
+|   |-> ambrg->ops->brg_vout_config
+|   |-> ambrg->ops->brg_vin_config_post
+|   |-> delay 3 frames to wait sensor to output stably
+|   |-> ambrg->ops->brg_confirm_stream
+|   |-> break, if broken_id = 0. or  loop > AMBRG_MAX_RETRY_TIME && 
+|   |   ambrg->ch_id.active_id != 0x00
+|
+|
+|-> ambrg_update_all_chan_priv(ambrg);
+|
+|-> ambrg->ops->brg_monitor_task(ambrg);
+|
+|
+|   //communicate with IAV
+|-> ambrg_set_vin_mode [ambrg.c]
+|   |
+|   |-> populate struct vin_device_config ambrg_config;
+|   |
+|   |-> return ambarella_set_vin_config(vdev, &ambrg_config);
+
+
+
+
+
+
+
+
+
+note:
+ambrg_set_vin_mode
+ambrg_config.mipi_cfg.lane_number = ambrg->vout_info.lane_num;
+ambrg_config.mipi_cfg.bit_rate = ambrg->vout_info.data_rate;
+
+
+sensor
+========
+//ar0144.c
+static struct vin_ops ar0144_ops = {
+	.init_device		= ar0144_init_device,
+	.set_format		= ar0144_set_format,
+	.set_shutter_row	= ar0144_set_shutter_row,
+	.shutter2row		= ar0144_shutter2row,
+	.set_frame_rate	= ar0144_set_fps,
+	.set_agc_index	= ar0144_set_agc_index,
+	.set_mirror_mode	= ar0144_set_mirror_mode,
+	.read_reg			= ar0144_read_reg,
+	.write_reg		= ar0144_write_reg,
+};
+
+ops guangxi //todo
+
+
+.set_format
+-----------
+ar0144_set_format [ar0144.c]
+|
+|-> write reg in struct vin_reg_16_16 ar0144_wxga_regs[] //ar0144_table.c
+|
+|
+|-> ar0144_update_hv_info(vdev);
+|
+|
+|-> ar0144_get_line_time(vdev);
+|
+|
+|-> flash pin ctl
+|
+| /* communiate with IAV */
+|-> ar0144_set_vin_mode [ar0144.c] //set struct vin_device_config
+|	|-> amba_brg_set_vin_config [ambrg.c] //set to struct vin_brg_device , and
+|	//call Bridge's brg_vin_config_pre
+|		|-> ambrg->ops->brg_vin_config_pre
+|			<=> ds90ub954_vin_config
+|
+|
+|-> /* Enable Streaming */
+	ar0144_start_streaming(vdev);
+
+ds90ub954
+=============
+//ds90ub954.c
+static struct vin_brg_ops ds90ub954_ops = {
+	.brg_write_reg			= ds90ub954_dbg_write,
+	.brg_read_reg			= ds90ub954_dbg_read,
+	.brg_write_chan_reg	= ds90ub954_write_chan_reg,
+	.brg_read_chan_reg	= ds90ub954_read_chan_reg,
+	.brg_hw_init_pre		= ds90ub954_hw_init,
+#ifdef BRG_TO_SNR_CLK
+	.brg_set_clk_si		= ds90ub954_set_clk_si,
+#endif
+	.brg_vin_config_pre	= ds90ub954_vin_config,
+	.brg_vout_config		= ds90ub954_vout_config,
+};

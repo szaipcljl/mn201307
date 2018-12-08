@@ -76,3 +76,7 @@ with the byobu command.
 ALT+F6 will detach all connections to Byobu except for the
 current one.
 
+windows
+=======
+shift +F2
+ctrl + F2
