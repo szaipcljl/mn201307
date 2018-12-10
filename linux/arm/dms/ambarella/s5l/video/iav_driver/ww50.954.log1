@@ -1,0 +1,509 @@
+
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 4.9.110 (chris@qzsw-R730) (gcc version 7.1.1 20170707 (Linaro GCC 7.1-2017.08) ) #1 SMP PREEMPT Sat Dec 8 17:50:45 CST 2018
+[    0.000000] Boot CPU: AArch64 Processor [410fd034]
+[    0.000000] Reserved memory: created CMA memory pool at 0x000000001e400000, size 56 MiB
+[    0.000000] OF: reserved mem: initialized node linux,cma, compatible id shared-dma-pool
+[    0.000000] percpu: Embedded 19 pages/cpu @ffffffc021f83000 s40472 r8192 d29160 u77824
+[    0.000000] Detected VIPT I-cache on CPU0
+[    0.000000] CPU features: enabling workaround for ARM erratum 845719
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 136584
+[    0.000000] Kernel command line: console=ttyS0 noinitrd root=/dev/mmcblk0p7 rootfstype=ext4 ro
+[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.000000] Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes)
+[    0.000000] Inode-cache hash table entries: 65536 (order: 7, 524288 bytes)
+[    0.000000] Memory: 472556K/555008K available (4414K kernel code, 364K rwdata, 1220K rodata, 320K init, 233K bss, 25108K reserved, 57344K cma-reserved)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     modules : 0xffffff8000000000 - 0xffffff8008000000   (   128 MB)
+[    0.000000]     vmalloc : 0xffffff8008000000 - 0xffffffbebfff0000   (   250 GB)
+[    0.000000]       .text : 0xffffff8008080000 - 0xffffff80084d0000   (  4416 KB)
+[    0.000000]     .rodata : 0xffffff80084d0000 - 0xffffff8008610000   (  1280 KB)
+[    0.000000]       .init : 0xffffff8008610000 - 0xffffff8008660000   (   320 KB)
+[    0.000000]       .data : 0xffffff8008660000 - 0xffffff80086bb008   (   365 KB)
+[    0.000000]        .bss : 0xffffff80086bb008 - 0xffffff80086f5594   (   234 KB)
+[    0.000000]     fixed   : 0xffffffbefe7fb000 - 0xffffffbefec00000   (  4116 KB)
+[    0.000000]     PCI I/O : 0xffffffbefee00000 - 0xffffffbeffe00000   (    16 MB)
+[    0.000000]     vmemmap : 0xffffffbf00000000 - 0xffffffc000000000   (     4 GB maximum)
+[    0.000000]               0xffffffbf00008000 - 0xffffffbf00880000   (     8 MB actual)
+[    0.000000]     memory  : 0xffffffc000200000 - 0xffffffc022000000   (   542 MB)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[    0.000000] Preemptible hierarchical RCU implementation.
+[    0.000000] 	Build-time adjustment of leaf fanout to 64.
+[    0.000000] NR_IRQS:64 nr_irqs:64 0
+[    0.000000] CPU features: GIC system register CPU interface present but disabled by higher exception level
+[    0.000000] arm_arch_timer: Architected cp15 timer(s) running at 63.00MHz (virt).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0xe879c5e9b, max_idle_ns: 440795204668 ns
+[    0.000004] sched_clock: 56 bits at 63MHz, resolution 15ns, wraps every 2199023255548ns
+[    0.000188] Console: colour dummy device 80x25
+[    0.270786] console [ttyS0] enabled
+[    0.274400] Calibrating delay loop (skipped), value calculated using timer frequency.. 126.00 BogoMIPS (lpj=63000)
+[    0.285128] pid_max: default: 32768 minimum: 301
+[    0.289975] Mount-cache hash table entries: 2048 (order: 2, 16384 bytes)
+[    0.296920] Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes)
+[    0.304928] ASID allocator initialised with 32768 entries
+[    0.327699] Detected VIPT I-cache on CPU1
+[    0.331887] CPU1: Booted secondary processor [410fd034]
+[    0.343761] Detected VIPT I-cache on CPU2
+[    0.347931] CPU2: Booted secondary processor [410fd034]
+[    0.359832] Detected VIPT I-cache on CPU3
+[    0.363999] CPU3: Booted secondary processor [410fd034]
+[    0.369461] Brought up 4 CPUs
+[    0.372532] SMP: Total of 4 processors activated.
+[    0.377404] CPU features: detected feature: 32-bit EL0 Support
+[    0.383446] CPU features: detected feature: Kernel page table isolation (KPTI)
+[    0.392527] CPU: All CPU(s) started at EL1
+[    0.396776] alternatives: patching kernel code
+[    0.401927] devtmpfs: initialized
+[    0.410829] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275000 ns
+[    0.420946] futex hash table entries: 1024 (order: 5, 131072 bytes)
+[    0.428848] pinctrl core: initialized pinctrl subsystem
+[    0.434642] NET: Registered protocol family 16
+[    0.439859] vdso: 2 pages (1 code @ ffffff80084d6000, 1 data @ ffffff8008664000)
+[    0.448116] DMA: preallocated 256 KiB pool for atomic allocations
+[    0.456648] ambarella-pinctrl e8009000.pinctrl: Ambarella pinctrl driver registered
+[    0.465232] ambarella-gpio e8009000.pinctrl:gpio@0: Ambarella GPIO driver registered
+[    0.478984] HugeTLB registered 2 MB page size, pre-allocated 0 pages
+[    0.486679] ambarella-dma e0005000.dma: Ambarella DMA Engine 
+[    0.493208] ambarella-i2c e8003000.i2c: Ambarella I2C adapter[0] probed!
+[    0.500332] ambarella-i2c e8001000.i2c: Ambarella I2C adapter[1] probed!
+[    0.507576] ambarella-i2c e8007000.i2c: Ambarella I2C adapter[2] probed!
+[    0.515370] clocksource: Switched to clocksource arch_sys_counter
+[    0.878539] ambarella-sd e0002000.sdmmc0: Max frequency is 120000000Hz
+[    1.077426] random: fast init done
+[    1.231474] mmc0: new HS200 MMC card at address 0001
+[    1.356439] ambarella-sd e001f000.sdmmc2: Max frequency is 100000000Hz
+[    1.363349] NET: Registered protocol family 2
+[    1.368344] TCP established hash table entries: 8192 (order: 4, 65536 bytes)
+[    1.375742] TCP bind hash table entries: 8192 (order: 5, 131072 bytes)
+[    1.382629] TCP: Hash tables configured (established 8192 bind 8192)
+[    1.389335] UDP hash table entries: 512 (order: 2, 16384 bytes)
+[    1.395502] UDP-Lite hash table entries: 512 (order: 2, 16384 bytes)
+[    1.402222] NET: Registered protocol family 1
+[    1.407018] RPC: Registered named UNIX socket transport module.
+[    1.413176] RPC: Registered udp transport module.
+[    1.418056] RPC: Registered tcp transport module.
+[    1.422933] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    1.431702] workingset: timestamp_bits=62 max_order=18 bucket_order=0
+[    1.445524] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    1.453835] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 251)
+[    1.461532] io scheduler noop registered
+[    1.465601] io scheduler deadline registered
+[    1.470153] io scheduler cfq registered (default)
+[    1.475431] ambarella-gdma e0015000.gdma: Ambarella GDMA driver init
+[    1.482351] e8005000.uart: ttyS0 at MMIO 0xe8005000 (irq = 10, base_baud = 1442307) is a ambuart
+[    1.491787] ambarella-uart e0032000.uart: Serial[1] use txdma
+[    1.497751] ambarella-uart e0032000.uart: Serial[1] use rxdma
+[    1.503718] e0032000.uart: ttyS1 at MMIO 0xe0032000 (irq = 27, base_baud = 187500) is a ambuart
+[    1.512984] ambarella-uart e0033000.uart: Serial[2] use txdma
+[    1.518943] ambarella-uart e0033000.uart: Serial[2] use rxdma
+[    1.524906] e0033000.uart: ttyS2 at MMIO 0xe0033000 (irq = 28, base_baud = 187500) is a ambuart
+[    1.534236] Unable to detect cache hierarchy for CPU 0
+[    1.541336] brd: module loaded
+[    1.548692] loop: module loaded
+[    1.552086] mousedev: PS/2 mouse device common for all mice
+[    1.558138] ambarella-rtc e8015000.rtc: rtc core: registered e8015000.rtc as rtc0
+[    1.566484] ambarella-wdt e800c000.wdt: Ambarella Watchdog Timer Probed.
+[    1.574737] mmcblk0: mmc0:0001 DG4016 14.7 GiB 
+[    1.579592] mmcblk0boot0: mmc0:0001 DG4016 partition 1 4.00 MiB
+[    1.585870] mmcblk0boot1: mmc0:0001 DG4016 partition 2 4.00 MiB
+[    1.592142] mmcblk0rpmb: mmc0:0001 DG4016 partition 3 4.00 MiB
+[    1.601128]  mmcblk0: bst bld ptb atf pba pri lnx dat sec bak raw
+[    1.610017] Initializing XFRM netlink socket
+[    1.614466] NET: Registered protocol family 17
+[    1.619107] Key type dns_resolver registered
+[    1.625940] console [netcon0] enabled
+[    1.629740] netconsole: network logging started
+[    1.634464] ambarella-rtc e8015000.rtc: setting system clock to 2023-05-27 20:44:24 UTC (1685220264)
+[    1.647290] EXT4-fs (mmcblk0p7): INFO: recovery required on readonly filesystem
+[    1.654881] EXT4-fs (mmcblk0p7): write access will be enabled during recovery
+[    1.672126] EXT4-fs (mmcblk0p7): recovery complete
+[    1.680062] EXT4-fs (mmcblk0p7): mounted filesystem with ordered data mode. Opts: (null)
+[    1.688488] VFS: Mounted root (ext4 filesystem) readonly on device 179:7.
+[    1.696931] devtmpfs: mounted
+[    1.700180] Freeing unused kernel memory: 320K
+****************init ... pid = 1***********************
+init start ...
+Created socket '/dev/socket/property_service' with mode '666', user '0', group '0'
+Parsing /etc/init.rc...
+[ on early-init ]
+[ on init ]
+[ service ueventd ]
+[ service getty ]
+[ service console ]
+[ service login ]
+[ service console2 ]
+[ service dlt-daemon ]
+[ service dbus-daemon ]
+[ service devipc_deamon ]
+[ service sm ]
+service ueventd
+  class 'core'
+  exec '/sbin/ueventd'
+service getty
+  class 'core'
+  exec '/sbin/getty' '-L' '115200' 'ttyS0'
+service console
+  class 'core'
+  exec '/bin/sh'
+service login
+  class 'core'
+  exec '/bin/busybox' 'login'
+service console2
+  class 'core'
+  exec '/bin/sh'
+service dlt-daemon
+  class 'core'
+  exec '/usr/bin/dlt-daemon' '-c' '/etc/dlt.conf'
+service dbus-daemon
+  class 'core'
+  exec '/usr/bin/dbus-daemon' '--system' '--print-address' '--nopidfile'
+service devipc_deamon
+  class 'core'
+  exec '/usr/bin/devipc_deamon'
+service sm
+  class 'core'
+  exec '/usr/bin/systemmanager'
+on early-init
+  0x404c70 start ueventd
+
+on init
+  0x404e20 system modprobe ambarella_udc
+  0x404e20 system modprobe g_ether host_addr=auto dev_addr=auto
+  0x404e20 system mknod -m 666 /dev/ucode c 248 1
+  0x404e20 system mknod -m 666 /dev/iav c 248 0
+  0x404e20 system modprobe iav
+  0x404e20 system modprobe ambdve
+  0x404e20 system modprobe ds90ub954 id=0x101
+  0x404e20 system modprobe ar0144p_brg brg_id=0x0
+  0x404e20 system modprobe sha204-i2c
+  0x404e20 system modprobe i2c-dev
+  0x404e20 system modprobe ambarella_fb resolution=720x576 mode=clut8bpp
+  0x404e20 system /usr/sbin/load_ucode /lib/firmware
+  0x404e20 system mount -t ext4 /dev/block/mmcblk0p8 /data
+  0x404e20 system mount -o remount /dev/root /
+  0x404e20 system rm -rf /var/run/messagebus.pid
+  0x404e20 system rm -rf /tmp/dbus/dbus-session-bus-address
+  0x404e20 system /usr/bin/dbus-uuidgen > /var/dbus/machine-id
+  0x404e20 system /usr/bin/dbus-uuidgen --ensure
+  0x404e20 system mkdir /tmp/dbus
+  0x404e20 system /usr/bin/dbus-daemon --system --print-address --nopidfile > /tmp/dbus/dbus-session-bus-address
+  0x404c70 start devipc_deamon
+  0x404c70 start sm
+  0x404c70 start console
+  0x404c70 start dlt-daemon
+  0x404e20 system ifconfig lo 127.0.0.1 netmask 255.255.255.0
+  0x404e20 system ifconfig usb0 192.168.2.1 netmask 255.255.255.0 broadcast 192.168.2.255
+
+(Parsing /etc/init.rc took 0.00s.)
+service ueventd
+  class 'core'
+  exec '/sbin/ueventd'
+service getty
+  class 'core'
+  exec '/sbin/getty' '-L' '115200' 'ttyS0'
+service console
+  class 'core'
+  exec '/bin/sh'
+service login
+  class 'core'
+  exec '/bin/busybox' 'login'
+service console2
+  class 'core'
+  exec '/bin/sh'
+service dlt-daemon
+  class 'core'
+  exec '/usr/bin/dlt-daemon' '-c' '/etc/dlt.conf'
+service dbus-daemon
+  class 'core'
+  exec '/usr/bin/dbus-daemon' '--system' '--print-address' '--nopidfile'
+service devipc_deamon
+  class 'core'
+  exec '/usr/bin/devipc_deamon'
+service sm
+  class 'core'
+  exec '/usr/bin/systemmanager'
+on early-init
+  0x404c70 start ueventd
+
+on init
+  0x404e20 system modprobe ambarella_udc
+  0x404e20 system modprobe g_ether host_addr=auto dev_addr=auto
+  0x404e20 system mknod -m 666 /dev/ucode c 248 1
+  0x404e20 system mknod -m 666 /dev/iav c 248 0
+  0x404e20 system modprobe iav
+  0x404e20 system modprobe ambdve
+  0x404e20 system modprobe ds90ub954 id=0x101
+  0x404e20 system modprobe ar0144p_brg brg_id=0x0
+  0x404e20 system modprobe sha204-i2c
+  0x404e20 system modprobe i2c-dev
+  0x404e20 system modprobe ambarella_fb resolution=720x576 mode=clut8bpp
+  0x404e20 system /usr/sbin/load_ucode /lib/firmware
+  0x404e20 system mount -t ext4 /dev/block/mmcblk0p8 /data
+  0x404e20 system mount -o remount /dev/root /
+  0x404e20 system rm -rf /var/run/messagebus.pid
+  0x404e20 system rm -rf /tmp/dbus/dbus-session-bus-address
+  0x404e20 system /usr/bin/dbus-uuidgen > /var/dbus/machine-id
+  0x404e20 system /usr/bin/dbus-uuidgen --ensure
+  0x404e20 system mkdir /tmp/dbus
+  0x404e20 system /usr/bin/dbus-daemon --system --print-address --nopidfile > /tmp/dbus/dbus-session-bus-address
+  0x404c70 start devipc_deamon
+  0x404c70 start sm
+  0x404c70 start console
+  0x404c70 start dlt-daemon
+  0x404e20 system ifconfig lo 127.0.0.1 netmask 255.255.255.0
+  0x404e20 system ifconfig usb0 192.168.2.1 netmask 255.255.255.0 broadcast 192.168.2.255
+
+on wait_for_coldboot_done
+  0x406e80 wait_for_coldboot_done
+
+on console1_init
+  0x406dd0 console1_init
+
+on queue_property_triggers
+  0x406da0 queue_property_triggers
+
+processing action 0x280698a0 (early-init)
+!!!!!exec 'start' 'ueventd'
+Starting service 'ueventd'...
+Command 'start ueventd' action=early-init (/etc/init.rc:12) returned 0 took 0.00s
+processing action 0x280685e0 (wait_for_coldboot_done)
+!!!!!exec 'wait_for_coldboot_done'
+Waiting for /dev/.coldboot_done...
+#mn: ueventd_main enter!
+#mn: ueventd_parse_config_file!
+[ subsystem adf ]
+Waiting for /dev/.coldboot_done took 0.07s.
+Command 'wait_for_coldboot_done' action=wait_for_coldboot_done returned 0 took 0.07s
+processing action 0x280686b0 (console1_init)
+!!!!!exec 'console1_init'
+Command 'console1_init' action=console1_init returned 0 took 0.00s
+processing action 0x28069980 (init)
+!!!!!exec 'system' 'modprobe' 'ambarella_udc'
+modprobe ambarella_udc 
+[    2.278322] ambarella-udc e0006000.udc: ambarella_udc: version 21 Jan 2016
+Command 'system modprobe ambarella_udc' action=init (/etc/init.rc:19) returned 0 took 0.07s
+!!!!!exec 'system' 'modprobe' 'g_ether' 'host_addr=auto' 'dev_addr=auto'
+modprobe g_ether host_addr=auto dev_addr=auto 
+[    2.311752] using random self ethernet address
+[    2.316371] using random host ethernet address
+[    2.321428] usb0: HOST MAC 96:d9:bc:be:96:63
+[    2.325899] usb0: MAC 72:ea:4e:d9:2b:4a
+[    2.329895] using random self ethernet address
+[    2.334511] using random host ethernet address
+[    2.339178] g_ether gadget: Ethernet Gadget, version: Memorial Day 2008
+[    2.346036] g_ether gadget: g_ether ready
+Command 'system modprobe g_ether host_addr=auto dev_addr=auto' action= (/etc/init.rc:20) returned 0 took 0.06s
+!!!!!exec 'system' 'mknod' '-m' '666' '/dev/ucode' 'c' '248' '1'
+mknod -m 666 /dev/ucode c 248 1 
+Command 'system mknod -m 666 /dev/ucode c 248 1' action= (/etc/init.rc:21) returned 0 too[    2.377818] ambcma: loading out-of-tree module taints kernel.
+k 0.01s
+!!!!!exec 'system' 'mknod' '-m' '666' '/dev/iav' 'c' '248' '0'
+mknod -m 666 /dev/iav c 248 0 
+Command 'system mknod -m 666 /dev/iav c 248 0' action= (/etc/init.rc:22) returned 0 took 0.00s
+!!!!!ex[    2.402426] imgproc: module license 'Proprietary' taints kernel.
+ec 'system' 'mod[    2.409245] Disabling lock debugging due to kernel taint
+probe' 'iav'
+modprobe iav 
+Command 'system modprobe iav' action= (/etc/init.rc:23) returned -779219120 took 0.10s
+!!!!!exec 'system' 'modprobe' 'ambdve'
+modprobe ambdve 
+Command 'system modprobe ambdve' action= (/etc/init.rc:24) returned 0 took 0.01s
+!!!!!exec 'system' 'modprobe' 'ds90ub954' 'id=0x101'
+modprobe ds90ub954 id=0x101 
+Command 'system modprobe ds90ub954 id=0x101' action= (/etc/init.rc:25) returned 0 took 0.01s
+!!!!!exec 'system' 'modprobe' 'ar0144p_brg' 'brg_id=0x0'
+modprobe ar0144p_brg brg_id=0x0 
+[    2.565333] #mn-1: addr=0xba, rval = 0x55
+Command 'system modprobe ar0144p_brg brg_id=0x0' action= (/etc/init.rc:26) returned 0 took 0.11s
+!!!!!exec 'system' 'modprobe' 'sha204-i2c'
+modprobe sha204-i2c 
+Command 'system modprobe sha204-i2c' action= (/etc/ini[    2.619405] i2c /dev entries driver
+t.rc:27) returned 0 took 0.01s
+!!!!!exec 'system' 'modprobe' 'i2c-dev'
+modprobe i2c-dev 
+Command 'system modprobe i2c-dev' action= (/etc/init[    2.636212] ambarella_fb bogus_bus:framebuffer@0: 720x576, clut8bpp, 8 bits per pixel, buf pitch = 736
+.rc:28) returned 0 took 0.01s
+![    2.647821] ambarella_fb bogus_bus:framebuffer@1: 720x576, clut8bpp, 8 bits per pixel, buf pitch = 736
+!!!!exec 'system' 'modprobe' 'ambarella_fb' 'resolution=720x576' 'mode=clut8bpp'
+modprobe ambarella_fb resolution=720x576 mode=clut8bpp 
+Command 'system modprobe ambarella_fb resolution=720x576 mode=clut8bpp' action= (/etc/init.rc:29) returned 0 took 0.03s
+!!!!!exec 'system' '/usr/sbin/load_ucode' '/lib/firmware'
+/usr/sbin/load_ucode /lib/firmware 
+map_size = 0x500000, nr_item = 3
+addr_offset = 0x00000000, filename = orccode.bin
+addr_offset = 0x00300000, filename = orcme.bin
+addr_offset = 0x003a0000, filename = default_binary.bin
+mmap returns 0x7f7b489000
+loading /lib/firmware/orccode.bin...addr = 0x7f7b489000, size = 0x1b879b
+loading /lib/firmware/orcme.bin...addr = 0x[    2.720427] EXT4-fs (mmcblk0p8): recovery complete
+7f7b789000, size = 0x3392c
+load[    2.727347] EXT4-fs (mmcblk0p8): mounted filesystem with ordered data mode. Opts: (null)
+ing /lib/firmware/default_binary.bin...addr = 0x7f7b829000, size = 0x61e80[    2.743313] EXT4-fs (mmcblk0p7): re-mounted. Opts: (null)
+
+===============================================
+ucode (S5L) version = 2018/10/22 284632.282649
+===============================================
+Command 'system /usr/sbin/load_ucode /lib/firmware' action= (/etc/init.rc:30) returned 0 took 0.04s
+!!!!!exec 'system' 'mount' '-t' 'ext4' '/dev/block/mmcblk0p8' '/data'
+mount -t ext4 /dev[    2.778730] random: dbus-uuidgen: uninitialized urandom read (12 bytes read)
+/block/mmcblk0p8[    2.787306] random: dbus-uuidgen: uninitialized urandom read (8 bytes read)
+ /data 
+Command 'system mount -t ext4 /dev/block/mmcblk0p8 /data' action= (/etc/init.rc:31) returned 0 took 0.04s
+!!!!!exec 'system' 'mount' '-o' 'remount' '/dev/root' '/'
+mount -o remount /dev/root / [    2.812917] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+
+Command 'system mount -o remount /dev/root /' action= (/etc/init.rc:32) returned 0 took 0.01s
+!!!!!exec 'system' 'rm' '-rf' '/var/run/messagebus.pid'
+rm -rf /var/run/messagebus.pid 
+Command 'system rm -rf /var/run/messagebus.pid' action= (/etc/init.rc:35) returned 0 took 0.01s
+!!!!!exec 'system' 'rm' '-rf' '/tmp/dbus/dbus-session-bus-address'
+rm -rf /tmp/dbus/dbus-session-bus-address 
+Command 'system rm -rf /tmp/dbus/dbus-session-bus-address' action= (/etc/init.rc:36) returned 0 took 0.00s
+!!!!!exec 'system' '/usr/bin/dbus-uuidgen' '>' '/var/dbus/machine-id'
+/usr/bin/dbus-uuidgen > /var/dbus/machine-id 
+sh: can't create /var/dbus/machine-id: nonexistent directory
+Command 'system /usr/bin/dbus-uuidgen > /var/dbus/machine-id' action= (/etc/init.rc:37) returned 0 took 0.00s
+!!!!!exec 'system' '/usr/bin/dbus-uuidgen' '--ensure'
+/usr/bin/dbus-uuidgen --ensure 
+Could not create /var/dbus/machine-id.cOCIAGT3: No such file or directory
+Command 'system /usr/bin/dbus-uuidgen --ensure' action= (/etc/init.rc:38) returned 0 took 0.03s
+!!!!!exec 'system' 'mkdir' '/tmp/dbus'
+mkdir /tmp/dbus 
+mkdir: can't create directory '/tmp/dbus': File exists
+Command 'system mkdir /tmp/dbus' action= (/etc/init.rc:39) returned 0 took 0.00s
+!!!!!exec 'system' '/usr/bin/dbus-daemon' '--system' '--print-address' '--nopidfile' '>' '/tmp/dbus/dbus-session-bus-address'
+/usr/bin/dbus-daemon --system --print-address --nopidfile > /tmp/dbus/dbus-session-bus-address 
+Failed to start message bus: Configuration file needs one or more <listen> elements giving addresses
+Command 'system /usr/bin/dbus-daemon --system --print-address --nopidfile > /tmp/dbus/dbus-session-bus-address' action= (/etc/init.rc:40) returned 1 took 0.02s
+!!!!!exec 'start' 'devipc_deamon'
+Starting service 'devipc_deamon'...
+Command 'start devipc_deamon' action= (/etc/init.rc:43) returned 0 took 0.00s
+!!!!!exec 'start' 'sm'
+cannot find '/usr/bin/systemmanager', disabling 'sm'
+Command 'start sm' action= (/etc/init.rc:44) returned 0 took 0.00s
+!!!!!exec 'start' 'console'
+Starting service 'console'...
+Command 'start console' action= (/etc/init.rc:45) returned 0 took 0.00s
+!!!!!exec 'start' 'dlt-daemon'
+Starting service 'dlt-daemon'...
+Command 'start dlt-daemon' action= (/etc/init.rc:46) returned 0 took 0.00s
+!!!!!exec 'system' 'ifconfig' 'lo' '127.0.0.1' 'netmask' '255.255.255.0'
+ifconfig lo 127.0.0.1 netmask 255.255.255.0 
+/ # Command 'system ifconfig lo 127.0.0.1 netmask 255.255.255.0' action= (/etc/init.rc:47) returned 0 took 0.01s
+!!!!!exec 'system' 'ifconfig' 'usb0' '192.168.2.1' 'netmask' '255.255.255.0' 'broadcast' '192.168.2.255'
+ifconfig usb0 192.168.2.1 netmask 255.255.255.0 broadcast 192.168.2.255 
+Command 'system ifconfig usb0 192.168.2.1 netmask 255.255.255.0 broadcast 192.168.2.255' action= (/etc/init.rc:48) returned 1 took 0.01s
+processing action 0x28068780 (queue_property_triggers)
+!!!!!exec 'queue_property_triggers'
+Command 'queue_property_triggers' action=queue_property_triggers returned 0 took 0.00s
+
+/ # [    4.344547] g_ether gadget: high-speed config #1: CDC Ethernet (ECM)
+
+/ # 
+/ # ls
+bin         etc         linuxrc     opt         sbin        var
+data        home        lost+found  proc        sys         webSvr
+debug       i2c-test    mnt         root        tmp
+dev         lib         mnt.sh      run         usr
+/ # dme/ # dmesg | tail/ # dmesg | tail -n 100
+[    1.407018] RPC: Registered named UNIX socket transport module.
+[    1.413176] RPC: Registered udp transport module.
+[    1.418056] RPC: Registered tcp transport module.
+[    1.422933] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    1.431702] workingset: timestamp_bits=62 max_order=18 bucket_order=0
+[    1.445524] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    1.453835] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 251)
+[    1.461532] io scheduler noop registered
+[    1.465601] io scheduler deadline registered
+[    1.470153] io scheduler cfq registered (default)
+[    1.475431] ambarella-gdma e0015000.gdma: Ambarella GDMA driver init
+[    1.482351] e8005000.uart: ttyS0 at MMIO 0xe8005000 (irq = 10, base_baud = 1442307) is a ambuart
+[    1.491787] ambarella-uart e0032000.uart: Serial[1] use txdma
+[    1.497751] ambarella-uart e0032000.uart: Serial[1] use rxdma
+[    1.503718] e0032000.uart: ttyS1 at MMIO 0xe0032000 (irq = 27, base_baud = 187500) is a ambuart
+[    1.512984] ambarella-uart e0033000.uart: Serial[2] use txdma
+[    1.518943] ambarella-uart e0033000.uart: Serial[2] use rxdma
+[    1.524906] e0033000.uart: ttyS2 at MMIO 0xe0033000 (irq = 28, base_baud = 187500) is a ambuart
+[    1.534236] Unable to detect cache hierarchy for CPU 0
+[    1.541336] brd: module loaded
+[    1.548692] loop: module loaded
+[    1.552086] mousedev: PS/2 mouse device common for all mice
+[    1.558138] ambarella-rtc e8015000.rtc: rtc core: registered e8015000.rtc as rtc0
+[    1.566484] ambarella-wdt e800c000.wdt: Ambarella Watchdog Timer Probed.
+[    1.574737] mmcblk0: mmc0:0001 DG4016 14.7 GiB 
+[    1.579592] mmcblk0boot0: mmc0:0001 DG4016 partition 1 4.00 MiB
+[    1.585870] mmcblk0boot1: mmc0:0001 DG4016 partition 2 4.00 MiB
+[    1.592142] mmcblk0rpmb: mmc0:0001 DG4016 partition 3 4.00 MiB
+[    1.601128]  mmcblk0: bst bld ptb atf pba pri lnx dat sec bak raw
+[    1.610017] Initializing XFRM netlink socket
+[    1.614466] NET: Registered protocol family 17
+[    1.619107] Key type dns_resolver registered
+[    1.625940] console [netcon0] enabled
+[    1.629740] netconsole: network logging started
+[    1.634464] ambarella-rtc e8015000.rtc: setting system clock to 2023-05-27 20:44:24 UTC (1685220264)
+[    1.647290] EXT4-fs (mmcblk0p7): INFO: recovery required on readonly filesystem
+[    1.654881] EXT4-fs (mmcblk0p7): write access will be enabled during recovery
+[    1.672126] EXT4-fs (mmcblk0p7): recovery complete
+[    1.680062] EXT4-fs (mmcblk0p7): mounted filesystem with ordered data mode. Opts: (null)
+[    1.688488] VFS: Mounted root (ext4 filesystem) readonly on device 179:7.
+[    1.696931] devtmpfs: mounted
+[    1.700180] Freeing unused kernel memory: 320K
+[    2.278322] ambarella-udc e0006000.udc: ambarella_udc: version 21 Jan 2016
+[    2.311752] using random self ethernet address
+[    2.316371] using random host ethernet address
+[    2.321428] usb0: HOST MAC 96:d9:bc:be:96:63
+[    2.325899] usb0: MAC 72:ea:4e:d9:2b:4a
+[    2.329895] using random self ethernet address
+[    2.334511] using random host ethernet address
+[    2.339178] g_ether gadget: Ethernet Gadget, version: Memorial Day 2008
+[    2.346036] g_ether gadget: g_ether ready
+[    2.377818] ambcma: loading out-of-tree module taints kernel.
+[    2.397755] dsp_drv_probe_status(822): DSP probe op mode [255], enc mode [7].
+[    2.397779] dsp_fill_init_data(666): DSP log start phys addr: 0x3ff80000, size: 524288
+[    2.402426] imgproc: module license 'Proprietary' taints kernel.
+[    2.409245] Disabling lock debugging due to kernel taint
+[    2.456707] #iav_warn# iav_create_mmb(465): ====== Pre-allocated BSB + IAV reserved memory [28672 KB] is smaller than the required [43896 KB].
+[    2.466274] iav_drv_probe_status(295): IAV probe status [4294967295], dsp mode [255].
+[    2.468421] hw_pts_init(77): HW timer for pts is enabled.
+[    2.468431] hw_pts_init(84): Audio clock freq: 12288000, HW timer clock freq: 90000!
+[    2.469549] VIN: vin0: probed!
+[    2.469562] VIN: vin2(virtual): probed!
+[    2.469570] VIN: vin3(global): probed!
+[    2.469677] VIN: vin1: probed!
+[    2.485967] VIN: Ambarella serdes bridge controller ambrg init!
+[    2.487038] VIN: Ambarella serdes bridge ds90ub954[0] init(id 0x1), bus addr 0x10000!
+[    2.487063] VIN: Ambarella serdes bridge ds90ub954[1] init(id 0x1), bus addr 0x20001!
+[    2.494862] VIN: Bind to bridge ds90ub954!
+[    2.556379] ds90ub954_hw_init(386): VIN: ds90ub954_hw_init
+[    2.556386] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0x4c, 0x1
+[    2.556702] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0xc, 0x81
+[    2.557012] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0x58, 0x58
+[    2.557322] ds90ub954_read_reg_8(179): VIN: r8 [0x60]0x0
+[    2.557738] VIN: [0]deserializer ds90ub954a, id:0x60
+[    2.560371] ds90ub954_read_reg_8(179): VIN: r8 [0x60]0x4
+[    2.560788] ds90ub954_hw_init(429): VIN: [0:1]reset link A
+[    2.563370] ds90ub954_read_reg_8(179): VIN: r8 [0x60]0x4
+[    2.563786] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0x5c, 0xba
+[    2.564095] ds90ub954_read_reg_8(179): VIN: r8 [0x60]0x5c
+[    2.564512] ds90ub954_read_reg_8(179): VIN: r8 [0xba]0xd
+[    2.564969] ds90ub954_write_reg_8(153): VIN: w8 [0xba]0xd, 0x55
+[    2.565333] #mn-1: addr=0xba, rval = 0x55
+[    2.573376] ds90ub954_write_reg_8(153): VIN: w8 [0xba]0xd, 0x59
+[    2.585376] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0x5d, 0x20
+[    2.585686] ds90ub954_write_reg_8(153): VIN: w8 [0x60]0x65, 0x20
+[    2.585994] VIN: Serdes link pass(1)!
+[    2.585998] VIN: [0]load:0x1, active:0x1, broken:0x0
+[    2.586003] ds90ub954_write_chan_reg(288): VIN: sen w [0x20]0x301a, 0x1
+[    2.598377] ds90ub954_write_chan_reg(288): VIN: sen w [0x20]0x301a, 0x10d8
+[    2.599520] VIN: Register 1x[ar0144] on bridge ds90ub954[0][i2c0, 0x20(2:2)]!
+[    2.619405] i2c /dev entries driver
+[    2.636212] ambarella_fb bogus_bus:framebuffer@0: 720x576, clut8bpp, 8 bits per pixel, buf pitch = 736
+[    2.647821] ambarella_fb bogus_bus:framebuffer@1: 720x576, clut8bpp, 8 bits per pixel, buf pitch = 736
+[    2.720427] EXT4-fs (mmcblk0p8): recovery complete
+[    2.727347] EXT4-fs (mmcblk0p8): mounted filesystem with ordered data mode. Opts: (null)
+[    2.743313] EXT4-fs (mmcblk0p7): re-mounted. Opts: (null)
+[    2.778730] random: dbus-uuidgen: uninitialized urandom read (12 bytes read)
+[    2.787306] random: dbus-uuidgen: uninitialized urandom read (8 bytes read)
+[    2.812917] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+[    4.344547] g_ether gadget: high-speed config #1: CDC Ethernet (ECM)
+/ # 

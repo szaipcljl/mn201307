@@ -1,0 +1,16 @@
+diff --git a/private/platform/vin/bridges/AmbaConfig b/private/platform/vin/bridges/AmbaConfig
+index 7896419..bedad74 100644
+--- a/private/platform/vin/bridges/AmbaConfig
++++ b/private/platform/vin/bridges/AmbaConfig
+@@ -62,5 +62,11 @@ config CONFIG_BRIDGE_SERDES_MAX9296
+ 	help
+ 		Select Maxim 9296 serdes bridge.
+ 
++config CONFIG_BRIDGE_SERDES_DS90UB954
++	bool "TI DS90UB954"
++	default n
++	help
++		Select TI DS90UB954 serdes bridge.
++
+ endif
+ 

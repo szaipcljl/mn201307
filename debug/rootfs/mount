@@ -1,0 +1,3 @@
+
+rootfs  read only, need to remount
+mount -o remount /dev/root /
