@@ -679,7 +679,8 @@ static void ds90ub954_vout_config(struct vin_brg_device *ambrg, u32 chip_id, str
 	ds90ub954_write_reg_8(ambrg, des_addr, UB954_RAW12_ID_REG, 0xEC) ; //Map Sensor A VC0 to CSI-Tx VC0
 
 	/* CSI_EN */
-	ds90ub954_write_reg_8(ambrg, des_addr, UB954_CSI_CTL_REG, 0x1) ; //CSI_EN & CSI0 4L
+	//CSI_EN & CSI0 4L; Enable CSI continuous clock mode.
+	ds90ub954_write_reg_8(ambrg, des_addr, UB954_CSI_CTL_REG, 0x3) ;
 
 	/* Basic_FWD */
 	ds90ub954_write_reg_8(ambrg, des_addr, UB954_FWD_CTL2_REG, 0x14) ; //Synchronized Basic_FWD
