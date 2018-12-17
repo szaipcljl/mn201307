@@ -1,0 +1,344 @@
+
+Build  
+
+
+APP_ComTransfer  APP_HealthMonitor  APP_SystemState  APP_UDS  
+RTE
+BSW_Debugging  BSW_EcuM  BSW_IPCL  BSW_Network  BSW_NVM  BSW_OS  
+MCAL  
+
+-------------------------
+.
+├── APP_ComTransfer
+│   ├── ComTransfer.c
+│   ├── ComTransfer.h
+│   └── version.txt
+├── APP_HealthMonitor
+│   ├── HealthMonitor.c
+│   ├── HealthMonitor.h
+│   └── version.txt
+├── APP_SystemState
+│   ├── SystemState.c
+│   ├── SystemState.h
+│   └── version.txt
+├── APP_UDS
+│   ├── UdsApplication.c
+│   ├── UdsApplication.h
+│   └── version.txt
+├── BSW_Debugging
+│   ├── cmd_config.h
+│   ├── cmd_uart.c
+│   ├── cmd_uart.h
+│   └── version.txt
+├── BSW_EcuM
+│   ├── EcuM.c
+│   ├── EcuM.h
+│   └── version.txt
+├── BSW_IPCL
+│   ├── devipc_public.h
+│   ├── Ipcl_Abstract.c
+│   ├── Ipcl_Abstract.h
+│   ├── Ipcl.c
+│   ├── Ipcl_Cfg.c
+│   ├── Ipcl_Cfg.h
+│   ├── Ipcl.h
+│   ├── Service_Ipcl.c
+│   ├── Service_Ipcl.h
+│   └── version.txt
+├── BSW_Network
+│   ├── Can_BusOff.c
+│   ├── Can_BusOff.h
+│   ├── Can.c
+│   ├── Can_Cfg.h
+│   ├── Can_GeneralTypes.h
+│   ├── Can.h
+│   ├── CanIf
+│   │   ├── CanIf.c
+│   │   ├── CanIf_Cbk.h
+│   │   ├── CanIf_Cfg.c
+│   │   ├── CanIf_Cfg.h
+│   │   ├── CanIf.h
+│   │   └── CanIf_Types.h
+│   ├── Can_Irq.c
+│   ├── Can_PBcfg.h
+│   ├── CanSm.c
+│   ├── CanSm.h
+│   ├── CanSpecailTp.c
+│   ├── CanSpecailTp.h
+│   ├── CanTp
+│   │   ├── CanTp.c
+│   │   ├── CanTp_Cfg.c
+│   │   ├── CanTp_Cfg.h
+│   │   ├── CanTp_Defines.h
+│   │   ├── CanTp.h
+│   │   ├── CanTp_Par_Cfg.c
+│   │   └── CanTp_Par_Cfg.h
+│   ├── CanTrcv.c
+│   ├── CanTrcv.h
+│   ├── Com
+│   │   ├── Com.c
+│   │   ├── Com_Cbk.h
+│   │   ├── Com_Cfg.c
+│   │   ├── Com_Cfg.h
+│   │   ├── Com.h
+│   │   ├── Com_Pcfg.c
+│   │   └── Com_Pcfg.h
+│   ├── ComStack_Types.h
+│   ├── Diagnostic
+│   │   ├── DCM
+│   │   │   ├── Dcm.c
+│   │   │   ├── Dcm_Cbk.h
+│   │   │   ├── Dcm_Cfg.c
+│   │   │   ├── Dcm_Cfg.h
+│   │   │   ├── Dcm_Dsd.c
+│   │   │   ├── Dcm_Dsd.h
+│   │   │   ├── Dcm_Dsp.c
+│   │   │   ├── Dcm_Dsp.h
+│   │   │   ├── DcmExt.c
+│   │   │   ├── DcmExt.h
+│   │   │   ├── Dcm.h
+│   │   │   ├── Dcm_Internal.h
+│   │   │   ├── Dcm_MemMap.h
+│   │   │   ├── Dcm_PrivateCfg.h
+│   │   │   ├── Dcm_Types.h
+│   │   │   ├── SecurityAccess.c
+│   │   │   └── SecurityAccess.h
+│   │   ├── DEM
+│   │   │   ├── Dem.c
+│   │   │   ├── Dem_Cbk.h
+│   │   │   ├── Dem_Cfg.c
+│   │   │   ├── Dem_Cfg.h
+│   │   │   ├── Dem_Debounce.c
+│   │   │   ├── Dem_DTC.c
+│   │   │   ├── Dem_Dtc.h
+│   │   │   ├── Dem_Extension.c
+│   │   │   ├── Dem_Extension.h
+│   │   │   ├── Dem.h
+│   │   │   ├── Dem_Internal.h
+│   │   │   ├── Dem_IntErrId.h
+│   │   │   ├── Dem_IntEvtId.h
+│   │   │   ├── Dem_Lcfg.c
+│   │   │   ├── Dem_Lcfg - Copy.c
+│   │   │   ├── Dem_Lcfg - Copy.h
+│   │   │   ├── Dem_Lcfg.h
+│   │   │   ├── Dem_NvM.c
+│   │   │   ├── Dem_NvM.h
+│   │   │   ├── Dem_Pcfg.c
+│   │   │   ├── Dem_Pcfg.h
+│   │   │   ├── Dem_Types.h
+│   │   │   └── SchM_Dem.h
+│   │   ├── DET
+│   │   │   ├── Det.c
+│   │   │   ├── Det_Cfg.h
+│   │   │   └── Det.h
+│   │   └── DIT
+│   │       ├── DltExt.c
+│   │       ├── DltExt.h
+│   │       └── Dlt.h
+│   ├── OsekNm
+│   │   ├── CanNm.c
+│   │   ├── CanNm_Cfg.h
+│   │   ├── CanNm_Defines.h
+│   │   ├── CanNm.h
+│   │   └── CanNm_Par_Cfg.h
+│   ├── PduR
+│   │   ├── PduR.c
+│   │   ├── PduR_Cfg.h
+│   │   ├── PduR_Com.h
+│   │   ├── PduR.h
+│   │   ├── PduR_Lcfg.h
+│   │   ├── PduRPBcfg.h
+│   │   └── PduR_Types.h
+│   └── version.txt
+├── BSW_NVM
+│   ├── NvM.c
+│   ├── NvM_Cfg.c
+│   ├── NvM_Cfg.h
+│   ├── NvM.h
+│   └── version.txt
+├── BSW_OS
+│   ├── GlbMsgDef.h
+│   ├── Global.h
+│   ├── Lib
+│   │   ├── Crc.c
+│   │   ├── Crc.h
+│   │   ├── MemIf_Types.h
+│   │   ├── MemLib.c
+│   │   └── MemLib.h
+│   ├── main.c
+│   ├── Os.c
+│   ├── Os.h
+│   └── Os_public.h
+├── Build
+│   ├── 32.uvguix.Administrator
+│   ├── 32.uvguix.施天宇
+│   ├── 32.uvoptx
+│   ├── 32.uvprojx
+│   ├── EventRecorderStub.scvd
+│   ├── JLinkLog.txt
+│   ├── JLinkSettings.ini
+│   ├── Listings
+│   │   ├── 32.map
+│   │   └── startup_s32k144.lst
+│   ├── Objects
+│   │   ├── 32.axf
+│   │   ├── 32.build_log.htm
+│   │   ├── 32.hex
+│   │   ├── 32.htm
+│   │   ├── 32.lnp
+│   │   ├── 32_RDA602.dep
+│   │   ├── 32.sct
+│   │   ├── 32_Target 1.dep
+│   │   ├── canspecailtp.crf
+│   │   ├── canspecailtp.d
+│   │   ├── canspecailtp.o
+│   │   ├── cantrcv.crf
+│   │   ├── cantrcv.d
+│   │   ├── cantrcv.o
+│   │   ├── clockman1.crf
+│   │   ├── clockman1.d
+│   │   ├── clockman1.o
+│   │   ├── clock_manager.crf
+│   │   ├── clock_manager.d
+│   │   ├── clock_manager.o
+│   │   ├── clock_s32k1xx.crf
+│   │   ├── clock_s32k1xx.d
+│   │   ├── clock_s32k1xx.o
+│   │   ├── clocks_and_modes.crf
+│   │   ├── clocks_and_modes.d
+│   │   ├── clocks_and_modes.o
+│   │   ├── cmd_uart.crf
+│   │   ├── cmd_uart.d
+│   │   ├── cmd_uart.o
+│   │   ├── comtransfer.crf
+│   │   ├── comtransfer.d
+│   │   ├── comtransfer.o
+│   │   ├── crc.crf
+│   │   ├── crc.d
+│   │   ├── crc.o
+│   │   ├── ecum.crf
+│   │   ├── ecum.d
+│   │   ├── ecum.o
+│   │   ├── ExtDll.iex
+│   │   ├── flexcan.crf
+│   │   ├── flexcan.d
+│   │   ├── flexcan.o
+│   │   ├── healthmonitor.crf
+│   │   ├── healthmonitor.d
+│   │   ├── healthmonitor.o
+│   │   ├── interrupt_manager.crf
+│   │   ├── interrupt_manager.d
+│   │   ├── interrupt_manager.o
+│   │   ├── ipcl_abstract.crf
+│   │   ├── ipcl_abstract.d
+│   │   ├── ipcl_abstract.o
+│   │   ├── ipcl_cfg.crf
+│   │   ├── ipcl_cfg.d
+│   │   ├── ipcl_cfg.o
+│   │   ├── ipcl.crf
+│   │   ├── ipcl.d
+│   │   ├── ipcl.o
+│   │   ├── lpspi.crf
+│   │   ├── lpspi.d
+│   │   ├── lpspi.o
+│   │   ├── lpuart.crf
+│   │   ├── lpuart.d
+│   │   ├── lpuart.o
+│   │   ├── main.crf
+│   │   ├── main.d
+│   │   ├── main.o
+│   │   ├── memlib.crf
+│   │   ├── memlib.d
+│   │   ├── memlib.o
+│   │   ├── os.crf
+│   │   ├── os.d
+│   │   ├── os.o
+│   │   ├── pin_mux.crf
+│   │   ├── pin_mux.d
+│   │   ├── pin_mux.o
+│   │   ├── pins_driver.crf
+│   │   ├── pins_driver.d
+│   │   ├── pins_driver.o
+│   │   ├── pins_port_hw_access.crf
+│   │   ├── pins_port_hw_access.d
+│   │   ├── pins_port_hw_access.o
+│   │   ├── port.crf
+│   │   ├── port.d
+│   │   ├── port.o
+│   │   ├── rtesheduler.crf
+│   │   ├── rtesheduler.d
+│   │   ├── rtesheduler.o
+│   │   ├── service_ipcl.crf
+│   │   ├── service_ipcl.d
+│   │   ├── service_ipcl.o
+│   │   ├── startup.crf
+│   │   ├── startup.d
+│   │   ├── startup.o
+│   │   ├── startup_s32k144.d
+│   │   ├── startup_s32k144.o
+│   │   ├── system_s32k144.crf
+│   │   ├── system_s32k144.d
+│   │   ├── system_s32k144.o
+│   │   ├── systemstate.crf
+│   │   ├── systemstate.d
+│   │   ├── systemstate.o
+│   │   ├── udsapplication.crf
+│   │   ├── udsapplication.d
+│   │   ├── udsapplication.o
+│   │   ├── wdgif.crf
+│   │   ├── wdgif.d
+│   │   └── wdgif.o
+│   ├── pemicro_connection_settings.ini
+│   └── RTE
+│       ├── Device
+│       │   └── S32K144UAxxxLLx
+│       │       ├── S32K144_64_flash.sct
+│       │       ├── S32K144_64_ram.sct
+│       │       ├── startup_S32K144.s
+│       │       ├── system_S32K144.c
+│       │       └── system_S32K144.h
+│       ├── _RDA602
+│       │   └── RTE_Components.h
+│       └── _Target_1
+│           └── RTE_Components.h
+├── MCAL
+│   ├── clocks_and_modes.c
+│   ├── clocks_and_modes.h
+│   ├── FlexCAN.c
+│   ├── FlexCAN.h
+│   ├── LPSPI.c
+│   ├── LPSPI.h
+│   ├── LPUART.c
+│   ├── LPUART.h
+│   ├── Port.c
+│   ├── Port_Cbk.h
+│   ├── Port_Cfg.h
+│   ├── Port.h
+│   ├── Port_Lcfg.c
+│   ├── Port_PBcfg.c
+│   ├── S32K144.h
+│   ├── Uart.h
+│   ├── WdgIf.c
+│   ├── Wdgif_Cfg.h
+│   ├── WdgIf.h
+│   └── WdgIf_Types.h
+├── readme
+└── RTE
+    ├── Rte_Com.h
+    ├── Rte_Dcm.c
+    ├── Rte_Dcm.h
+    ├── Rte_Dcm_Type.h
+    ├── Rte_Dem.c
+    ├── Rte_Dem.h
+    ├── Rte_Dem_Type.h
+    ├── Rte_EcuM.h
+    ├── Rte.h
+    ├── Rte_OsApplication.c
+    ├── Rte_OsApplication.h
+    ├── RteSheduler.c
+    ├── RteSheduler.h
+    ├── Rte_Type.h
+    ├── Std_Types.h
+    └── version.txt
+
+31 directories, 300 files
