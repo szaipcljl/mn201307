@@ -1,0 +1,12 @@
+sensor selection
+
+s5l
+===
+ar0144
+ov9281
+
+s32v
+====
+OV2311
+OV9284 
+
