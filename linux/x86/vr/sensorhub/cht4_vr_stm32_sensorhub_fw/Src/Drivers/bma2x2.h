@@ -1,60 +1,60 @@
 /** \mainpage
-*
-****************************************************************************
-* Copyright (C) 2015 - 2016 Bosch Sensortec GmbH
-*
-* File : bma2x2.h
-*
-* Date : 2016/03/11
-*
-* Revision : 2.0.4 $
-*
-* Usage: Sensor Driver file for BMA2x2 sensor
-*
-****************************************************************************
-* \section License
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*   Redistributions of source code must retain the above copyright
-*   notice, this list of conditions and the following disclaimer.
-*
-*   Redistributions in binary form must reproduce the above copyright
-*   notice, this list of conditions and the following disclaimer in the
-*   documentation and/or other materials provided with the distribution.
-*
-*   Neither the name of the copyright holder nor the names of the
-*   contributors may be used to endorse or promote products derived from
-*   this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER
-* OR CONTRIBUTORS BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-* OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-* ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-*
-* The information provided is believed to be accurate and reliable.
-* The copyright holder assumes no responsibility
-* for the consequences of use
-* of such information nor for any infringement of patents or
-* other rights of third parties which may result from its use.
-* No license is granted by implication or otherwise under any patent or
-* patent rights of the copyright holder.
-**************************************************************************/
+ *
+ ****************************************************************************
+ * Copyright (C) 2015 - 2016 Bosch Sensortec GmbH
+ *
+ * File : bma2x2.h
+ *
+ * Date : 2016/03/11
+ *
+ * Revision : 2.0.4 $
+ *
+ * Usage: Sensor Driver file for BMA2x2 sensor
+ *
+ ****************************************************************************
+ * \section License
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *   Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ *   Neither the name of the copyright holder nor the names of the
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+ *
+ * The information provided is believed to be accurate and reliable.
+ * The copyright holder assumes no responsibility
+ * for the consequences of use
+ * of such information nor for any infringement of patents or
+ * other rights of third parties which may result from its use.
+ * No license is granted by implication or otherwise under any patent or
+ * patent rights of the copyright holder.
+ **************************************************************************/
 
 /*! \file bma2x2.h
-    \brief BMA2x2 Sensor Driver Support Header File */
+  \brief BMA2x2 Sensor Driver Support Header File */
 #ifndef __BMA2x2_H__
 #define __BMA2x2_H__
 /****************************************************************/
@@ -70,24 +70,24 @@
 /**\name	I2C ADDRESS DEFINITIONS    */
 /**************************************************************/
 /**< The following definition of I2C address is used for the following sensors
-* BMA255
-* BMA355
-* BMA280
-* BMA282
-* BMA223
-* BMA254
-* BMA284
-* BMA250E
-* BMA222E
-*/
+ * BMA255
+ * BMA355
+ * BMA280
+ * BMA282
+ * BMA223
+ * BMA254
+ * BMA284
+ * BMA250E
+ * BMA222E
+ */
 #define BMA2x2_I2C_ADDR1                (0x18)
 #define BMA2x2_I2C_ADDR2                (0x19)
 
 /**< The following definition of I2C address is used for the following sensors
-* BMC150
-* BMC056
-* BMC156
-*/
+ * BMC150
+ * BMC056
+ * BMC156
+ */
 #define BMA2x2_I2C_ADDR3                (0x10)
 #define BMA2x2_I2C_ADDR4                (0x11)
 
@@ -97,18 +97,18 @@
 #define         BMA2x2_INIT_VALUE                       ((uint8_t)0)
 #define         BMA2x2_GEN_READ_WRITE_LENGTH            ((uint8_t)1)
 #define         BMA2x2_LSB_MSB_READ_LENGTH		((uint8_t)2)
-	/**	BIT SHIFT DEFINITIONS    */
+/**	BIT SHIFT DEFINITIONS    */
 #define         BMA2x2_SHIFT_TWO_BITS                   ((uint8_t)2)
 #define         BMA2x2_SHIFT_FOUR_BITS                  ((uint8_t)4)
 #define         BMA2x2_SHIFT_FIVE_BITS                  ((uint8_t)5)
 #define         BMA2x2_SHIFT_SIX_BITS                   ((uint8_t)6)
 #define         BMA2x2_SHIFT_EIGHT_BITS                 ((uint8_t)8)
-	/**	FIFO DEFINITIONS    */
+/**	FIFO DEFINITIONS    */
 #define		BMA2x2_FIFO_MODE_STATUS_RANGE		((uint8_t)2)
 #define		BMA2x2_FIFO_DATA_SELECT_RANGE		((uint8_t)4)
 #define		BMA2x2_FIFO_MODE_RANGE			((uint8_t)4)
 #define         BMA2x2_FIFO_WML_RANGE                   ((uint8_t)32)
-	/**	MODE RANGES    */
+/**	MODE RANGES    */
 #define         BMA2x2_ACCEL_BW_MIN_RANGE               ((uint8_t)7)
 #define         BMA2x2_ACCEL_BW_1000HZ_RANGE            ((uint8_t)15)
 #define         BMA2x2_ACCEL_BW_MAX_RANGE               ((uint8_t)16)
@@ -698,19 +698,19 @@ typedef struct{
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_X_INTR_LEN        (1)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_X_INTR_MSK        (0x01)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_X_INTR_REG        \
-BMA2x2_INTR_SLOW_NO_MOTION_ADDR
+	BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Y_INTR_POS        (1)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Y_INTR_LEN        (1)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Y_INTR_MSK        (0x02)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Y_INTR_REG        \
-BMA2x2_INTR_SLOW_NO_MOTION_ADDR
+	BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Z_INTR_POS        (2)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Z_INTR_LEN        (1)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Z_INTR_MSK        (0x04)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_Z_INTR_REG        \
-BMA2x2_INTR_SLOW_NO_MOTION_ADDR
+	BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 /**********************************************/
 /**\name INTERRUPT ENABLE OF SLOW NO MOTION SELECT */
 /**********************************************/
@@ -718,7 +718,7 @@ BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_SELECT_INTR_LEN        (1)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_SELECT_INTR_MSK        (0x08)
 #define BMA2x2_INTR_SLOW_NO_MOTION_ENABLE_SELECT_INTR_REG        \
-BMA2x2_INTR_SLOW_NO_MOTION_ADDR
+	BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 /**********************************************/
 /**\name INTERRUPT1 ENABLE OF PAD LOW_G */
 /**********************************************/
@@ -747,7 +747,7 @@ BMA2x2_INTR_SLOW_NO_MOTION_ADDR
 #define BMA2x2_ENABLE_INTR1_PAD_SLOW_NO_MOTION_LEN        (1)
 #define BMA2x2_ENABLE_INTR1_PAD_SLOW_NO_MOTION_MSK        (0x08)
 #define BMA2x2_ENABLE_INTR1_PAD_SLOW_NO_MOTION_REG        \
-BMA2x2_INTR1_PAD_SELECT_ADDR
+	BMA2x2_INTR1_PAD_SELECT_ADDR
 /**********************************************/
 /**\name INTERRUPT1 ENABLE OF PAD DOUBLE_TAP */
 /**********************************************/
@@ -804,7 +804,7 @@ BMA2x2_INTR1_PAD_SELECT_ADDR
 #define BMA2x2_ENABLE_INTR2_PAD_SLOW_NO_MOTION_LEN        (1)
 #define BMA2x2_ENABLE_INTR2_PAD_SLOW_NO_MOTION_MSK        (0x08)
 #define BMA2x2_ENABLE_INTR2_PAD_SLOW_NO_MOTION_REG        \
-BMA2x2_INTR2_PAD_SELECT_ADDR
+	BMA2x2_INTR2_PAD_SELECT_ADDR
 /**********************************************/
 /**\name INTERRUPT2 ENABLE OF PAD DOUBLE_TAP */
 /**********************************************/
@@ -903,7 +903,7 @@ BMA2x2_INTR2_PAD_SELECT_ADDR
 #define BMA2x2_UNFILT_INTR_SOURCE_SLOW_NO_MOTION_LEN        (1)
 #define BMA2x2_UNFILT_INTR_SOURCE_SLOW_NO_MOTION_MSK        (0x08)
 #define BMA2x2_UNFILT_INTR_SOURCE_SLOW_NO_MOTION_REG        \
-BMA2x2_INTR_SOURCE_ADDR
+	BMA2x2_INTR_SOURCE_ADDR
 /**********************************************/
 /**\name  INTERRUPT SOURCE SELECTION OF TAP*/
 /**********************************************/
@@ -1253,11 +1253,11 @@ BMA2x2_INTR_SOURCE_ADDR
 /**\name  BITSLICE FUNCTIONS      */
 /***************************************************/
 #define BMA2x2_GET_BITSLICE(regvar, bitname)\
-((regvar & bitname##_MSK) >> bitname##_POS)
+	((regvar & bitname##_MSK) >> bitname##_POS)
 
 
 #define BMA2x2_SET_BITSLICE(regvar, bitname, val)\
-((regvar & ~bitname##_MSK) | ((val<<bitname##_POS)&bitname##_MSK))
+	((regvar & ~bitname##_MSK) | ((val<<bitname##_POS)&bitname##_MSK))
 
 /****************************************************/
 /**\name   CONSTANTS      */
@@ -1327,21 +1327,21 @@ BMA2x2_INTR_SOURCE_ADDR
 
 
 #define BMA2x2_BW_7_81HZ        (0x08)
- /**< sets bandwidth to LowPass 7.81HZ  */
+/**< sets bandwidth to LowPass 7.81HZ  */
 #define BMA2x2_BW_15_63HZ       (0x09)
 /**< sets bandwidth to LowPass 15.63HZ  */
 #define BMA2x2_BW_31_25HZ       (0x0A)
 /**< sets bandwidth to LowPass 31.25HZ  */
 #define BMA2x2_BW_62_50HZ       (0x0B)
- /**< sets bandwidth to LowPass 62.50HZ  */
+/**< sets bandwidth to LowPass 62.50HZ  */
 #define BMA2x2_BW_125HZ         (0x0C)
- /**< sets bandwidth to LowPass 125HZ  */
+/**< sets bandwidth to LowPass 125HZ  */
 #define BMA2x2_BW_250HZ         (0x0D)
 /**< sets bandwidth to LowPass 250HZ  */
 #define BMA2x2_BW_500HZ         (0x0E)
 /**< sets bandwidth to LowPass 500HZ  */
 #define BMA2x2_BW_1000HZ        (0x0F)
- /**< sets bandwidth to LowPass 1000HZ  */
+/**< sets bandwidth to LowPass 1000HZ  */
 
 /******************************************/
 /**\name  SLEEP DURATION SELECT     */
@@ -1379,29 +1379,29 @@ BMA2x2_INTR_SOURCE_ADDR
 #define BMA2x2_LATCH_DURN_500MS        (0x02)
 /* sets LATCH duration to 500 ms */
 #define BMA2x2_LATCH_DURN_1S           (0x03)
- /* sets LATCH duration to 1 s */
+/* sets LATCH duration to 1 s */
 #define BMA2x2_LATCH_DURN_2S           (0x04)
- /* sets LATCH duration to 2 s*/
+/* sets LATCH duration to 2 s*/
 #define BMA2x2_LATCH_DURN_4S           (0x05)
- /* sets LATCH duration to 4 s */
+/* sets LATCH duration to 4 s */
 #define BMA2x2_LATCH_DURN_8S           (0x06)
- /* sets LATCH duration to 8 s */
+/* sets LATCH duration to 8 s */
 #define BMA2x2_LATCH_DURN_LATCH        (0x07)
- /* sets LATCH duration to LATCH */
+/* sets LATCH duration to LATCH */
 #define BMA2x2_LATCH_DURN_NON_LATCH1   (0x08)
- /* sets LATCH duration to NON LATCH1 */
+/* sets LATCH duration to NON LATCH1 */
 #define BMA2x2_LATCH_DURN_250US        (0x09)
- /* sets LATCH duration to 250 Us */
+/* sets LATCH duration to 250 Us */
 #define BMA2x2_LATCH_DURN_500US        (0x0A)
- /* sets LATCH duration to 500 Us */
+/* sets LATCH duration to 500 Us */
 #define BMA2x2_LATCH_DURN_1MS          (0x0B)
- /* sets LATCH duration to 1 Ms */
+/* sets LATCH duration to 1 Ms */
 #define BMA2x2_LATCH_DURN_12_5MS       (0x0C)
 /* sets LATCH duration to 12.5 Ms */
 #define BMA2x2_LATCH_DURN_25MS         (0x0D)
 /* sets LATCH duration to 25 Ms */
 #define BMA2x2_LATCH_DURN_50MS         (0x0E)
- /* sets LATCH duration to 50 Ms */
+/* sets LATCH duration to 50 Ms */
 #define BMA2x2_LATCH_DURN_LATCH1       (0x0F)
 /* sets LATCH duration to LATCH*/
 
@@ -1661,43 +1661,43 @@ BMA2x2_INTR_SOURCE_ADDR
 #define	BMA2x2_POWER_MODE_HEX_ZERO_SIX_MASK			(0x06)
 
 /** Macro to convert floating point
-low-g-thresholds in G to 8-bit register values.<br>
-  * Example: BMA2x2_LOW_TH_IN_G( 0.3, 2.0) generates
-  * the register value for 0.3G threshold in 2G mode.
-  * \brief convert g-values to 8-bit value
+  low-g-thresholds in G to 8-bit register values.<br>
+ * Example: BMA2x2_LOW_TH_IN_G( 0.3, 2.0) generates
+ * the register value for 0.3G threshold in 2G mode.
+ * \brief convert g-values to 8-bit value
  */
 #define BMA2x2_LOW_THRES_IN_G(gthres, range)  ((256 * gthres) / range)
 
 /** Macro to convert floating point high-g-thresholds
-    in G to 8-bit register values.<br>
-  * Example: BMA2x2_HIGH_TH_IN_G( 1.4, 2.0)
-  * generates the register value for 1.4G threshold in 2G mode.
-  * \brief convert g-values to 8-bit value
+  in G to 8-bit register values.<br>
+ * Example: BMA2x2_HIGH_TH_IN_G( 1.4, 2.0)
+ * generates the register value for 1.4G threshold in 2G mode.
+ * \brief convert g-values to 8-bit value
  */
 #define BMA2x2_HIGH_THRES_IN_G(gthres, range)   ((256 * gthres) / range)
 
 /** Macro to convert floating point low-g-hysteresis
-in G to 8-bit register values.<br>
-  * Example: BMA2x2_LOW_HY_IN_G( 0.2, 2.0)
-  *generates the register value for 0.2G threshold in 2G mode.
-  * \brief convert g-values to 8-bit value
+  in G to 8-bit register values.<br>
+ * Example: BMA2x2_LOW_HY_IN_G( 0.2, 2.0)
+ *generates the register value for 0.2G threshold in 2G mode.
+ * \brief convert g-values to 8-bit value
  */
 #define BMA2x2_LOW_HYST_IN_G(ghyst, range)   ((32 * ghyst) / range)
 
 /** Macro to convert floating point high-g-hysteresis
-   in G to 8-bit register values.<br>
-  * Example: BMA2x2_HIGH_HY_IN_G( 0.2, 2.0) generates
-  *the register value for 0.2G threshold in 2G mode.
-  * \brief convert g-values to 8-bit value
+  in G to 8-bit register values.<br>
+ * Example: BMA2x2_HIGH_HY_IN_G( 0.2, 2.0) generates
+ *the register value for 0.2G threshold in 2G mode.
+ * \brief convert g-values to 8-bit value
  */
 #define BMA2x2_HIGH_HYST_IN_G(ghyst, range)    ((32 * ghyst) / range)
 
 
 /** Macro to convert floating point G-thresholds
-    to 8-bit register values<br>
-  * Example: BMA2x2_SLOPE_TH_IN_G( 1.2, 2.0)
-  * generates the register value for 1.2G threshold in 2G mode.
-  * \brief convert g-values to 8-bit value
+  to 8-bit register values<br>
+ * Example: BMA2x2_SLOPE_TH_IN_G( 1.2, 2.0)
+ * generates the register value for 1.2G threshold in 2G mode.
+ * \brief convert g-values to 8-bit value
  */
 
 #define BMA2x2_SLOPE_THRES_IN_G(gthres, range)    ((128 * gthres) / range)

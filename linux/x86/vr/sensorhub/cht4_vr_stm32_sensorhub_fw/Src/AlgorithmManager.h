@@ -54,59 +54,59 @@
 /* physical sensor definitaion, pass to Algo_Init as argument */
 enum 
 {
-    IVH_PHYSICAL_SENSOR_ACCELEROMETER3D = (1UL),
-    IVH_PHYSICAL_SENSOR_GYROSCOPE3D = (1UL<<1),
-    IVH_PHYSICAL_SENSOR_MAGNETOMETER3D = (1UL<<2),
-    IVH_PHYSICAL_SENSOR_AMBIENTLIGHT = (1UL<<3),
-    IVH_PHYSICAL_SENSOR_HYGROMETER = (1UL<<4),
-    IVH_PHYSICAL_SENSOR_THERMOMETER = (1UL<<5),
-    IVH_PHYSICAL_SENSOR_BAROMETER = (1UL<<6),
-    IVH_PHYSICAL_SENSOR_PROXIMITY = (1UL<<7),
+	IVH_PHYSICAL_SENSOR_ACCELEROMETER3D = (1UL),
+	IVH_PHYSICAL_SENSOR_GYROSCOPE3D = (1UL<<1),
+	IVH_PHYSICAL_SENSOR_MAGNETOMETER3D = (1UL<<2),
+	IVH_PHYSICAL_SENSOR_AMBIENTLIGHT = (1UL<<3),
+	IVH_PHYSICAL_SENSOR_HYGROMETER = (1UL<<4),
+	IVH_PHYSICAL_SENSOR_THERMOMETER = (1UL<<5),
+	IVH_PHYSICAL_SENSOR_BAROMETER = (1UL<<6),
+	IVH_PHYSICAL_SENSOR_PROXIMITY = (1UL<<7),
 };
 
 /* virtual sensor definitaion, return from Algo_Init for upper layer use */
 enum 
 {
-    IVH_VIRTUAL_SENSOR_ACCELEROMETER3D = (1UL),
-    IVH_VIRTUAL_SENSOR_GYROSCOPE3D = (1UL<<1),
-    IVH_VIRTUAL_SENSOR_COMPASS = (1UL<<2),
-    IVH_VIRTUAL_SENSOR_INCLINOMETER = (1UL<<3),
-    IVH_VIRTUAL_SENSOR_ORIENTATION = (1UL<<4),
-    IVH_VIRTUAL_SENSOR_AMBIENTLIGHT = (1UL<<5),
-    IVH_VIRTUAL_SENSOR_HYGROMETER = (1UL<<6),
-    IVH_VIRTUAL_SENSOR_THERMOMETER = (1UL<<7),
-    IVH_VIRTUAL_SENSOR_BAROMETER = (1UL<<8),
-    IVH_VIRTUAL_SENSOR_PROXIMITY = (1UL<<9),
+	IVH_VIRTUAL_SENSOR_ACCELEROMETER3D = (1UL),
+	IVH_VIRTUAL_SENSOR_GYROSCOPE3D = (1UL<<1),
+	IVH_VIRTUAL_SENSOR_COMPASS = (1UL<<2),
+	IVH_VIRTUAL_SENSOR_INCLINOMETER = (1UL<<3),
+	IVH_VIRTUAL_SENSOR_ORIENTATION = (1UL<<4),
+	IVH_VIRTUAL_SENSOR_AMBIENTLIGHT = (1UL<<5),
+	IVH_VIRTUAL_SENSOR_HYGROMETER = (1UL<<6),
+	IVH_VIRTUAL_SENSOR_THERMOMETER = (1UL<<7),
+	IVH_VIRTUAL_SENSOR_BAROMETER = (1UL<<8),
+	IVH_VIRTUAL_SENSOR_PROXIMITY = (1UL<<9),
 };
 
 typedef struct _IVH_ALGO
 {
-    ULONG calibrated;
-    pIvhPlatform platform;
-    pIvhSensor accelerometer;
-    pIvhSensor gyrometer;
-    pIvhSensor gyrometer6axis;
-    pIvhSensor magnetometer;
-    pIvhSensor ambientlight;
-    pIvhSensor compass;
-    pIvhSensor inclinometer;
-    pIvhSensor orientation;
-    pIvhSensor proximity;
-    pIvhSensor thermometer;
-    pIvhSensor barometer;
-    pIvhSensor fusion;
+	ULONG calibrated;
+	pIvhPlatform platform;
+	pIvhSensor accelerometer;
+	pIvhSensor gyrometer;
+	pIvhSensor gyrometer6axis;
+	pIvhSensor magnetometer;
+	pIvhSensor ambientlight;
+	pIvhSensor compass;
+	pIvhSensor inclinometer;
+	pIvhSensor orientation;
+	pIvhSensor proximity;
+	pIvhSensor thermometer;
+	pIvhSensor barometer;
+	pIvhSensor fusion;
 } IvhAlgo, *pIvhAlgo;
 
 typedef enum __SENSOR_ACCURACY{
-    eSENSOR_ACCURACY_LOW = 1,
-    eSENSOR_ACCURACY_MEDIUM,
-    eSENSOR_ACCURACY_HIGH,
+	eSENSOR_ACCURACY_LOW = 1,
+	eSENSOR_ACCURACY_MEDIUM,
+	eSENSOR_ACCURACY_HIGH,
 } SENSOR_ACCURACY;
 
 typedef struct _SENSOR_DATA
 {
-    unsigned long ts;
-    int data[9];
+	unsigned long ts;
+	int data[9];
 } SensorData, *pSensorData;
 
 pIvhAlgo Alg_Init(ALGO_NOTIFICATION AlgoNotication, ULONG sensori, ULONG* sensoro);

@@ -69,7 +69,7 @@
  * No license is granted by implication or otherwise under any patent or
  * patent rights of Bosch. Specifications mentioned in the Information are
  * subject to change without notice.
- */
+*/
 
 /*!
  * @file		bstdr_types.h
@@ -114,11 +114,11 @@ typedef enum
 }bstdr_interface_t;
 
 #define BSTDR_BITS_MSK(bitspos,bitslen) \
-		(((0xff>>(8-bitslen))<<bitspos))
+	(((0xff>>(8-bitslen))<<bitspos))
 #define BSTDR_GET_BITSLICE(regvar, bitspos, bitslen) \
-			((regvar & BSTDR_BITS_MSK(bitspos,bitslen)) >> bitspos)
+	((regvar & BSTDR_BITS_MSK(bitspos,bitslen)) >> bitspos)
 #define BSTDR_SET_BITSLICE(regvar, bitspos,bitslen, val)\
-		((regvar & ~BSTDR_BITS_MSK(bitspos,bitslen)) | ((val<<bitspos)&BSTDR_BITS_MSK(bitspos,bitslen)))
+	((regvar & ~BSTDR_BITS_MSK(bitspos,bitslen)) | ((val<<bitspos)&BSTDR_BITS_MSK(bitspos,bitslen)))
 
 /**< Function pointers */
 /**< function pointer for the burst write operation in either I2C or SPI*/
