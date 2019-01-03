@@ -5,3 +5,18 @@ ITU-R BT 656: 9芯，不需要同步信号；8位数据传输；串行视频传�
 656输出的是串行数据，行场同步信号嵌入在数据流中；601是并行数据，行场同步有单独输出;
 
 
+
+color space
+===========
+YCbCr, Y′CbCr, or Y Pb/Cb Pr/Cr, also written as YCBCR or Y'CBCR, is a family of
+color spaces used as a part of the color image pipeline in video and digital
+photography systems. 
+
+Y′CbCr color spaces are defined by a mathematical coordinate transformation from an associated RGB color space.
+If the underlying RGB color space is absolute, the Y′CbCr color space is an absolute color space as well;
+conversely, if the RGB space is ill-defined, so is Y′CbCr. 
+
+RGB
+RGBA
+
+YUV is a color encoding system typically used as part of a color image pipeline. 
