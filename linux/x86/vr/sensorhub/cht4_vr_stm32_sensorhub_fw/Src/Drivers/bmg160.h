@@ -1,60 +1,60 @@
 /** \mainpage
-*
-****************************************************************************
-* Copyright (C) 2010 - 2015 Bosch Sensortec GmbH
-*
-* File : bmg160.h
-*
-* Date : 2015/04/29
-*
-* Revision : 2.0.4 $
-*
-* Usage: Sensor Driver for BMG160 sensor
-*
-****************************************************************************
-*
-* \section License
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*   Redistributions of source code must retain the above copyright
-*   notice, this list of conditions and the following disclaimer.
-*
-*   Redistributions in binary form must reproduce the above copyright
-*   notice, this list of conditions and the following disclaimer in the
-*   documentation and/or other materials provided with the distribution.
-*
-*   Neither the name of the copyright holder nor the names of the
-*   contributors may be used to endorse or promote products derived from
-*   this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER
-* OR CONTRIBUTORS BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-* OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-* ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-*
-* The information provided is believed to be accurate and reliable.
-* The copyright holder assumes no responsibility
-* for the consequences of use
-* of such information nor for any infringement of patents or
-* other rights of third parties which may result from its use.
-* No license is granted by implication or otherwise under any patent or
-* patent rights of the copyright holder.
-**************************************************************************/
+ *
+ ****************************************************************************
+ * Copyright (C) 2010 - 2015 Bosch Sensortec GmbH
+ *
+ * File : bmg160.h
+ *
+ * Date : 2015/04/29
+ *
+ * Revision : 2.0.4 $
+ *
+ * Usage: Sensor Driver for BMG160 sensor
+ *
+ ****************************************************************************
+ *
+ * \section License
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *   Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ *   Neither the name of the copyright holder nor the names of the
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+ *
+ * The information provided is believed to be accurate and reliable.
+ * The copyright holder assumes no responsibility
+ * for the consequences of use
+ * of such information nor for any infringement of patents or
+ * other rights of third parties which may result from its use.
+ * No license is granted by implication or otherwise under any patent or
+ * patent rights of the copyright holder.
+ **************************************************************************/
 /*! \file BMG160.h
-    \brief Header for BMG160 API */
+  \brief Header for BMG160 API */
 /* user defined code to be added here ... */
 #ifndef __BMG160_H__
 #define __BMG160_H__
@@ -236,10 +236,10 @@
 #define BMG160_RATE_Z_LSB_BIT__REG        (BMG160_RATE_Z_LSB_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK,
-POSITION FOR THE INTERRUPT STATUS REGISTERS  */
+  POSITION FOR THE INTERRUPT STATUS REGISTERS  */
 /***********************************************/
 /* Interrupt status (0) Register */
-   /**< 2th bit of Interrupt status  register */
+/**< 2th bit of Interrupt status  register */
 #define BMG160_INTR_STAT0_ANY_MOTION_INTR__POS     (2)
 #define BMG160_INTR_STAT0_ANY_MOTION_INTR__LEN     (1)
 #define BMG160_INTR_STAT0_ANY_MOTION_INTR__MSK     (0x04)
@@ -251,7 +251,7 @@ POSITION FOR THE INTERRUPT STATUS REGISTERS  */
 #define BMG160_INTR_STAT0_HIGHRATE_INTR__MSK    (0x02)
 #define BMG160_INTR_STAT0_HIGHRATE_INTR__REG    (BMG160_INTR_STAT0_ADDR)
 
- /**< 1st and 2nd bit of Interrupt status  register */
+/**< 1st and 2nd bit of Interrupt status  register */
 #define BMG160_INTR_STAT_ZERO__POS    (1)
 #define BMG160_INTR_STAT_ZERO__LEN    (2)
 #define BMG160_INTR_STAT_ZERO__MSK    (0x06)
@@ -266,7 +266,7 @@ POSITION FOR THE INTERRUPT STATUS REGISTERS  */
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR THE OFFSET STATUS REGISTERS  */
 /***********************************************/
- /**< 6th bit of Interrupt status  register */
+/**< 6th bit of Interrupt status  register */
 #define BMG160_INTR_STAT1_AUTO_OFFSET_INTR__POS    (6)
 #define BMG160_INTR_STAT1_AUTO_OFFSET_INTR__LEN    (1)
 #define BMG160_INTR_STAT1_AUTO_OFFSET_INTR__MSK    (0x40)
@@ -293,7 +293,7 @@ POSITION FOR THE INTERRUPT STATUS REGISTERS  */
 #define BMG160_INTR_STAT_ONE__REG           (BMG160_INTR_STAT1_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR
-THE ANY MOTION CONFIGURATION REGISTERS  */
+  THE ANY MOTION CONFIGURATION REGISTERS  */
 /***********************************************/
 /* Interrupt status (2) Register */
 /**< 3th bit of Interrupt status  register */
@@ -327,7 +327,7 @@ THE ANY MOTION CONFIGURATION REGISTERS  */
 #define BMG160_INTR_STAT_TWO__REG   (BMG160_INTR_STAT2_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR
-THE HIGH RATE XYZ SIGN REGISTERS  */
+  THE HIGH RATE XYZ SIGN REGISTERS  */
 /***********************************************/
 /* Interrupt status (3) Register */
 /**< 3th bit of Interrupt status  register */
@@ -406,28 +406,28 @@ THE HIGH RATE XYZ SIGN REGISTERS  */
 #define BMG160_MODELPM1_ADDR_SLEEP_DURN__LEN              (3)
 #define BMG160_MODELPM1_ADDR_SLEEP_DURN__MSK              (0x0E)
 #define BMG160_MODELPM1_ADDR_SLEEP_DURN__REG              \
-(BMG160_MODE_LPM1_ADDR)
+	(BMG160_MODE_LPM1_ADDR)
 
 /**< 7th bit of Mode LPM2 Register */
 #define BMG160_MODE_LPM2_ADDR_FAST_POWERUP__POS         (7)
 #define BMG160_MODE_LPM2_ADDR_FAST_POWERUP__LEN         (1)
 #define BMG160_MODE_LPM2_ADDR_FAST_POWERUP__MSK         (0x80)
 #define BMG160_MODE_LPM2_ADDR_FAST_POWERUP__REG         \
-(BMG160_MODE_LPM2_ADDR)
+	(BMG160_MODE_LPM2_ADDR)
 
 /**< 6th bit of Mode LPM2 Register */
 #define BMG160_MODE_LPM2_ADDR_ADV_POWERSAVING__POS      (6)
 #define BMG160_MODE_LPM2_ADDR_ADV_POWERSAVING__LEN      (1)
 #define BMG160_MODE_LPM2_ADDR_ADV_POWERSAVING__MSK      (0x40)
 #define BMG160_MODE_LPM2_ADDR_ADV_POWERSAVING__REG      \
-(BMG160_MODE_LPM2_ADDR)
+	(BMG160_MODE_LPM2_ADDR)
 
 /**< 4th & 5th bit of Mode LPM2 Register */
 #define BMG160_MODE_LPM2_ADDR_EXT_TRI_SELECT__POS          (4)
 #define BMG160_MODE_LPM2_ADDR_EXT_TRI_SELECT__LEN          (2)
 #define BMG160_MODE_LPM2_ADDR_EXT_TRI_SELECT__MSK          (0x30)
 #define BMG160_MODE_LPM2_ADDR_EXT_TRI_SELECT__REG          \
-(BMG160_MODE_LPM2_ADDR)
+	(BMG160_MODE_LPM2_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR THE AUTO SLEEP DURATION  */
 /***********************************************/
@@ -468,7 +468,7 @@ THE HIGH RATE XYZ SIGN REGISTERS  */
 #define BMG160_INTR_ENABLE0_FIFO__REG               (BMG160_INTR_ENABLE0_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION
-FOR THE AUTO OFFSET INTERRUPT  */
+  FOR THE AUTO OFFSET INTERRUPT  */
 /***********************************************/
 /**< 2nd bit of Interrupt Enable Registers */
 #define BMG160_INTR_ENABLE0_AUTO_OFFSET__POS        (2)
@@ -483,7 +483,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ENABLE1_IT2_OUTPUT_TYPE__LEN               (1)
 #define BMG160_INTR_ENABLE1_IT2_OUTPUT_TYPE__MSK               (0x08)
 #define BMG160_INTR_ENABLE1_IT2_OUTPUT_TYPE__REG               \
-(BMG160_INTR_ENABLE1_ADDR)
+	(BMG160_INTR_ENABLE1_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR THE LEVEL  */
 /***********************************************/
@@ -492,7 +492,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ENABLE1_IT2_LEVEL__LEN              (1)
 #define BMG160_INTR_ENABLE1_IT2_LEVEL__MSK              (0x04)
 #define BMG160_INTR_ENABLE1_IT2_LEVEL__REG              \
-(BMG160_INTR_ENABLE1_ADDR)
+	(BMG160_INTR_ENABLE1_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR THE OUTPUT TYPE  */
 /***********************************************/
@@ -501,7 +501,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ENABLE1_IT1_OUTPUT_TYPE__LEN               (1)
 #define BMG160_INTR_ENABLE1_IT1_OUTPUT_TYPE__MSK               (0x02)
 #define BMG160_INTR_ENABLE1_IT1_OUTPUT_TYPE__REG               \
-(BMG160_INTR_ENABLE1_ADDR)
+	(BMG160_INTR_ENABLE1_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR THE LEVEL  */
 /***********************************************/
@@ -510,7 +510,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ENABLE1_IT1_LEVEL__LEN              (1)
 #define BMG160_INTR_ENABLE1_IT1_LEVEL__MSK              (0x01)
 #define BMG160_INTR_ENABLE1_IT1_LEVEL__REG              \
-(BMG160_INTR_ENABLE1_ADDR)
+	(BMG160_INTR_ENABLE1_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR HIGH RATE INTERRUPT  */
 /***********************************************/
@@ -519,7 +519,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_MAP_ZERO_INTR1_HIGHRATE__LEN            (1)
 #define BMG160_INTR_MAP_ZERO_INTR1_HIGHRATE__MSK            (0x08)
 #define BMG160_INTR_MAP_ZERO_INTR1_HIGHRATE__REG            \
-(BMG160_INTR_MAP_ZERO_ADDR)
+	(BMG160_INTR_MAP_ZERO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR ANY_MOTION INTERRUPT  */
 /***********************************************/
@@ -528,14 +528,14 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_MAP_ZERO_INTR1_ANY_MOTION__LEN             (1)
 #define BMG160_INTR_MAP_ZERO_INTR1_ANY_MOTION__MSK             (0x02)
 #define BMG160_INTR_MAP_ZERO_INTR1_ANY_MOTION__REG             \
-(BMG160_INTR_MAP_ZERO_ADDR)
+	(BMG160_INTR_MAP_ZERO_ADDR)
 
 /**< 7th bit of MAP_1Registers */
 #define BMG160_MAP_ONE_INTR2_DATA__POS                  (7)
 #define BMG160_MAP_ONE_INTR2_DATA__LEN                  (1)
 #define BMG160_MAP_ONE_INTR2_DATA__MSK                  (0x80)
 #define BMG160_MAP_ONE_INTR2_DATA__REG                  \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FAST OFFSET INTERRUPT  */
 /***********************************************/
@@ -544,7 +544,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR2_FAST_OFFSET__LEN           (1)
 #define BMG160_MAP_ONE_INTR2_FAST_OFFSET__MSK           (0x40)
 #define BMG160_MAP_ONE_INTR2_FAST_OFFSET__REG           \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FIFO INTERRUPT  */
 /***********************************************/
@@ -553,7 +553,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR2_FIFO__LEN                  (1)
 #define BMG160_MAP_ONE_INTR2_FIFO__MSK                  (0x20)
 #define BMG160_MAP_ONE_INTR2_FIFO__REG                  \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR AUTO OFFSET INTERRUPT  */
 /***********************************************/
@@ -562,14 +562,14 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR2_AUTO_OFFSET__LEN           (1)
 #define BMG160_MAP_ONE_INTR2_AUTO_OFFSET__MSK           (0x10)
 #define BMG160_MAP_ONE_INTR2_AUTO_OFFSET__REG           \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 
 /**< 3rd bit of MAP_1Registers */
 #define BMG160_MAP_ONE_INTR1_AUTO_OFFSET__POS           (3)
 #define BMG160_MAP_ONE_INTR1_AUTO_OFFSET__LEN           (1)
 #define BMG160_MAP_ONE_INTR1_AUTO_OFFSET__MSK           (0x08)
 #define BMG160_MAP_ONE_INTR1_AUTO_OFFSET__REG           \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FIFO INTERRUPT  */
 /**********************************************/
@@ -578,7 +578,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR1_FIFO__LEN                  (1)
 #define BMG160_MAP_ONE_INTR1_FIFO__MSK                  (0x04)
 #define BMG160_MAP_ONE_INTR1_FIFO__REG                  \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FAST OFFSET INTERRUPT  */
 /**********************************************/
@@ -587,7 +587,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR1_FAST_OFFSET__LEN           (1)
 #define BMG160_MAP_ONE_INTR1_FAST_OFFSET__MSK           (0x02)
 #define BMG160_MAP_ONE_INTR1_FAST_OFFSET__REG           \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR DATA INTERRUPT  */
 /**********************************************/
@@ -596,7 +596,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_MAP_ONE_INTR1_DATA__LEN                  (1)
 #define BMG160_MAP_ONE_INTR1_DATA__MSK                  (0x01)
 #define BMG160_MAP_ONE_INTR1_DATA__REG                  \
-(BMG160_INTR_MAP_ONE_ADDR)
+	(BMG160_INTR_MAP_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR HIGH RATE INTERRUPT  */
 /**********************************************/
@@ -605,7 +605,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_MAP_TWO_INTR2_HIGHRATE__LEN            (1)
 #define BMG160_INTR_MAP_TWO_INTR2_HIGHRATE__MSK            (0x08)
 #define BMG160_INTR_MAP_TWO_INTR2_HIGHRATE__REG            \
-(BMG160_INTR_MAP_TWO_ADDR)
+	(BMG160_INTR_MAP_TWO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR ANY MOTION INTERRUPT  */
 /**********************************************/
@@ -614,7 +614,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_MAP_TWO_INTR2_ANY_MOTION__LEN             (1)
 #define BMG160_INTR_MAP_TWO_INTR2_ANY_MOTION__MSK             (0x02)
 #define BMG160_INTR_MAP_TWO_INTR2_ANY_MOTION__REG             \
-(BMG160_INTR_MAP_TWO_ADDR)
+	(BMG160_INTR_MAP_TWO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR SLOW OFFSET UNFILT  */
 /**********************************************/
@@ -623,7 +623,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ZERO_ADDR_SLOW_OFFSET_UNFILT__LEN          (1)
 #define BMG160_INTR_ZERO_ADDR_SLOW_OFFSET_UNFILT__MSK          (0x20)
 #define BMG160_INTR_ZERO_ADDR_SLOW_OFFSET_UNFILT__REG          \
-(BMG160_INTR_ZERO_ADDR)
+	(BMG160_INTR_ZERO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR HIGH RATE UNFILT  */
 /**********************************************/
@@ -632,7 +632,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ZERO_ADDR_HIGHRATE_UNFILT_DATA__LEN            (1)
 #define BMG160_INTR_ZERO_ADDR_HIGHRATE_UNFILT_DATA__MSK            (0x08)
 #define BMG160_INTR_ZERO_ADDR_HIGHRATE_UNFILT_DATA__REG            \
-(BMG160_INTR_ZERO_ADDR)
+	(BMG160_INTR_ZERO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR ANY MOTION UNFILT  */
 /**********************************************/
@@ -641,7 +641,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ZERO_ADDR_ANY_MOTION_UNFILT_DATA__LEN             (1)
 #define BMG160_INTR_ZERO_ADDR_ANY_MOTION_UNFILT_DATA__MSK             (0x02)
 #define BMG160_INTR_ZERO_ADDR_ANY_MOTION_UNFILT_DATA__REG             \
-(BMG160_INTR_ZERO_ADDR)
+	(BMG160_INTR_ZERO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FAST OFFSET UNFILT  */
 /**********************************************/
@@ -650,7 +650,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ONE_ADDR_FAST_OFFSET_UNFILT__LEN            (1)
 #define BMG160_INTR_ONE_ADDR_FAST_OFFSET_UNFILT__MSK            (0x80)
 #define BMG160_INTR_ONE_ADDR_FAST_OFFSET_UNFILT__REG            \
-(BMG160_INTR_ONE_ADDR)
+	(BMG160_INTR_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR ANY MOTION THRESHOLD */
 /**********************************************/
@@ -659,7 +659,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_ONE_ADDR_ANY_MOTION_THRES__LEN                       (7)
 #define BMG160_INTR_ONE_ADDR_ANY_MOTION_THRES__MSK                       (0x7F)
 #define BMG160_INTR_ONE_ADDR_ANY_MOTION_THRES__REG                       \
-(BMG160_INTR_ONE_ADDR)
+	(BMG160_INTR_ONE_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR AWAKE DURATION */
 /**********************************************/
@@ -676,7 +676,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_DURN_SAMPLE__LEN      (2)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_DURN_SAMPLE__MSK      (0x30)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_DURN_SAMPLE__REG      \
-(BMG160_INTR_TWO_ADDR)
+	(BMG160_INTR_TWO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR ANY MOTION XYZ AXIS */
 /**********************************************/
@@ -685,21 +685,21 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Z__LEN           (1)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Z__MSK           (0x04)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Z__REG           \
-(BMG160_INTR_TWO_ADDR)
+	(BMG160_INTR_TWO_ADDR)
 
 /**< 1st bit of INT 2Registers */
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Y__POS           (1)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Y__LEN           (1)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Y__MSK           (0x02)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_Y__REG           \
-(BMG160_INTR_TWO_ADDR)
+	(BMG160_INTR_TWO_ADDR)
 
 /**< 0th bit of INT 2Registers */
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_X__POS           (0)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_X__LEN           (1)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_X__MSK           (0x01)
 #define BMG160_INTR_TWO_ADDR_ANY_MOTION_ENABLE_X__REG           \
-(BMG160_INTR_TWO_ADDR)
+	(BMG160_INTR_TWO_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FIFO WATER MARK*/
 /**********************************************/
@@ -876,58 +876,58 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_REMAIN__LEN        (4)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_REMAIN__MSK        (0xF0)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_REMAIN__REG        \
-(BMG160_TRIM_NVM_CTRL_ADDR)
+	(BMG160_TRIM_NVM_CTRL_ADDR)
 
 /**< 3rd bit of Trim NVM control Registers */
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_LOAD__POS          (3)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_LOAD__LEN          (1)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_LOAD__MSK          (0x08)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_LOAD__REG          \
-(BMG160_TRIM_NVM_CTRL_ADDR)
+	(BMG160_TRIM_NVM_CTRL_ADDR)
 
 /**< 2nd bit of Trim NVM control Registers */
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_RDY__POS           (2)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_RDY__LEN           (1)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_RDY__MSK           (0x04)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_RDY__REG           \
-(BMG160_TRIM_NVM_CTRL_ADDR)
+	(BMG160_TRIM_NVM_CTRL_ADDR)
 
- /**< 1st bit of Trim NVM control Registers */
+/**< 1st bit of Trim NVM control Registers */
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_TRIG__POS     (1)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_TRIG__LEN     (1)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_TRIG__MSK     (0x02)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_TRIG__REG     \
-(BMG160_TRIM_NVM_CTRL_ADDR)
+	(BMG160_TRIM_NVM_CTRL_ADDR)
 
 /**< 0th bit of Trim NVM control Registers */
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_MODE__POS     (0)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_MODE__LEN     (1)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_MODE__MSK     (0x01)
 #define BMG160_TRIM_NVM_CTRL_ADDR_NVM_PROG_MODE__REG     \
-(BMG160_TRIM_NVM_CTRL_ADDR)
+	(BMG160_TRIM_NVM_CTRL_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR I2C CONFIGURATION*/
 /**********************************************/
- /**< 2nd bit of SPI3 WDT Registers */
+/**< 2nd bit of SPI3 WDT Registers */
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_ENABLE__POS      (2)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_ENABLE__LEN      (1)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_ENABLE__MSK      (0x04)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_ENABLE__REG      \
-(BMG160_BGW_SPI3_WDT_ADDR)
+	(BMG160_BGW_SPI3_WDT_ADDR)
 
- /**< 1st bit of SPI3 WDT Registers */
+/**< 1st bit of SPI3 WDT Registers */
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_SELECT__POS     (1)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_SELECT__LEN     (1)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_SELECT__MSK     (0x02)
 #define BMG160_BGW_SPI3_WDT_ADDR_I2C_WDT_SELECT__REG     \
-(BMG160_BGW_SPI3_WDT_ADDR)
+	(BMG160_BGW_SPI3_WDT_ADDR)
 
 /**< 0th bit of SPI3 WDT Registers */
 #define BMG160_BGW_SPI3_WDT_ADDR_SPI3__POS            (0)
 #define BMG160_BGW_SPI3_WDT_ADDR_SPI3__LEN            (1)
 #define BMG160_BGW_SPI3_WDT_ADDR_SPI3__MSK            (0x01)
 #define BMG160_BGW_SPI3_WDT_ADDR_SPI3__REG            \
-(BMG160_BGW_SPI3_WDT_ADDR)
+	(BMG160_BGW_SPI3_WDT_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR SELFTEST*/
 /**********************************************/
@@ -936,28 +936,28 @@ FOR THE AUTO OFFSET INTERRUPT  */
 #define BMG160_SELFTEST_ADDR_RATEOK__LEN            (1)
 #define BMG160_SELFTEST_ADDR_RATEOK__MSK            (0x10)
 #define BMG160_SELFTEST_ADDR_RATEOK__REG            \
-(BMG160_SELFTEST_ADDR)
+	(BMG160_SELFTEST_ADDR)
 
 /**< 2nd bit of Self test Registers */
 #define BMG160_SELFTEST_ADDR_BISTFAIL__POS          (2)
 #define BMG160_SELFTEST_ADDR_BISTFAIL__LEN          (1)
 #define BMG160_SELFTEST_ADDR_BISTFAIL__MSK          (0x04)
 #define BMG160_SELFTEST_ADDR_BISTFAIL__REG          \
-(BMG160_SELFTEST_ADDR)
+	(BMG160_SELFTEST_ADDR)
 
 /**< 1st bit of Self test Registers */
 #define BMG160_SELFTEST_ADDR_BISTRDY__POS           (1)
 #define BMG160_SELFTEST_ADDR_BISTRDY__LEN           (1)
 #define BMG160_SELFTEST_ADDR_BISTRDY__MSK           (0x02)
 #define BMG160_SELFTEST_ADDR_BISTRDY__REG           \
-(BMG160_SELFTEST_ADDR)
+	(BMG160_SELFTEST_ADDR)
 
 /**< 0th bit of Self test Registers */
 #define BMG160_SELFTEST_ADDR_TRIGBIST__POS          (0)
 #define BMG160_SELFTEST_ADDR_TRIGBIST__LEN          (1)
 #define BMG160_SELFTEST_ADDR_TRIGBIST__MSK          (0x01)
 #define BMG160_SELFTEST_ADDR_TRIGBIST__REG          \
-(BMG160_SELFTEST_ADDR)
+	(BMG160_SELFTEST_ADDR)
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR FIFO CONFIGURATION*/
 /**********************************************/
@@ -987,7 +987,7 @@ FOR THE AUTO OFFSET INTERRUPT  */
 /***********************************************/
 /**\name	BIT LENGTH, MASK, POSITION FOR OFFSET*/
 /**********************************************/
- /**< Last 2 bits of INL Offset MSB Registers */
+/**< Last 2 bits of INL Offset MSB Registers */
 #define BMG160_OFC1_ADDR_OFFSET_X__POS       (6)
 #define BMG160_OFC1_ADDR_OFFSET_X__LEN       (2)
 #define BMG160_OFC1_ADDR_OFFSET_X__MSK       (0xC0)
@@ -1056,11 +1056,11 @@ FOR THE AUTO OFFSET INTERRUPT  */
 /**********************************************/
 /* get bit slice  */
 #define BMG160_GET_BITSLICE(regvar, bitname)\
-((regvar & bitname##__MSK) >> bitname##__POS)
+	((regvar & bitname##__MSK) >> bitname##__POS)
 
 /* Set bit slice */
 #define BMG160_SET_BITSLICE(regvar, bitname, val)\
-((regvar&~bitname##__MSK)|((val<<bitname##__POS)&bitname##__MSK))
+	((regvar&~bitname##__MSK)|((val<<bitname##__POS)&bitname##__MSK))
 
 /****************************************************/
 /**\name	ARRAY SIZE DEFINITIONS      */
@@ -1338,11 +1338,11 @@ FOR THE AUTO OFFSET INTERRUPT  */
 /**\name	BUS READ AND WRITE FUNCTION POINTERS DEFINITIONS*/
 /**********************************************/
 #define BMG160_WR_FUNC_PTR int8_t (*bus_write)\
-(uint8_t, uint8_t, uint8_t *, uint8_t)
+	(uint8_t, uint8_t, uint8_t *, uint8_t)
 #define BMG160_RD_FUNC_PTR int8_t (*bus_read)\
-(uint8_t, uint8_t, uint8_t *, uint8_t)
+	(uint8_t, uint8_t, uint8_t *, uint8_t)
 #define BMG160_BRD_FUNC_PTR int8_t (*burst_read)\
-(uint8_t, uint8_t, uint8_t *, s32)
+	(uint8_t, uint8_t, uint8_t *, s32)
 #define BMG160_MDELAY_DATA_TYPE uint32_t
 /**************************************************************/
 /**\name	STRUCTURE DEFINITIONS                         */
@@ -1357,9 +1357,9 @@ typedef struct {
 }bmg160_xyz_t;
 
 /*!
-*	@brief bmg160_t structure
-*	This structure holds all relevant information about bmg160
-*/
+ *	@brief bmg160_t structure
+ *	This structure holds all relevant information about bmg160
+ */
 typedef struct {
 	uint8_t chip_id;/**< chip id of BMG160 */
 	uint8_t dev_addr;/**< device address of BMG160 */

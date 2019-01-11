@@ -69,10 +69,10 @@
  * No license is granted by implication or otherwise under any patent or
  * patent rights of Bosch. Specifications mentioned in the Information are
  * subject to change without notice.
- */
+*/
 
 
- /*!
+/*!
  * @file		bstdr_comm_support.h
  *
  * @brief

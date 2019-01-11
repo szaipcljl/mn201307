@@ -69,9 +69,9 @@
  * No license is granted by implication or otherwise under any patent or
  * patent rights of Bosch. Specifications mentioned in the Information are
  * subject to change without notice.
- */
+*/
 
- /*!
+/*!
  * @file		bstdr_comm_support.c
  *
  * @brief
@@ -92,55 +92,55 @@
  * @return Zero if successful, otherwise an error code
  */
 bstdr_ret_t bstdr_burst_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint32_t len){
-  
-        uint8_t spi_address_cmd = 0x80;
-        HAL_StatusTypeDef hal_res;
-        
+
+	uint8_t spi_address_cmd = 0x80;
+	HAL_StatusTypeDef hal_res;
+
 	/**< Burst read code comes here */
-        if (dev_id == 0x1A)     //ACC sensor
-        {
-          //SPI chip select
-          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
-          
-          //SPI transcation begin
-          spi_address_cmd |= reg_addr;
-          
-          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
-          
-          hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+	if (dev_id == 0x1A)     //ACC sensor
+	{
+		//SPI chip select
+		HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
 
-	
-          //SPI transcation end
-          
-          //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
-        }
-        else if (dev_id == 0x1B) //Gyro sensor
-        {
-          //SPI chip select
-          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
-          
-          //SPI transcation begin
-          spi_address_cmd |= reg_addr;
-          
-          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
-          
-          hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+		//SPI transcation begin
+		spi_address_cmd |= reg_addr;
 
-	
-          
-         
-          //SPI transcation end
-          
-          //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
-        }
-        else
-        {
-          return BSTDR_E_CON_ERROR;
-        }
-              
-        
+		hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
+
+		hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+
+
+		//SPI transcation end
+
+		//SPI chip deselecet
+		HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
+	}
+	else if (dev_id == 0x1B) //Gyro sensor
+	{
+		//SPI chip select
+		HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
+
+		//SPI transcation begin
+		spi_address_cmd |= reg_addr;
+
+		hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
+
+		hal_res = HAL_SPI_Receive(&hspi1, reg_data, len, 500);
+
+
+
+
+		//SPI transcation end
+
+		//SPI chip deselecet
+		HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
+	}
+	else
+	{
+		return BSTDR_E_CON_ERROR;
+	}
+
+
 	return BSTDR_OK;
 }
 
@@ -153,50 +153,50 @@ bstdr_ret_t bstdr_burst_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data
  */
 bstdr_ret_t bstdr_burst_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint32_t len)
 {
-        uint8_t spi_address_cmd = 0x7F;
-        HAL_StatusTypeDef hal_res;
-        
+	uint8_t spi_address_cmd = 0x7F;
+	HAL_StatusTypeDef hal_res;
+
 	/**< Burst write code comes here */
-	 if (dev_id == 0x1A)     //ACC sensor
-        {
-          //SPI chip select
-          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
-          
-          //SPI transcation begin
-          spi_address_cmd &= reg_addr;
-          
-          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500); 
+	if (dev_id == 0x1A)     //ACC sensor
+	{
+		//SPI chip select
+		HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_RESET);
 
-          hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
-     
-          //SPI transcation end
-          
-          //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
-        }
-        else if (dev_id == 0x1B) //Gyro sensor
-        {
-          //SPI chip select
-          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
-          
-          //SPI transcation begin
-          spi_address_cmd &= reg_addr;
-          
-          hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
+		//SPI transcation begin
+		spi_address_cmd &= reg_addr;
 
-          hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
-       
-          //SPI transcation end
-          
-          //SPI chip deselecet
-          HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
-        }
-        else
-        {
-          return BSTDR_E_CON_ERROR;
-        }
-              
-        
+		hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
+
+		hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
+
+		//SPI transcation end
+
+		//SPI chip deselecet
+		HAL_GPIO_WritePin(GPIOB, ACC_CS_Pin, GPIO_PIN_SET);
+	}
+	else if (dev_id == 0x1B) //Gyro sensor
+	{
+		//SPI chip select
+		HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_RESET);
+
+		//SPI transcation begin
+		spi_address_cmd &= reg_addr;
+
+		hal_res = HAL_SPI_Transmit(&hspi1, &spi_address_cmd, 1, 500);
+
+		hal_res = HAL_SPI_Transmit(&hspi1, reg_data, len, 500);
+
+		//SPI transcation end
+
+		//SPI chip deselecet
+		HAL_GPIO_WritePin(GPIOB, GYRO_CS_Pin, GPIO_PIN_SET);
+	}
+	else
+	{
+		return BSTDR_E_CON_ERROR;
+	}
+
+
 	return BSTDR_OK;
 }
 
@@ -210,6 +210,6 @@ bstdr_ret_t bstdr_burst_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_dat
 void bstdr_ms_delay(uint32_t period)
 {
 	/**< Delay code to be added here */
-        HAL_Delay(period);
+	HAL_Delay(period);
 }
 

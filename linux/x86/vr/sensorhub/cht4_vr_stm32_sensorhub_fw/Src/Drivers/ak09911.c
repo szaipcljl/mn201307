@@ -8,34 +8,34 @@ static uint32_t I2C_Timeout = 1000;    /*<! Value of Timeout when I2C communicat
 
 static ak09911_status ak09911_i2c_write(u8 addr, u8* data, u8 len)
 {
-    HAL_StatusTypeDef status = HAL_OK;
-    
-    status = HAL_I2C_Mem_Write( &hi2c1, AK09911_SENSOR_ADDRESS_1, ( uint16_t )addr, I2C_MEMADD_SIZE_8BIT, data, len, I2C_Timeout );
-                                
-    if( status != HAL_OK )
-    {
-      return AK09911_STATUS_FAILED;
-    }
-    else
-    {
-      return AK09911_STATUS_SUCCESS;
-    }
+	HAL_StatusTypeDef status = HAL_OK;
+
+	status = HAL_I2C_Mem_Write( &hi2c1, AK09911_SENSOR_ADDRESS_1, ( uint16_t )addr, I2C_MEMADD_SIZE_8BIT, data, len, I2C_Timeout );
+
+	if( status != HAL_OK )
+	{
+		return AK09911_STATUS_FAILED;
+	}
+	else
+	{
+		return AK09911_STATUS_SUCCESS;
+	}
 }
 
 static ak09911_status ak09911_i2c_read(u8 addr, u8* data, u8 len)
 {
-    HAL_StatusTypeDef status = HAL_OK;
-    
-    status = HAL_I2C_Mem_Read( &hi2c1, AK09911_SENSOR_ADDRESS_1, ( uint16_t )addr, I2C_MEMADD_SIZE_8BIT, data, len, I2C_Timeout );
-                                
-    if( status != HAL_OK )
-    {
-      return AK09911_STATUS_FAILED;
-    }
-    else
-    {
-      return AK09911_STATUS_SUCCESS;
-    }
+	HAL_StatusTypeDef status = HAL_OK;
+
+	status = HAL_I2C_Mem_Read( &hi2c1, AK09911_SENSOR_ADDRESS_1, ( uint16_t )addr, I2C_MEMADD_SIZE_8BIT, data, len, I2C_Timeout );
+
+	if( status != HAL_OK )
+	{
+		return AK09911_STATUS_FAILED;
+	}
+	else
+	{
+		return AK09911_STATUS_SUCCESS;
+	}
 }
 
 #define ak09911_log(...)
@@ -50,7 +50,7 @@ static int ak09911_power_mode(u16 *interval)
 	ret = ak09911_i2c_write(AK0991X_CNTL2, &tmp, 1);
 	if(ret != AK09911_STATUS_SUCCESS){
 		ak09911_log("[%s] set power down mode failed\n", AKM_AK09911_DEBUG_STR);
-        return AK09911_STATUS_FAILED;
+		return AK09911_STATUS_FAILED;
 	}
 
 	if (tmp_interval >= 100) {
@@ -84,14 +84,14 @@ static ak09911_status ak09911_get_fuse_data(void)
 	ret = ak09911_i2c_write(AK0991X_CNTL2, tmpval, 1);
 	if(ret != AK09911_STATUS_SUCCESS){
 		ak09911_log("%s %d: [%s] change to fuse mode failed\n",__func__,__LINE__,AKM_AK09911_DEBUG_STR);
-        return AK09911_STATUS_FAILED;
+		return AK09911_STATUS_FAILED;
 	}
 
 	ret = ak09911_i2c_read(AK09911_FUSE_ASAX, tmpval, 3);
 	if(ret != AK09911_STATUS_SUCCESS)
 	{
 		ak09911_log("%s %d: [%s] read ASA failed \n",__func__,__LINE__,AKM_AK09911_DEBUG_STR);
-        return AK09911_STATUS_FAILED;
+		return AK09911_STATUS_FAILED;
 	}
 
 	private_data->asax = tmpval[0];
@@ -102,7 +102,7 @@ static ak09911_status ak09911_get_fuse_data(void)
 	ret = ak09911_i2c_write(AK0991X_CNTL2, tmpval, 1);
 	if(ret != AK09911_STATUS_SUCCESS){
 		ak09911_log("[%s] set power down mode failed\n", AKM_AK09911_DEBUG_STR);
-        return AK09911_STATUS_FAILED;
+		return AK09911_STATUS_FAILED;
 	}
 
 	ak09911_log("[%s] ASA:%d %d %d \n",AKM_AK09911_DEBUG_STR, private_data->asax, private_data->asay, private_data->asaz);
@@ -169,12 +169,12 @@ ak09911_status ak09911_read_data(ak09911_xyz_t *data)
 	}
 
 	//for continuous mode, we don't care about the data is ready or not.
-/*
-	if (!(buf[0] & AK09911_ST1_DRDY)) {
-		ak09911_log("[%s] data not ready, status=0x%x\n", AKM_AK09911_DEBUG_STR, *st1);
-		return SC_STATUS_NO_DRDY;
-	}
-*/
+	/*
+	   if (!(buf[0] & AK09911_ST1_DRDY)) {
+	   ak09911_log("[%s] data not ready, status=0x%x\n", AKM_AK09911_DEBUG_STR, *st1);
+	   return SC_STATUS_NO_DRDY;
+	   }
+	   */
 
 	/************************************************
 	 * 1uT = 10mG, 1uT = 10 * 1000 uG
@@ -182,11 +182,11 @@ ak09911_status ak09911_read_data(ak09911_xyz_t *data)
 	 * H(uG) = H * (ASA/128 + 1) * 10000 * 0.6
 	 * H(uG) = H * 6000 * ASA / 128 + H * 6000
 	 */
-        /*
-	data->x = s16Buff[0] * (private_data->asax) * 47 + s16Buff[0] * 6000;//(15/100)*10000 uT ->uG
-	data->y = s16Buff[1] * (private_data->asay) * 47 + s16Buff[1] * 6000;
-	data->z = s16Buff[2] * (private_data->asaz) * 47 + s16Buff[2] * 6000;  */
-        //ak09916's sensitivity is 0.15uT(1.5mG)
+	/*
+	   data->x = s16Buff[0] * (private_data->asax) * 47 + s16Buff[0] * 6000;//(15/100)*10000 uT ->uG
+	   data->y = s16Buff[1] * (private_data->asay) * 47 + s16Buff[1] * 6000;
+	   data->z = s16Buff[2] * (private_data->asaz) * 47 + s16Buff[2] * 6000;  */
+	//ak09916's sensitivity is 0.15uT(1.5mG)
 	data->x = s16Buff[0]*3/2;
 	data->y = s16Buff[1]*3/2;
 	data->z = s16Buff[2]*3/2;
@@ -200,16 +200,16 @@ ak09911_status ak09911_read_data(ak09911_xyz_t *data)
 }
 
 /******************************************************************************
- Description:
-	configures the sensor in the best way that will support the requested report interval
+Description:
+configures the sensor in the best way that will support the requested report interval
 
- Input:
-	ctx				- pointer to the sensor's context
-	report_interval	- the new report interval to support.
-					  when report interval = 0, sensor should shut down
+Input:
+ctx				- pointer to the sensor's context
+report_interval	- the new report interval to support.
+when report interval = 0, sensor should shut down
 
- Return:
-	integer value corresponding to success (0) or failure (non-zero value)
+Return:
+integer value corresponding to success (0) or failure (non-zero value)
  ******************************************************************************/
 ak09911_status ak09911_set_report_interval(u16* report_interval)
 {
@@ -222,7 +222,7 @@ ak09911_status ak09911_set_report_interval(u16* report_interval)
 	ret = ak09911_power_mode(report_interval);
 	if(ret != AK09911_STATUS_SUCCESS){
 		ak09911_log("[%s] set power mode failed\n", AKM_AK09911_DEBUG_STR);
-        return ret;
+		return ret;
 	}
 
 	return ret;
