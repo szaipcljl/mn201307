@@ -1,0 +1,58 @@
+commit 96027f4a9a40ab953b5ab11650eef918092fe764
+Author: ning.ma <ning.ma@roadefend.com>
+Date:   Mon Jan 7 16:06:56 2019 +0800
+
+    add ds90ub954 driver
+    
+    Signed-off-by: ning.ma <ning.ma@roadefend.com>
+
+diff --git a/rda602/bsp/rda602.dts b/rda602/bsp/rda602.dts
+index 047c24b..cadb37a 100644
+--- a/rda602/bsp/rda602.dts
++++ b/rda602/bsp/rda602.dts
+@@ -77,6 +77,11 @@
+ 				reg = <0x01>;	/* fake address, will be overwritten in runtime */
+ 			};
+ #endif
++			ds90ub925@0c {
++				compatible = "ds90ub925";
++				reg = <0x0c>;
++				pdb_gpio = <&gpio 19 1>;
++			};
+ 			it66121@4c {
+ 				compatible = "it66121";
+ 				reg = <0x4c>;
+diff --git a/rda602/config/s5l_h22ax26_rda602_config b/rda602/config/s5l_h22ax26_rda602_config
+index 8a528b0..9371aee 100755
+--- a/rda602/config/s5l_h22ax26_rda602_config
++++ b/rda602/config/s5l_h22ax26_rda602_config
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Ambarella Build Configuration
+-# Wed Dec 26 18:00:34 2018
++# Mon Jan  7 13:36:43 2019
+ #
+ # CONFIG_ARCH_S2L is not set
+ # CONFIG_ARCH_S3 is not set
+@@ -412,6 +412,7 @@ CONFIG_DIGITAL=y
+ # CONFIG_FPD_LINK_MD092ML04 is not set
+ # CONFIG_MIPI_CSI is not set
+ BUILD_AMBARELLA_IT66121_HDMI=y
++BUILD_DS90UB925_DISPLAY=y
+ CONFIG_DSP_FIRMWARE_GERNEIC=y
+ # CONFIG_DSP_FIRMWARE_ENCODE_ONLY is not set
+ # CONFIG_DSP_FIRMWARE_DEBUG is not set
+diff --git a/rda602/rootfs/default/etc/init.rc b/rda602/rootfs/default/etc/init.rc
+index dfb868b..0bf4641 100644
+--- a/rda602/rootfs/default/etc/init.rc
++++ b/rda602/rootfs/default/etc/init.rc
+@@ -33,6 +33,8 @@ on init
+         system modprobe digital_vout output_mode=5
+         system modprobe dsplog
+         system modprobe ambad
++        #system modprobe ds90ub925
++        #system modporbe it66121
+         system mknod -m 666 /dev/overlay c 248 2
+         system mknod -m 666 /dev/ambad c 248 248
+         system mknod -m 666 /dev/dsplog c 248 249
