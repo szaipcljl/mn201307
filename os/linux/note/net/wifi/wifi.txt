@@ -1,0 +1,12 @@
+
+1. 
+rtl8723
+Host Interface:
+    SDIO  for WLAN / UART for BT
+
+软件角度：
+---------
+  电源、GPIO：负责WiFi模组的电源管理、IO管理
+  SDIO：数据通道
+  WiFi驱动：负责WiFi规范实现
+  Sysfs：/sys/文件系统中提供访问驱动接口
