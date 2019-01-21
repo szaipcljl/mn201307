@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 		printf("./i2c-test bus_id R i2c_addr 16bit_register_addr 0\n");
 		printf("write 914 reg[0x61]: ./i2c-test bus_id w 0x61 0x8 0x36\n");
 		printf("write 913 reg[0x5d]: ./i2c-test bus_id w 0x5d 0x8 0x36\n");
-		printf("write ar0144 reg[0x3270]: ./i2c-test W 0x10 0x3270 0x8\n");
+		printf("write ar0144 reg[0x3270]: ./i2c-test bus_id W 0x10 0x3270 0x8\n");
 
 		exit(1);
 	}

@@ -1,0 +1,41 @@
+
+
+mipi lane -> vin interrupts -> vinc
+-----------------------------------
+mipi lane 0~3 [or 0~7] -> vin0 interrupts -> vinc0
+mipi lane 4~7          -> vin1 interrupts -> vinc1
+
+
+1. vin interrupts -> vinc
+linux/arch/arm64/boot/dts/ambarella/ambarella-s5l.dtsi
+
+
+	iav {
+...
+		/* node for vin0 controller */
+		vinc0 {
+			compatible = "ambarella,vinc";
+			interrupts = <0 33 0x1 0 34 0x1 0 36 0x1>;
+			interrupt-names = "idsp", "idsp_sof", "idsp_last_pixel";
+			clocks = <&gclk_so>;
+		};
+
+		/* node for vin1 controller */
+		vinc1 {
+			compatible = "ambarella,vinc";
+			interrupts = <0 39 0x1 0 40 0x1 0 42 0x1>;
+			interrupt-names = "idsp", "idsp_sof", "idsp_last_pixel";
+			clocks = <&gclk_so2>;
+		};
+...
+	}
+
+2. vin interrupts
+/ # cat /proc/interrupts | grep "vin"
+41:          0          0          0          0     GIC-0  65 Edge vin0_idsp
+42:          0          0          0          0     GIC-0  66 Edge vin0_idsp_sof
+43:          0          0          0          0     GIC-0  68 Edge vin0_idsp_last_pixel
+44:      14077          0          0          0     GIC-0  71 Edge vin1_idsp
+45:      14077          0          0          0     GIC-0  72 Edge vin1_idsp_sof
+46:      14077          0          0          0     GIC-0  74 Edge vin1_idsp_last_pixel
+
