@@ -1,0 +1,10 @@
+
+interfaces
+==========
+video:
+mipi
+digital video port (DVP) parallel output interface
+数字视频端口（DVP）并行输出接口
+
+
+

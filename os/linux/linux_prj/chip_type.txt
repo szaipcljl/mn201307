@@ -1,0 +1,22 @@
+
+s32v234
+=======
+sensor: ar0144
+LVDS(serdes): ds90ub914/913
+
+ethernet PHY: ksz9031
+HDMI : SiI9022a (RGB → HDMI, HDMI transmitter)
+
+MCU:KEAZ64
+
+s5l
+===
+DDR3: 2xMT41K256M16,容量2x4Gb(1GB)
+sensor: ar0144
+LVDS(serdes): ds90ub954/933
+              ds90ub954/913
+color serdes: ds90ub925/926
+hdmi : it66121(test board)
+
+MCU: s32K
+

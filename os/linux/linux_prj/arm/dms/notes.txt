@@ -1,0 +1,18 @@
+
+2018年主要工作：
+===============
+1.RDA600 主板
+    (1)RDA600（s32v）主板 bringup 及bug fix、BSP 升级维护。
+    (2)TI90UB914/913 串行解串器调试，及驱动编写。
+    (3)快速启动，Uboot/kernel 裁剪及优化。
+    (4)Init 方案替换(平台无关) ueventd 部分。
+    (5)Build 系统优化：兼容zsh/bash 及system/ 目录变更为Ambconfig 方式维护等。 
+
+1.RDA602（s5l）主板
+    (1)RDA602（s5l） 主板 bringup 及 bug fix、SDK 升级维护。
+    (2)TI90UB954/933 串行解串器调试及驱动编写。
+    (3)Ar0144 图像效果调试。
+    (4)RGB LCD panel调试： 
+        TI90UB925/926 彩色串行解串器调试及驱动编写；
+        It66121 HDMI收发器16bit bt601调试。
+    (5)Video 相关用户空间程序ROI接口及init 脚本编写及维护。
