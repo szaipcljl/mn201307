@@ -1,6 +1,10 @@
 
 s32v234
 =======
+600
+------
+DRAM:
+emmc:
 sensor: ar0144
 LVDS(serdes): ds90ub914/913
 
@@ -11,12 +15,29 @@ MCU:KEAZ64
 
 s5l
 ===
-DDR3: 2xMT41K256M16,容量2x4Gb(1GB)
+
+602
+------
+DRAM: 镁光 2xMT41K256M16,容量2x4Gb(1GB)
+emmc:
 sensor: ar0144
 LVDS(serdes): ds90ub954/933
               ds90ub954/913
-color serdes: ds90ub925/926
-hdmi : it66121(test board)
+
+display:
+	color serdes: ds90ub925/926
+	hdmi : it66121(test board), bt601 16bit or bt601 8bit
+	       (vout output yuv422)
 
 MCU: s32K
 
+sq
+---
+DRAM: 镁光 MT41K128M16JT-125 AAT:K, 2x2Gb(512MB, DDR3)
+EMMC: SDINBDG4-8G-ZA
+sensor:
+LVDS(serdes):
+
+display:
+	color serdes:
+	hdmi
