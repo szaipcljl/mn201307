@@ -1,0 +1,27 @@
+v4l2的操作流程？
+内核保护临界资源有哪些方式?
+互斥锁和自旋锁区别？
+中断该用什么锁？
+中断里能不能分配内存？
+
+kmalloc是什么意思？和malloc 有什么区别？
+进程上下文和中断上下文有什么不一样？
+
+
+the linux device model
+----------------------
+(1) kobject, kset, ktype 这三个结构联合起来一起构成了整个设备模型的基石.
+bus, device, device_driver, 则是基于kobject.kset.ktype之上的架构. 
+
+(2) bus_register()
+	/sys/bus/mmc/
+	devices ： 设备的文件化
+	drivers ： 驱动的文件化
+	drivers_autoprobe ：是否自动，支持读写的。（cat，echo）
+	drivers_probe ：驱动匹配
+	uevent ：在 sysfs 下的很多 kobject 下都有 uevent 属性，它主要用于内核与 udev
+	(自动设备发现程序)之间的一个通信接口 
+
+(3) 类是一个设备的高层视图，它抽象出了底层的实现细节，从而允许用户空间使用设备所提供的功能，
+	而不用关心设备是如何连接和工作的。类成员通常由上层代码所控制，而无需驱动的明确支持。
+	但有些情况下驱动也需要直接处理类。类存在的真正目的是给作为类成员的各个设备提供一个容器
