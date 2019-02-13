@@ -1,0 +1,42 @@
+Kobjects, Ksets, and Subsystems
+===============================
+kobject: holds the device model together
+
+The tasks handled by struct kobject and its supporting code now include:
+	(1) Reference counting of objects:
+		tracking the lifecycle of such objects
+	(2) Sysfs representation:
+		sysfs -> kobject -> visible representation?
+	(3) Data structure glue
+	(4) Hotplug event handling
+		netlink?
+
+Kobject Basics
+--------------
+struct kobject + a long list of functions for manipulating them
+<linux/kobject.h>
+
+1. Embedding kobjects
+How kobjects are used?
+a. the functions handled by kobjects are all services performed on behalf of
+other objects.
+A kobject is of little interest on its own; it exists only to tie a higher-level
+object into the device model.
+
+b. kobjects are used to control access to a larger, domain-specific object.
+
+kobjects are embedded in other structures.
+ (a top-level, abstract class from which other classes are derived)
+
+an example, struct cdev
+finding its embedded kobject?
+using the kobj field
+
+given a struct kobject pointer, what is the pointer to the containing structure?
+use the container_of macro
+
+The way to convert a pointer to a struct kobject called kp embedded within a
+struct cdev would be:
+	struct cdev *device = container_of(kp, struct cdev, kobj);
+
+2. Kobject initialization
