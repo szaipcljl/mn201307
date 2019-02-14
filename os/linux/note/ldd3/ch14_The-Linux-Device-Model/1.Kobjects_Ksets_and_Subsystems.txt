@@ -40,3 +40,75 @@ struct cdev would be:
 	struct cdev *device = container_of(kp, struct cdev, kobj);
 
 2. Kobject initialization
+
+(1) set the entire kobject to 0 -- memset
+Often as part of the zeroing of the structure into which the kobject is embedded.
+(2) set up some of the internal fields with a call to kobject_init( ):
+	void kobject_init(struct kobject *kobj);
+(3) at a minimum, set the name of the kobject; this is the name that is used in sysfs entries.
+	int kobject_set_name(struct kobject *kobj, const char *format, ...);
+	it is actually possible for this operation to fail (it may try to allocate
+	memory), should check the return value and react accordingly.
+(4) The other kobject fields that should be set by the creator are ktype, kset, and parent.
+
+3. Reference count manipulation
+
+	struct kobject *kobject_get(struct kobject *kobj);
+	void kobject_put(struct kobject *kobj);
+
+	The existence of a kobject (and its containing structure) may well, for example,
+	require the continued existence of the module that created that kobject.
+
+	struct kobject *cdev_get(struct cdev *p)
+	{
+		struct module *owner = p->owner;
+		struct kobject *kobj;
+		if (owner && !try_module_get(owner))
+			return NULL;
+		kobj = kobject_get(&p->kobj);
+		if (!kobj)
+			module_put(owner);
+		return kobj;
+	}
+
+	Creating a reference to a cdev structure requires creating a reference also to
+	the module that owns it. So cdev_get uses try_module_get to attempt to increment
+	that module’s usage count.
+
+4. Release functions and kobject types
+what happens to a kobject when its reference count reaches 0?
+the code that created the kobject must be notified asynchronously whenever the
+last reference to one of its kobjects goes away.
+
+This notification is done through a kobject’s release method.
+
+void my_object_release(struct kobject *kobj)
+{
+	struct my_object *mine = container_of(kobj, struct my_object, kobj);
+	/* Perform any additional cleanup on this object, then... */
+	kfree(mine);
+}
+
+every kobject must have a release method, and the kobject must persist
+(in a consistent state) until that method is called.
+
+the release method is not stored in the kobject itself; instead, it is
+associated with the type of the structure that contains the kobject.
+This type is tracked with a structure of type struct kobj_type -- “ktype.”
+struct kobj_type {
+	void (*release)(struct kobject *);
+	struct sysfs_ops *sysfs_ops;
+	struct attribute **default_attrs;
+};
+
+Every kobject needs to have an associated kobj_type structure. The
+kobj_type pointer can be found in two different places. T
+	(1) The kobject structure itself contains a field (called ktype)
+	(2) (If this kobject is a member of a kset,) provided by that kset instead.
+
+	the macro:
+	struct kobj_type *get_ktype(struct kobject *kobj);
+	finds the kobj_type pointer for a given kobject.
+
+Kobject Hierarchies, Ksets, and Subsystems
+------------------------------------------
