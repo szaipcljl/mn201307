@@ -112,3 +112,4 @@ kobj_type pointer can be found in two different places. T
 
 Kobject Hierarchies, Ksets, and Subsystems
 ------------------------------------------
+The kobject structure is often used to link together objects into a hierarchical structure that matches the structure of the subsystem being modeled.

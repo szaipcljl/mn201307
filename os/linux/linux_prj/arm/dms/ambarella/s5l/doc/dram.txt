@@ -1,0 +1,69 @@
+s5l DRAM
+
+S5L-SDK-005-1.5_Ambarella_S5L_DG_Flexible_Linux_SDK_System_Implementation(1).pdf
+
+1. DDR Type
+-----------
+DDR3
+32-bit memory bus:
+	16 bits DDR3 x 2 pcs
+
+DDR3 Chips:
+Brand     Part Number    Standard       Type
+Samsung   K4B2G1646C    DDR3-1333    2 Gb x16, 2pcs
+Samsung   K4B4G1646B    DDR3-1333    4 Gb x16, 2pcs
+
+2. DDR Configuration
+The DDR qualification process:
+	(1) shmoo test
+	(2) DDR parameter configuration.
+
+The DDR qualification process is REQUIRED when any of the following aspects of
+memory design has been changed:
+	(1) New memory device (even if it is from the same DDR manufacturer)
+	(2) New memory size
+	(3) New memory manufacturer
+	(4) New memory/system clock frequency
+	(5) New board design
+	(6) New board layout
+
+	A. DDR Configuration: Configuring a New DDR
+	a.check if it’s in the support list, to know if the DDR can be supported
+	b. use bstconfig tool to configure the parameters and use the default DLL
+	values, and put the boards to test.
+	Depending on the test results, if it’s still not stable,
+	users may need to run shmoo tests to fine tune the DLL values
+
+	B. DDR Configuration: Using the Bstconfig Tool
+	The bstconfig tool is provided for configuring DDR parameters.
+	/home/chris/projects/rda602_m2/amboot/sv/s5l/bin/lnx64/
+	├── ambusb_script
+	├── bstconfig
+	└── jtag_script
+
+	S5L memory controller has tolerance. The default setting in
+	“s5l_strawberry_1056_ddr3.ini” may work for DDRs with different part number
+	or vendors.
+	find the DDR timing parameters from data sheet.
+
+3.Shmoo Test
+------------
+to find the optimal values for DDR DLL values, which are DDR timing related,
+and very critical to the DDR working stability
+
+goal: to obtain tested, working values for the programmable DDR timing values,
+	 which are ultimately programmed into DLL0/DLL1/ DLL2/DLL3 RCT registers 
+	 that control the delay lines.
+	 Users can also run shmoo test to check if the hardware is good enough, if
+
+users cannot find a valid value to make the system run stably, then it usually 
+means that the system design may have issues.
+
+So shmoo test may need to run in the following states:
+	Design stage (to understand whether the HARDWARE design has potential issue on
+		DDR. If shmoo test result is bad, hardware rework or redesign may be needed and
+		users will need to double confirm with the Ambarella support team on the main board
+		schematics and PCB layout.)
+	Product Pilot Run stage (to know whether different boards can all run stable,
+		in long enough time, and in required temperature range (especially low/high
+		temperature))
