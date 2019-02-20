@@ -1,0 +1,51 @@
+Linux内核时间获取
+
+
+1. jiffies (全局变量)
+---------------------
+自上次系统启动到当前的时间间隔.
+计算不同事件间的时间间隔.
+
+硬件给内核提供一个系统定时器用以计算和管理时间，内核通过编程预设系统定时器的频率，
+即节拍率（tick rate),每一个周期称作一个tick(节拍）。
+从2.5版内核开始把频率从100调高到1000.
+
+计算系统运行了多长时间: jiffies/tick rate
+
+<linux/jiffies.h>:
+#if (BITS_PER_LONG < 64)
+u64 get_jiffies_64(void);
+#else
+static inline u64 get_jiffies_64(void)
+{
+    return (u64)jiffies;
+}
+#endif
+
+msecs_to_jiffies: - convert milliseconds to jiffies
+@m:  time in milliseconds
+static __always_inline unsigned long msecs_to_jiffies(const unsigned int m)
+{
+...
+}
+
+
+2. xtime全局变量 ? remove in new kernel
+----------------
+kernel/time/timekeeping.c
+struct timespec64 current_kernel_time64(void)
+精确到ns级
+
+3. do_gettimeofday ? removed from new kernel?
+------------------
+微妙级别
+微秒值来填充一个指向struct timeval的指针变量
+
+only find in:
+kernel/time/timekeeping.c
+do_gettimeofday - Returns the time of day in a timeval
+void do_gettimeofday(struct timeval *tv)
+{...}
+
+4.
+

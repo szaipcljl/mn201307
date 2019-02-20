@@ -1,0 +1,10 @@
+
+
+apt install p7zip-full
+
+解压7z：
+7z x file.7z
+
+解压tar.bz2: sudo tar -jxvf file.tar.bz2。
+
+解压tar: sudo tar -zxvf file.tar。
