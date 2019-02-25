@@ -113,3 +113,7 @@ hexdump cse.bin
 compute and check MD5 message digest
 md5sum cse.bin
 check fat file system, compare result
+
+==================
+查看主设备号: cat /proc/devices
+次设备号查看: ls -l /dev

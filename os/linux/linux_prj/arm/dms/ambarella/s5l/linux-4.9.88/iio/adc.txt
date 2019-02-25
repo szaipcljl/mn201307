@@ -1,0 +1,62 @@
+adc
+===
+Documentation/arm/ambarella/adc.txt
+Documentation/devicetree/bindings/arm/ambarella.txt
+
+1. HW: a four-channel Analog-to-Digital Converter (ADC)
+	(s5l ADC)ch1 -> CAM_CS -> SETI(MAX17608)
+
+2. kernel/linux/drivers/iio/adc/ambarella_adc.c
+./fakeroot/lib/modules/4.9.110/kernel/drivers/iio/adc/ambarella_adc.ko
+
+modprobe ambarella_adc
+/dev/iio:device0
+
+On loading the module(ambarella_adc.ko) you can see the IIO device created in sysfs:
+
+root@/#ls -p /sys/bus/iio/devices/iio\:device0/
+buffer/             in_voltage0_enable  in_voltage3_enable  sampling_frequency
+dev                 in_voltage0_raw     in_voltage3_raw     scan_elements/
+events/             in_voltage0_scale   in_voltage3_scale   subsystem
+in_temp4_enable     in_voltage1_enable  name                trigger/
+in_temp4_input      in_voltage1_raw     of_node             uevent
+in_temp4_raw        in_voltage1_scale   power/
+
+channel2 is not used in .dts, so here you cannot see in_voltage2_XXX
+
+in_voltageX_enable: enable or disable channel X dynamically
+in_voltageX_raw: raw value of the channel X of the ADC
+in_voltageX_scale: scale of the channel X of the ADC
+PS: the real voltage of channel X = in_voltageX_raw * in_voltageX_scale
+
+
+3.
+struct platform_driver
+
+
+static const struct of_device_id ambarella_adc_match[] = {
+	{ .compatible = "ambarella,adc", },
+	{ /* sentinel */ }
+};
+
+3.
+linux/arch/arm64/boot/dts/ambarella/ambarella-s5l.dtsi
+		adc@e801d000 {
+			compatible = "ambarella,adc";
+			reg = <0xe801d000 0x1000>;
+			interrupts = <0 57 0x4>;
+			clock-frequency = <3000000>;
+			clocks = <&gclk_adc>;
+			amb,rct-regmap = <&rct_syscon>;
+			amb,scaler-1v8 = <0x01>;
+		};
+
+sq1801/boards/sxqc1801/bsp/sxqc1801.dts
+		adc@e801d000 {
+			amb,channels-used = <0x06>; /* ch1 and ch3 */
+		};
+//- amb,channels-used: specifies which channels are used, bit0 for ch0, bit1 for
+//ch1, bit2 for ch2 and etc.
+//- amb,scaler-1v8: specifies if the range of corresponding adc channel is 1.8v,
+//bit0 for ch0, bit1 for ch1, bit2 for ch2 and etc.
+
