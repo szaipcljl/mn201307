@@ -41,3 +41,27 @@ LVDS(serdes):
 display:
 	color serdes:
 	hdmi
+
+
+
+chips
+=====
+soc:
+	s5l
+	s32v
+	imx6
+
+ISP:
+FH8310: 上海富瀚微电子 首款车规级车载 ISP 芯片
+	最大支持 200 万像素，支持 CVBS、数字高清、模拟高清等多种高清传输链路，
+	应用场景:前视、环视、车内摄像头；
+	具备时域+空域的 3DNR 降噪功能，满足车内监控、倒车等低光、慢速移动条件下的高质量图像处理需求。
+xchip
+
+
+serdes: ds90ub914/3, ds90ub954/3, ds90ub934/3
+	ds90ub925/6(display)
+
+AHD:
+
+LED: 欧司朗 OSRAM
