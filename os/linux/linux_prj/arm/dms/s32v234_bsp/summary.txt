@@ -1,0 +1,301 @@
+summary of issues in s32v platform(2018.3-2018.8) -- 2019.9.26
+1. bring-up 问题：
+从SD 卡启动 - bootloader 阶段：
+（1）现象： uboot log打印出来了，uboot 倒计时进入uboot命令行后几秒，重启，反复几次后卡住，后来也有直接卡住。
+         不进入uboot命令行, 在"reading Image" 处卡住。
+        正常电流290mA左右，在卡住的时候，瞬间降到140mA, 然后降到120mA。
+
+思路：
+    猜想： 电流突然降低，是否有被限流？过流后，reset.
+    1) 物理层： 测量pmic 芯片 reset 脚等信号是否正常；是否重复被reset.
+原因：
+    硬件检查 reset 信号，PMIC的 reset 脚在每隔几秒输出一个reset, PMIC芯片有bug, 进行了限流，电流超了就会进行reset.
+解决：
+   MCU对 PF82xx PMIC 芯片循环写寄存器，绕过限流(因为写一次，会被自动改回来，原因不明)，uboot 可启动并加载kernel.
+（2）sd 卡未识别：
+现象： uboot 阶段读 image 报错； 或者“MMC init failed”; 或者进入到Shell 后报“mmc0: card 59b4 removed”
+思路：
+    猜想：sd卡没正常工作，clk 有问题？
+    1）物理层： 测量sd 卡 clk 等相关信号
+解决：clk 信号有问题， sd card 相关的 clk 去掉一颗电容
+
+从emmc 启动 - bootloader 阶段：
+ （1）现象：读不到 emmc， 进入从 net 启动：
+    分析：sd卡启动进入shell后，跳线，mount emmc, 对emmc 进行了分区等，为emmc 启动拷贝镜像。
+    emmc 启动后，识别不到emmc, 之前可以mount, 硬件可能没有问题，emmc 分区是否有问题？
+    对比实验： 启动uboot后，改用NFS启动内核，
+
+    然后系统一直报错误：    mmc0: error -84 whilst initialising MMC card
+
+解决：
+    检查 emmc 分区，发现 大联大的NXP S32V ADAS 方案Hands On 操作手册上错误，漏掉设置分区类型的一段，
+    导致未设置emmc分区类型，启动后无法识别emmc。
+
+2.build system
+(1) identify shell version, zsh or bash
+     ubuntu 上编译时，默认识别zsh, 增加兼容bash环境。
+(2) u-boot 板级相关的  defconfig 放到对应board下，如 da600_defconfig 放在boards/rda600/config/uboot 下
+(3) 优化单独编译linux kernel的命令，如引入 make olddefconfig 来更新 .config 中新的config flag
+
+3. peripheral devices
+(1) DDR
+    a. ddr 参数配置,  2xMT41K256M16,容量2x4Gb(1GB)=8Gb
+
+(2) SDIO:  sd & emmc
+    a. sd card 和 emmc 启动前跳线选择。
+    b. sdio detect pin： SD_CDn(低有效) ，uboot 中未使用检测机制
+    c. usdhc support dma, there is no implemention in uboot
+    d. Supports internal and external DMA capabilities; Supports Advanced DMA to perform linked memory access 
+    e. usdhc iomux 与参考板一致
+    f.3 transfer modes to access the data buffer
+        <1> CPU polling mode
+        <2>External DMA mode
+    For a read operation, when there are more words received in the buffer than the
+    amount set in the RD_WML register, a DMA request is sent out to inform the
+    external DMA to fetch the data. 
+   <3> Internal DMA mode (includes simple and advanced DMA accesses): 
+        over the AHB bus 
+            AHB (Advanced High-performance Bus)
+
+    g.s32v mmc driver 中，send_cmd 时，填充了物理地址，通过设置寄存器，触发dma 传输。
+        dma 传输数据后，会 clean data cache.
+    h. 确认 u-boot 的sd卡和emmc的模式及拷贝速度。
+for sd/sdio: 
+    full(defualt) mode,
+    high speed mode. 
+    TODO: check if sdio high speed mode enabled，通过 mmc_switch 函数里设置的寄存器跟踪来确认。--done
+检查下来，是按照 49.5.4.2 Query, Enable and Disable SD High Speed Mode 中来sd_change_freq,
+速度为何才11MiB/s, 参考v2018.07，中，
+检查sd card(Netac micro SDHC,16GB,class10) 是否支持UHS DDR50 (50MHz):
+support SD_MODE_UHS_SDR25(25MB/s)，SD_MODE_UHS_SDR12(12.5MB/s); 这个SD卡最大支持25MB/s. 
+    因为会分多次DMA 传输，会使测量速度变低，
+    TODO: 测量单次DMA 速度是否大于12.5MB/s，如果是，说明是以25MB/s传输的。
+for e.MMC: 
+    high speed SDR mode(bits:1/4/8,Freq:52MHz-Max, Data Rate: 52MB/s), 
+    high speed DDR mode(bits:1/4/8,Freq:52MHz-Max, Data Rate: 104MB/s), 
+    full(defualt) speed mode(bits:1/4/8,Freq:26MHz-Max, Data Rate: 26MB/s) 
+    TODO: s32v 18MiB/s?? 
+    a. check current mode: 
+    emmc full(default) speed mode(26MB/s), 
+    emmc high speed SDR mode(52MB/s).
+    emmc high speed DDR mode(104MB/s). 
+    b. to enable DDR mode： 先确认是哪种模式，再enable.
+    c. 如果 DDR mode 已经 enable, 则利用ADMA1/ADMA2 operation 来 speed up.
+      ADMA 优势？ DMA 连续无空隙？减少中断的频率。
+49.4.2.4 ADMA Engine 
+For Simple DMA, once the page boundary is reached, a DMA interrupt will be generated。
+The ADMA defines the programmable descriptor table in the system memory. The Host
+Driver can calculate the system address at the page boundary and program the descriptor
+table before executing ADMA. It reduces the frequency of interrupts to the host system. 
+There are two types of ADMA: ADMA1 and ADMA2 in Host Controller. ADMA1 can
+support data transfer of 4KB aligned data in system memory. ADMA2 improves the
+restriction so that data of any location and any size can be transferred in system memory.
+Their formats of Descriptor Table are different. 
+
+(3) uart:
+    a.  dts配置： iomux 与参考板一样
+    b. when open "ttyLF1"(uart1), '0x20' will be send to TX,
+        每次改变波特率， 也会发一个'0x20' 字节。//每次调用uart_change_speed, 发'0x20'
+linflex_set_termios：//fsl_linflexuart.c
+    if((jiffies - INITIAL_JIFFIES) / HZ > (long unsigned int)10)
+        writeb(' ', port->membase + BDRL);
+    c. serial boot: download uboot to sram via uart
+(4) eThernet
+    ksz9031 driver in drivers/net/phy/micrel.c
+    phy addr 3h
+    delete sja1105 ethernet switch module and firmware
+    调试工具：inetd(ftpd) - FileZilla
+    uboot 裁剪掉网络，kernel 网络不通. u-boot 中会有一部分初始化，在kernel中没有重复这部分初始化。
+(5) SHA-204
+    whether s32v234 itself supports the feature of encrypttion device's i2c flag,
+    add support to I2C_M_IGNORE_NAK flag， 忽略应答
+(6) LVDS
+        FPD-LINK Ⅲ 913/914 drivers, DS90UB914A-Q, i2c 控制：字符设备驱动。    
+(7) AR0144 - 8bit 并口
+    video1 parallel input 接口, 有两组 VIULite0/1，VIU0 连接到FPD-LINKⅢ（DS90UB914A-Q1）
+
+(8) ISP
+external ISP(xc7027) + AR0144
+(a) 914能设置寄存器， i2cget 无法访问913寄存器：
+    a. i2c地址
+    b. 供电
+    c. 913 使能， powerdown 引脚
+    external ISP(xc7027) + AR0144 -- 作为一个i2c device， 在open的时候会上电和初始化，
+    可以看到电流从290mA 上的400mA, 拿camra 晃动，电流会上到500mA, 说明有图像被识别。
+
+(b) 第一版 xc7027-ar0144 camra modue 是27M 给ISP，
+    现在的 mini-camra 时钟27M是给了913，913二分频为13.5M后再给ISP，
+    ISP 输出给913的 pclk 为40.5M=27Mx1.5(913用外部晶振时要满足的关系)
+    更改原因：原先 pclk 作为913的时钟，IIC 通信会经常失败，更改后就好了。
+(c) pclk 40.5M ，vsync 20hz，hsync 14.4khz, 720 * 20 = 14.4k
+    只用了8位，低4位拉低了，算是12位，有效数据8位。输出yuv420_gray,
+    xc7027 没有用bt656协议，只是类似BT601,并不是标准的BT601
+    //601是并行数据，行场同步有单独输出
+     只输出 y 分量， YUV422 填充时怎么填的？对于UV我们是直接丢掉的
+8bit /10bit/16bit yuv数据
+
+digital video port (DVP) parallel output interface 数字视频端口（DVP）并行输出接口
+DVP: 并口传输，速度较慢，传输的带宽低，需要PCLK\时钟，VSYNC\场同步、HSYNC\行同步、
+        D[0:11]\并口数据-- 可以是8/10/12bit 数据位数大小。
+
+(9) SiI9022a (RGB → HDMI, HDMI transmitter) 
+    母口HDMI
+    drivers/video/mxc/mxsfb_sii902x.c , i2c1 slave
+    写的测试程序，往fb 中画图，小鱼图和树，两张图。通过hdmi 在屏幕上显示时，出现：
+    certain pixels, primarily along edges, incorrectly show a reddish tint
+    -- 原因是 pin 脚驱动能力配置问题
+
+(10) Fix Bug of GPU Vivian Driver? 
+         update to v6.2.2
+现象：应用程序调用时，报错：
+[ 18.186770] vv_launcher[713]: unhandled level 2 translation fault (11) at 0x00000084, esr 0x92000006
+[ 18.186777] pgd = ffffffc0772c7000
+[ 18.186782] [00000084] *pgd=00000000f72cc003, *pud=00000000f72cc003, *pmd=0000000000000000
+debug:
+定位到报错的地方，是 galcore 中的ioctl中，user space 的 command buffer 和 kernel layer 的大小不一致。
+不一致可能是用户空间的hal层与驱动里的版本不匹配。
+将检查不一致的地方注释掉，打印出来“HAL user version 6.2.2 ”的log ，可以推断是lib库中的.so 与kernel 版本所致。
+结合bsp文档中提及的是 v6.2.2， 给的驱动代码都是5.0的，userspace lib库实际是v6.2.2的。
+更新到v6.2.2的驱动，正常工作。
+#./vv_launcher 
+4127 [ 1] HAL user version 6.2.2 build 93313
+4128 [ 2] HAL kernel version 414045632.0.414044176 build 0
+4129 Segmentation fault
+
+4. rootfs
+a. 创建ext3 文件系统的工具冲突问题：
+    mke2fs 与mkfs.ext3： e2fsprogs 与busybox 中工具冲突，只能留一个
+
+5. 启动时间：
+boot time reduction methodology
+<1> measure time
+<2> remove unnecessary functionality
+<3> postpone, parallelize, reorder
+<4> optimize neccessary functionality
+measure time and log control
+a. perf 编译出来，timechart 使用
+b.macro related with log and debug 
+    (1) initcall_debug 和ignore_loglevel 宏打开和关闭？
+    initcall_debug 和 ignore_loglevel 在uboot的命令行中的bootargs 设置，注意设置正确的bootargs.
+    SD卡启动时，bootcmd 里重新设置了 bootargs, 应该改动这个重新设置的地方。如下：
+    => printenv mmcargs
+    mmcargs=setenv bootargs console=${console},${baudrate} root=${mmcroot}                                         
+    => setenv mmcargs setenv bootargs initcall_debug ignore_loglevel console=${console},${baudrate} root=${mmcroot}
+    ps: initcall_debug 时core_param 方式定义的参数变量，在uboot传递的bootargs可设置.
+
+    (2) printk.time=1 控制宏，相关的，怎么关闭?
+        CONFIT_PRINTK_TIME=y
+    (3) loglevel 宏控制，关闭log?
+    CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
+     => setenv mmcargs setenv bootargs loglevel=0 console=${console},${baudrate} root=${mmcroot}
+    (4) uboot传递的 cmdline 和 dts中的cmdline 怎么决定用哪一个？
+        CONFIG_CMDLINE_FORCE 定义, 总是使用默认的 kernel command string
+c.scripts/bootgraph.pl 能生成更详细的chart 吗？
+    用时最多的串口，700毫秒，关闭控制台console 打印就少了 (loglevel=0 由uboot传参控制)
+    loglevel=0 后，内核启动0.66s
+Measuring - bootchart,init进程开始的启动流程。
+
+kernel:
+kernel 镜像压缩，CONFIG_CC_OPTIMIZE_FOR_SIZE
+building a compressed arm kernel:  Image.lz4/Image.gz
+<1> Image.gz -> mkimage -> uImage: decompressed
+[1.006360 0.005085]    Uncompressing Kernel Image ... OK
+[3.499275 2.492915]    reserving fdt memory region: addr=80000000 size=10000
+<2> Image.lz4
+    copy_image_time+decompression_time: +269ms
+    remove CRC: -509ms
+
+u-boot:
+(1) compression kernel: lz4 + FIT uImage
+    <1> FIT image 启动时，reading rda600.dtb 是否多余？
+        --done: 多余， kernel_fdt.itb 包含image+dtb.
+    <2> reading uImage 和loading kernel from FIT Image 有什么关系，这个启动过程是否有可省略的步骤。
+        -- done: 必须先reading kernel_fdt.itb 到ram中，mkimage 指定的loadaddr 和 ep 比 cmdline 指定的loadaddr 大0xe4, 
+可以 kernel image XIP 方式来执行，但是start kernel 后出错，地址设置还是有点问题。??
+    <3> 如何用Makefile编译出来 kernel_fdt.itb.
+     aarch64 kernel does not currently provide a decompressor => need uboot to perform decompression(gzip etc.)
+    => uImage => legacy uImage + FIT image
+(2) remove CRC check;
+    <1> FIT image(uncompressed kernel) without crc。
+--done: 注释掉kernel_fdt.its 中的hash相关节点即可。 
+    <2> booti 启动(Image), remove crc, measure time.
+        --done: ”setenv verify no“ 没有效果，没有kernel crc 校验这部分，打印log 用grabserial测出
+        时间0.5s是因为memmove kernel 了。见 skip the memmove operation.
+
+(3) 去掉uboot 环境变量；
+    -- 依赖太多，如果spl 启动，不需要做这个了。
+    release 版调试的时候还要对应改环境变量，怎么让环境变量不保存。不读取保存的环境变量。
+(4) make uboot skip the memmove operation by directly loading the uImage at the right address.
+
+booti_setup: //common/cmd_bootm.c
+    if (images->ep != dst) 
+        memmove
+
+images->ep: 
+     kernel Image entry point: a. default image load address; b. cmdline image address
+dst: 
+    dst = gd->bd->bi_dram[0].start + le32_to_cpu(ih->text_offset);
+    //text_offset 指什么？
+If we are not at the correct run-time location, set the new correct location and then move the image there.
+
+    <1> ep 和dst 分别在哪里设置的?
+        -- done: s32v 中dst 是DDR0的base address + text offset; ep 是 default image load address or cmdline image address.
+        s32.h 中LOADADDR 0x8007FFC0,// this is the default image load address; we should change it to 0x80080000 to 
+        skip kernel memmove.
+    <2> 0x80080000 在spec中有说明吗？
+    <3> text offset 在linux的链接文件中？test offset 在哪指定的？
+        --done:
+out/rda600/kernel/linux-4.9_rda600-release/arch/arm64/kernel/vmlinux.lds
+// If padding is applied before .head.text, virt<->phys conversions will fail.
+ASSERT(_text == ((0xffffffffffffffff << ((39) - 1)) + 0x00080000), "HEAD is misaligned")
+    <4>modify uboot/include/configs/s32.h LOADADDR
+(5) silence U-Boot console output.
+    start kernel 的地方gpio翻转，CPU: 的地方翻转.
+    去掉 uboot console 打印，
+(6) Ultimate solution: use U-Boot's Falcon mode.
+    U-Boot: the SPL(Secondary Program Loader) + the U-Boot image
+    configure the SPL to load the Linux kernel directly, instead of the U-Boot image.
+    See doc/README.falcon for details.
+    跳过文件系统拷贝内核；SPL 直接拷贝内核，不再拷贝uboot镜像
+
+(7) uboot sdio: clock and data bits
+<1> u-boot sdio: clock and data bits. 
+bus  width 4, clock 50000000(50M), high speed mode, data rate 最大25MB/s, 显示12MB/s，
+ 因为分几次拷贝的间隔有delay延时。
+=>>后面可以研究：e.MMC high speed DDR mode, 最大可104MB/s
+
+sd 卡测量一次 dma 的时间，经测量，等待dma传输完成的时间可达359ms, 测试中出现过的最快速度为11.6 MiB/s.
+dma 传输速度受限于外设的速度，sd 卡已经 enable 了high speed mode, 却未超过12.5MiB/s（full speed mode）， 什么原因？ 
+    code 中 enable 了sd card high speed mode, 是否生效？ check 一下。sd_change_freq 中Check过，生效。
+
+2018.5.9时
+(1) emmc boot: 
+    boot into root shell: 9-3=6s    
+     reading Image: 7177056 bytes read in 380 ms (18 MiB/s)
+ (2) sd boot:
+   boot into root shell: 11-3=8s     
+    reading Image: 7177056 bytes read in 611 ms (11.2 MiB/s)
+uboot 裁剪 -- release 版267k-> 180k, 去掉i2c, ethe模块和部分不用命令
+
+6. bsp 升级：
+disable cse in uboot:
+    update to bsp15.0
+
+7. init 方案替换：
+sysvinit -> Android init
+一开始移植android 8.0 init, 但是用到了c++17,-std=gnu++1z (C++17和GNU扩展),
+选了android 6.0的init 来移植。包括ueventd.
+8.debug 支持
+ debug tools:gdb + kgdb 
+ enable KGDB -- done:two callbacks .poll_get_char and .poll_put_char need to implement
+root@rda600:~# echo ttyLF0 > /sys/module/kgdboc/parameters/kgdboc 
+sh: write error: No such device
+
+When using kgdboc with a UART, the UART driver must implement two callbacks in the struct uart_ops. Example from drivers/8250.c:
+
+#ifdef CONFIG_CONSOLE_POLL
+	.poll_get_char = serial8250_get_poll_char,
+	.poll_put_char = serial8250_put_poll_char,
+#endif
+ 
+but s32v fsl_linflexuart.c has not implemented this two callbacks in the struct uart_ops
