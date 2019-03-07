@@ -1,0 +1,27 @@
+
+
+1. s32k
+-------
+
+2. S9KEAZ128AMLH
+----------------
+制造商零件编号：S9KEAZ128AMLH
+制造商：Freescale Semiconductor
+描述：MCU 32BIT 128K FLASH 64LQFP
+系列：Kinetis KEA
+核心处理器：ARM Cortex-M0+
+核心尺寸：32-位
+速度：48MHz
+连接性：CAN，I2C，LIN，SPI，UART/USART
+外设：LVD，POR，PWM，WDT
+I/O 数：58
+程序存储容量：128KB（128K x 8）
+程序存储器类型：闪存
+EEPROM 容量：-
+RAM 容量：16K x 8
+电压 - 电源 (Vcc/Vdd)：2.7 V ~ 5.5 V
+数据转换器：A/D 16x12b
+振荡器类型：内部
+工作温度：-40°C ~ 125°C
+封装/外壳：64-LQFP
+供应商器件封装：64-LQFP（10x10）
