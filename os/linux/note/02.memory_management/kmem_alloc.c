@@ -27,3 +27,7 @@ void cleanup_module(void)
 
 	vfree(vmallocmem);
 }
+
+/*
+ * 几种分配函数所对应的区域
+ * /
