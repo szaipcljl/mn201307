@@ -1,0 +1,26 @@
+diff --git a/private/package_test/arch_s5l/test_image.c b/private/package_test/arch_s5l/test_image.c
+index 51387f7..2055209 100644
+--- a/private/package_test/arch_s5l/test_image.c
++++ b/private/package_test/arch_s5l/test_image.c
+@@ -2960,7 +2960,21 @@ int main(int argc, char ** argv)
+ 				}
+ 				printf("#mn: Set current shutter time max is 1/%d sec\n",
+ 						DIV_CLOSEST(512000000, ae_param.shutter_time_max));
++
++#if 0 //only used for LED test mode: set shutter_min_time = shutter_max_time, add by Ning, 2019.3.6
++				//mw_get_ae_param(&ae_param);
++				printf("#mn-LED_test: Default current shutter time min is 1/%d sec\n",
++						DIV_CLOSEST(512000000, ae_param.shutter_time_min));
++				ae_param.shutter_time_min = DIV_CLOSEST(512000000, 1000/MAX_SHUTTER_TIME_MSEC);
++				if (mw_set_ae_param(&ae_param) < 0) {
++					printf("mw_set_ae_param error\n");
++				}
++				printf("#mn-LED_test: Set current shutter time min is 1/%d sec\n",
++						DIV_CLOSEST(512000000, ae_param.shutter_time_min));
+ #endif
++#endif
++
++
+ #ifdef ROI_SUPPORT_ENABLE
+ 				printf("#mn: BACKGROUND_MODE\n");
+ 				start_adjust_roi_server();
