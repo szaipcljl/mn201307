@@ -203,6 +203,7 @@ int main(int argc, char *argv[])
 
 			i++;
 			printf("[%s] [%ld] Reg[%x] -- 0x%02x\n", __func__, i, reg_addr, rbuf[0]);
+			break;
 		}
 
 		break;
@@ -250,8 +251,8 @@ int main(int argc, char *argv[])
 			}
 			i++;
 			printf("[%s] Reg[%x] -- 0x%02x%02x\n", __func__, reg_addr, rbuf[0],rbuf[1]);
+			break;
 		}
-
 		break;
 
 	case REG_ADDR_BIT16_RD: //ar0144 is 16bit reg

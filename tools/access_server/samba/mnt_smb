@@ -1,2 +1,4 @@
 #!/bin/bash
 sudo mount -t cifs -o username=chris,password=dell123 //192.168.5.244/chris ~/smb_server
+
+#ubuntu12.10之后，smbfs被cifs代替
