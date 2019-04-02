@@ -1,0 +1,41 @@
+#!/bin/bash
+
+message_files="/home/jinyuan/commit_template"
+#echo the edit message is saved here: $1
+
+F_tag=0
+B_tag=0
+
+if [ -n "$(sed -n -e '/^\[Feat\]/'p $1)" ];then
+    F_tag=1
+#    echo -e "F_tag $F_tag"
+fi
+
+if [ -n "$(sed -n -e '/^\[Bug\]/'p $1)" ];then
+    B_tag=1
+#    echo -e "B_tag $B_tag"
+fi
+
+#echo -e "F_tag $F_tag"
+#echo -e "B_tag $B_tag"
+
+if [ $F_tag -gt 0 ] && [ $B_tag -gt 0 ];then
+    echo -e "\n\nPlease check comment, we recommend to commit \033[31m Feature\033[0m  and \033[31m Bug\033[0m seperately.\n\n"
+    exit 1
+fi
+
+if [ $B_tag -gt 0 ];then
+    if [ -n "(sed -n -e '/^\[Bug\]/'p $1 | awk '/w+[0-9]+\w+-[0-9]+/ {print $2}')" ];then  
+        echo -e "\n\nPlease check if the \033[31m jira ticket \033[0m is corrected for \033[34m Bug \033[0m .\n\n"
+        exit 5
+    fi
+fi    
+
+if [ $F_tag -gt 0 ];then
+    if [ -n "(sed -n -e '/^\[Feat\]/'p $1 | awk '/w+[0-9]+\w+-[0-9]+/ {print $2}')" ];then  
+        echo -e "\n\nPlease check if the \033[31m jira ticket \033[0m is corrected for \033[34m feature \033[0m .\n\n"
+        exit 3
+    fi
+fi    
+    
+exit 0

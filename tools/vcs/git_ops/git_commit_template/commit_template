@@ -1,0 +1,19 @@
+[Bug] <JIRA_QUE>-<Number> <Descriptions> 
+
+[Cause]
+
+[Fix]
+
+[Feat] <JIRA_QUE>-<Number> <Descriptions> 
+
+#Neither Bug Nor Feature please use [Other] as tag
+#[Other] 
+ 
+#       An exmaple for Bug
+#
+#[Bug] SQ1801SW-445 No warning recieved from DMS 
+#
+#[Cause] maxtrix was old
+#
+#[Fix] change the maxtrix
+#
