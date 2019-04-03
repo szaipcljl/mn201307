@@ -15,8 +15,16 @@ putty免用户名密码登陆
 server”，随后关闭窗口；
 
 note: putty 中 F2~F5 快捷键不能用，输入成~的问题。导致byobu 不能用来切换。
-打开PuTTY设置界面，在Terminal –> Keyboard下，将The Function keys and
-keypad从默认选项“ESC[n~”更改为“Xterm R6”，保存设置到session.
+a. Terminal –> Keyboard ->The Function keys and keypad:
+	“Xterm R6"
+其他配置：
+b. Window -> Set the size of the window:
+	Columns: 90
+	Rows:    48
+c. Window -> Control the scrollback in the window:
+	Lines of scrollback: 20000
+d. Connection -> Data -> Login details:
+	Auto-login username: chris
 
 (2) 最后右击putty快捷方式，属性，目标，加上如下参数:
 -load mserver -ssh -l username -pw password，保存，关闭；
