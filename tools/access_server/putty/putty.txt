@@ -1,4 +1,5 @@
 putty免用户名密码登陆
+1.
 (1) 右键点击putty.exe，点击创建快捷方式。
 (2) 在快捷方式上点击右键，属性。
 (3) 注意目标一项，默认里面写的是你的putty的存储位置，在后面加上 
@@ -7,3 +8,19 @@ putty免用户名密码登陆
 如果你用的是 putty, 它默认的按键绑定跟 byobu 的冲突，为使用上述快捷键，
 可以在已登陆的 putty 窗口先敲byobu，然后回车，
 再单击右键  ->  Change Settings  -> Terminal => Keyboard
+
+2. 配置好的putty，保存到session中, 快捷方式中load session中的配置来自动登录，
+(1)首先创建putty.exe的快捷方式到桌面；然后运行putty，
+输入host name、port、saved session’s name，点击保存，假设session名为“qa
+server”，随后关闭窗口；
+
+note: putty 中 F2~F5 快捷键不能用，输入成~的问题。导致byobu 不能用来切换。
+打开PuTTY设置界面，在Terminal –> Keyboard下，将The Function keys and
+keypad从默认选项“ESC[n~”更改为“Xterm R6”，保存设置到session.
+
+(2) 最后右击putty快捷方式，属性，目标，加上如下参数:
+-load mserver -ssh -l username -pw password，保存，关闭；
+
+以后运行putty的快捷方式，就能自动输入用户名和密码，进入远程电脑。
+快捷方式->属性->目标：
+C:\Users\chris\Desktop\putty.exe -load 192.168.5.244 -ssh -l chris -pw 1234567
