@@ -131,6 +131,7 @@ static inline int gpio_exit(int gpio)
 	return 0;
 }
 
+/* return adc raw*/
 static inline int get_current_adc_val(int adc_chan)
 {
 	char cur_adc_file[80] = {0};
@@ -158,7 +159,7 @@ static inline int get_current_adc_val(int adc_chan)
 
 	//TODO: voltage -> current
 
-	return 0;
+	return raw;
 }
 
 int ld_sw_adc_chan_init(struct load_switch_dev *ld_sw_dev);

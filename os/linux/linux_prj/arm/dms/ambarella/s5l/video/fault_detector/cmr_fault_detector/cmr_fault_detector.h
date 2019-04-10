@@ -15,6 +15,7 @@ struct cmr_fault_detector {
 	struct cmr_dev_info cmr_dev;
 	int cmr_cur_state; /* recoder the state last read*/
 	int cmr_vol_state;
+	struct cmr_ft_recorder *ft_rcd;
 };
 
 int get_cmr_current_state(struct cmr_dev_info *cmr_dev);
@@ -34,5 +35,10 @@ int cmr_vins_resume(struct cmr_dev_info *cmr_dev);
 
 int cmr_ft_detect_init(struct cmr_dev_info *cmr_dev);
 int cmr_ft_detect_exit(struct cmr_dev_info *cmr_dev);
+
+struct cmr_ft_recorder *cmr_ft_record_init(void);
+void cmr_ft_record_exit(struct cmr_ft_recorder *cmr_ft_rcd);
+
+int cmr_ft_record_work(struct cmr_dev_info *cmr_dev, struct cmr_ft_recorder *ft_rcd);
 
 #endif

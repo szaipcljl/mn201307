@@ -44,13 +44,24 @@ int main(int argc, const char *argv[])
 	int ret;
 	pthread_t tid[2];
 
-	cmr_ft_detect_init(&cmr_ft_dtect.cmr_dev);
+	ret = cmr_ft_detect_init(&cmr_ft_dtect.cmr_dev);
+	if (ret < 0) {
+		printf("cmr_ft_detect_init failed \n");
+		goto fail1;
+	}
 	fd_iav = cmr_ft_dtect.cmr_dev.iav_fd;
 
-	ret = pthread_create(&tid[0], NULL, vin_cap_auto, (void *)NULL);
+
+	cmr_ft_dtect.ft_rcd = cmr_ft_record_init();
+	if (!cmr_ft_dtect.ft_rcd) {
+		printf("cmr_ft_record_init failed\n");
+		goto fail1;
+	}
+
+	ret = pthread_create(&tid[0], NULL, vin_cap_auto, (void *)cmr_ft_record_work);
 	if (ret !=0) {
 		printf("[%s]: create thread failed\n", __func__);
-		goto fail1;
+		goto fail2;
 
 	}
 
@@ -63,6 +74,8 @@ int main(int argc, const char *argv[])
 
 	return 0;
 
+fail2:
+	cmr_ft_record_exit(cmr_ft_dtect.ft_rcd);
 fail1:
 	cmr_ft_detect_exit(&cmr_ft_dtect.cmr_dev);
 

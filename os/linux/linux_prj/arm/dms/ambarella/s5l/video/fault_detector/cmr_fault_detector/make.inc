@@ -34,6 +34,7 @@ LOCAL_TARGET	:= cmr_fault_detector
 
 LOCAL_SRCS		:= $(LOCAL_PATH)/main.c $(LOCAL_PATH)/vin_cap.c \
 				$(LOCAL_PATH)/cmr_fault_detector.c \
+				$(LOCAL_PATH)/cmr_ft_recorder.c \
 				$(LOCAL_PATH)/cmr_dev_info.c
 #LOCAL_CFLAGS	:= I$(LOCAL_PATH)/
 

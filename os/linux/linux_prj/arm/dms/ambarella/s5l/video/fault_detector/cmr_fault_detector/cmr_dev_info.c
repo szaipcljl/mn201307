@@ -72,6 +72,7 @@ int ld_sw_gpio_init(struct load_switch_dev* ld_sw_dev)
 	return 0;
 }
 
+/* return adc raw */
 int ld_sw_get_current_val(struct load_switch_dev* ld_sw_dev)
 {
 	if (!ld_sw_dev) {

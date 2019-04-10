@@ -22,6 +22,7 @@
 
 #include "../../../device/s5l/unit_test/private/vin_test/vin_init.c"
 
+extern struct cmr_fault_detector cmr_ft_dtect;
 
 struct nl_vsync_config {
 	s32 fd_nl;
@@ -144,6 +145,7 @@ static int process_vsync_req(struct amba_nl_msg_data *nl_msg)
 
 	if (nl_msg->msg == AMBA_NL_MSG_ERR_IAV_VSYNC_LOST) {
 		data = (struct amba_nl_msg_vsync_data *)(nl_msg->payload);
+		cmr_ft_record_work(&cmr_ft_dtect.cmr_dev, cmr_ft_dtect.ft_rcd);
 		ret = recover_vin_cap(data->vinc_map);
 		vsync_config.msg.src_pid = getpid();
 		vsync_config.msg.dst_pid = 0;
@@ -421,9 +423,10 @@ static int recover_vin_cap(u16 vinc_map)
 	return ret;
 }
 
-void vin_cap_auto(void)
+void *vin_cap_auto(void *callback)
 {
 	init_netlink();
 	netlink_loop(NULL);
-}
 
+	return NULL;
+}
