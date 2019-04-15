@@ -1,0 +1,37 @@
+C++ Basic Syntax
+================
+
+1. C++中Public Static 和 Private Static区别?
+
+Static:
+
+静态成员的关键字,表示不能实例化，运行时已经在内存中开辟了块空间,
+所以不用new, 可以直接调用。类似全局变量。
+	特点：
+	1、访问static成员，用类而不是实例化的对象；
+	2、static方法只能访问static属性；
+	3、static成员可以保留其值
+
+Private Static & Public Static
+
+	private static: 字面上看private的意思是私有的,
+	所以使用private关键字表示该变量或方法必须在本类中使用, 如果调用,
+	必须调用的方法必须是静态的, 也就是说必须用static修饰.
+	public static: public(公共的)则表示在任何地方都能调用该方法或变量,
+	且无限制调用的地方是否静态.
+
+	demo:
+	form1内定义:
+	private　sataic   string   aa;
+	public   static   string bb;
+	form2内访问：
+	form1.aa="abc";
+	//这句能不能访问到变量aa，private限定了只能在类内部访问，这与static无关
+	from1.bb="YYY";    //这句话可以访问到变量bb, public
+	static在任何地方可以无限制调用
+
+	总结：
+
+	private static 和 public static
+	都是静态变量,在类加载时就定义,不需要创建对象。但是private static
+	是私有的,不能在外部访问,只能通过静态方法调用,这样可以防止对变量的修改。
