@@ -114,12 +114,16 @@ static inline int gpio_init(int gpio)
 	snprintf(dir_file, 36, "/sys/class/gpio/gpio%d/direction", gpio);
 	snprintf(gpio_name, 4, "%d", gpio);
 
-	if (write_sysfs_file_once(exp_file, gpio_name, 4) < 0) {
-		return -1;
-	}
+	if (access(dir_file, F_OK)) {
+		if (write_sysfs_file_once(exp_file, gpio_name, 4) < 0) {
+			return -1;
+		}
 
-	if (write_sysfs_file_once(dir_file, dir, 3) < 0) {
-		return -1;
+		if (write_sysfs_file_once(dir_file, dir, 3) < 0) {
+			return -1;
+		}
+	} else {
+		printf("gpio%d has been exported: file existence\n", gpio);
 	}
 
 	return 0;

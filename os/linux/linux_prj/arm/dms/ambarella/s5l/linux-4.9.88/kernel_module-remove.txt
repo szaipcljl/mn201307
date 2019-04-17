@@ -1,0 +1,9 @@
+remove the following function support:
+SPI support
+Sound card support
+Networking support:
+	-- Bluetooth subsystem support
+	-- RF switch subsystem support
+	-*-   Wireless:
+		cfg80211 - wireless configuration API
+Multimedia support 

@@ -1,0 +1,12 @@
+
+prebuild remove the following function:
+
+
+
+rootfs remove the following function:
+[*] Ambarella File System Configuration  ---> 
+	Third Party Software / Libraries  --->
+	-> Audio Packages
+	 -> ALSA
+		 -> Add ALSA library into root_fs
+
