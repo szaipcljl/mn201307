@@ -50,68 +50,82 @@ int i2c_dev_close(int fd)
 	return 0;
 }
 
-int read_8bit_reg(int fd, unsigned char* reg, unsigned char* rbuf)
+int read_8bit_reg(int fd, unsigned char reg, unsigned char* rbuf)
 {
 	//set reg addr to read
-	if(write(fd, reg, 1)!=1){
-		printf("[%s] ERROR: write reg[0x%02x] failed\n", __func__, *reg);
+	if(write(fd, &reg, 1)!=1){
+		printf("[%s] ERROR: write reg[0x%02x] failed\n", __func__, reg);
 		return -1;
 	}
 
 	if (read(fd, rbuf,1) != 1) {
-		printf("[%s] ERROR: read reg[0x%02x] failed\n", __func__, *reg);
+		printf("[%s] ERROR: read reg[0x%02x] failed\n", __func__, reg);
 		return -1;
 	}
 
+	printf("%s: reg[0x%02x] -- 0x%02x\n", __func__, reg, *rbuf);
 	return 0;
 }
 
-int write_8bit_reg(int fd, unsigned char* reg, unsigned char* val)
+int write_8bit_reg(int fd, unsigned char reg, unsigned char val)
 {
 	unsigned char wbuf[2];
 
-	wbuf[0] = *reg & 0xff; //8bit reg
-	wbuf[1] = *val;
+	wbuf[0] = reg & 0xff; //8bit reg
+	wbuf[1] = val;
 
 	//write 8bit reg; first byte is reg addr
-	if (write(fd, wbuf, 2) != 2){
+	if (write(fd, wbuf, 2) != 2) {
 		printf("[%s] write reg[0x%02x] failed\n", __func__, wbuf[0]);
 		return -1;
 	}
 
+	printf("%s: reg[0x%02x] -- 0x%02x\n", __func__, wbuf[0], wbuf[1]);
+
 	return 0;
 }
 
-int read_16bit_reg(int fd, unsigned int* reg, unsigned int* val)
+int read_16bit_reg(int fd, unsigned int reg, unsigned int* val)
 {
+	unsigned char wbuf[2];
+	unsigned char rbuf[2];
+
+	wbuf[0] = reg >> 8;
+	wbuf[1] = reg & 0xff;
+
 	//set reg addr to read
-	if (write(fd, reg, 2) != 2) {
-		printf("[%s] ERROR: write reg[0x%02x%02x] failed\n", __func__, reg[0], reg[1]);
+	if (write(fd, wbuf, 2) != 2) {
+		printf("[%s] ERROR: write reg[0x%02x%02x] failed\n", __func__, wbuf[0], wbuf[1]);
 		return -1;
 	}
 
-	if (read(fd, val,2) != 2) {
-		printf("[%s] ERROR: read reg[0x%02x%02x] failed\n", __func__, reg[0], reg[1]);
+	if (read(fd, rbuf, 2) != 2) {
+		printf("[%s] ERROR: read reg[0x%02x%02x] failed\n", __func__, rbuf[0], rbuf[1]);
 		return -1;
 	}
+
+	*val = (rbuf[0] << 8) | (rbuf[1] & 0xff);
+	printf("%s: reg[0x%02x%02x] -- 0x%x\n", __func__, wbuf[0], wbuf[1], *val);
+	//printf("%s: reg[0x%02x%02x] -- 0x%02x%02x\n", __func__, wbuf[0], wbuf[1], rbuf[0], rbuf[1]);
 
 	return 0;
 }
 
-int write_16bit_reg(int fd, unsigned int* reg, unsigned int* val)
+int write_16bit_reg(int fd, unsigned int reg, unsigned int val)
 {
 	unsigned char wbuf[4];
-	wbuf[0] = (*reg >> 8) && 0xff;
-	wbuf[1] = *reg & 0xff;
+	wbuf[0] = (reg >> 8) & 0xff;
+	wbuf[1] = reg & 0xff;
 
-	wbuf[2] = (*val >> 8) && 0xff;
-	wbuf[3] = *val & 0xff;
+	wbuf[2] = (val >> 8) & 0xff;
+	wbuf[3] = val & 0xff;
 
 	//write 16bit reg; wbuf[0~1] is reg addr
 	if (write(fd, wbuf, 4) != 4) {
 		printf("[%s] write reg[0x%02x%02x] failed\n", __func__, wbuf[0], wbuf[1]);
 		return -1;
 	}
+	printf("%s: reg[0x%02x%02x] -- 0x%x\n", __func__, wbuf[0], wbuf[1], val);
 
 	return  0;
 }

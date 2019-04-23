@@ -36,48 +36,60 @@ void print_helper()
 	printf("write 913 reg[0x5d]: ./i2c-test bus_id w 0x5d 0x8 0x36\n");
 	printf("write ar0144 ir-led reg[0x3270](on:0x100, off:0x0): ./i2c-test bus_id W 0x10 0x3270 0x100\n");
 
-	printf("\nar0144 i2c 7bit_addr: 0x10 or 0x49 (remaped by des)");
+	printf("\nar0144 i2c 7bit_addr: 0x10 or 0x49 (remaped by des)\n");
+	printf("ds913 i2c 7bit_addr:  0x40 (remaped by des)\n");
 }
 
 void exec_i2c_access_request(struct i2c_dev *dev, unsigned int reg_addr, unsigned int val)
 {
 	int fd = dev->fd;
 	unsigned int rval;
+	unsigned char reg_8bit;
+	unsigned char val_8bit;
 
 	switch (dev->reg_type) {
 	case REG_ADDR_BIT8_WR: //913 and 914 is 8bit reg
 
-		reg_addr = reg_addr && 0xff;
-		write_8bit_reg(fd, (unsigned char *)&reg_addr, (unsigned char *)&val);
+		printf("[%s] REG_ADDR_BIT8_WR:\n", __func__);
+		reg_8bit = reg_addr & 0xff;
+		val_8bit = val & 0xff;
+		write_8bit_reg(fd, reg_8bit, val_8bit);
 
-		read_8bit_reg(fd, (unsigned char *)&reg_addr, (unsigned char *)&rval);
+		read_8bit_reg(fd, reg_8bit, &val_8bit);
 
-		printf("[%s] Reg[%x] -- 0x%02x\n", __func__, reg_addr, rval);
 		break;
 
 	case REG_ADDR_BIT8_RD: //913 and 914 is 8bit reg
 
-		reg_addr = reg_addr && 0xff;
+		printf("[%s] REG_ADDR_BIT8_RD:\n", __func__);
 
-		write_8bit_reg(fd, (unsigned char *)&reg_addr, (unsigned char *)&val);
-		read_8bit_reg(fd, (unsigned char *)&reg_addr, (unsigned char *)&rval);
+		reg_8bit = reg_addr & 0xff;
+		val_8bit = val & 0xff;
 
-		printf("[%s] Reg[%x] -- 0x%02x\n", __func__, reg_addr, rval);
+		write_8bit_reg(fd, reg_8bit, val_8bit);
+		read_8bit_reg(fd, reg_8bit, &val_8bit);
+
 		break;
 
 	case REG_ADDR_BIT16_WR: //ar0144 is 16bit reg
 
-		write_16bit_reg(fd, &reg_addr, &val);
-		read_16bit_reg(fd, &reg_addr, &rval);
+		printf("[%s] REG_ADDR_BIT16_WR:\n", __func__);
+
+		write_16bit_reg(fd, reg_addr, val);
+		read_16bit_reg(fd, reg_addr, &rval);
+
 		break;
 
 	case REG_ADDR_BIT16_RD: //ar0144 is 16bit reg
 
-		read_16bit_reg(fd, &reg_addr, &rval);
+		printf("[%s] REG_ADDR_BIT16_RD:\n", __func__);
+		read_16bit_reg(fd, reg_addr, &rval);
 		break;
 
 	default:
 		/* sentence; */
+		printf("[%s] default:\n", __func__);
+		read_16bit_reg(fd, reg_addr, &rval);
 		break;
 	}
 }
@@ -105,6 +117,7 @@ int main(int argc, char *argv[])
 #endif
 	//sleep(1);
 
+	dev.reg_type = *argv[2];
 	sscanf(argv[3],"%x", &dev.i2c_addr); //reg
 	sscanf(argv[4],"%x", &reg_addr); //reg
 	sscanf(argv[5],"%x", &val); //write val
