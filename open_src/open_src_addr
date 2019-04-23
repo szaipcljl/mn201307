@@ -47,3 +47,11 @@ https://github.com/xairy/linux-kernel-exploitation
 ===================================
 https://github.com/STMicroelectronics/STMems_Linux_Input_drivers
 
+
+===================================
+Intel Kernel Guard Technology (iKGT, https://01.org/intel-kgt)
+Open-sourced in year 2015.
+Previously named as TMSL (Trusted Memory Service Layer*) used as anti-malware
+core engine of McAfee Deep Defender on Windows PC.
+
+wget https://01.org/sites/default/files/downloads/intel-kgt/ikgtsrc.1.2.1.tar.gz
