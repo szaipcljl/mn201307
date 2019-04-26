@@ -1,0 +1,23 @@
+
+
+当init进程调用signal_handler_init后，一旦收到子进程终止带来的SIGCHLD消息后，
+将利用信号处理者SIGCHLD_handler向signal_write_fd写入信息；
+epoll句柄监听到signal_read_fd收消息后，将调用handle_signal进行处理。
+
+
+
+
+
+         signal_handler --- 2. write message --+         +--- Socketpair---+
+              ^                                |         |                 |
+              |                                v         v                 v
+              |                         +-----------------+               +-----------------+
+ 1. a signal is sent to the process     | signal write fd | -- transfer ->| signal write fd |
+              |                         +-----------------+               +-----------------+
+              |                                                                   ^
+     +--------+--------+                                                          |
+     |  timer expires  |                                                    3. 监听到数据       
+     +-----------------+                                                          |
+                                        +----------------+                 +----------------+
+                                        | handle  signal |<-- 4.execute ---|    epoll fd    |
+                                        +----------------+                 +----------------+
